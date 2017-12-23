@@ -13,12 +13,11 @@
     "lint": "lerna run lint",
     "test": "lerna run test",
     "build": "lerna run build",
-    "prepublish": "lerna bootstrap && yarn run build",
     "release": "yarn run prepublish && lerna publish --exact --force-publish=*"
   },
   "devDependencies": {
     "lerna": "2.5.1",
     "rimraf": "^2.6.2",
-    "eslint-plugin-lwc": "^2.0.2"
+    "eslint-plugin-lwc": "0.2.4"
   }
 }

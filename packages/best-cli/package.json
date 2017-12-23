@@ -1,18 +1,14 @@
 {
-  "name": "best",
+  "name": "best-cli",
   "version": "0.0.1",
-  "description": "Best",
+  "description": "Best CLI",
   "scripts": {
-    "lint": "eslint src/",
-    "test": "jest"
+    "lint": "eslint src/"
   },
   "keywords": [
     "Best",
     "LWC"
   ],
-  "bin": {
-    "best": "./bin/best.js"
-  },
   "publishConfig": {
     "registry": "https://nexus.soma.salesforce.com/nexus/content/repositories/npmjs-internal/"
   }
