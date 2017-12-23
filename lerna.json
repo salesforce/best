@@ -1,0 +1,16 @@
+{
+  "lerna": "2.5.1",
+  "version": "0.0.1",
+  "commands": {
+    "publish": {
+      "forcePublish": "*"
+    }
+  },
+  "exact": true,
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "registry": "https://nexus.soma.salesforce.com/nexus/content/groups/npm-all/",
+  "packages": [
+    "packages/*"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "name": "best",
+  "version": "0.0.1",
+  "description": "Best",
+  "scripts": {
+    "lint": "eslint src/",
+    "build": "rollup -c",
+    "test": "jest"
+  },
+  "keywords": [
+    "Best",
+    "LWC"
+  ],
+  "bin": {
+    "best": "./bin/best.js"
+  },
+  "publishConfig": {
+    "registry": "https://nexus.soma.salesforce.com/nexus/content/repositories/npmjs-internal/"
+  },
+  "devDependencies": {
+  },
+  "dependencies": {
+
+  }
+}

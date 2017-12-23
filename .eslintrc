@@ -1,0 +1,13 @@
+{
+    "extends": "plugin:lwc/recommended",
+    "plugins": [
+        "lwc"
+    ],
+    "env": {
+        "node": true
+    },
+    "rules": {
+        "raptor/no-inline-disable": 0,
+        "eslint-comments/no-use": 0
+    }
+}
