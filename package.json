@@ -12,13 +12,19 @@
     "clean": "lerna run clean && lerna clean --yes && rm -rf node_modules",
     "lint": "lerna run lint",
     "test": "lerna run test",
-    "build": "lerna run build",
+    "build": "node scripts/build.js",
     "release": "yarn run prepublish && lerna publish --exact --force-publish=*"
   },
   "devDependencies": {
+    "string-length": "2.0.0",
+    "chalk": "^2.3.0",
     "lerna": "2.5.1",
     "rimraf": "^2.6.2",
-    "eslint-plugin-lwc": "0.2.4"
+    "eslint-plugin-lwc": "0.2.4",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "mkdirp": "^0.5.1",
+    "micromatch": "^3.1.4"
   },
   "workspaces": ["packages/*"]
 }
