@@ -25,5 +25,8 @@
     "mkdirp": "^0.5.1",
     "micromatch": "^3.1.4"
   },
-  "workspaces": ["packages/*"]
+  "workspaces": [
+    "packages/*",
+    "examples/simple_benchmark"
+  ]
 }
