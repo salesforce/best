@@ -6,6 +6,7 @@ const mkdirp = require('mkdirp');
 const stringLength = require('string-length');
 const micromatch = require('micromatch');
 const babel = require('babel-core');
+const getPackages = require('./_getPackages');
 
 const OK = chalk.reset.inverse.bold.green(' DONE ');
 const SRC_DIR = 'src';
@@ -45,7 +46,9 @@ function getBuildPath(file, buildFolder) {
 function buildPackage(p) {
     const srcDir = path.resolve(p, SRC_DIR);
     const pattern = path.resolve(srcDir, '**/*');
-    const files = glob.sync(pattern, { nodir: true });
+    const files = glob.sync(pattern, {
+        nodir: true
+    });
 
     process.stdout.write(adjustToTerminalWidth(`${path.basename(p)}\n`));
 
@@ -92,8 +95,14 @@ function buildFile(file, silent) {
     }
 }
 
-const getPackages = require('./_getPackages');
-const packages = getPackages();
-process.stdout.write(chalk.inverse(' Building packages \n'));
-packages.forEach(buildPackage);
-process.stdout.write('\n');
+const files = process.argv.slice(2);
+
+if (files.length) {
+    files.forEach(buildFile);
+} else {
+    const packages = getPackages();
+    process.stdout.write(chalk.inverse(' Building packages \n'));
+    packages.forEach(buildPackage);
+    process.stdout.write('\n');
+
+}
