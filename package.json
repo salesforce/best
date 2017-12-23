@@ -19,5 +19,6 @@
     "lerna": "2.5.1",
     "rimraf": "^2.6.2",
     "eslint-plugin-lwc": "0.2.4"
-  }
+  },
+  "workspaces": ["packages/*"]
 }

@@ -15,5 +15,8 @@
   },
   "publishConfig": {
     "registry": "https://nexus.soma.salesforce.com/nexus/content/repositories/npmjs-internal/"
+  },
+  "dependencies": {
+    "best-cli": "0.0.1"
   }
 }
