@@ -2565,12 +2565,51 @@ function createElement(tagName, options = {}) {
 
 const style = undefined;
 
-function tmpl($api, $cmp, $slotset, $ctx) {
+const style$2 = undefined;
+
+function tmpl$1($api, $cmp, $slotset, $ctx) {
   const {
-    t: api_text
+    t: api_text,
+    d: api_dynamic,
+    h: api_element
   } = $api;
 
-  return [api_text("Simple Benchmark")];
+  return [api_element("div", {}, [api_element("p", {}, [api_text("Simple item "), api_dynamic($cmp.benchmark)])])];
+}
+
+if (style$2) {
+   const tagName = 'simple-item';
+   const token = 'simple-item_simple-item';
+
+   tmpl$1.token = token;
+   tmpl$1.style = style$2(tagName, token);
+}
+
+class SimpleBench$1 extends ComponentElement {
+    constructor(...args) {
+        var _temp;
+
+        return _temp = super(...args), this.test = 'benchnark', _temp;
+    }
+
+    render() {
+        return tmpl$1;
+    }
+
+}
+SimpleBench$1.track = {
+    test: 1
+};
+SimpleBench$1.style = tmpl$1.style;
+
+function tmpl($api, $cmp, $slotset, $ctx) {
+  const {
+    t: api_text,
+    c: api_custom_element,
+    h: api_element
+  } = $api;
+
+  return [api_text("Simple Benchmark"), api_element("section", {}, [api_custom_element("simple-item", SimpleBench$1, {})])];
 }
 
 if (style) {
@@ -2590,7 +2629,7 @@ class SimpleBench extends ComponentElement {
 SimpleBench.style = tmpl.style;
 
 const container = document.getElementById('main');
-const element = createElement('todo-app', { is: SimpleBench });
+const element = createElement('simple-benchmark', { is: SimpleBench });
 container.appendChild(element);
 
 }());
