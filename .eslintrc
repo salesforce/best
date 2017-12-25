@@ -9,5 +9,9 @@
     "rules": {
         "raptor/no-inline-disable": 0,
         "eslint-comments/no-use": 0
+    },
+    "globals": {
+        "benchmark": true,
+        "run": true
     }
 }

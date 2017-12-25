@@ -1,0 +1,19 @@
+{
+  "name": "best-config",
+  "version": "0.0.1",
+  "description": "Best config",
+  "scripts": {
+    "lint": "eslint src/"
+  },
+  "keywords": [
+    "Best",
+    "LWC"
+  ],
+  "publishConfig": {
+    "registry": "https://nexus.soma.salesforce.com/nexus/content/repositories/npmjs-internal/"
+  },
+  "main": "build/index.js",
+  "dependencies": {
+    "chalk": "~2.3.0"
+  }
+}
