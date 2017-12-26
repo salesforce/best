@@ -15,7 +15,6 @@ const cacheDirectory = (() => {
 export default ({
     cache: true,
     cacheDirectory,
-    globals: {},
     moduleDirectories: ['node_modules'],
     moduleFileExtensions: ['js'],
     moduleNameMapper: {},

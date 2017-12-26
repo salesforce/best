@@ -1,7 +1,10 @@
 {
-  "name": "best-config",
+  "name": "best-build",
   "version": "0.0.1",
-  "description": "Best config",
+  "description": "Best build",
+  "scripts": {
+    "lint": "eslint src/"
+  },
   "keywords": [
     "Best",
     "LWC"
@@ -11,6 +14,6 @@
   },
   "main": "build/index.js",
   "dependencies": {
-    "chalk": "~2.3.0"
+    "rollup": "~0.53.0"
   }
 }

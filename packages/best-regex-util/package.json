@@ -1,7 +1,7 @@
 {
-  "name": "best-config",
+  "name": "best-regex-util",
   "version": "0.0.1",
-  "description": "Best config",
+  "description": "Best Regex util",
   "keywords": [
     "Best",
     "LWC"
@@ -9,8 +9,5 @@
   "publishConfig": {
     "registry": "https://nexus.soma.salesforce.com/nexus/content/repositories/npmjs-internal/"
   },
-  "main": "build/index.js",
-  "dependencies": {
-    "chalk": "~2.3.0"
-  }
+  "main": "build/index.js"
 }

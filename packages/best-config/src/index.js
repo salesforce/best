@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 import chalk from 'chalk';
 
+import { replacePathSepForRegex } from "best-regex-util";
 import { PACKAGE_JSON, BEST_CONFIG } from "./constants";
 import DEFAULT_CONFIG from './defaults';
 
@@ -45,7 +46,6 @@ function readConfigAndSetRootDir(configPath) {
 
 function resolveConfigPathByTraversing(pathToResolve, initialPath, cwd) {
     const bestConfig = path.resolve(pathToResolve, BEST_CONFIG);
-
     if (isFile(bestConfig)) {
         return bestConfig;
     }
@@ -98,20 +98,77 @@ function normalizeRootDir(options) {
     return options;
 }
 
+function buildTestPathPattern(argsCLI) {
+    const patterns = [];
+    if (argsCLI._) {
+        patterns.push(...argsCLI._);
+    }
+
+    if (argsCLI.testPathPattern) {
+        patterns.push(...argsCLI.testPathPattern);
+    }
+
+    const testPathPattern = patterns.map(replacePathSepForRegex).join('|');
+    return testPathPattern;
+}
+
 function normalize(options, argsCLI) {
     options = normalizeRootDir(setFromArgs(options, argsCLI));
     const newOptions = Object.assign({}, DEFAULT_CONFIG);
 
-    return options;
+    Object.keys(options).reduce((newOpts, key) => {
+        let value = newOpts[key];
+        switch (key) {
+            default: value = options[key];
+        }
+        newOptions[key] = value;
+        return newOpts;
+    }, newOptions);
+
+    newOptions.nonFlagArgs = argsCLI._;
+    newOptions.testPathPattern = buildTestPathPattern(argsCLI);
+    return newOptions;
 }
 
 function _getConfigs(options) {
     return {
         globalConfig: Object.freeze({
-
+            detectLeaks: options.detectLeaks,
+            outputFile: options.outputFile,
+            projects: options.projects,
+            rootDir: options.rootDir,
+            testNamePattern: options.testNamePattern,
+            testPathPattern: options.testPathPattern,
+            verbose: options.verbose,
         }),
         projectConfig: Object.freeze({
-
+            cache: options.cache,
+            cacheDirectory: options.cacheDirectory,
+            cwd: options.cwd,
+            detectLeaks: options.detectLeaks,
+            displayName: options.displayName,
+            globals: options.globals,
+            moduleDirectories: options.moduleDirectories,
+            moduleFileExtensions: options.moduleFileExtensions,
+            moduleLoader: options.moduleLoader,
+            moduleNameMapper: options.moduleNameMapper,
+            modulePathIgnorePatterns: options.modulePathIgnorePatterns,
+            modulePaths: options.modulePaths,
+            name: options.name,
+            resolver: options.resolver,
+            rootDir: options.rootDir,
+            roots: options.roots,
+            runner: options.runner,
+            testEnvironment: options.testEnvironment,
+            testEnvironmentOptions: options.testEnvironmentOptions,
+            testLocationInResults: options.testLocationInResults,
+            testMatch: options.testMatch,
+            testPathIgnorePatterns: options.testPathIgnorePatterns,
+            testRegex: options.testRegex,
+            testRunner: options.testRunner,
+            testURL: options.testURL,
+            transform: options.transform,
+            transformIgnorePatterns: options.transformIgnorePatterns,
         })
     };
 }
@@ -122,6 +179,7 @@ export function readConfig(argsCLI, packageRoot) {
     const rawOptions = readConfigAndSetRootDir(configPath);
     const options = normalize(rawOptions, argsCLI);
     const { globalConfig, projectConfig } = _getConfigs(options);
+
     return { globalConfig, projectConfig };
 }
 

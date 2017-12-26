@@ -2,6 +2,7 @@ import * as args from './args';
 import yargs from 'yargs';
 import rimraf from 'rimraf';
 import { getConfigs } from "best-config";
+import { runBest } from "../run_best";
 
 function buildArgs(maybeArgv) {
     const argsv = yargs(maybeArgv || process.argv.slice(2))
@@ -35,6 +36,7 @@ export async function run(maybeArgv, project) {
         const { results, globalConfig } = await runCLI(argsCLI, projects);
         console.log('FINISH >>', results, globalConfig);
     } catch (error) {
+        console.log(error);
         process.exit(1);
         throw error;
     }
@@ -42,7 +44,7 @@ export async function run(maybeArgv, project) {
 
 export async function runCLI(argsCLI, projects) {
     const outputStream = process.stdout;
-    const { globalConfig, configs, hasDeprecationWarnings } = getConfigs(projects, argsCLI, outputStream);
+    const { globalConfig, configs, /*hasDeprecationWarnings*/ } = getConfigs(projects, argsCLI, outputStream);
     let results;
 
     if (argsCLI.clearCache) {
@@ -53,22 +55,11 @@ export async function runCLI(argsCLI, projects) {
         process.exit(0);
     }
 
-    await _run(
-        globalConfig,
-        configs,
-        hasDeprecationWarnings,
-        outputStream,
-        (r) => (results = r),
-    );
+    await runBest(globalConfig, configs, outputStream, (r) => (results = r));
 
     if (!results) {
         throw new Error('AggregatedResult must be present after test run is complete');
     }
 
     return Promise.resolve({ globalConfig, results });
-}
-
-
-function _run(globalConfig, configs, hasDeprecationWarnings, outputStream, onComplete) {
-
 }

@@ -1,4 +1,7 @@
 module.exports = {
     // rootDir: undefined,
-    moduleFileExtensions: ['js']
+    //moduleFileExtensions: ['js']
+    resolver: {
+        "rollup-plugin-lwc-compiler": {}
+    }
 };
