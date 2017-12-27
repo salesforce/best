@@ -1,16 +1,16 @@
-import { dispatch, mergeState, getStateRootNode } from './state';
-import { nextTick, time } from "./utils/index";
-import { HOOKS, RUN_BENCHMARK } from "./constants";
+import { mergeState, getStateRootNode } from './state';
 import { runBenchmark } from "./runner";
 
 export * from "./primitives";
 
-const initializeBenchmark = () => {
-    const benchmark_config = window.BENCHMARK_CONFIG;
-    mergeState(benchmark_config);
-    runBenchmark(getStateRootNode());
-};
+const initializeBenchmarkConfig = () => mergeState(window.BENCHMARK_CONFIG);
+const startBenchmark = () => runBenchmark(getStateRootNode());
 
-window.addEventListener('load', initializeBenchmark);
-
-
+window.addEventListener('load', async () => {
+    const config = initializeBenchmarkConfig();
+    if (config.autoStart) {
+        await startBenchmark();
+    } else {
+        window.startBenchmark = startBenchmark;
+    }
+});
