@@ -1,10 +1,7 @@
 {
-  "name": "best-build",
+  "name": "best-runtime",
   "version": "0.0.1",
-  "description": "Best build",
-  "scripts": {
-    "lint": "eslint src/"
-  },
+  "description": "Best Runtime",
   "keywords": [
     "Best",
     "LWC"
@@ -12,6 +9,6 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
-    "rollup": "~0.53.0"
+    "chalk": "~2.3.0"
   }
 }

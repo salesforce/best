@@ -6,10 +6,8 @@
     "Best",
     "LWC"
   ],
-  "publishConfig": {
-    "registry": "https://nexus.soma.salesforce.com/nexus/content/repositories/npmjs-internal/"
-  },
   "main": "build/index.js",
+  "module": "src/index.js",
   "dependencies": {
     "chalk": "~2.3.0"
   }

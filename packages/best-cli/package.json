@@ -12,9 +12,6 @@
   "bin": {
     "best": "./bin/best.js"
   },
-  "publishConfig": {
-    "registry": "https://nexus.soma.salesforce.com/nexus/content/repositories/npmjs-internal/"
-  },
   "dependencies": {
     "chalk": "~2.3.0",
     "yargs": "~10.0.3",

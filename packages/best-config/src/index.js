@@ -12,7 +12,6 @@ const isFile = filePath => fs.existsSync(filePath) && !fs.lstatSync(filePath).is
 function readConfigAndSetRootDir(configPath) {
     const isJSON = configPath.endsWith('.json');
     let configObject;
-
     try {
         configObject = require(configPath);
     } catch (error) {
@@ -24,7 +23,7 @@ function readConfigAndSetRootDir(configPath) {
     }
 
     if (configPath.endsWith(PACKAGE_JSON)) {
-        configObject = configObject.jest || {};
+        configObject = configObject.best || {};
     }
 
     if (configObject.rootDir) {

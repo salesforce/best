@@ -17,6 +17,8 @@ export async function runBest(globalConfig, configs, hasDeprecationWarnings, out
         })
     );
 
-    const built = await Promise.all(matchGroups.map(async ({ matches, config }) => buildBenchmarks(matches, config, globalConfig)));
+    const built = await Promise.all(
+        matchGroups.map(async ({ matches, config }) => buildBenchmarks(matches, config, globalConfig))
+    );
 
 }

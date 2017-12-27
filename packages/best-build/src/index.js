@@ -1,6 +1,6 @@
 import { rollup } from "rollup";
+import path from "path";
 import benchmarkRollup from "./rollup-plugin-benchmark-import";
-import { resolve } from "url";
 
 const BASE_ROLLUP_INPUT = {};
 const BASE_ROLLUP_OUTPUT = {
@@ -14,7 +14,8 @@ function addResolverPlugins({ plugins }) {
     });
 }
 
-export async function buildBenmark(entry, proyectConfig, globalConfig) {
+export async function buildBenchmark(entry, proyectConfig, globalConfig) {
+    const fileName = path.basename(entry);
     const inputOptions = Object.assign({}, BASE_ROLLUP_INPUT, {
         input: entry,
         plugins: [
@@ -25,12 +26,15 @@ export async function buildBenmark(entry, proyectConfig, globalConfig) {
 
     const bundle = await rollup(inputOptions);
 
-    const outputOptions = Object.assign({}, BASE_ROLLUP_OUTPUT, {});
-    const { code, map } = await bundle.generate(outputOptions);
+    const outputOptions = Object.assign({}, BASE_ROLLUP_OUTPUT, {
+        file: path.join(proyectConfig.cacheDirectory, fileName)
+    });
 
-    console.log(code);
+    // const { code, map } = await bundle.generate(outputOptions);
+    console.log('>> Creating benchmark: ', outputOptions.file);
+    return bundle.write(outputOptions);
 }
 
 export async function buildBenchmarks(tests, proyectConfig, globalConfig) {
-    return buildBenmark(tests[0], proyectConfig, globalConfig);
+    return Promise.all(tests.map(test => buildBenchmark(test, proyectConfig, globalConfig)));
 }
