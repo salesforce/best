@@ -8,6 +8,10 @@ const BASE_ROLLUP_OUTPUT = {
 };
 
 function addResolverPlugins({ plugins }) {
+    if (!plugins) {
+        return [];
+    }
+
     const pluginNames = Object.keys(plugins);
     return pluginNames.map((pluginName) => {
         return require(pluginName)(plugins[pluginName]);
