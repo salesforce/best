@@ -7,12 +7,11 @@ const BASE_ROLLUP_OUTPUT = {
     format: 'iife'
 };
 
-function addResolverPlugins({ resolver }) {
-    const keys = Object.keys(resolver);
-    const plugins = keys.map((plugin) => {
-        return require(plugin)(resolver[plugin]);
+function addResolverPlugins({ plugins }) {
+    const pluginNames = Object.keys(plugins);
+    return pluginNames.map((pluginName) => {
+        return require(pluginName)(plugins[pluginName]);
     });
-    return plugins;
 }
 
 export async function buildBenmark(entry, proyectConfig, globalConfig) {

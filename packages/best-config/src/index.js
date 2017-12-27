@@ -112,6 +112,34 @@ function buildTestPathPattern(argsCLI) {
     return testPathPattern;
 }
 
+function normalizeUnmockedModulePathPatterns(options, key) {
+    return options[key].map(pattern =>
+        replacePathSepForRegex(pattern.replace(/<rootDir>/g, options.rootDir)),
+    );
+}
+
+function normalizeObjectPathPatterns(options, { rootDir }) {
+    return Object.keys(options).reduce((m, key) => {
+        const value = options[key];
+        if (typeof value === 'string') {
+            m[key] = value.replace(/<rootDir>/g, rootDir);
+        } else {
+            m[key] = value;
+        }
+        return m;
+    }, {});
+}
+
+function normalizePlugins(plugins, globalOptions) {
+    return Object.keys(plugins).reduce((m, plugin) => {
+        const pluginOptions = plugins[plugin];
+        if (pluginOptions) {
+            m[plugin] = normalizeObjectPathPatterns(pluginOptions, globalOptions);
+        }
+        return m;
+    }, {});
+}
+
 function normalize(options, argsCLI) {
     options = normalizeRootDir(setFromArgs(options, argsCLI));
     const newOptions = Object.assign({}, DEFAULT_CONFIG);
@@ -119,6 +147,9 @@ function normalize(options, argsCLI) {
     Object.keys(options).reduce((newOpts, key) => {
         let value = newOpts[key];
         switch (key) {
+            case 'plugins':
+                value = normalizePlugins(options[key], options);
+                break;
             default: value = options[key];
         }
         newOptions[key] = value;
@@ -155,7 +186,7 @@ function _getConfigs(options) {
             modulePathIgnorePatterns: options.modulePathIgnorePatterns,
             modulePaths: options.modulePaths,
             name: options.name,
-            resolver: options.resolver,
+            plugins: options.plugins,
             rootDir: options.rootDir,
             roots: options.roots,
             runner: options.runner,
