@@ -21,10 +21,7 @@ export const getState = () => STATE;
 export const getStateRootNode = () => STATE.rootDescribeBlock;
 
 export const mergeState = (config) => {
-    STATE = {
-        ...STATE,
-        ...config
-    };
+    STATE = Object.assign({}, STATE, config);
 };
 
 export function dispatch(event) {
