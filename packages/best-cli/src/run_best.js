@@ -1,5 +1,6 @@
 import globby from "globby";
 import { buildBenchmarks } from "best-build";
+import { runBenchmarks, runBenchmark } from "best-runner";
 import path from "path";
 
 async function getBenchmarkPaths(globalConfig, config) {
@@ -9,16 +10,36 @@ async function getBenchmarkPaths(globalConfig, config) {
     return results.map(p => path.resolve(rootDir, p));
 }
 
-export async function runBest(globalConfig, configs, hasDeprecationWarnings, outputStream, onComplete) {
-    const matchGroups = await Promise.all(
+async function getBenchmarkTests(configs, globalConfig) {
+    return Promise.all(
         configs.map(async config => {
             const matches = await getBenchmarkPaths(globalConfig, config);
             return { config, matches };
         })
     );
+}
 
-    const built = await Promise.all(
-        matchGroups.map(async ({ matches, config }) => buildBenchmarks(matches, config, globalConfig))
+async function buildBundleBenchmarks(benchmarksTests, globalConfig) {
+    const bundle = await Promise.all(
+        benchmarksTests.map(async ({ matches, config }) =>
+            buildBenchmarks(matches, config, globalConfig))
     );
+    // Flatten the per-project benchmarks tests
+    return bundle.reduce((benchmarks, bundle) => {
+        benchmarks.push(...bundle);
+        return benchmarks;
+    }, []);
+}
 
+async function runBundleBenchmarks(benchmarksBuilds, globalConfig) {
+    const results = runBenchmarks(benchmarksBuilds);
+    return results;
+}
+
+export async function runBest(globalConfig, configs, hasDeprecationWarnings, outputStream) {
+    const benchmarksTests = await getBenchmarkTests(configs, globalConfig);
+    const benchmarksBuilds = await buildBundleBenchmarks(benchmarksTests, globalConfig);
+    const resultsBenchmarks = await runBundleBenchmarks(benchmarksBuilds, globalConfig);
+
+    return resultsBenchmarks;
 }

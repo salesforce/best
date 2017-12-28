@@ -34,7 +34,9 @@ export async function run(maybeArgv, project) {
         const argsCLI = buildArgs(maybeArgv);
         const projects = getProjectListFromCLIArgs(argsCLI, project);
         const { results, globalConfig } = await runCLI(argsCLI, projects);
-        console.log('FINISH >>', results, globalConfig);
+
+        console.log('FINISH >>', results.length);
+
     } catch (error) {
         console.log(error);
         process.exit(1);
@@ -45,7 +47,6 @@ export async function run(maybeArgv, project) {
 export async function runCLI(argsCLI, projects) {
     const outputStream = process.stdout;
     const { globalConfig, configs, /*hasDeprecationWarnings*/ } = getConfigs(projects, argsCLI, outputStream);
-    let results;
 
     if (argsCLI.clearCache) {
         configs.forEach(config => {
@@ -55,7 +56,7 @@ export async function runCLI(argsCLI, projects) {
         process.exit(0);
     }
 
-    await runBest(globalConfig, configs, outputStream, (r) => (results = r));
+    const results = await runBest(globalConfig, configs, outputStream);
 
     if (!results) {
         throw new Error('AggregatedResult must be present after test run is complete');

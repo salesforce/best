@@ -1,0 +1,15 @@
+{
+  "name": "best-runner",
+  "version": "0.0.1",
+  "description": "Best Runner",
+  "keywords": [
+    "Best",
+    "LWC"
+  ],
+  "main": "build/index.js",
+  "module": "src/index.js",
+  "dependencies": {
+    "chalk": "~2.3.0",
+    "puppeteer" : "0.13.0"
+  }
+}

@@ -1,14 +1,24 @@
-import { nextTick, time } from "./utils/index";
+import { raf, nextTick, time } from "./utils/index";
 import { HOOKS, RUN_BENCHMARK } from "./constants";
 
 const _initHandlers = () => Object.values(HOOKS).reduce((o, k) => (o[k] = [], o), {});
 const _initHooks = (hooks) => hooks.reduce((m, { type, fn }) => (m[type].push(fn), m), _initHandlers());
 
 const executeBenchmark = async (benchmarkNode) => {
-    const { fn } = benchmarkNode;
-    const startTime = performance.now();
-    await fn();
-    benchmarkNode.duration = performance.now();
+    return new Promise((resolve, reject) => {
+        raf(async () => {
+            const startTime = performance.now();
+            try {
+                await benchmarkNode.fn();
+                const endTime = performance.now();
+                benchmarkNode.duration = endTime - startTime;
+                resolve();
+            } catch (e) {
+                benchmarkNode.duration = -1;
+                reject();
+            }
+        });
+    });
 };
 
 export const runBenchmark = async (node) => {
