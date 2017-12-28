@@ -1,6 +1,6 @@
 import globby from "globby";
 import { buildBenchmarks } from "best-build";
-import { runBenchmarks, runBenchmark } from "best-runner";
+import { runBenchmarks } from "best-runner";
 import path from "path";
 
 async function getBenchmarkPaths(globalConfig, config) {
@@ -32,7 +32,7 @@ async function buildBundleBenchmarks(benchmarksTests, globalConfig) {
 }
 
 async function runBundleBenchmarks(benchmarksBuilds, globalConfig) {
-    const results = runBenchmarks(benchmarksBuilds);
+    const results = runBenchmarks(benchmarksBuilds, globalConfig);
     return results;
 }
 

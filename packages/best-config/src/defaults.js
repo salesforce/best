@@ -19,8 +19,8 @@ export default ({
     moduleFileExtensions: ['js'],
     moduleNameMapper: {},
     modulePathIgnorePatterns: [],
-    runner: 'best-runner',
-    testEnvironment: 'best-headless',
-    testEnvironmentOptions: {},
+    benchmarkRunner: 'best-runner-headless',
+    benchmarkEnvironment: 'development',
+    benchmarkEnvironmentOptions: {},
     testMatch: ['**/__benchmarks__/**/*.js', '**/?(*.)(spec|test).js'],
 });

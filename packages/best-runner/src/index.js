@@ -1,41 +1,18 @@
-import puppeteer from "puppeteer";
 
-async function testPupeteeer() {
-    return puppeteer.launch({ headless: false }).then(async browser => {
-        const page = await browser.newPage();
-        await page.goto('file:///private/var/folders/__/qsv47gzn13l61ch218rrrvhj9_z7ch/T/best_mxxdw0/simple-item.benchmark/simple-item.benchmark.html');
-        await page.evaluate(async () => {
-            return startBenchmark();
-        });
-        await page.evaluate(() => {
-            return new Promise((resolve) => {
-                setTimeout(resolve, 1000);
-            });
-        });
-
-        await page.reload();
-
-        await page.evaluate(() => {
-            return new Promise((resolve) => {
-                setTimeout(resolve, 1000);
-            });
-        });
-
-        await browser.close();
-    });
-}
-
-export async function runBenchmarks(bundles) {
+export async function runBenchmarks(benchmarksBuilds, globalConfig) {
     const results = [];
-    for (const benchmark of bundles) {
-        const result = await runBenchmark(benchmark);
+    for (const benchmark of benchmarksBuilds) {
+        const result = await runBenchmark(benchmark, globalConfig);
         results.push({ benchmark, result });
     }
 
     return results;
 }
 
-export async function runBenchmark(benchmarkConfig) {
-    //await testPupeteeer();
+export async function runBenchmark({ benchmarkEntry, proyectConfig, globalConfig }) {
+    const { benchmarkRunner } = proyectConfig;
+    const runner = require(benchmarkRunner);
+
+    await runner.run(benchmarkEntry, proyectConfig, globalConfig);
     return { wip: true };
 }

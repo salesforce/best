@@ -23,7 +23,7 @@ function addResolverPlugins({ plugins }) {
 export async function buildBenchmark(entry, proyectConfig, globalConfig) {
     const ext = path.extname(entry);
     const benchmarkName = path.basename(entry, ext);
-    const tmpFolder = path.join(proyectConfig.cacheDirectory, benchmarkName);
+    const benchmarkFolder = path.join(proyectConfig.cacheDirectory, benchmarkName);
     const benchmarkJSFileName = benchmarkName + ext;
 
     const inputOptions = Object.assign({}, BASE_ROLLUP_INPUT, {
@@ -37,20 +37,22 @@ export async function buildBenchmark(entry, proyectConfig, globalConfig) {
     const bundle = await rollup(inputOptions);
 
     const outputOptions = Object.assign({}, BASE_ROLLUP_OUTPUT, {
-        file: path.join(tmpFolder, benchmarkJSFileName)
+        file: path.join(benchmarkFolder, benchmarkJSFileName)
     });
 
     // const { code, map } = await bundle.generate(outputOptions);
-    console.log(`- Creating benchmark: ${benchmarkName} \n  >> ${tmpFolder}`);
+    const htmlPath = path.resolve(path.join(benchmarkFolder, benchmarkName + '.html'));
+    console.log(`- Creating benchmark: ${benchmarkName} \n  >> ${htmlPath}`);
     await bundle.write(outputOptions);
 
     const html = generateDefaultHTML({ benchmarkJS : `./${benchmarkJSFileName}`, benchmarkName });
 
-    fs.writeFileSync(path.resolve(path.join(tmpFolder, benchmarkName + '.html')), html, 'utf8');
+    fs.writeFileSync(htmlPath, html, 'utf8');
 
     return {
-        benchmarkName: benchmarkName,
-        benchmarkFolder : tmpFolder,
+        benchmarkName,
+        benchmarkFolder,
+        benchmarkEntry: htmlPath,
         proyectConfig,
         globalConfig
     };

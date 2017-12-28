@@ -1,5 +1,5 @@
 export default Object.freeze({
-    clientIterations: true,
+    clientIterations: false,
     useMacroTaskAfterBenchmark: true,
     maxDuration: 1000 * 20, // 20 seconds
     minSampleCount: 30,

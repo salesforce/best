@@ -3,5 +3,10 @@
         <p>
             Simple item {benchmark}
         </p>
+        <ul>
+            <template for:each={items} for:item="item">
+                <li><span>{item}</span></li>
+            </template>
+        </ul>
     </div>
 </template>
