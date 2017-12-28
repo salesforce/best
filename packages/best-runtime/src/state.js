@@ -1,32 +1,43 @@
 import primitivesHandler from "./primitives-handler";
 import { makeDescribe } from "./utils/primitives-nodes";
+import DEFAULT_STATE from "./utils/default-state";
 
 const eventHandlers = [
     primitivesHandler,
     //formatNodeAssertErrors,
-  ];
+];
 
-const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
+const _benchmarkTitle = () => ((typeof BEST_CONFIG !== 'undefined') ? BEST_CONFIG.benchmarkName : 'ROOT_DESCRIBE_BLOCK');
+const ROOT_DESCRIBE_BLOCK_NAME = _benchmarkTitle();
 const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
 
-const INITIAL_STATE = {
+const STATE = Object.assign({}, DEFAULT_STATE, {
     currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
-    hasFocusedTests: false,
-    rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
-    testTimeout: 5000,
+    rootDescribeBlock: ROOT_DESCRIBE_BLOCK
+});
+
+const _getInternalState = () => STATE;
+const _cloneState = (state) => {
+    const stateClone = Object.assign({}, state);
+
+    if (stateClone.children) {
+        stateClone.children = stateClone.children.map(c => _cloneState(c));
+    }
+
+    return stateClone;
 };
 
-let STATE = INITIAL_STATE;
-export const getState = () => STATE;
-export const getStateRootNode = () => STATE.rootDescribeBlock;
+export const getBenckmarkState = () => _cloneState(STATE);
+export const getBenchmarkRootNode = () => getBenckmarkState().rootDescribeBlock;
 
-export const mergeState = (config) => {
-    STATE = Object.assign({}, STATE, config);
-    return STATE;
+export const initializeBenchmarkConfig = (benchmarkConfig) => {
+    // TODO: Validate config schema
+    return Object.assign(STATE, benchmarkConfig);
 };
 
+// This is meant to only be used by primitives
 export function dispatch(event) {
     for (const handler of eventHandlers) {
-        handler(event, getState());
+        handler(event, _getInternalState());
     }
 }

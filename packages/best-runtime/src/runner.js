@@ -1,66 +1,42 @@
-import { raf, nextTick, time } from "./utils/index";
-import { HOOKS, RUN_BENCHMARK } from "./constants";
+import { getBenchmarkRootNode } from './state';
+import { runBenchmarkIteration } from "./run_iteration";
 
-const _initHandlers = () => Object.values(HOOKS).reduce((o, k) => (o[k] = [], o), {});
-const _initHooks = (hooks) => hooks.reduce((m, { type, fn }) => (m[type].push(fn), m), _initHandlers());
-
-const executeBenchmark = async (benchmarkNode) => {
-    return new Promise((resolve, reject) => {
-        raf(async () => {
-            const startTime = performance.now();
-            try {
-                await benchmarkNode.fn();
-                const endTime = performance.now();
-                benchmarkNode.duration = endTime - startTime;
-                resolve();
-            } catch (e) {
-                benchmarkNode.duration = -1;
-                reject();
-            }
-        });
-    });
-};
-
-export const runBenchmark = async (node) => {
-    const { hooks, children, run } = node;
-    const hookHandlers = _initHooks(hooks);
-
-    // -- Before All ----
-    for (const hook of hookHandlers[HOOKS.BEFORE_ALL]) {
-        await hook();
-    }
-
-    // -- For each children ----
-    for (const child of children) {
-
-        // -- Before Each ----
-        for (const hook of hookHandlers[HOOKS.BEFORE_EACH]) {
-            await hook();
-        }
-
-        // -- Traverse Child ----
-        await runBenchmark(child);
-
-        // -- After Each Child ----
-        for (const hook of hookHandlers[HOOKS.AFTER_EACH]) {
-            await hook();
-        }
-    }
+function collectResults(node) {
+    const { name, duration, startedAt, run } = node;
+    const resultNode = { name, duration, startedAt };
 
     if (run) {
-        for (const hook of hookHandlers[HOOKS.BEFORE]) {
-            await hook();
-        }
-
-        await executeBenchmark(run);
-
-        for (const hook of hookHandlers[HOOKS.AFTER]) {
-            await hook();
-        }
+        resultNode.runDuration = run.runDuration;
+    } else {
+        resultNode.benchmarks = node.children.map((c) => collectResults(c));
     }
 
-    // -- After All ----
-    for (const hook of hookHandlers[HOOKS.AFTER_ALL]) {
-        await hook();
+    return resultNode;
+}
+
+async function runIterations(config) {
+    if (config.executedTime < config.maxDuration ||
+        config.executedIterations < config.minSampleCount
+    ) {
+        const useMacroTaskAfterBenchmark = config;
+        const benchmark = await runBenchmarkIteration(getBenchmarkRootNode(), { useMacroTaskAfterBenchmark });
+        const results = collectResults(benchmark);
+        config.collectedResults.push(results);
+        config.executedTime += benchmark.duration;
+        config.executedIterations += 1;
+        return runIterations(config);
     }
+
+    return config;
+}
+
+export async function runBenchmark(benchmarkConfig) {
+    const { clientIterations } = benchmarkConfig;
+    if (!clientIterations) {
+        benchmarkConfig.maxDuration = 1;
+        benchmarkConfig.minSampleCount = 1;
+    }
+
+    benchmarkConfig.collectedResults = [];
+    return runIterations(benchmarkConfig);
 }

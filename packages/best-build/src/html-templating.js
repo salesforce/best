@@ -8,6 +8,7 @@ const DEFAULT_HTML =
     <title>{{benchmarkName}}</title>
   </head>
   <body>
+    <script>window.BEST_CONFIG = { benchmarkName: "{{benchmarkName}}" }</script>
     <script src="{{benchmarkJS}}" type="text/javascript"></script>
   </body>
 </html>

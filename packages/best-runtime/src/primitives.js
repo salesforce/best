@@ -1,4 +1,4 @@
-import { dispatch, mergeState, getStateRootNode } from './state';
+import { dispatch } from './state';
 import { HOOKS, RUN_BENCHMARK, MODES } from "./constants";
 
 const describe = (blockName, blockFn) => _dispatchDescribe(blockName, blockFn);

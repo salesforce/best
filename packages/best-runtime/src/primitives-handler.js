@@ -41,9 +41,8 @@ const handler = (event, state) => {
 
         case 'run_benchmark': {
             const { currentDescribeBlock } = state;
-            const { fn, mode, benchmarkName: name } = event;
-            const benchmark = makeBenchmarkRun(fn, mode, name, currentDescribeBlock);
-            benchmark.mode === 'only' && (state.hasFocusedTests = true);
+            const { fn } = event;
+            const benchmark = makeBenchmarkRun(fn, currentDescribeBlock);
             currentDescribeBlock.run = benchmark;
             break;
         }

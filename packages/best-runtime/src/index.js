@@ -1,16 +1,21 @@
-import { mergeState, getStateRootNode } from './state';
+import { initializeBenchmarkConfig, getBenckmarkState } from './state';
 import { runBenchmark as _runBenchmark } from "./runner";
 
 export * from "./primitives";
 
-const initializeBenchmarkConfig = () => mergeState(window.BEST_CONFIG);
-const runBenchmark = async() => {
-    const state = getStateRootNode();
-    await _runBenchmark(state);
-    return state;
-}
+const setupBenchmark = (config) => initializeBenchmarkConfig(config);
+const runBenchmark = async (config) => {
+    if (config) {
+        setupBenchmark(config);
+    }
+
+    const benchmarkState = getBenckmarkState();
+    await _runBenchmark(benchmarkState);
+    return benchmarkState.collectedResults;
+};
 
 const BEST = {
+    setupBenchmark,
     runBenchmark,
 };
 
@@ -20,7 +25,7 @@ window.process = { env: { NODE_ENV : 'development' } };
 
 window.BEST = BEST;
 window.addEventListener('load', async () => {
-    const config = initializeBenchmarkConfig();
+    const config = setupBenchmark(window.BEST_CONFIG);
     if (config.autoStart) {
         await runBenchmark();
     }

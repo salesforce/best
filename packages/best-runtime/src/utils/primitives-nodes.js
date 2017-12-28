@@ -1,17 +1,18 @@
+import { RUN_BENCHMARK } from "../constants";
 export const makeDescribe = (name, parent, mode) => {
     if (parent && !mode) {
-      // If not set explicitly, inherit from the parent describe.
-      mode = parent.mode;
+        // If not set explicitly, inherit from the parent describe.
+        mode = parent.mode;
     }
 
     return {
-      children: [],
-      hooks: [],
-      mode,
-      name,
-      parent
+        children: [],
+        hooks: [],
+        mode,
+        name,
+        parent
     };
-  };
+};
 
 
 export const makeBenchmark = (name, parent, mode) => {
@@ -21,7 +22,8 @@ export const makeBenchmark = (name, parent, mode) => {
     }
 
     return {
-        duration: null,
+        duration: 0,
+        runDuration: 0,
         children: [],
         errors: [],
         hooks: [],
@@ -34,22 +36,12 @@ export const makeBenchmark = (name, parent, mode) => {
     };
 };
 
-
-
-export const makeBenchmarkRun = (fn, mode, name, parent) => {
-    if (!fn) {
-      mode = 'skip'; // skip test if no fn passed
-    } else if (!mode) {
-      // if not set explicitly, inherit from its parent describe
-      mode = parent.mode;
-    }
-
+export const makeBenchmarkRun = (fn, parent) => {
     return {
         duration: null,
         errors: [],
         fn,
-        mode,
-        name,
+        name: RUN_BENCHMARK,
         parent,
         startedAt: null,
         status: null,
