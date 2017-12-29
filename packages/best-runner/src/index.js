@@ -1,9 +1,9 @@
 
 export async function runBenchmarks(benchmarksBuilds, globalConfig) {
     const results = [];
-    for (const benchmark of benchmarksBuilds) {
-        const result = await runBenchmark(benchmark, globalConfig);
-        results.push({ benchmark, result });
+    for (const benchmarkConfig of benchmarksBuilds) {
+        const benchmarkResults = await runBenchmark(benchmarkConfig, globalConfig);
+        results.push(benchmarkResults);
     }
 
     return results;
@@ -12,6 +12,5 @@ export async function runBenchmarks(benchmarksBuilds, globalConfig) {
 export async function runBenchmark({ benchmarkEntry, proyectConfig, globalConfig }) {
     const { benchmarkRunner } = proyectConfig;
     const runner = require(benchmarkRunner);
-
     return runner.run(benchmarkEntry, proyectConfig, globalConfig);
 }

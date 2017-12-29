@@ -32,14 +32,12 @@ async function buildBundleBenchmarks(benchmarksTests, globalConfig) {
 }
 
 async function runBundleBenchmarks(benchmarksBuilds, globalConfig) {
-    const results = runBenchmarks(benchmarksBuilds, globalConfig);
-    return results;
+    return runBenchmarks(benchmarksBuilds, globalConfig);
 }
 
 export async function runBest(globalConfig, configs, hasDeprecationWarnings, outputStream) {
     const benchmarksTests = await getBenchmarkTests(configs, globalConfig);
     const benchmarksBuilds = await buildBundleBenchmarks(benchmarksTests, globalConfig);
-    const resultsBenchmarks = await runBundleBenchmarks(benchmarksBuilds, globalConfig);
-
-    return resultsBenchmarks;
+    const benchmarkBundleResults = await runBundleBenchmarks(benchmarksBuilds, globalConfig);
+    return benchmarkBundleResults;
 }
