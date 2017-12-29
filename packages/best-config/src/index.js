@@ -79,9 +79,13 @@ function setFromArgs(initialOptions, argsCLI) {
                 case 'env':
                     options.testEnvironment = argsCLI[key];
                     break;
+                case 'iterations':
+                    options.benchmarkIterations = argsCLI[key];
+                    break;
 
-                default: options[key] = argsCLI[key];
+                default: break;
             }
+            return options;
         }, {});
 
     return Object.assign({}, initialOptions, argvToOptions);
@@ -142,7 +146,6 @@ function normalizePlugins(plugins, globalOptions) {
 function normalize(options, argsCLI) {
     options = normalizeRootDir(setFromArgs(options, argsCLI));
     const newOptions = Object.assign({}, DEFAULT_CONFIG);
-
     Object.keys(options).reduce((newOpts, key) => {
         let value = newOpts[key];
         switch (key) {
@@ -188,9 +191,16 @@ function _getConfigs(options) {
             plugins: options.plugins,
             rootDir: options.rootDir,
             roots: options.roots,
+
             benchmarkRunner: options.benchmarkRunner,
             benchmarkEnvironment: options.benchmarkEnvironment,
             benchmarkEnvironmentOptions: options.benchmarkEnvironmentOptions,
+            benchmarkMaxDuration: options.benchmarkMaxDuration,
+            benchmarkMinIterations: options.benchmarkMinIterations,
+            benchmarkIterations: options.benchmarkIterations,
+            benchmarkOnClient: options.benchmarkOnClient,
+            benchmarkOutput: options.benchmarkOutput,
+
             testMatch: options.testMatch,
             testPathIgnorePatterns: options.testPathIgnorePatterns,
             testRegex: options.testRegex,

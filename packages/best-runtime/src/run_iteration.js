@@ -3,8 +3,11 @@ import { HOOKS } from "./constants";
 
 const _initHandlers = () => Object.values(HOOKS).reduce((o, k) => (o[k] = [], o), {});
 const _initHooks = (hooks) => hooks.reduce((m, { type, fn }) => (m[type].push(fn), m), _initHandlers());
+const _forceGC = () => (window.gc && window.gc());
 
 const executeBenchmark = async (benchmarkNode, { useMacroTaskAfterBenchmark }) => {
+    // Force garbage collection before executing an iteration (--js-flags=--expose-gc)
+    _forceGC();
     return new Promise((resolve, reject) => {
         raf(async () => {
             benchmarkNode.startedAt = time();

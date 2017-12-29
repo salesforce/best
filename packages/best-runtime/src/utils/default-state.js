@@ -1,5 +1,5 @@
 export default Object.freeze({
-    clientIterations: false,
+    iterateOnClient: undefined,
     useMacroTaskAfterBenchmark: true,
     maxDuration: 1000 * 20, // 20 seconds
     minSampleCount: 30,
@@ -7,7 +7,7 @@ export default Object.freeze({
 
     // Internals
     hasFocusedTests: false,
-    collectedResults: null,
+    results: null,
 
     // Runtime
     executedTime: 0,

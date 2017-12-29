@@ -4,7 +4,7 @@ import path from 'path';
 const cacheDirectory = (() => {
     const { getuid } = process;
     if (getuid == null) {
-        return path.join(os.tmpdir(), 'jest');
+        return path.join(os.tmpdir(), 'best');
     }
     // On some platforms tmpdir() is `/tmp`, causing conflicts between different
     // users and permission issues. Adding an additional subdivision by UID can
@@ -19,8 +19,15 @@ export default ({
     moduleFileExtensions: ['js'],
     moduleNameMapper: {},
     modulePathIgnorePatterns: [],
+
     benchmarkRunner: 'best-runner-headless',
-    benchmarkEnvironment: 'development',
+    benchmarkEnvironment: 'production',
+    benchmarkMaxDuration: 1000 * 10, // 10s
+    benchmarkMinIterations: 30,
+    benchmarkOnClient: false,
+    benchmarkIterations: undefined,
+    benchmarkOutput: '<rootDir>/benchmark_results',
     benchmarkEnvironmentOptions: {},
+
     testMatch: ['**/__benchmarks__/**/*.js', '**/?(*.)(spec|test).js'],
 });

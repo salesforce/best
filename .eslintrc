@@ -10,7 +10,8 @@
         "raptor/no-inline-disable": 0,
         "eslint-comments/no-use": 0,
         "compat/compat": 0,
-        "no-await-in-loop": 0
+        "no-await-in-loop": 0,
+        "lwc/no-inline-disable" : 0
     },
     "globals": {
         "benchmark": true,

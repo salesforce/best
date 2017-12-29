@@ -1,5 +1,6 @@
 import { getBenchmarkRootNode } from './state';
 import { runBenchmarkIteration } from "./run_iteration";
+import { normalizeResults } from "./results";
 
 function collectResults(node) {
     const { name, duration, startedAt, run } = node;
@@ -18,25 +19,32 @@ async function runIterations(config) {
     if (config.executedTime < config.maxDuration ||
         config.executedIterations < config.minSampleCount
     ) {
-        const useMacroTaskAfterBenchmark = config;
+        const { useMacroTaskAfterBenchmark } = config;
         const benchmark = await runBenchmarkIteration(getBenchmarkRootNode(), { useMacroTaskAfterBenchmark });
         const results = collectResults(benchmark);
-        config.collectedResults.push(results);
+        config.results.push(results);
         config.executedTime += benchmark.duration;
         config.executedIterations += 1;
+
+        if (!config.iterateOnClient) {
+            return config;
+        }
+
         return runIterations(config);
     }
 
     return config;
 }
 
-export async function runBenchmark(benchmarkConfig) {
-    const { clientIterations } = benchmarkConfig;
-    if (!clientIterations) {
-        benchmarkConfig.maxDuration = 1;
-        benchmarkConfig.minSampleCount = 1;
+export async function runBenchmark(benchmarkState) {
+    const { iterations, iterateOnClient } = benchmarkState;
+    if (iterations) {
+        benchmarkState.iterateOnClient = iterateOnClient !== undefined ? iterateOnClient : true;
+        benchmarkState.maxDuration = 1;
+        benchmarkState.minSampleCount = iterations;
     }
 
-    benchmarkConfig.collectedResults = [];
-    return runIterations(benchmarkConfig);
+    benchmarkState.results = [];
+    await runIterations(benchmarkState);
+    return normalizeResults(benchmarkState);
 }

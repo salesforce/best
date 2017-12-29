@@ -13,6 +13,5 @@ export async function runBenchmark({ benchmarkEntry, proyectConfig, globalConfig
     const { benchmarkRunner } = proyectConfig;
     const runner = require(benchmarkRunner);
 
-    await runner.run(benchmarkEntry, proyectConfig, globalConfig);
-    return { wip: true };
+    return runner.run(benchmarkEntry, proyectConfig, globalConfig);
 }

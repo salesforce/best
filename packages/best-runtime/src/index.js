@@ -10,23 +10,21 @@ const runBenchmark = async (config) => {
     }
 
     const benchmarkState = getBenckmarkState();
-    await _runBenchmark(benchmarkState);
-    return benchmarkState.collectedResults;
+    const benchmarkResults = await _runBenchmark(benchmarkState);
+    return benchmarkResults;
 };
 
-const BEST = {
-    setupBenchmark,
-    runBenchmark,
-};
+// Expose BEST API
+const BEST = { setupBenchmark, runBenchmark };
+window.BEST = BEST;
 
 // TODO: Double check in engine
 // This will probably have to go in globals or something like that
 window.process = { env: { NODE_ENV : 'development' } };
 
-window.BEST = BEST;
 window.addEventListener('load', async () => {
     const config = setupBenchmark(window.BEST_CONFIG);
     if (config.autoStart) {
-        await runBenchmark();
+        window.BEST_RESULTS = await runBenchmark();
     }
 });

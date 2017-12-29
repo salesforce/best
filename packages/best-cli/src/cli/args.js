@@ -13,14 +13,19 @@ export const options = {
             'The path to a best config file specifying how to find ' +
             'and execute benchmark runs. If no rootDir is set in the config, the current ' +
             'directory is assumed to be the rootDir for the project. This can also ' +
-            'be a JSON encoded value which Jest will use as configuration.',
+            'be a JSON encoded value which Best will use as configuration.',
         type: 'string'
     },
     projects: {
         description:
-          'A list of projects that use Jest to run all tests of all ' +
-          'projects in a single instance of Jest.',
+          'A list of projects that use Best to run all tests of all ' +
+          'projects in a single instance of Best.',
         type: 'array',
+    },
+    iterations: {
+        description:
+          'Define the number of iterations to run for all the benchmarks',
+        type: 'number',
     },
     env: {
         description:

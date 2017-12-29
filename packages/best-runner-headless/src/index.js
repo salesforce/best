@@ -14,28 +14,68 @@ const BROWSER_ARGS = [
 
 const PUPPETEER_OPTIONS = { args: BROWSER_ARGS };
 
-export async function run(benchmarkEntry, proyectConfig, globalConfig) {
-    const results = Array.apply(null, Array(100)).map((k, i) => i);
+async function runIterations(page, state, opts) {
+    if (state.executedTime < opts.maxDuration || state.executedIterations < opts.minSampleCount) {
+        const start = Date.now();
+        const results = await runIteration(page, state, opts);
+        await page.reload();
 
+        state.executedTime += (Date.now() - start);
+        state.executedIterations += 1;
+        state.results.push(results);
+
+        if (state.iterateOnClient) {
+            return state;
+        }
+
+        return runIterations(page, state, opts);
+    }
+
+    return state;
+}
+
+async function runIteration(page, state, opts) {
+    // eslint-disable-next-line no-undef
+    const results = await page.evaluate(async (o) => BEST.runBenchmark(o), opts);
+
+    return results;
+}
+
+function normalizeRuntimeOptions(proyectConfig) {
+    const { benchmarkIterations, benchmarkOnClient } = proyectConfig;
+    const definedIterations =  Number.isInteger(benchmarkIterations);
+
+    // For benchmarking on the client or a defined number of iterations duration is irrelevant
+    const maxDuration = (definedIterations || benchmarkOnClient) ? 1 : proyectConfig.benchmarkMaxDuration;
+    const minSampleCount = definedIterations ? benchmarkIterations : proyectConfig.benchmarkMinIterations;
+
+    return {
+        maxDuration,
+        minSampleCount,
+        iterations: benchmarkIterations,
+        iterateOnClient: benchmarkOnClient,
+    };
+}
+
+function initializeBenchmarkState(opts) {
+    return {
+        executedTime: 0,
+        executedIterations: 0,
+        results: [],
+        iterateOnClient: opts.iterateOnClient
+    };
+}
+
+export async function run(benchmarkEntry, proyectConfig, globalConfig) {
     return puppeteer.launch(PUPPETEER_OPTIONS).then(async browser => {
+        const opts =  normalizeRuntimeOptions(proyectConfig);
+        const state =  initializeBenchmarkState(opts);
+
         const page = await browser.newPage();
         await page.goto('file:///' + benchmarkEntry);
 
-        for (const index of results) {
-            const result = await page.evaluate(async () => { return BEST.runBenchmark(); });
-            await page.reload();
-            results[index] = result[0];
-        }
-
-        const mapped = results.map((r) => {
-            const f = r.benchmarks[0].benchmarks[0];
-            return {
-                duration: f.duration.toFixed(5),
-                runDuration: f.runDuration.toFixed(5)
-            };
-        });
-
-        console.log('>>', mapped);
+        const results = await runIterations(page, state, opts);
         await browser.close();
+        return results;
     });
 }

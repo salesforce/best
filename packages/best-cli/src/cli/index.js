@@ -33,9 +33,10 @@ export async function run(maybeArgv, project) {
     try {
         const argsCLI = buildArgs(maybeArgv);
         const projects = getProjectListFromCLIArgs(argsCLI, project);
-        const { results, globalConfig } = await runCLI(argsCLI, projects);
+        const { results } = await runCLI(argsCLI, projects);
 
-        console.log('FINISH >>', results.length);
+        // TODO: REFACTOR
+        console.log(JSON.stringify( results, null, '  '));
 
     } catch (error) {
         console.log(error);
