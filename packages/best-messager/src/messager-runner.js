@@ -14,7 +14,7 @@ const RUNNING_TEXT = ' RUNNING ';
 const RUNNING = chalk.reset.inverse.yellow.bold(RUNNING_TEXT) + ' ';
 const QUEUED_TEXT = '  QUEUED  ';
 const QUEUED = chalk.reset.inverse.gray.bold(QUEUED_TEXT) + ' ';
-const DONE_TEXT = '  DONE   ';
+const DONE_TEXT = '   DONE   ';
 const DONE = chalk.reset.inverse.green.bold(DONE_TEXT) + ' ';
 const PROGRESS_BAR_WIDTH = 40;
 
@@ -37,11 +37,11 @@ const printDisplayName = (relativeDir) => {
     return chalk.dim(dirname + path.sep) + chalk.bold(basename);
 };
 
-const generateProgressState = (progress, { iterations, minSampleCount }) => {
+const generateProgressState = (progress, { iterations, minSampleCount, maxDuration }) => {
     const { executedIterations, executedTime, results } = progress;
     const avgIteration = results.reduce((sum, result) => sum + result.executedTime, 0) / results.length;
     const runtime = parseInt(executedTime / 1000, 10);
-    const estimated = iterations ? Math.round(iterations * avgIteration / 1000) + 1 : 10000;
+    const estimated = iterations ? Math.round(iterations * avgIteration / 1000) + 1 : maxDuration / 1000;
 
     return {
         executedIterations,
@@ -63,8 +63,7 @@ const renderTime = (runTime, estimatedTime, width) => {
         time += `, estimated ${estimatedTime}s`;
     }
 
-    // Only show a progress bar if the test run is actually going to take
-    // some time.
+    // Only show a progress bar if the test run is actually going to take some time
     if (estimatedTime > 2 && runTime < estimatedTime && width) {
         const availableWidth = Math.min(PROGRESS_BAR_WIDTH, width);
         const length = Math.min(
@@ -135,12 +134,11 @@ export default ({
         this._update();
     },
     finishRun() {
-
+        this._update();
     },
     _debounceUpdate() {
         if (!this._queued) {
             this._queued = true;
-
             // eslint-disable-next-line lwc/no-set-timeout
             setTimeout(() => {
                 this._queued = false;
