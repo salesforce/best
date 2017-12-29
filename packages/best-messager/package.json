@@ -1,0 +1,11 @@
+{
+  "name": "best-messager",
+  "version": "0.0.1",
+  "description": "Best messager utils",
+  "keywords": [
+    "Best",
+    "LWC"
+  ],
+  "main": "build/index.js",
+  "module": "src/index.js"
+}

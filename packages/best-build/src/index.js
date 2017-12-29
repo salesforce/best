@@ -2,6 +2,7 @@ import { rollup } from "rollup";
 import path from "path";
 import benchmarkRollup from "./rollup-plugin-benchmark-import";
 import { generateDefaultHTML } from "./html-templating";
+import { buildStateMessager } from "best-messager";
 import fs from "fs";
 
 const BASE_ROLLUP_INPUT = {};
@@ -21,6 +22,7 @@ function addResolverPlugins({ plugins }) {
 }
 
 export async function buildBenchmark(entry, proyectConfig, globalConfig) {
+    buildStateMessager.onBenchmarkBuildStart(entry);
     const ext = path.extname(entry);
     const benchmarkName = path.basename(entry, ext);
     const benchmarkFolder = path.join(proyectConfig.cacheDirectory, benchmarkName);
@@ -42,12 +44,14 @@ export async function buildBenchmark(entry, proyectConfig, globalConfig) {
 
     // const { code, map } = await bundle.generate(outputOptions);
     const htmlPath = path.resolve(path.join(benchmarkFolder, benchmarkName + '.html'));
-    console.log(`- Creating benchmark: ${benchmarkName} \n  >> ${htmlPath}`);
+    //console.log(`- Creating benchmark: ${benchmarkName} \n  >> ${htmlPath}`);
     await bundle.write(outputOptions);
 
     const html = generateDefaultHTML({ benchmarkJS : `./${benchmarkJSFileName}`, benchmarkName });
 
     fs.writeFileSync(htmlPath, html, 'utf8');
+
+    buildStateMessager.onBenchmarkBuildEnd(entry);
 
     return {
         benchmarkName,

@@ -14,7 +14,7 @@ const BROWSER_ARGS = [
 
 const PUPPETEER_OPTIONS = { args: BROWSER_ARGS };
 
-async function runIterations(page, state, opts) {
+async function runIterations(page, state, opts, messager) {
     if (state.executedTime < opts.maxDuration || state.executedIterations < opts.minSampleCount) {
         const start = Date.now();
         const results = await runIteration(page, state, opts);
@@ -24,11 +24,13 @@ async function runIterations(page, state, opts) {
         state.executedIterations += 1;
         state.results.push(results);
 
+        messager.updateBenchmarkProgress(state, opts);
+
         if (state.iterateOnClient) {
             return state;
         }
 
-        return runIterations(page, state, opts);
+        return runIterations(page, state, opts, messager);
     }
 
     return state;
@@ -66,7 +68,7 @@ function initializeBenchmarkState(opts) {
     };
 }
 
-export async function run(benchmarkEntry, proyectConfig, globalConfig) {
+export async function run(benchmarkEntry, proyectConfig, globalConfig, messager) {
     return puppeteer.launch(PUPPETEER_OPTIONS).then(async browser => {
         const opts =  normalizeRuntimeOptions(proyectConfig);
         const state =  initializeBenchmarkState(opts);
@@ -74,7 +76,7 @@ export async function run(benchmarkEntry, proyectConfig, globalConfig) {
         const page = await browser.newPage();
         await page.goto('file:///' + benchmarkEntry);
 
-        const results = await runIterations(page, state, opts);
+        const results = await runIterations(page, state, opts, messager);
         await browser.close();
         return results;
     });

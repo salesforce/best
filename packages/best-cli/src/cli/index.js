@@ -3,6 +3,7 @@ import yargs from 'yargs';
 import rimraf from 'rimraf';
 import { getConfigs } from "best-config";
 import { runBest } from "../run_best";
+import { preRunMessager } from "best-messager";
 
 function buildArgs(maybeArgv) {
     const argsv = yargs(maybeArgv || process.argv.slice(2))
@@ -47,6 +48,7 @@ export async function run(maybeArgv, project) {
 
 export async function runCLI(argsCLI, projects) {
     const outputStream = process.stdout;
+    preRunMessager.print(outputStream);
     const { globalConfig, configs, /*hasDeprecationWarnings*/ } = getConfigs(projects, argsCLI, outputStream);
 
     if (argsCLI.clearCache) {

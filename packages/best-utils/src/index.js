@@ -1,4 +1,4 @@
-import isInteractive from './is-interative';
+import isInteractive from './is-interactive';
 import clearLine from './clear-line';
 
 export {

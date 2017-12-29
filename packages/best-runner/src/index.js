@@ -1,3 +1,4 @@
+import { runnerMessager } from "best-messager";
 
 export async function runBenchmarks(benchmarksBuilds, globalConfig) {
     const results = [];
@@ -9,8 +10,11 @@ export async function runBenchmarks(benchmarksBuilds, globalConfig) {
     return results;
 }
 
-export async function runBenchmark({ benchmarkEntry, proyectConfig, globalConfig }) {
+export async function runBenchmark({ benchmarkEntry, proyectConfig, globalConfig}) {
     const { benchmarkRunner } = proyectConfig;
     const runner = require(benchmarkRunner);
-    return runner.run(benchmarkEntry, proyectConfig, globalConfig);
+    runnerMessager.onBenchmarkStart(benchmarkEntry);
+    const results = await runner.run(benchmarkEntry, proyectConfig, globalConfig, runnerMessager);
+    runnerMessager.onBenchmarkEnd(benchmarkEntry);
+    return results;
 }
