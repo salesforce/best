@@ -109,5 +109,6 @@ export function nextTick(cb, ctx) {
     }
 }
 
-export const time = performance.now.bind(performance);
+export const time = window.performance.now.bind(window.performance);
+export const formatTime = (t) => parseFloat(Math.round((t) * 1000) / 1000);
 export const raf = (window && window.requestAnimationFrame) ? window.requestAnimationFrame : nextTick;

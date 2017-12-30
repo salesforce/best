@@ -7,8 +7,9 @@
 /packages/*/build/
 /packages/*/coverage/
 /packages/*/node_modules/
-/benchmark_results/
-/packages/*/benchmark_results/
+/__benchmark_results__/
+/packages/*/__benchmark_results__/
+/examples/*/__benchmark_results__/
 
 coverage
 lerna-debug.log

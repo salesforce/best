@@ -56,8 +56,8 @@ export default ({
             return map;
         }, {});
 
-        this._state = { benchmarks: benchmarksState, buffer: '' };
-        this._write();
+        this._state = { benchmarks: benchmarksState, buffer: '', clear: '' };
+        this._update();
     },
     onBenchmarkBuildStart(id) {
         const bench = this._state.benchmarks[id];
@@ -70,7 +70,7 @@ export default ({
         this._update();
     },
     finishBuild() {
-        this._out.write('\n');
+        this._out.write('');
     },
     _update() {
         this._clear();

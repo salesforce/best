@@ -10,11 +10,18 @@ export async function runBenchmarks(benchmarksBuilds, globalConfig) {
     return results;
 }
 
-export async function runBenchmark({ benchmarkEntry, proyectConfig, globalConfig}) {
+export async function runBenchmark({ benchmarkName, benchmarkEntry, benchmarkSignature, proyectConfig, globalConfig}) {
     const { benchmarkRunner } = proyectConfig;
     const runner = require(benchmarkRunner);
+
     runnerMessager.onBenchmarkStart(benchmarkEntry);
     const results = await runner.run(benchmarkEntry, proyectConfig, globalConfig, runnerMessager);
     runnerMessager.onBenchmarkEnd(benchmarkEntry);
+
+    results.benchmarkSignature = benchmarkSignature;
+    results.benchmarkName = benchmarkName;
+    results.benchmarkEntry = benchmarkEntry;
+    results.proyectConfig = proyectConfig;
+
     return results;
 }

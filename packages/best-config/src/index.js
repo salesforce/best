@@ -115,17 +115,22 @@ function buildTestPathPattern(argsCLI) {
     return testPathPattern;
 }
 
+function normalizeRootDirPattern(str, rootDir) {
+    return str.replace(/<rootDir>/g, rootDir);
+}
+
 function normalizeUnmockedModulePathPatterns(options, key) {
     return options[key].map(pattern =>
-        replacePathSepForRegex(pattern.replace(/<rootDir>/g, options.rootDir)),
+        replacePathSepForRegex(normalizeRootDirPattern(pattern, options.rootDir))
     );
 }
+
 
 function normalizeObjectPathPatterns(options, { rootDir }) {
     return Object.keys(options).reduce((m, key) => {
         const value = options[key];
         if (typeof value === 'string') {
-            m[key] = value.replace(/<rootDir>/g, rootDir);
+            m[key] = normalizeRootDirPattern(value, rootDir);
         } else {
             m[key] = value;
         }
@@ -199,7 +204,7 @@ function _getConfigs(options) {
             benchmarkMinIterations: options.benchmarkMinIterations,
             benchmarkIterations: options.benchmarkIterations,
             benchmarkOnClient: options.benchmarkOnClient,
-            benchmarkOutput: options.benchmarkOutput,
+            benchmarkOutput: normalizeRootDirPattern(options.benchmarkOutput, options.rootDir),
 
             testMatch: options.testMatch,
             testPathIgnorePatterns: options.testPathIgnorePatterns,

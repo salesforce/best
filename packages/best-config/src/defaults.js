@@ -26,7 +26,7 @@ export default ({
     benchmarkMinIterations: 30,
     benchmarkOnClient: false,
     benchmarkIterations: undefined,
-    benchmarkOutput: '<rootDir>/benchmark_results',
+    benchmarkOutput: '<rootDir>/__benchmark_results__',
     benchmarkEnvironmentOptions: {},
 
     testMatch: ['**/__benchmarks__/**/*.js', '**/?(*.)(spec|test).js'],

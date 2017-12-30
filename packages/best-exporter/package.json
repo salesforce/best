@@ -1,0 +1,17 @@
+{
+  "name": "best-exporter",
+  "version": "0.0.1",
+  "description": "Best exporter",
+  "keywords": [
+    "Best",
+    "LWC"
+  ],
+  "main": "build/index.js",
+  "module": "src/index.js",
+  "dependencies": {
+    "mkdirp" : "^0.5.1",
+    "rimraf": "~2.6.2",
+    "ncp": "^2.0.0",
+    "json2md" :"~1.5.11"
+  }
+}

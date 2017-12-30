@@ -1,4 +1,4 @@
-import { raf, time, nextTick, withMacroTask } from "./utils/timers";
+import { raf, time, nextTick, withMacroTask, formatTime } from "./utils/timers";
 import { HOOKS } from "./constants";
 
 const _initHandlers = () => Object.values(HOOKS).reduce((o, k) => (o[k] = [], o), {});
@@ -10,7 +10,7 @@ const executeBenchmark = async (benchmarkNode, { useMacroTaskAfterBenchmark }) =
     _forceGC();
     return new Promise((resolve, reject) => {
         raf(async () => {
-            benchmarkNode.startedAt = time();
+            benchmarkNode.startedAt = formatTime(time());
 
             if (process.env.NODE_ENV !== 'production') {
                 console.timeStamp('iteration_start');
@@ -18,19 +18,19 @@ const executeBenchmark = async (benchmarkNode, { useMacroTaskAfterBenchmark }) =
 
             try {
                 await benchmarkNode.fn();
-                benchmarkNode.runDuration = time() - benchmarkNode.startedAt;
+                benchmarkNode.runDuration = formatTime(time() - benchmarkNode.startedAt);
 
                 if (useMacroTaskAfterBenchmark) {
                     withMacroTask(async () => {
                         await nextTick();
-                        benchmarkNode.duration = time() - benchmarkNode.startedAt;
+                        benchmarkNode.duration = formatTime(time() - benchmarkNode.startedAt);
                         if (process.env.NODE_ENV !== 'production') {
                             console.timeStamp('iteration_end');
                         }
                         resolve();
                     })();
                 } else {
-                    benchmarkNode.duration = time() - benchmarkNode.startedAt;
+                    benchmarkNode.duration = formatTime(time() - benchmarkNode.startedAt);
                     if (process.env.NODE_ENV !== 'production') {
                         console.timeStamp('iteration_end');
                     }
@@ -65,9 +65,9 @@ export const runBenchmarkIteration = async (node, opts) => {
         }
 
         // -- Traverse Child ----
-        node.startedAt = time();
+        node.startedAt = formatTime(time());
         await runBenchmarkIteration(child, opts);
-        node.duration = time() - node.startedAt;
+        node.duration = formatTime(time() - node.startedAt);
 
         // -- After Each Child ----
         for (const hook of hookHandlers[HOOKS.AFTER_EACH]) {
@@ -80,9 +80,9 @@ export const runBenchmarkIteration = async (node, opts) => {
             await hook();
         }
 
-        node.startedAt = time();
+        node.startedAt = formatTime(time());
         await executeBenchmark(run, opts);
-        node.duration = time() - node.startedAt;
+        node.duration = formatTime(time() - node.startedAt);
 
         for (const hook of hookHandlers[HOOKS.AFTER]) {
             await hook();

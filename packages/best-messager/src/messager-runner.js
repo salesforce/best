@@ -10,7 +10,7 @@ export const BUILD_STATE = {
 
 const INIT_RUNNING_TEXT = chalk.bold.dim('Running benchmarks... \n\n');
 const PROGRESS_TEXT = chalk.dim('Progress running ');
-const RUNNING_TEXT = ' RUNNING ';
+const RUNNING_TEXT = ' RUNNING  ';
 const RUNNING = chalk.reset.inverse.yellow.bold(RUNNING_TEXT) + ' ';
 const QUEUED_TEXT = '  QUEUED  ';
 const QUEUED = chalk.reset.inverse.gray.bold(QUEUED_TEXT) + ' ';

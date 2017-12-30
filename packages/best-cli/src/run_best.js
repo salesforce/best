@@ -1,7 +1,8 @@
 import globby from "globby";
 import { buildBenchmarks } from "best-build";
 import { runBenchmarks } from "best-runner";
-import { preRunMessager, buildStateMessager, runnerMessager } from "best-messager";
+import {buildStateMessager, runnerMessager } from "best-messager";
+import { storeResults } from "best-exporter";
 import path from "path";
 
 async function getBenchmarkPaths(globalConfig, config) {
@@ -39,8 +40,6 @@ async function runBundleBenchmarks(benchmarksBuilds, globalConfig) {
 export async function runBest(globalConfig, configs, outputStream) {
     const benchmarksTests = await getBenchmarkTests(configs, globalConfig);
 
-    preRunMessager.clear(outputStream);
-
     buildStateMessager.initBuild(benchmarksTests, globalConfig, outputStream);
     const benchmarksBuilds = await buildBundleBenchmarks(benchmarksTests, globalConfig);
     buildStateMessager.finishBuild();
@@ -48,5 +47,8 @@ export async function runBest(globalConfig, configs, outputStream) {
     runnerMessager.initRun(benchmarksBuilds, globalConfig, outputStream);
     const benchmarkBundleResults = await runBundleBenchmarks(benchmarksBuilds, globalConfig);
     runnerMessager.finishRun();
+
+    await storeResults(benchmarkBundleResults, globalConfig);
+
     return benchmarkBundleResults;
 }

@@ -27,6 +27,13 @@ export const options = {
           'Define the number of iterations to run for all the benchmarks',
         type: 'number',
     },
+    clearCache: {
+        default: undefined,
+        description:
+          'Clears the configured Jest cache directory and then exits. ' +
+          'Default directory can be found by calling jest --showConfig',
+        type: 'boolean',
+    },
     env: {
         description:
           'The test environment used for all tests. This can point to ' +

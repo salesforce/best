@@ -1,4 +1,6 @@
 import puppeteer from "puppeteer";
+import { getSystemInfo } from "./system-info";
+import path from "path";
 
 const BROWSER_ARGS = [
     '--no-sandbox',
@@ -68,16 +70,26 @@ function initializeBenchmarkState(opts) {
     };
 }
 
+async function normalizeEnvironment(browser) {
+    const hardware = await getSystemInfo();
+    const version = await browser.version();
+    return {
+        hardware,
+        browser: { version, options: BROWSER_ARGS }
+    };
+}
+
 export async function run(benchmarkEntry, proyectConfig, globalConfig, messager) {
     return puppeteer.launch(PUPPETEER_OPTIONS).then(async browser => {
         const opts =  normalizeRuntimeOptions(proyectConfig);
         const state =  initializeBenchmarkState(opts);
+        const environment = await normalizeEnvironment(browser, proyectConfig, globalConfig);
 
         const page = await browser.newPage();
         await page.goto('file:///' + benchmarkEntry);
 
         const results = await runIterations(page, state, opts, messager);
         await browser.close();
-        return results;
+        return { results, environment };
     });
 }
