@@ -3,6 +3,7 @@ import { buildBenchmarks } from "best-build";
 import { runBenchmarks } from "best-runner";
 import {buildStateMessager, runnerMessager } from "best-messager";
 import { storeResults } from "best-exporter";
+import { analyzeBenchmarks } from "best-analyzer";
 import path from "path";
 
 async function getBenchmarkPaths(globalConfig, config) {
@@ -48,6 +49,7 @@ export async function runBest(globalConfig, configs, outputStream) {
     const benchmarkBundleResults = await runBundleBenchmarks(benchmarksBuilds, globalConfig);
     runnerMessager.finishRun();
 
+    await analyzeBenchmarks(benchmarkBundleResults, globalConfig);
     await storeResults(benchmarkBundleResults, globalConfig);
 
     return benchmarkBundleResults;

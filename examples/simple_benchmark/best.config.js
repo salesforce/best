@@ -3,5 +3,6 @@ module.exports = {
         "rollup-plugin-lwc-compiler": {
             "rootDir": "<rootDir>/src/"
         }
-    }
+    },
+    "benchmarkOnClient": false
 };

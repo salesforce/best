@@ -1,0 +1,11 @@
+{
+  "name": "best-analyzer",
+  "version": "0.0.1",
+  "description": "Best Analyzer",
+  "keywords": [
+    "Best",
+    "LWC"
+  ],
+  "main": "build/index.js",
+  "module": "src/index.js"
+}

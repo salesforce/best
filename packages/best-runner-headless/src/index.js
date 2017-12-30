@@ -16,6 +16,13 @@ const BROWSER_ARGS = [
 
 const PUPPETEER_OPTIONS = { args: BROWSER_ARGS };
 
+async function runIteration(page, state, opts) {
+    // eslint-disable-next-line no-undef
+    const results = await page.evaluate(async (o) => BEST.runBenchmark(o), opts);
+
+    return results;
+}
+
 async function runIterations(page, state, opts, messager) {
     if (state.executedTime < opts.maxDuration || state.executedIterations < opts.minSampleCount) {
         const start = Date.now();
@@ -24,7 +31,12 @@ async function runIterations(page, state, opts, messager) {
 
         state.executedTime += (Date.now() - start);
         state.executedIterations += 1;
-        state.results.push(results);
+        //console.log('>>', JSON.stringify(results, null, '  '), '\n ==================================== \n');
+        if (state.iterateOnClient) {
+            state.results.push(...results.results);
+        } else {
+            state.results.push(results.results[0]);
+        }
 
         messager.updateBenchmarkProgress(state, opts);
 
@@ -36,13 +48,6 @@ async function runIterations(page, state, opts, messager) {
     }
 
     return state;
-}
-
-async function runIteration(page, state, opts) {
-    // eslint-disable-next-line no-undef
-    const results = await page.evaluate(async (o) => BEST.runBenchmark(o), opts);
-
-    return results;
 }
 
 function normalizeRuntimeOptions(proyectConfig) {
@@ -88,8 +93,8 @@ export async function run(benchmarkEntry, proyectConfig, globalConfig, messager)
         const page = await browser.newPage();
         await page.goto('file:///' + benchmarkEntry);
 
-        const results = await runIterations(page, state, opts, messager);
+        const benchmarkResults = await runIterations(page, state, opts, messager);
         await browser.close();
-        return { results, environment };
+        return { results: benchmarkResults.results, environment };
     });
 }
