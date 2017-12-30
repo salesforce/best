@@ -34,6 +34,12 @@ export const options = {
           'Default directory can be found by calling jest --showConfig',
         type: 'boolean',
     },
+    clearResults: {
+        default: undefined,
+        description:
+          'Clear all generated benchmarks from the `benchmarkOutput` folder',
+        type: 'boolean',
+    },
     env: {
         description:
           'The test environment used for all tests. This can point to ' +

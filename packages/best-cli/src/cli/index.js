@@ -34,13 +34,9 @@ export async function run(maybeArgv, project) {
     try {
         const argsCLI = buildArgs(maybeArgv);
         const projects = getProjectListFromCLIArgs(argsCLI, project);
-        const rawResults = await runCLI(argsCLI, projects);
-
-        // TODO: REFACTOR
-        //console.log(JSON.stringify( rawResults, null, '  '));
-
+        await runCLI(argsCLI, projects);
     } catch (error) {
-        console.log(error);
+        window.console.log(error);
         process.exit(1);
         throw error;
     }
@@ -49,7 +45,7 @@ export async function run(maybeArgv, project) {
 export async function runCLI(argsCLI, projects) {
     const outputStream = process.stdout;
 
-    preRunMessager.print(outputStream);
+    preRunMessager.print('Determining benckmark suites to run...', outputStream);
     const { globalConfig, configs } = getConfigs(projects, argsCLI, outputStream);
     preRunMessager.clear(outputStream);
 
@@ -59,6 +55,14 @@ export async function runCLI(argsCLI, projects) {
             process.stdout.write(`Cleared ${config.cacheDirectory}\n`);
         });
         process.exit(0);
+    }
+
+    if (argsCLI.clearResults) {
+        preRunMessager.print('Clearing previous benchmark results...', outputStream);
+        configs.forEach(config => {
+            rimraf.sync(config.benchmarkOutput);
+            process.stdout.write(`\n - Cleared: ${config.benchmarkOutput}\n`);
+        });
     }
 
     const results = await runBest(globalConfig, configs, outputStream);
