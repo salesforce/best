@@ -46,27 +46,27 @@ export function formatNumber(num) {
 
 // From https://github.com/bestiejs/benchmark.js/blob/master/benchmark.js#L1391
 export function compare(sample1, sample2) {
-    var zStat,
-        size1 = sample1.length,
+    let zStat;
+    const size1 = sample1.length,
         size2 = sample2.length,
         u1 = getU(sample1, sample2),
         u2 = getU(sample2, sample1),
         u = Math.min(u1, u2);
 
     function getScore(xA, sampleB) {
-        return sampleB.reduce(function (total, xB) {
+        return sampleB.reduce((total, xB) => {
             return total + (xB > xA ? 0 : xB < xA ? 1 : 0.5);
         }, 0);
     }
 
     function getU(sampleA, sampleB) {
-        return sampleA.reduce(function (total, xA) {
+        return sampleA.reduce((total, xA) => {
             return total + getScore(xA, sampleB);
         }, 0);
     }
 
-    function getZ(u) {
-        return (u - ((size1 * size2) / 2)) / Math.sqrt((size1 * size2 * (size1 + size2 + 1)) / 12);
+    function getZ(n) {
+        return (n - ((size1 * size2) / 2)) / Math.sqrt((size1 * size2 * (size1 + size2 + 1)) / 12);
     }
 
     if (size1 + size2 < 30) {

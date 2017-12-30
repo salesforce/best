@@ -3,6 +3,7 @@ import rimraf from "rimraf";
 import path from "path";
 import { ncp } from "ncp";
 import { formatEnvironment } from "./md-formatter";
+import { stringify } from "./pretty-json";;
 import fs from "fs";
 
 function copyArtifacts(benchmarkFolder, outputFolder) {
@@ -17,13 +18,13 @@ function copyArtifacts(benchmarkFolder, outputFolder) {
     });
 }
 
-function pretty(json) {
-    return JSON.stringify(json, null, '  ');
+function formatJSON(json) {
+    return stringify(json, {indent: 2, maxLength: 90 });
 }
 
 export async function storeResults(benchmarkResults, globalConfig) {
     return Promise.all(benchmarkResults.map(async (benchmarkResult) => {
-        const { benchmarkName, benchmarkSignature, proyectConfig, environment, results } = benchmarkResult;
+        const { benchmarkName, benchmarkSignature, proyectConfig, environment, results, stats } = benchmarkResult;
         const { benchmarkOutput, cacheDirectory } = proyectConfig;
         const outputFolder = path.resolve(benchmarkOutput, `${benchmarkName}_${benchmarkSignature.substr(0, 6)}`);
         const artifactsFolder = path.resolve(outputFolder, 'artifacts');
@@ -35,10 +36,11 @@ export async function storeResults(benchmarkResults, globalConfig) {
 
         // Environment
         fs.writeFileSync(path.resolve(outputFolder, 'environment.md'), formatEnvironment(environment), 'utf8');
-        fs.writeFileSync(path.resolve(outputFolder, 'environment.json'), pretty(environment), 'utf8');
+        fs.writeFileSync(path.resolve(outputFolder, 'environment.json'), formatJSON(environment), 'utf8');
 
         // Results
-        fs.writeFileSync(path.resolve(outputFolder, 'raw_results.json'), pretty(results), 'utf8');
+        fs.writeFileSync(path.resolve(outputFolder, 'stats.json'), formatJSON(stats), 'utf8');
+        fs.writeFileSync(path.resolve(outputFolder, 'raw_results.json'), formatJSON(results), 'utf8');
 
         return true;
     }));

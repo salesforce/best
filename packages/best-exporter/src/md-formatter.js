@@ -25,7 +25,12 @@ export function formatEnvironment(env) {
                     md.push({ h3: subKey }, { ul : subValue });
                 } else {
                     md.push({ h3: subKey });
-                    md.push({ table: { headers: [`${subKey} property`, 'Value'], rows: Object.entries(subValue) } });
+                    md.push({
+                        table: {
+                            headers: [`${subKey} property`, 'Value'],
+                            rows: Object.entries(subValue).map((row) => row.map((item) => (item ? item.toString() : '-')))
+                        }
+                    });
                 }
             });
         }

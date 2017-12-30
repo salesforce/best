@@ -74,12 +74,25 @@ function initializeBenchmarkState(opts) {
     };
 }
 
-async function normalizeEnvironment(browser) {
+async function normalizeEnvironment(browser, proyectConfig) {
+    const { benchmarkOnClient, benchmarkRunner, benchmarkEnvironment, benchmarkIterations } = proyectConfig;
     const hardware = await getSystemInfo();
     const version = await browser.version();
     return {
         hardware,
-        browser: { version, options: BROWSER_ARGS }
+        browser: { version, options: BROWSER_ARGS },
+        configuration: {
+            proyect: {
+                benchmarkOnClient,
+                benchmarkRunner,
+                benchmarkEnvironment,
+                benchmarkIterations
+            },
+            global: {
+                version: "alpha",
+                "commit": "-"
+            }
+        }
     };
 }
 

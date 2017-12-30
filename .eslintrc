@@ -11,7 +11,8 @@
         "eslint-comments/no-use": 0,
         "compat/compat": 0,
         "no-await-in-loop": 0,
-        "lwc/no-inline-disable" : 0
+        "lwc/no-inline-disable" : 0,
+        "no-confusing-arrow": [ "error", {"allowParens": true} ]
     },
     "globals": {
         "benchmark": true,

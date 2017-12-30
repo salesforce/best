@@ -1,8 +1,10 @@
 import { SAMPLES_THREESHOLD } from './constants';
 import { mean, median, variance, medianAbsoluteDeviation, quantile, compare } from './stats';
+import path from "path";
+import fs from "fs";
 
 function isNonEmptyArray(arr) {
-    return arr && Array.isArray(arr) && arr.length
+    return arr && Array.isArray(arr) && arr.length;
 }
 
 function computeSampleStats(arr) {
@@ -10,12 +12,13 @@ function computeSampleStats(arr) {
     const cleaned =  arr.filter(v => v <= q);
 
     return {
-        arr: cleaned,
+        samples: cleaned,
+        samplesQuantileThreshold: SAMPLES_THREESHOLD,
         mean: mean(cleaned),
         median: median(cleaned),
         variance: variance(cleaned),
-        mad: medianAbsoluteDeviation(cleaned)
-    }
+        medianAbsoluteDeviation: medianAbsoluteDeviation(cleaned)
+    };
 }
 
 function collectResults({ name, duration, runDuration, benchmarks}, collector, parent) {
@@ -34,12 +37,12 @@ function collectResults({ name, duration, runDuration, benchmarks}, collector, p
 
 export async function analyzeBenchmarks(benchmarkResults) {
     return Promise.all(benchmarkResults.map(async (benchmarkResult) => {
-        const { proyectConfig, results } = benchmarkResult;
+        const {results } = benchmarkResult;
         const collector = results.reduce((c, result) => collectResults(result, c), {});
 
-        const collectedStats = Object.keys(collector).reduce((stats, benchmarkName) => {
-            const benchmarkMetrics = collector[benchmarkName];
-            stats[benchmarkName] = Object.keys(benchmarkMetrics).reduce((mc, metric) => {
+        benchmarkResult.stats = Object.keys(collector).reduce((stats, bName) => {
+            const benchmarkMetrics = collector[bName];
+            stats[bName] = Object.keys(benchmarkMetrics).reduce((mc, metric) => {
                 const list = benchmarkMetrics[metric];
                 if (isNonEmptyArray(list)) {
                     mc[metric] = computeSampleStats(benchmarkMetrics[metric]);
@@ -50,8 +53,5 @@ export async function analyzeBenchmarks(benchmarkResults) {
             }, {});
             return stats;
         }, {});
-
-        console.log(collectedStats);
-
     }));
 }
