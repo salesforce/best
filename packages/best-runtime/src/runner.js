@@ -37,13 +37,6 @@ async function runIterations(config) {
 }
 
 export async function runBenchmark(benchmarkState) {
-    const { iterations, iterateOnClient } = benchmarkState;
-    if (iterations) {
-        benchmarkState.iterateOnClient = iterateOnClient !== undefined ? iterateOnClient : true;
-        benchmarkState.maxDuration = 1;
-        benchmarkState.minSampleCount = iterations;
-    }
-
     benchmarkState.results = [];
     await runIterations(benchmarkState);
     return normalizeResults(benchmarkState);

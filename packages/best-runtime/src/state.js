@@ -30,12 +30,19 @@ const _cloneState = (state) => {
 export const getBenckmarkState = () => _cloneState(STATE);
 export const getBenchmarkRootNode = () => getBenckmarkState().rootDescribeBlock;
 
-export const initializeBenchmarkConfig = (benchmarkConfig) => {
-    // TODO: Validate config schema
-    return Object.assign(STATE, benchmarkConfig);
+export const initializeBenchmarkConfig = (newOpts) => {
+    if (newOpts.iterations !== undefined) {
+        if (newOpts.iterateOnClient === undefined) {
+            newOpts.iterateOnClient = true;
+        }
+        newOpts.minSampleCount = newOpts.iterations = newOpts.iterations;
+        newOpts.maxDuration = 1;
+    }
+
+    return Object.assign(STATE, newOpts);
 };
 
-// This is meant to only be used by primitives
+// PROTECTED: Should only be used by the primitives
 export function dispatch(event) {
     for (const handler of eventHandlers) {
         handler(event, _getInternalState());

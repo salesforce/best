@@ -3,7 +3,7 @@ export default Object.freeze({
     useMacroTaskAfterBenchmark: true,
     maxDuration: 1000 * 20, // 20 seconds
     minSampleCount: 30,
-    iterations: 1,
+    iterations: 0,
 
     // Internals
     hasFocusedTests: false,

@@ -1,6 +1,7 @@
 import puppeteer from "puppeteer";
 import { getSystemInfo } from "./system-info";
 import path from "path";
+import { clearInterval } from "timers";
 
 const BROWSER_ARGS = [
     '--no-sandbox',
@@ -13,17 +14,39 @@ const BROWSER_ARGS = [
     '--ignore-certificate-errors',
     '--enable-precise-memory-info',
 ];
-
+const UPDATE_INTERVAL = 300;
 const PUPPETEER_OPTIONS = { args: BROWSER_ARGS };
 
 async function runIteration(page, state, opts) {
     // eslint-disable-next-line no-undef
-    const results = await page.evaluate(async (o) => BEST.runBenchmark(o), opts);
-
-    return results;
+    return page.evaluate(async (o) => BEST.runBenchmark(o), opts);
 }
 
-async function runIterations(page, state, opts, messager) {
+async function runClientIterations(page, state, opts, messager) {
+    // Run an iteration to estimate the time it will take
+    const testResult = await runIteration(page, state, { iterations : 1 });
+    const estimatedIterationTime = testResult.executedTime;
+
+    const start = Date.now();
+    // eslint-disable-next-line lwc/no-set-interval
+    const intervalId = setInterval(() => {
+        const executing = Date.now() - start;
+        state.executedTime = executing;
+        state.executedIterations = Math.round(executing / estimatedIterationTime);
+        messager.updateBenchmarkProgress(state, opts);
+    }, UPDATE_INTERVAL);
+
+    await page.reload();
+    const clientRawResults = await runIteration(page, state, opts);
+    clearInterval(intervalId);
+
+    const results = clientRawResults.results;
+    state.results.push(...results);
+
+    return state;
+}
+
+async function runServerIterations(page, state, opts, messager) {
     if (state.executedTime < opts.maxDuration || state.executedIterations < opts.minSampleCount) {
         const start = Date.now();
         const results = await runIteration(page, state, opts);
@@ -31,30 +54,26 @@ async function runIterations(page, state, opts, messager) {
 
         state.executedTime += (Date.now() - start);
         state.executedIterations += 1;
-        //console.log('>>', JSON.stringify(results, null, '  '), '\n ==================================== \n');
-        if (state.iterateOnClient) {
-            state.results.push(...results.results);
-        } else {
-            state.results.push(results.results[0]);
-        }
+        state.results.push(results.results[0]);
         messager.updateBenchmarkProgress(state, opts);
-
-        if (state.iterateOnClient) {
-            return state;
-        }
-
         return runIterations(page, state, opts, messager);
     }
 
     return state;
 }
 
+async function runIterations(page, state, opts, messager) {
+    if (state.iterateOnClient) {
+        return runClientIterations(page, state, opts, messager);
+    }
+    return runServerIterations(page, state, opts, messager);
+}
+
 function normalizeRuntimeOptions(proyectConfig) {
     const { benchmarkIterations, benchmarkOnClient } = proyectConfig;
     const definedIterations =  Number.isInteger(benchmarkIterations);
-
     // For benchmarking on the client or a defined number of iterations duration is irrelevant
-    const maxDuration = (definedIterations || benchmarkOnClient) ? 1 : proyectConfig.benchmarkMaxDuration;
+    const maxDuration = definedIterations ? 1 : proyectConfig.benchmarkMaxDuration;
     const minSampleCount = definedIterations ? benchmarkIterations : proyectConfig.benchmarkMinIterations;
 
     return {

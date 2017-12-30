@@ -66,6 +66,5 @@ export async function runCLI(argsCLI, projects) {
     if (!results) {
         throw new Error('AggregatedResult must be present after test run is complete');
     }
-
     return Promise.resolve({ globalConfig, results });
 }

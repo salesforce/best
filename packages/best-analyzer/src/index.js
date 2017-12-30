@@ -13,6 +13,7 @@ function computeSampleStats(arr) {
 
     return {
         samples: cleaned,
+        sampleSize: cleaned.length,
         samplesQuantileThreshold: SAMPLES_THREESHOLD,
         mean: mean(cleaned),
         median: median(cleaned),
