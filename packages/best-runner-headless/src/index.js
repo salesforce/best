@@ -93,7 +93,7 @@ function initializeBenchmarkState(opts) {
     };
 }
 
-async function normalizeEnvironment(browser, proyectConfig) {
+async function normalizeEnvironment(browser, proyectConfig, globalConfig) {
     const { benchmarkOnClient, benchmarkRunner, benchmarkEnvironment, benchmarkIterations } = proyectConfig;
     const hardware = await getSystemInfo();
     const version = await browser.version();
@@ -109,7 +109,9 @@ async function normalizeEnvironment(browser, proyectConfig) {
             },
             global: {
                 version: "alpha",
-                "commit": "-"
+                commitHash: globalConfig.gitCommit,
+                hasLocalGitChanges: globalConfig.gitLocalChanges
+
             }
         }
     };

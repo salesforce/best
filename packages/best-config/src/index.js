@@ -179,6 +179,8 @@ function _getConfigs(options) {
             testNamePattern: options.testNamePattern,
             testPathPattern: options.testPathPattern,
             verbose: options.verbose,
+            gitCommit: options.gitCommit,
+            gitLocalChanges: options.gitLocalChanges
         }),
         projectConfig: Object.freeze({
             cache: options.cache,
@@ -222,7 +224,9 @@ export async function readConfig(argsCLI, packageRoot) {
     const configPath = resolveConfigPath(customConfigPath, process.cwd());
     const rawOptions = readConfigAndSetRootDir(configPath);
     const options = normalize(rawOptions, argsCLI);
-    await addGitInformation(options);
+    try {
+        await addGitInformation(options);
+    } catch (e) { /*Unable to get git info */ }
 
     const { globalConfig, projectConfig } = _getConfigs(options);
     return { globalConfig, projectConfig };

@@ -1,16 +1,8 @@
 import childProcess from 'child_process';
 
-export async function addGitInformation(options) {
-    const cwd = options.rootDir;
-    const hash = await getCurrentHash(cwd);
-    const localChanges = await hasLocalChanges(cwd);
-    console.log('>>> ', hash, localChanges);
-    return options;
-}
-
-export async function getCurrentHash(cwd) {
+async function getCurrentHash(cwd) {
     return new Promise((resolve, reject) => {
-        const args = ["log", "--pretty=format:'%h'", "-n", "1"];
+        const args = ["log", "--pretty=format:%h", "-n", "1"];
         const child = childProcess.spawn('git', args, { cwd });
         let stdout = '';
         let stderr = '';
@@ -19,12 +11,7 @@ export async function getCurrentHash(cwd) {
         child.on('error', e => reject(e));
         child.on('close', code => {
             if (code === 0) {
-                stdout = stdout.trim();
-                if (stdout === '') {
-                    resolve([]);
-                } else {
-                    resolve(stdout);
-                }
+                resolve(stdout.trim());
             } else {
                 reject(code + ': ' + stderr);
             }
@@ -41,4 +28,12 @@ function hasLocalChanges(cwd) {
     });
 }
 
+export async function addGitInformation(options) {
+    const cwd = options.rootDir;
+    const [hash, localChanges] = await Promise.all([getCurrentHash(cwd), hasLocalChanges(cwd)]);
+
+    options.gitCommit = hash;
+    options.gitLocalChanges = localChanges;
+    return options;
+}
 
