@@ -1,9 +1,10 @@
 import path from "path";
 import fs from "fs";
 import chalk from 'chalk';
-
 import { replacePathSepForRegex } from "best-regex-util";
 import { PACKAGE_JSON, BEST_CONFIG } from "./constants";
+import { addGitInformation } from "./git";
+
 import DEFAULT_CONFIG from './defaults';
 
 const specialArgs = ['_', '$0', 'h', 'help', 'config'];
@@ -216,24 +217,25 @@ function _getConfigs(options) {
     };
 }
 
-export function readConfig(argsCLI, packageRoot) {
+export async function readConfig(argsCLI, packageRoot) {
     const customConfigPath = argsCLI.config ? argsCLI.config : packageRoot;
     const configPath = resolveConfigPath(customConfigPath, process.cwd());
     const rawOptions = readConfigAndSetRootDir(configPath);
     const options = normalize(rawOptions, argsCLI);
-    const { globalConfig, projectConfig } = _getConfigs(options);
+    await addGitInformation(options);
 
+    const { globalConfig, projectConfig } = _getConfigs(options);
     return { globalConfig, projectConfig };
 }
 
-export function getConfigs(projectsFromCLIArgs, argv, outputStream) {
+export async function getConfigs(projectsFromCLIArgs, argv, outputStream) {
     let globalConfig;
     let hasDeprecationWarnings;
     let configs = [];
     let projects = projectsFromCLIArgs;
 
     if (projectsFromCLIArgs.length === 1) {
-        const parsedConfig = readConfig(argv, projects[0]);
+        const parsedConfig = await readConfig(argv, projects[0]);
 
         if (parsedConfig.globalConfig.projects) {
             // If this was a single project, and its config has `projects`

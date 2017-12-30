@@ -46,7 +46,7 @@ export async function runCLI(argsCLI, projects) {
     const outputStream = process.stdout;
 
     preRunMessager.print('Determining benckmark suites to run...', outputStream);
-    const { globalConfig, configs } = getConfigs(projects, argsCLI, outputStream);
+    const { globalConfig, configs } = await getConfigs(projects, argsCLI, outputStream);
     preRunMessager.clear(outputStream);
 
     if (argsCLI.clearCache) {
@@ -70,5 +70,6 @@ export async function runCLI(argsCLI, projects) {
     if (!results) {
         throw new Error('AggregatedResult must be present after test run is complete');
     }
-    return Promise.resolve({ globalConfig, results });
+
+    return { globalConfig, results };
 }
