@@ -37,9 +37,9 @@ const printDisplayName = (relativeDir) => {
     return chalk.dim(dirname + path.sep) + chalk.bold(basename);
 };
 
-const generateProgressState = (progress, { iterations, minSampleCount, maxDuration }) => {
-    const { executedIterations, executedTime, results } = progress;
-    const avgIteration = results.reduce((sum, result) => sum + result.executedTime, 0) / results.length;
+const generateProgressState = (progress, { iterations, maxDuration }) => {
+    const { executedIterations, executedTime } = progress;
+    const avgIteration = executedTime / executedIterations;
     const runtime = parseInt(executedTime / 1000, 10);
     const estimated = iterations ? Math.round(iterations * avgIteration / 1000) + 1 : maxDuration / 1000;
 

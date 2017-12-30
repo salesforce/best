@@ -37,7 +37,6 @@ async function runIterations(page, state, opts, messager) {
         } else {
             state.results.push(results.results[0]);
         }
-
         messager.updateBenchmarkProgress(state, opts);
 
         if (state.iterateOnClient) {
