@@ -61,7 +61,7 @@ jobs:
       - run: yarn install
       - run:
           name: Performance Test
-          command: yarn test:example_test
+          command: yarn perf:example
 
 
 workflows:

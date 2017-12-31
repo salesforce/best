@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "cross-env rollup -c ./scripts/rollup.config.js"
+    "build": "cross-env rollup -c ./scripts/rollup.config.js",
+    "perf": "best"
   },
   "devDependencies": {
     "cross-env": "^5.1.3",

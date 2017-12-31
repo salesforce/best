@@ -2370,7 +2370,7 @@ function createElement(tagName, options = {}) {
 }
 
 
-/** version: 0.17.5 */
+/** version: 0.17.6 */
 
 const style = undefined;
 
