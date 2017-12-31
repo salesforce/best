@@ -44,6 +44,26 @@ jobs:
           name: Unit Test
           command: yarn test
 
+  performance_test_example:
+    working_directory: ~/lwc
+
+    docker:
+      - image: circleci/node:8.9.3-stretch-browsers
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - yarn-v3-{{ .Branch }}-{{ checksum "package.json" }}
+          - yarn-v3-{{ .Branch }}-
+
+      - run: yarn install
+      - run:
+          name: Performance Test
+          command: yarn test:example_test
+
+
 workflows:
   version: 2
   build_and_test:
@@ -54,6 +74,13 @@ workflows:
               only: /\w+\/.*/
 
       - unit_test:
+          requires:
+            - build
+          filters:
+            branches:
+              only: /\w+\/.*/
+
+      - performance_test_example:
           requires:
             - build
           filters:
