@@ -1,5 +1,6 @@
 import path from "path";
 import chalk from "chalk";
+import { isInteractive } from 'best-utils';
 
 export const BUILD_STATE = {
     QUEUED: 'queued',
@@ -45,7 +46,7 @@ export default ({
     _out: null,
 
     initBuild(benchmarksBundle, globalConfig, outputStream) {
-        this._out = outputStream;
+        this._out = outputStream.write.bind(outputStream);
         const benchmarksState = benchmarksBundle.reduce((map, { config, matches }) => {
             matches.forEach((benchmarkPath) => {
                 map[benchmarkPath] = {
@@ -70,14 +71,16 @@ export default ({
         this._update();
     },
     finishBuild() {
-        this._out.write('');
+        this._update(true);
     },
-    _update() {
-        this._clear();
-        this._write();
+    _update(force) {
+        if (isInteractive || force) {
+            this._clear();
+            this._write();
+        }
     },
     _clear() {
-        this._out.write(this._state.clear);
+        this._out(this._state.clear);
     },
     _write() {
         const benchmarks = this._state.benchmarks;
@@ -89,6 +92,6 @@ export default ({
 
         this._state.buffer = buffer;
         this._state.clear = clearStream(buffer);
-        this._out.write(buffer);
+        this._out(buffer);
     }
 });

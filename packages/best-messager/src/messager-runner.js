@@ -1,5 +1,6 @@
 import path from "path";
 import chalk from "chalk";
+import { isInteractive } from 'best-utils';
 
 export const BUILD_STATE = {
     QUEUED: 'queued',
@@ -134,7 +135,7 @@ export default ({
         this._update();
     },
     finishRun() {
-        this._update();
+        this._update(true);
     },
     _debounceUpdate() {
         if (!this._queued) {
@@ -148,9 +149,11 @@ export default ({
             }, 300);
         }
     },
-    _update() {
-        this._clear();
-        this._write();
+    _update(force) {
+        if (isInteractive || force) {
+            this._clear();
+            this._write();
+        }
     },
     _clear() {
         this._out(this._state.clear);
