@@ -59,8 +59,9 @@ jobs:
           - yarn-v3-{{ .Branch }}-
 
       - run: yarn install
+      - run: yarn build
       - run:
-          name: Performance Test
+          name: Performance Test - Example proyect
           command: yarn perf:example
 
 
