@@ -1,11 +1,11 @@
 # Best
-Delightful JavaScript Benchmarking
+Delightful JavaScript performance benchmarking.
 
 ## Getting Started
 
 This is a work in progress. Feedback is welcome.
 
-### Instrucctions to give it a run:
+### Instructions to give it a run:
 
 Install dependencies:
 
@@ -13,7 +13,7 @@ Install dependencies:
 yarn install
 ```
 
-Watch/Build projects for development:
+Watch/build projects for development:
 
 ```bash
 yarn watch
@@ -28,18 +28,18 @@ cd examples/simple_benchmark/
 Run the benchmark
 
 ```bash
-best --interactions 3
+npx best --interactions 3
 ```
 
-Enjoy!
+Be delighted!
 
 ### Example benchmark test
 
-You can find this example under examples/simple_benchmark/src/simple-item/__benchmarks__
+You can find this example under `examples/simple_benchmark/src/simple-item/__benchmarks__`
 
 ```javascript
-import Ctor from "simple-item";
-import { createElement } from "engine";
+import Ctor from 'simple-item';
+import { createElement } from 'engine';
 
 describe('benchmarking simple item', () => {
     benchmark('create and render', () => {
