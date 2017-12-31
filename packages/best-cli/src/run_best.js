@@ -1,7 +1,7 @@
 import globby from "globby";
 import { buildBenchmarks } from "best-build";
 import { runBenchmarks } from "best-runner";
-import {buildStateMessager, runnerMessager } from "best-messager";
+import { buildStateMessager, runnerMessager } from "best-messager";
 import { storeResults } from "best-exporter";
 import { analyzeBenchmarks } from "best-analyzer";
 import path from "path";
@@ -24,12 +24,12 @@ async function getBenchmarkTests(configs, globalConfig) {
 
 async function buildBundleBenchmarks(benchmarksTests, globalConfig) {
     const bundle = await Promise.all(
-        benchmarksTests.map(async ({ matches, config }) =>
+        benchmarksTests.map(async({ matches, config }) =>
             buildBenchmarks(matches, config, globalConfig))
     );
     // Flatten the per-project benchmarks tests
-    return bundle.reduce((benchmarks, bundle) => {
-        benchmarks.push(...bundle);
+    return bundle.reduce((benchmarks, b) => {
+        benchmarks.push(...b);
         return benchmarks;
     }, []);
 }
