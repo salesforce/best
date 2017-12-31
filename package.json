@@ -12,7 +12,8 @@
     "clean": "lerna run clean && lerna clean --yes && rm -rf node_modules",
     "build": "node scripts/build.js",
     "watch": "yarn build && node ./scripts/watch.js",
-    "release": "yarn run prepublish && lerna publish --exact --force-publish=*"
+    "test" : "echo 'No tests yet'",
+    "release": "yarn run prepublish && lerna publish --exact --force-publish=* --registry='https://npm.lwcjs.org'"
   },
   "devDependencies": {
     "string-length": "2.0.0",
