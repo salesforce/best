@@ -1,0 +1,17 @@
+{
+  "name": "best-agent",
+  "version": "0.0.1",
+  "description": "Best Agent",
+  "keywords": [
+    "Best",
+    "LWC"
+  ],
+  "main": "build/index.js",
+  "module": "src/index.js",
+  "dependencies": {
+    "chalk": "~2.3.0",
+    "express": "~4.16.2",
+    "socket.io": "~2.0.4",
+    "socket.io-file": "~2.0.2"
+  }
+}
