@@ -36,7 +36,7 @@ export async function run(maybeArgv, project) {
         const projects = getProjectListFromCLIArgs(argsCLI, project);
         await runCLI(argsCLI, projects);
     } catch (error) {
-        window.console.log(error);
+        console.log(error);
         process.exit(1);
         throw error;
     }
@@ -64,7 +64,6 @@ export async function runCLI(argsCLI, projects) {
             process.stdout.write(`\n - Cleared: ${config.benchmarkOutput}\n`);
         });
     }
-
     const results = await runBest(globalConfig, configs, outputStream);
 
     if (!results) {

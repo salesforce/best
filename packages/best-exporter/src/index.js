@@ -3,7 +3,7 @@ import rimraf from "rimraf";
 import path from "path";
 import { ncp } from "ncp";
 import { formatEnvironment } from "./md-formatter";
-import { stringify } from "./pretty-json";;
+import { stringify } from "./pretty-json";
 import fs from "fs";
 
 function copyArtifacts(benchmarkFolder, outputFolder) {
@@ -22,7 +22,7 @@ function formatJSON(json) {
     return stringify(json, {indent: 2, maxLength: 90 });
 }
 
-export async function storeResults(benchmarkResults, globalConfig) {
+export function storeResults(benchmarkResults, globalConfig) {
     return Promise.all(benchmarkResults.map(async (benchmarkResult) => {
         const { benchmarkName, benchmarkSignature, proyectConfig, environment, results, stats } = benchmarkResult;
         const { benchmarkOutput, cacheDirectory } = proyectConfig;

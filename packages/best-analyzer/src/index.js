@@ -38,7 +38,7 @@ function collectResults({ name, duration, runDuration, benchmarks}, collector, p
 
 export async function analyzeBenchmarks(benchmarkResults) {
     return Promise.all(benchmarkResults.map(async (benchmarkResult) => {
-        const {results } = benchmarkResult;
+        const { results } = benchmarkResult;
         const collector = results.reduce((c, result) => collectResults(result, c), {});
 
         benchmarkResult.stats = Object.keys(collector).reduce((stats, bName) => {

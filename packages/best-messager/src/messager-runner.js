@@ -32,10 +32,14 @@ const printState = (state) => {
     }
 };
 
-const printDisplayName = (relativeDir) => {
-    const dirname = path.dirname(relativeDir);
-    const basename = path.basename(relativeDir);
-    return chalk.dim(dirname + path.sep) + chalk.bold(basename);
+const printDisplayPath = (relativeDir) => {
+    if (relativeDir) {
+        const dirname = path.dirname(relativeDir);
+        const basename = path.basename(relativeDir);
+        return chalk.dim(dirname + path.sep) + chalk.bold(basename);
+    }
+
+    return '';
 };
 
 const generateProgressState = (progress, { iterations, maxDuration }) => {
@@ -98,15 +102,13 @@ export default ({
 
     initRun(benchmarksBundle, globalConfig, outputStream) {
         this._out = outputStream.write.bind(outputStream);
-        const benchmarksState = benchmarksBundle.reduce((map, {
-            benchmarkName,
-            benchmarkEntry,
-            proyectConfig
-        }) => {
-            map[benchmarkEntry] = {
-                displayName: benchmarkName,
-                displayPath: path.relative(proyectConfig.cacheDirectory, benchmarkEntry),
+        const benchmarksState = benchmarksBundle.reduce((map, { benchmarkName, benchmarkEntry, proyectConfig }) => {
+            map[benchmarkName] = {
                 state: BUILD_STATE.QUEUED,
+                opts: {
+                    displayName: benchmarkName,
+                    displayPath: path.relative(proyectConfig.cacheDirectory, benchmarkEntry)
+                }
             };
 
             return map;
@@ -118,9 +120,12 @@ export default ({
         };
         this._write();
     },
-    onBenchmarkStart(benchmarkEntry) {
-        this._running = benchmarkEntry;
-        const bench = this._state.benchmarks[benchmarkEntry];
+    onBenchmarkStart(benchmarkName, overrideOpts) {
+        this._running = benchmarkName;
+        const bench = this._state.benchmarks[benchmarkName];
+        if (overrideOpts) {
+            Object.assign(bench.opts, overrideOpts);
+        }
         bench.state = BUILD_STATE.RUNNING;
         this._update();
     },
@@ -128,9 +133,9 @@ export default ({
         this._state.progress = generateProgressState(state, opts);
         this._debounceUpdate();
     },
-    onBenchmarkEnd(benchmarkEntry) {
+    onBenchmarkEnd(benchmarkName) {
         this._running = null;
-        const bench = this._state.benchmarks[benchmarkEntry];
+        const bench = this._state.benchmarks[benchmarkName];
         bench.state = BUILD_STATE.DONE;
         this._update();
     },
@@ -165,13 +170,13 @@ export default ({
 
         let buffer = Object.keys(benchmarks).reduce((str, key) => {
             const benchState = benchmarks[key];
-            str += printState(benchState.state) + printDisplayName(benchState.displayPath) + '\n';
+            str += printState(benchState.state) + printDisplayPath(benchState.opts.displayPath) + '\n';
             return str;
         }, '\n' + INIT_RUNNING_TEXT);
 
         if (benchmarkRunning && progress) {
             buffer += [
-                '\n ' + PROGRESS_TEXT + chalk.bold.black(benchmarkRunning.displayName) + ' \n',
+                '\n ' + PROGRESS_TEXT + chalk.bold.black(benchmarkRunning.opts.displayName) + ' \n',
                 chalk.bold.black('Avg iteration:        ') + progress.avgIteration.toFixed(2) + 'ms',
                 chalk.bold.black('Completed iterations: ') + progress.executedIterations,
             ].join('\n') + '\n\n';

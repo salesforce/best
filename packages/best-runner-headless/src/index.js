@@ -117,7 +117,8 @@ async function normalizeEnvironment(browser, proyectConfig, globalConfig) {
     };
 }
 
-export async function run(benchmarkEntry, proyectConfig, globalConfig, messager) {
+export async function run( { benchmarkName, benchmarkEntry }, proyectConfig, globalConfig, messager) {
+    messager.onBenchmarkStart(benchmarkName);
     return puppeteer.launch(PUPPETEER_OPTIONS).then(async browser => {
         const opts =  normalizeRuntimeOptions(proyectConfig);
         const state =  initializeBenchmarkState(opts);
@@ -128,6 +129,7 @@ export async function run(benchmarkEntry, proyectConfig, globalConfig, messager)
 
         const benchmarkResults = await runIterations(page, state, opts, messager);
         await browser.close();
+        messager.onBenchmarkEnd(benchmarkName);
         return { results: benchmarkResults.results, environment };
     });
 }

@@ -11,9 +11,11 @@
     "LWC"
   ],
   "bin": {
-    "best": "./bin/best.js"
+    "best": "./bin/best.js",
+    "best-agent": "./bin/best-agent.js"
   },
   "dependencies": {
-    "best-cli": "0.0.1"
+    "best-cli": "0.0.1",
+    "best-agent": "0.0.1"
   }
 }

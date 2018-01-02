@@ -1,0 +1,16 @@
+{
+  "name": "best-runner-remote",
+  "version": "0.0.1",
+  "description": "Best Runner (Headless)",
+  "keywords": [
+    "Best",
+    "Runner",
+    "LWC"
+  ],
+  "main": "build/index.js",
+  "module": "src/index.js",
+  "dependencies": {
+    "tar": "~4.2.0",
+    "socket.io-client": "~2.0.4"
+  }
+}
