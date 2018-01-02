@@ -20,7 +20,6 @@ export async function runBenchmark({ benchmarkName, benchmarkEntry, benchmarkSig
     results.benchmarkName = benchmarkName;
     results.benchmarkEntry = benchmarkEntry;
     results.projectConfig = projectConfig;
-    results.projectName = projectConfig.projectName;
 
     return results;
 }
