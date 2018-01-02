@@ -200,6 +200,7 @@ function _getConfigs(options) {
             rootDir: options.rootDir,
             roots: options.roots,
 
+            projectName: options.projectName,
             benchmarkRunner: options.benchmarkRunner,
             benchmarkRunnerConfig: options.benchmarkRunnerConfig,
             benchmarkEnvironment: options.benchmarkEnvironment,

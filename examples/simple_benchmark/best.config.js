@@ -1,4 +1,5 @@
 module.exports = {
+    projectName: "perf-best-example",
     plugins: {
         "rollup-plugin-lwc-compiler": {
             "rootDir": "<rootDir>/src/"
