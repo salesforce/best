@@ -20,6 +20,6 @@ export async function getSystemInfo() {
             cores: cpu.cores
         },
         os: { platform, distro, release, kernel, arch },
-        load: { avgload, currentload }
+        load: { cpuLoad: currentload }
     };
 }

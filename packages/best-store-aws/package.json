@@ -1,0 +1,14 @@
+{
+  "name": "best-store-aws",
+  "version": "0.0.1",
+  "description": "Best Store AWS",
+  "keywords": [
+    "Best",
+    "LWC"
+  ],
+  "main": "build/index.js",
+  "module": "src/index.js",
+  "dependencies": {
+    "aws-sdk": "~2.176.0"
+  }
+}

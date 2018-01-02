@@ -14,6 +14,7 @@ const BROWSER_ARGS = [
     '--ignore-certificate-errors',
     '--enable-precise-memory-info',
 ];
+
 const UPDATE_INTERVAL = 300;
 const PUPPETEER_OPTIONS = { args: BROWSER_ARGS };
 
@@ -108,7 +109,6 @@ async function normalizeEnvironment(browser, projectConfig, globalConfig) {
                 benchmarkIterations
             },
             global: {
-                version: "alpha",
                 commitHash: globalConfig.gitCommit,
                 hasLocalGitChanges: globalConfig.gitLocalChanges
 

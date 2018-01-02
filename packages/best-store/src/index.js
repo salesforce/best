@@ -36,7 +36,6 @@ export function storeResults(benchmarkResults, globalConfig) {
 
         // Environment
         fs.writeFileSync(path.resolve(outputFolder, 'environment.md'), formatEnvironment(environment), 'utf8');
-        fs.writeFileSync(path.resolve(outputFolder, 'environment.json'), formatJSON(environment), 'utf8');
 
         // Results
         fs.writeFileSync(path.resolve(outputFolder, 'stats.json'), formatJSON(stats), 'utf8');
