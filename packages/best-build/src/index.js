@@ -26,18 +26,18 @@ function addResolverPlugins({ plugins }) {
     });
 }
 
-export async function buildBenchmark(entry, proyectConfig, globalConfig) {
+export async function buildBenchmark(entry, projectConfig, globalConfig) {
     buildStateMessager.onBenchmarkBuildStart(entry);
 
     const ext = path.extname(entry);
     const benchmarkName = path.basename(entry, ext);
-    const benchmarkFolder = path.join(proyectConfig.cacheDirectory, benchmarkName);
+    const benchmarkFolder = path.join(projectConfig.cacheDirectory, benchmarkName);
     const benchmarkJSFileName = benchmarkName + ext;
     const inputOptions = Object.assign({}, BASE_ROLLUP_INPUT, {
         input: entry,
         plugins: [
             benchmarkRollup(),
-            ...addResolverPlugins(proyectConfig),
+            ...addResolverPlugins(projectConfig),
         ]
     });
 
@@ -61,11 +61,11 @@ export async function buildBenchmark(entry, proyectConfig, globalConfig) {
         benchmarkFolder,
         benchmarkSignature: md5(code),
         benchmarkEntry: htmlPath,
-        proyectConfig,
+        projectConfig,
         globalConfig
     };
 }
 
-export async function buildBenchmarks(tests, proyectConfig, globalConfig) {
-    return Promise.all(tests.map(test => buildBenchmark(test, proyectConfig, globalConfig)));
+export async function buildBenchmarks(tests, projectConfig, globalConfig) {
+    return Promise.all(tests.map(test => buildBenchmark(test, projectConfig, globalConfig)));
 }

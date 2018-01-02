@@ -24,8 +24,8 @@ function formatJSON(json) {
 
 export function storeResults(benchmarkResults, globalConfig) {
     return Promise.all(benchmarkResults.map(async (benchmarkResult) => {
-        const { benchmarkName, benchmarkSignature, proyectConfig, environment, results, stats } = benchmarkResult;
-        const { benchmarkOutput, cacheDirectory } = proyectConfig;
+        const { benchmarkName, benchmarkSignature, projectConfig, environment, results, stats } = benchmarkResult;
+        const { benchmarkOutput, cacheDirectory } = projectConfig;
         const outputFolder = path.resolve(benchmarkOutput, `${benchmarkName}_${benchmarkSignature.substr(0, 6)}`);
         const artifactsFolder = path.resolve(outputFolder, 'artifacts');
         const benchmarkFolder = path.resolve(cacheDirectory, benchmarkName);

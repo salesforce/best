@@ -5,12 +5,12 @@ import SocketIOFile from "./file-uploader";
 import { createTarBundle } from "./create-tar";
 import { preRunMessager } from "best-messager";
 
-function proxifyRunner(benchmarkEntryBundle, runnerConfig, proyectConfig, globalConfig, messager) {
+function proxifyRunner(benchmarkEntryBundle, runnerConfig, projectConfig, globalConfig, messager) {
     return new Promise(async (resolve, reject) => {
         const { benchmarkName, benchmarkEntry, benchmarkSignature } = benchmarkEntryBundle;
         const { host, options, remoteRunner } = runnerConfig;
         const bundleDirname = path.dirname(benchmarkEntry);
-        const remoteProyectConfig = Object.assign({}, proyectConfig, { benchmarkRunner: remoteRunner });
+        const remoteprojectConfig = Object.assign({}, projectConfig, { benchmarkRunner: remoteRunner });
         const tarBundle = path.resolve(bundleDirname, `${benchmarkName}.tgz`);
 
         await createTarBundle(bundleDirname, benchmarkName);
@@ -63,12 +63,12 @@ function proxifyRunner(benchmarkEntryBundle, runnerConfig, proyectConfig, global
                 resolve({ results, environment });
             });
 
-            socket.emit('benchmark_task', { benchmarkName, benchmarkSignature, proyectConfig: remoteProyectConfig, globalConfig });
+            socket.emit('benchmark_task', { benchmarkName, benchmarkSignature, projectConfig: remoteprojectConfig, globalConfig });
         });
     });
 }
 
-export function run(benchmarkEntryBundle, proyectConfig, globalConfig, messager) {
-    const { benchmarkRunnerConfig } = proyectConfig;
-    return proxifyRunner(benchmarkEntryBundle, benchmarkRunnerConfig, proyectConfig, globalConfig, messager);
+export function run(benchmarkEntryBundle, projectConfig, globalConfig, messager) {
+    const { benchmarkRunnerConfig } = projectConfig;
+    return proxifyRunner(benchmarkEntryBundle, benchmarkRunnerConfig, projectConfig, globalConfig, messager);
 }

@@ -69,12 +69,12 @@ async function runIterations(page, state, opts, messager) {
     return runServerIterations(page, state, opts, messager);
 }
 
-function normalizeRuntimeOptions(proyectConfig) {
-    const { benchmarkIterations, benchmarkOnClient } = proyectConfig;
+function normalizeRuntimeOptions(projectConfig) {
+    const { benchmarkIterations, benchmarkOnClient } = projectConfig;
     const definedIterations =  Number.isInteger(benchmarkIterations);
     // For benchmarking on the client or a defined number of iterations duration is irrelevant
-    const maxDuration = definedIterations ? 1 : proyectConfig.benchmarkMaxDuration;
-    const minSampleCount = definedIterations ? benchmarkIterations : proyectConfig.benchmarkMinIterations;
+    const maxDuration = definedIterations ? 1 : projectConfig.benchmarkMaxDuration;
+    const minSampleCount = definedIterations ? benchmarkIterations : projectConfig.benchmarkMinIterations;
 
     return {
         maxDuration,
@@ -93,8 +93,8 @@ function initializeBenchmarkState(opts) {
     };
 }
 
-async function normalizeEnvironment(browser, proyectConfig, globalConfig) {
-    const { benchmarkOnClient, benchmarkRunner, benchmarkEnvironment, benchmarkIterations } = proyectConfig;
+async function normalizeEnvironment(browser, projectConfig, globalConfig) {
+    const { benchmarkOnClient, benchmarkRunner, benchmarkEnvironment, benchmarkIterations } = projectConfig;
     const hardware = await getSystemInfo();
     const version = await browser.version();
     return {
@@ -117,12 +117,12 @@ async function normalizeEnvironment(browser, proyectConfig, globalConfig) {
     };
 }
 
-export async function run( { benchmarkName, benchmarkEntry }, proyectConfig, globalConfig, messager) {
+export async function run( { benchmarkName, benchmarkEntry }, projectConfig, globalConfig, messager) {
     messager.onBenchmarkStart(benchmarkName);
     return puppeteer.launch(PUPPETEER_OPTIONS).then(async browser => {
-        const opts =  normalizeRuntimeOptions(proyectConfig);
+        const opts =  normalizeRuntimeOptions(projectConfig);
         const state =  initializeBenchmarkState(opts);
-        const environment = await normalizeEnvironment(browser, proyectConfig, globalConfig);
+        const environment = await normalizeEnvironment(browser, projectConfig, globalConfig);
 
         const page = await browser.newPage();
         await page.goto('file:///' + benchmarkEntry);

@@ -102,12 +102,12 @@ export default ({
 
     initRun(benchmarksBundle, globalConfig, outputStream) {
         this._out = outputStream.write.bind(outputStream);
-        const benchmarksState = benchmarksBundle.reduce((map, { benchmarkName, benchmarkEntry, proyectConfig }) => {
+        const benchmarksState = benchmarksBundle.reduce((map, { benchmarkName, benchmarkEntry, projectConfig }) => {
             map[benchmarkName] = {
                 state: BUILD_STATE.QUEUED,
                 opts: {
                     displayName: benchmarkName,
-                    displayPath: path.relative(proyectConfig.cacheDirectory, benchmarkEntry)
+                    displayPath: path.relative(projectConfig.cacheDirectory, benchmarkEntry)
                 }
             };
 

@@ -61,7 +61,7 @@ jobs:
       - run: yarn install
       - run: yarn build
       - run:
-          name: Performance Test - Example proyect
+          name: Performance Test - Example project
           command: yarn perf:example
 
 

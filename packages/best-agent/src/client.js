@@ -80,7 +80,7 @@ class SocketClient extends EventEmitter {
 
     onBenchmarkTaskReceived(benchmarkConfig) {
         clearTimeout(this._timeout);
-        // Keys: { benchmarkName, benchmarkSignature, proyectConfig, globalConfig } = benchmarkConfig;
+        // Keys: { benchmarkName, benchmarkSignature, projectConfig, globalConfig } = benchmarkConfig;
         this.benchmarkConfig = benchmarkConfig;
         this.setState(STATE_CONFIG_READY);
         this.emit(STATE_CONFIG_READY);
