@@ -1,4 +1,5 @@
 import * as args from './args';
+import { generateTables } from "./output";
 import yargs from 'yargs';
 import rimraf from 'rimraf';
 import { getConfigs } from "best-config";
@@ -69,6 +70,8 @@ export async function runCLI(argsCLI, projects) {
     if (!results) {
         throw new Error('AggregatedResult must be present after test run is complete');
     }
+
+    generateTables(results, outputStream);
 
     return { globalConfig, results };
 }

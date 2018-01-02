@@ -7,6 +7,7 @@
 /packages/*/build/
 /packages/*/coverage/
 /packages/*/node_modules/
+/examples/*/node_modules/
 /__benchmark_results__/
 /packages/*/__benchmark_results__/
 /examples/*/__benchmark_results__/

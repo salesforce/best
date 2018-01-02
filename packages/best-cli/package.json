@@ -17,7 +17,8 @@
     "yargs": "~10.0.3",
     "rimraf": "~2.6.2",
     "micromatch": "~3.1.4",
-    "globby": "~7.1.1"
+    "globby": "~7.1.1",
+    "cli-table":"~0.3.1"
   },
   "devDependencies": {
     "babel-preset-env": "^1.6.1",
