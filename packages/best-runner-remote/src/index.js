@@ -3,6 +3,7 @@ import fs from "fs";
 import SocketIO from "socket.io-client";
 import SocketIOFile from "./file-uploader";
 import { createTarBundle } from "./create-tar";
+import { preRunMessager } from "best-messager";
 
 function proxifyRunner(benchmarkEntryBundle, runnerConfig, proyectConfig, globalConfig, messager) {
     return new Promise(async (resolve, reject) => {
@@ -18,47 +19,51 @@ function proxifyRunner(benchmarkEntryBundle, runnerConfig, proyectConfig, global
             return reject(new Error('Benchmark artifact not found (${tarBundle})'));
         }
 
+        preRunMessager.print(`Attempting connection with agent at ${host} ...`, process.stdout);
         const socket = SocketIO(host, options);
+
         socket.on('connect', () => {
+            preRunMessager.clear(process.stdout);
+
+            socket.on('load_benchmark', (s) => {
+                const uploader = new SocketIOFile(socket);
+                uploader.on('ready', () => {
+                    uploader.upload(tarBundle);
+                });
+            });
+
+            socket.on('running_benchmark_start', (benchName) => {
+                messager.onBenchmarkStart(benchName, {
+                    displayPath: `${host}/${benchName}`
+                });
+            });
+
+            socket.on('running_benchmark_update', ({ state, opts }) => {
+                messager.updateBenchmarkProgress(state, opts);
+            });
+            socket.on('running_benchmark_end', (benchName) => {
+                messager.onBenchmarkEnd(benchName);
+            });
+
+            socket.on('disconnect', (s) => {
+                //console.log('Disconnected??');
+            });
+
+            socket.on('state_change', (s) => {
+                // console.log('>> State change', s);
+            });
+
+            socket.on('benchmark_error', (err) => {
+                socket.disconnect();
+                reject(err);
+            });
+
+            socket.on('benchmark_results', ({ results, environment }) => {
+                socket.disconnect();
+                resolve({ results, environment });
+            });
+
             socket.emit('benchmark_task', { benchmarkName, benchmarkSignature, proyectConfig: remoteProyectConfig, globalConfig });
-        });
-
-        socket.on('load_benchmark', (s) => {
-            const uploader = new SocketIOFile(socket);
-            uploader.on('ready', () => {
-                uploader.upload(tarBundle);
-            });
-        });
-
-        socket.on('running_benchmark_start', (benchName) => {
-            messager.onBenchmarkStart(benchName, {
-                displayPath: `${host}/${benchName}`
-            });
-        });
-
-        socket.on('running_benchmark_update', ({ state, opts }) => {
-            messager.updateBenchmarkProgress(state, opts);
-        });
-        socket.on('running_benchmark_end', (benchName) => {
-            messager.onBenchmarkEnd(benchName);
-        });
-
-        socket.on('disconnect', (s) => {
-            //console.log('Disconnected??');
-        });
-
-        socket.on('state_change', (s) => {
-            // console.log('>> State change', s);
-        });
-
-        socket.on('benchmark_error', (err) => {
-            socket.disconnect();
-            reject(err);
-        });
-
-        socket.on('benchmark_results', ({ results, environment }) => {
-            socket.disconnect();
-            resolve({ results, environment });
         });
     });
 }

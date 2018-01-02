@@ -12,6 +12,8 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
+    "best-runtime": "0.0.1",
+    "best-messager": "0.0.1",
     "rollup": "~0.53.0"
   }
 }

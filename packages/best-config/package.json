@@ -9,6 +9,7 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
+    "best-regex-util": "0.0.1",
     "chalk": "~2.3.0"
   }
 }
