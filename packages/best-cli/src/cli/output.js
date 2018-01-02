@@ -1,7 +1,7 @@
 import Table from "cli-table";
 import chalk from "chalk";
 
-function generateStats(benchmarkName, stats, stream ) {
+function generateStats(benchmarkName, outputFolder, stats, stream ) {
     const table = new Table({
         head: ['Benchmark name', 'Metric', 'N', 'Mean', 'Median', 'Variance', 'MedianAbsDeviation'],
         colWidths: [32, 14, 6, 12, 12, 12, 12]
@@ -28,8 +28,12 @@ function generateStats(benchmarkName, stats, stream ) {
         });
     });
 
-    stream.write(chalk.bold.dim('\n Benchmark results for ') + chalk.bold.magentaBright(benchmarkName) + '\n');
-    stream.write(table.toString() + '\n');
+    stream.write([
+        chalk.bold.dim('\n Benchmark results for ') + chalk.bold.magentaBright(benchmarkName),
+        chalk.italic(' ' + outputFolder + '/'),
+        table.toString() + '\n'
+    ].join('\n'));
+
 }
 
 function generateEnviroment({ hardware, browser }, stream) {
@@ -47,8 +51,8 @@ function generateEnviroment({ hardware, browser }, stream) {
 
 export function generateTables(results, stream) {
     results.forEach((result) => {
-        const { benchmarkName, environment, proyectConfig } = result;
-        generateStats(benchmarkName, result.stats, stream);
+        const { benchmarkName, environment, benchmarkOutputResult } = result;
+        generateStats(benchmarkName, benchmarkOutputResult, result.stats, stream);
         generateEnviroment(environment, stream);
     });
 }

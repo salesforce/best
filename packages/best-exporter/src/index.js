@@ -42,6 +42,7 @@ export function storeResults(benchmarkResults, globalConfig) {
         fs.writeFileSync(path.resolve(outputFolder, 'stats.json'), formatJSON(stats), 'utf8');
         fs.writeFileSync(path.resolve(outputFolder, 'raw_results.json'), formatJSON(results), 'utf8');
 
+        benchmarkResult.benchmarkOutputResult = outputFolder;
         return true;
     }));
 }
