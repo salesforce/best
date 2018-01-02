@@ -201,6 +201,7 @@ function _getConfigs(options) {
             roots: options.roots,
 
             benchmarkRunner: options.benchmarkRunner,
+            benchmarkRunnerConfig: options.benchmarkRunnerConfig,
             benchmarkEnvironment: options.benchmarkEnvironment,
             benchmarkEnvironmentOptions: options.benchmarkEnvironmentOptions,
             benchmarkMaxDuration: options.benchmarkMaxDuration,

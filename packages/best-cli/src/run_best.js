@@ -28,14 +28,14 @@ async function buildBundleBenchmarks(benchmarksTests, globalConfig) {
             buildBenchmarks(matches, config, globalConfig))
     );
     // Flatten the per-project benchmarks tests
-    return bundle.reduce((benchmarks, b) => {
-        benchmarks.push(...b);
+    return bundle.reduce((benchmarks, benchBundle) => {
+        benchmarks.push(...benchBundle);
         return benchmarks;
     }, []);
 }
 
-async function runBundleBenchmarks(benchmarksBuilds, globalConfig) {
-    return runBenchmarks(benchmarksBuilds, globalConfig);
+async function runBundleBenchmarks(benchmarksBuilds, globalConfig, messager) {
+    return runBenchmarks(benchmarksBuilds, globalConfig, messager);
 }
 
 export async function runBest(globalConfig, configs, outputStream) {
@@ -46,7 +46,7 @@ export async function runBest(globalConfig, configs, outputStream) {
     buildStateMessager.finishBuild();
 
     runnerMessager.initRun(benchmarksBuilds, globalConfig, outputStream);
-    const benchmarkBundleResults = await runBundleBenchmarks(benchmarksBuilds, globalConfig);
+    const benchmarkBundleResults = await runBundleBenchmarks(benchmarksBuilds, globalConfig, runnerMessager);
     runnerMessager.finishRun();
 
     await analyzeBenchmarks(benchmarkBundleResults, globalConfig);

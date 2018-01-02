@@ -9,6 +9,7 @@ export function run(maybeArgv) {
     server.listen(PORT);
 
     app.get('/', (req, res) => res.send('BEST agent running!'));
+    process.stdout.write(`Best agent listening in port ${PORT}... \n\n`);
+
     runAgent(server);
-    process.stdout.write(`Best agent Listening in port ${PORT}... \n`);
 }

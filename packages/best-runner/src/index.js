@@ -1,22 +1,20 @@
-import { runnerMessager } from "best-messager";
-
-export async function runBenchmarks(benchmarksBuilds, globalConfig) {
+export async function runBenchmarks(benchmarksBuilds, globalConfig, messager) {
     const results = [];
-    for (const benchmarkConfig of benchmarksBuilds) {
-        const benchmarkResults = await runBenchmark(benchmarkConfig, globalConfig);
+    for (const benchmarkBuild of benchmarksBuilds) {
+        benchmarkBuild.globalConfig = globalConfig;
+        const benchmarkResults = await runBenchmark(benchmarkBuild, messager);
         results.push(benchmarkResults);
     }
 
     return results;
 }
 
-export async function runBenchmark({ benchmarkName, benchmarkEntry, benchmarkSignature, proyectConfig, globalConfig}) {
+export async function runBenchmark({ benchmarkName, benchmarkEntry, benchmarkSignature, proyectConfig, globalConfig }, messager) {
     const { benchmarkRunner } = proyectConfig;
     const runner = require(benchmarkRunner);
 
-    runnerMessager.onBenchmarkStart(benchmarkEntry);
-    const results = await runner.run(benchmarkEntry, proyectConfig, globalConfig, runnerMessager);
-    runnerMessager.onBenchmarkEnd(benchmarkEntry);
+    const benchmarkBundleName = { benchmarkName, benchmarkEntry, benchmarkSignature };
+    const results = await runner.run(benchmarkBundleName, proyectConfig, globalConfig, messager);
 
     results.benchmarkSignature = benchmarkSignature;
     results.benchmarkName = benchmarkName;
