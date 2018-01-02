@@ -32,6 +32,23 @@ function generateStats(benchmarkName, stats, stream ) {
     stream.write(table.toString() + '\n');
 }
 
+function generateEnviroment({ hardware, browser }, stream) {
+    const currentLoad = hardware.load.currentload;
+    const loadColor = currentLoad < 10 ? 'green' : currentLoad < 50 ? 'yellow' : 'red' ;
+
+    stream.write(' ');
+    stream.write([
+        'Browser version:  ' + chalk.bold.black(browser.version),
+        `Current CPU load: ${chalk[loadColor](currentLoad.toFixed(3) + '%')}`
+    ].join('\n '));
+
+    stream.write('\n\n');
+}
+
 export function generateTables(results, stream) {
-    results.forEach((result) => generateStats(result.benchmarkName, result.stats, stream));
+    results.forEach((result) => {
+        const { benchmarkName, environment, proyectConfig } = result;
+        generateStats(benchmarkName, result.stats, stream);
+        generateEnviroment(environment, stream);
+    });
 }
