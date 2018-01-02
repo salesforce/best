@@ -43,7 +43,7 @@ function generateEnviroment({ hardware, browser }, stream) {
     stream.write(' ');
     stream.write([
         'Browser version:  ' + chalk.bold.black(browser.version),
-        `Current CPU load: ${chalk[loadColor](currentLoad.toFixed(3) + '%')}`
+        `Current CPU load: ${chalk.bold[loadColor](currentLoad.toFixed(3) + '%')}`
     ].join('\n '));
 
     stream.write('\n\n');
