@@ -28,12 +28,24 @@ function hasLocalChanges(cwd) {
     });
 }
 
+function getBranch(cwd) {
+    return new Promise((resolve, reject) => {
+        const args = ["rev-parse", "--abbrev-ref", "HEAD"];
+        const child = childProcess.spawn('git', args, { cwd });
+        let stdout = '';
+        child.stdout.on('data', data => (stdout += data));
+        child.on('error', e => reject(e));
+        child.on('close', () => resolve(stdout.trim()));
+    });
+}
+
 export async function addGitInformation(options) {
     const cwd = options.rootDir;
-    const [hash, localChanges] = await Promise.all([getCurrentHash(cwd), hasLocalChanges(cwd)]);
+    const [hash, localChanges, branch] = await Promise.all([getCurrentHash(cwd), hasLocalChanges(cwd), getBranch(cwd)]);
 
     options.gitCommit = hash;
     options.gitLocalChanges = localChanges;
+    options.gitBranch = branch;
     return options;
 }
 

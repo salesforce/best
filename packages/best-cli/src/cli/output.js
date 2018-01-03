@@ -37,13 +37,13 @@ function generateStats(benchmarkName, outputFolder, stats, stream ) {
 }
 
 function generateEnviroment({ hardware, browser }, stream) {
-    const currentLoad = hardware.load.currentload;
-    const loadColor = currentLoad < 10 ? 'green' : currentLoad < 50 ? 'yellow' : 'red' ;
+    const cpuLoad = hardware.load.cpuLoad;
+    const loadColor = cpuLoad < 10 ? 'green' : cpuLoad < 50 ? 'yellow' : 'red' ;
 
     stream.write(' ');
     stream.write([
-        'Browser version:  ' + chalk.bold.black(browser.version),
-        `Current CPU load: ${chalk.bold[loadColor](currentLoad.toFixed(3) + '%')}`
+        'Browser version:    ' + chalk.bold(browser.version),
+        `Benchmark CPU load: ${chalk.bold[loadColor](cpuLoad.toFixed(3) + '%')}`
     ].join('\n '));
 
     stream.write('\n\n');
@@ -51,8 +51,8 @@ function generateEnviroment({ hardware, browser }, stream) {
 
 export function generateTables(results, stream) {
     results.forEach((result) => {
-        const { benchmarkName, environment, benchmarkOutputResult } = result;
-        generateStats(benchmarkName, benchmarkOutputResult, result.stats, stream);
-        generateEnviroment(environment, stream);
+        const { benchmarkName, benchmarkOutputResult, stats } = result;
+        generateStats(benchmarkName, benchmarkOutputResult, stats.benchmarks, stream);
+        generateEnviroment(stats.environment, stream);
     });
 }

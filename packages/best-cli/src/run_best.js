@@ -2,7 +2,7 @@ import globby from "globby";
 import { buildBenchmarks } from "best-build";
 import { runBenchmarks } from "best-runner";
 import { buildStateMessager, runnerMessager } from "best-messager";
-import { storeResults } from "best-exporter";
+import { storeResults } from "best-store";
 import { analyzeBenchmarks } from "best-analyzer";
 import path from "path";
 

@@ -17,7 +17,7 @@
     "best-build": "0.0.1",
     "best-runner": "0.0.1",
     "best-messager": "0.0.1",
-    "best-exporter": "0.0.1",
+    "best-store": "0.0.1",
     "best-analyzer": "0.0.1",
     "chalk": "~2.3.0",
     "yargs": "~10.0.3",

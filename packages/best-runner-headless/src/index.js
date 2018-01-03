@@ -14,6 +14,7 @@ const BROWSER_ARGS = [
     '--ignore-certificate-errors',
     '--enable-precise-memory-info',
 ];
+
 const UPDATE_INTERVAL = 300;
 const PUPPETEER_OPTIONS = { args: BROWSER_ARGS };
 
@@ -94,7 +95,7 @@ function initializeBenchmarkState(opts) {
 }
 
 async function normalizeEnvironment(browser, projectConfig, globalConfig) {
-    const { benchmarkOnClient, benchmarkRunner, benchmarkEnvironment, benchmarkIterations } = projectConfig;
+    const { benchmarkOnClient, benchmarkRunner, benchmarkEnvironment, benchmarkIterations, projectName } = projectConfig;
     const hardware = await getSystemInfo();
     const version = await browser.version();
     return {
@@ -102,15 +103,16 @@ async function normalizeEnvironment(browser, projectConfig, globalConfig) {
         browser: { version, options: BROWSER_ARGS },
         configuration: {
             proyect: {
+                projectName,
                 benchmarkOnClient,
                 benchmarkRunner,
                 benchmarkEnvironment,
                 benchmarkIterations
             },
             global: {
-                version: "alpha",
                 commitHash: globalConfig.gitCommit,
-                hasLocalGitChanges: globalConfig.gitLocalChanges
+                hasLocalGitChanges: globalConfig.gitLocalChanges,
+                branch: globalConfig.gitBranch
 
             }
         }
