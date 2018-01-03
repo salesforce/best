@@ -1,5 +1,5 @@
 {
-  "name": "best-messager",
+  "name": "@best/messager",
   "version": "0.0.2",
   "description": "Best messager utils",
   "keywords": [
@@ -9,6 +9,6 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
-    "best-utils": "0.0.2"
+    "@best/utils": "0.0.2"
   }
 }

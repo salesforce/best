@@ -1,6 +1,6 @@
 import path from "path";
 import chalk from "chalk";
-import { isInteractive } from 'best-utils';
+import { isInteractive } from '@best/utils';
 
 export const BUILD_STATE = {
     QUEUED: 'queued',

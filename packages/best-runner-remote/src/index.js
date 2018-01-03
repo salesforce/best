@@ -3,7 +3,7 @@ import fs from "fs";
 import SocketIO from "socket.io-client";
 import SocketIOFile from "./file-uploader";
 import { createTarBundle } from "./create-tar";
-import { preRunMessager } from "best-messager";
+import { preRunMessager } from "@best/messager";
 
 function proxifyRunner(benchmarkEntryBundle, runnerConfig, projectConfig, globalConfig, messager) {
     return new Promise(async (resolve, reject) => {

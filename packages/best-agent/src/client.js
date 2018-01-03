@@ -2,7 +2,7 @@ import SocketIOFile from "socket.io-file";
 import EventEmitter from "events";
 import path from "path";
 import { BENCHMARK_TASK, DISCONNECT, LOAD_BENCHMARK } from "./operations";
-import { cacheDirectory } from "best-utils";
+import { cacheDirectory } from "@best/utils";
 import { x as extractTar } from "tar";
 
 const STATE_QUEUED = 'queued';
