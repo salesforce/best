@@ -1,6 +1,6 @@
 {
   "name": "best",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Best",
   "scripts": {
     "lint": "eslint src/",
@@ -15,7 +15,7 @@
     "best-agent": "./bin/best-agent.js"
   },
   "dependencies": {
-    "best-cli": "0.0.1",
-    "best-agent": "0.0.1"
+    "best-agent": "0.0.2",
+    "best-cli": "0.0.2"
   }
 }

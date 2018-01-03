@@ -1,6 +1,6 @@
 {
   "name": "best-runner",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Best Runner",
   "keywords": [
     "Best",
@@ -10,6 +10,6 @@
   "module": "src/index.js",
   "dependencies": {
     "chalk": "~2.3.0",
-    "puppeteer" : "0.13.0"
+    "puppeteer": "0.13.0"
   }
 }

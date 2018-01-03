@@ -1,6 +1,6 @@
 {
   "name": "best-cli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Best CLI",
   "scripts": {
     "lint": "eslint src/"
@@ -13,18 +13,18 @@
     "best": "./bin/best.js"
   },
   "dependencies": {
-    "best-config": "0.0.1",
-    "best-build": "0.0.1",
-    "best-runner": "0.0.1",
-    "best-messager": "0.0.1",
-    "best-store": "0.0.1",
-    "best-analyzer": "0.0.1",
+    "best-analyzer": "0.0.2",
+    "best-build": "0.0.2",
+    "best-config": "0.0.2",
+    "best-messager": "0.0.2",
+    "best-runner": "0.0.2",
+    "best-store": "0.0.2",
     "chalk": "~2.3.0",
-    "yargs": "~10.0.3",
-    "rimraf": "~2.6.2",
-    "micromatch": "~3.1.4",
+    "cli-table": "~0.3.1",
     "globby": "~7.1.1",
-    "cli-table":"~0.3.1"
+    "micromatch": "~3.1.4",
+    "rimraf": "~2.6.2",
+    "yargs": "~10.0.3"
   },
   "devDependencies": {
     "babel-preset-env": "^1.6.1",
