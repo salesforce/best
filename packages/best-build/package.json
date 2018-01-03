@@ -1,6 +1,6 @@
 {
   "name": "@best/build",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Best build",
   "scripts": {
     "lint": "eslint src/"
@@ -12,8 +12,8 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
-    "@best/messager": "0.0.2",
-    "@best/runtime": "0.0.2",
+    "@best/messager": "0.0.3",
+    "@best/runtime": "0.0.3",
     "rollup": "~0.53.0"
   }
 }
