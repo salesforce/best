@@ -11,6 +11,7 @@
     "scripts": {
         "clean": "lerna run clean && lerna clean --yes && rm -rf node_modules",
         "lint": "lerna run lint",
+        "prepublish": "yarn build",
         "build": "node scripts/build.js",
         "watch": "yarn build && node ./scripts/watch.js",
         "test": "echo 'No tests yet'",
