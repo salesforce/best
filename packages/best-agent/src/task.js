@@ -1,6 +1,6 @@
 import EventEmitter from "events";
 import SocketClient from "./client";
-import { runBenchmark } from "best-runner";
+import { runBenchmark } from "@best/runner";
 
 const WAITING_FOR_CONFIG = 'waiting_for_config';
 const WAITING_FOR_BENCHMARK = 'waiting_for_benchmark';

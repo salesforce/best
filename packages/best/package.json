@@ -13,7 +13,7 @@
   ],
   "bin": {
     "best": "./bin/best.js",
-    "@best/agent": "./bin/best-agent.js"
+    "best-agent": "./bin/best-agent.js"
   },
   "dependencies": {
     "best-agent": "0.0.3",
