@@ -11,5 +11,6 @@ module.exports = {
         "host": "http://localhost:5000",
         "options": { path: '/best' },
         "remoteRunner": "best-runner-headless"
-    }
+    },
+
 };

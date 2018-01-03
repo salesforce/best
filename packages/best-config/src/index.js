@@ -77,8 +77,8 @@ function setFromArgs(initialOptions, argsCLI) {
         .filter(key => argsCLI[key] !== undefined && specialArgs.indexOf(key) === -1)
         .reduce((options, key) => {
             switch (key) {
-                case 'env':
-                    options.testEnvironment = argsCLI[key];
+                case 'externalStorage':
+                    options.externalStorage = argsCLI[key];
                     break;
                 case 'iterations':
                     options.benchmarkIterations = argsCLI[key];
@@ -174,13 +174,15 @@ function _getConfigs(options) {
         globalConfig: Object.freeze({
             detectLeaks: options.detectLeaks,
             outputFile: options.outputFile,
+            externalStorage: options.externalStorage,
             projects: options.projects,
             rootDir: options.rootDir,
             testNamePattern: options.testNamePattern,
             testPathPattern: options.testPathPattern,
             verbose: options.verbose,
             gitCommit: options.gitCommit,
-            gitLocalChanges: options.gitLocalChanges
+            gitLocalChanges: options.gitLocalChanges,
+            gitBranch: options.gitBranch,
         }),
         projectConfig: Object.freeze({
             cache: options.cache,

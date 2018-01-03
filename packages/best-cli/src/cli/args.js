@@ -40,11 +40,13 @@ export const options = {
             'Clear all generated benchmarks from the `benchmarkOutput` folder',
         type: 'boolean',
     },
-    env: {
+    externalStorage: {
+        default: undefined,
         description:
-            'The test environment used for all tests. This can point to ' +
-            'any file or node module. Examples: `jsdom`, `node` or ' +
-            '`path/to/my-environment.js`',
+            'This option allows to save the results in an arbitrary storage system.' +
+            'This strage must be a node module that exports a function ' +
+            'called `storeResults`, expecting benchmarkResults as the first argument ' +
+            'and a globalConfig as the second argument',
         type: 'string',
     }
 };
