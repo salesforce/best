@@ -1,5 +1,5 @@
 # Best
-Delightful JavaScript performance benchmarking.
+Delightful JavaScript performance benchmarking. It's like Jest but for benchmarking ;)
 
 ## Getting Started
 
@@ -28,7 +28,7 @@ cd examples/simple_benchmark/
 Run the benchmark
 
 ```bash
-npx best --interactions 3
+best --interactions 3
 ```
 
 Be delighted!
