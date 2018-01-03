@@ -1,6 +1,8 @@
 import AWS from "aws-sdk";
 import path from "path";
 import chalk from "chalk";
+import { lookup } from "mime-types";
+
 const AWS_TEXT = chalk.reset.inverse.yellow.bold(' S3-PUSH  ') + ' ';
 
 export class S3 {
@@ -30,7 +32,12 @@ export class S3 {
         const bucket = this.bucket;
 
         return new Promise((resolve, reject) => {
-            s3.putObject({ Bucket: bucket, Key: url, Body: body }, (err, data) => {
+            s3.putObject({
+                Bucket: bucket,
+                Key: url,
+                Body: body,
+                ContentType: lookup(url) || undefined
+            }, (err, data) => {
                 if (err) {
                     return reject(err);
                 }
