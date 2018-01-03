@@ -13,12 +13,12 @@
     "best": "./bin/best.js"
   },
   "dependencies": {
-    "best-analyzer": "0.0.2",
-    "best-build": "0.0.2",
-    "best-config": "0.0.2",
-    "best-messager": "0.0.2",
-    "best-runner": "0.0.2",
-    "best-store": "0.0.2",
+    "@best/analyzer": "0.0.2",
+    "@best/build": "0.0.2",
+    "@best/config": "0.0.2",
+    "@best/messager": "0.0.2",
+    "@best/runner": "0.0.2",
+    "@best/store": "0.0.2",
     "chalk": "~2.3.0",
     "cli-table": "~0.3.1",
     "globby": "~7.1.1",

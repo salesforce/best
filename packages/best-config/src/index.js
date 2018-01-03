@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import chalk from 'chalk';
-import { replacePathSepForRegex } from "best-regex-util";
+import { replacePathSepForRegex } from "@best/regex-util";
 import { PACKAGE_JSON, BEST_CONFIG } from "./constants";
 import { addGitInformation } from "./git";
 

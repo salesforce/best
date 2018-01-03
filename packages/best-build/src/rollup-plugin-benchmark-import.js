@@ -24,7 +24,7 @@ function resolveModuleEntryFromPackage(module) {
     return modulePath;
 }
 
-const BENCHMARK_RUNTIME_MODULE = 'best-runtime';
+const BENCHMARK_RUNTIME_MODULE = '@best/runtime';
 const BENCHMARK_IMPORT = `import { ${PRIMITIVES.join(',')} } from "${BENCHMARK_RUNTIME_MODULE}" \n`;
 
 export default function () {

@@ -2,8 +2,8 @@ import * as args from './args';
 import { generateTables } from "./output";
 import yargs from 'yargs';
 import rimraf from 'rimraf';
-import { getConfigs } from "best-config";
-import { preRunMessager } from "best-messager";
+import { getConfigs } from "@best/config";
+import { preRunMessager } from "@best/messager";
 import { runBest } from "../run_best";
 
 function buildArgs(maybeArgv) {

@@ -1,4 +1,4 @@
-import { clearLine, isInteractive } from 'best-utils';
+import { clearLine, isInteractive } from '@best/utils';
 
 import chalk from 'chalk';
 
