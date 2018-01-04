@@ -33,5 +33,5 @@ export function storeBenchmarkResults(fileMap, { benchmarkName, benchmarkSignatu
 export async function getBenchmarkStats(projectName, baseCommit) {
     const s3 = getS3Instance();
     const benchmarks = await s3.listBenchmarks(projectName);
-    console.log(benchmarks);
+    //console.log(benchmarks);
 }
