@@ -10,13 +10,13 @@
     "scripts": {
         "clean": "lerna run clean && lerna clean --yes && rm -rf node_modules",
         "lint": "lerna run lint",
-        "prepublish": "yarn build",
+        "prepare": "yarn build",
         "build": "node scripts/build.js",
         "watch": "yarn build && node ./scripts/watch.js",
         "test": "echo 'No tests yet'",
         "perf:example": "cd examples/simple_benchmark && yarn perf",
-        "release": "yarn run prepublish && lerna publish --exact --force-publish=* --registry='https://npm.lwcjs.org'",
-        "release:internal": "yarn run prepublish && lerna publish --exact --force-publish=* --skip-git --repo-version `node -pe \"require('./lerna.json').version\"` --yes --registry='https://nexus.soma.salesforce.com/nexus/content/repositories/npmjs-internal/'"
+        "release": "yarn prepare && lerna publish --exact --force-publish=* --registry='https://npm.lwcjs.org'",
+        "release:internal": "yarn prepare && lerna publish --exact --force-publish=* --skip-git --repo-version `node -pe \"require('./lerna.json').version\"` --yes --registry='https://nexus.soma.salesforce.com/nexus/content/repositories/npmjs-internal/'"
     },
     "devDependencies": {
         "babel-core": "^6.26.0",
