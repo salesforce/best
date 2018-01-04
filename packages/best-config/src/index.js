@@ -24,7 +24,11 @@ function readConfigAndSetRootDir(configPath) {
     }
 
     if (configPath.endsWith(PACKAGE_JSON)) {
-        configObject = configObject.best || {};
+        configObject = configObject.best;
+    }
+
+    if (!configObject) {
+        throw new Error('Couldn\'t find any configuration for Best.');
     }
 
     if (configObject.rootDir) {
@@ -228,6 +232,7 @@ export async function readConfig(argsCLI, packageRoot) {
     const configPath = resolveConfigPath(customConfigPath, process.cwd());
     const rawOptions = readConfigAndSetRootDir(configPath);
     const options = normalize(rawOptions, argsCLI);
+
     try {
         await addGitInformation(options);
     } catch (e) { /*Unable to get git info */ }

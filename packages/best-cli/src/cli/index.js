@@ -2,8 +2,9 @@ import * as args from './args';
 import { generateTables } from "./output";
 import yargs from 'yargs';
 import rimraf from 'rimraf';
+import chalk from "chalk";
 import { getConfigs } from "@best/config";
-import { preRunMessager } from "@best/messager";
+import { preRunMessager, errorMessager } from "@best/messager";
 import { runBest } from "../run_best";
 
 function buildArgs(maybeArgv) {
@@ -37,7 +38,9 @@ export async function run(maybeArgv, project) {
         const projects = getProjectListFromCLIArgs(argsCLI, project);
         await runCLI(argsCLI, projects);
     } catch (error) {
-        console.log(error);
+        const errParts = error.stack.split('\n');
+        errorMessager.print(errParts.shift());
+        console.error(errParts.join('\n'));
         process.exit(1);
         throw error;
     }
@@ -45,10 +48,15 @@ export async function run(maybeArgv, project) {
 
 export async function runCLI(argsCLI, projects) {
     const outputStream = process.stdout;
+    let rawConfigs;
+    try {
+        preRunMessager.print('Determining benckmark suites to run...', outputStream);
+        rawConfigs = await getConfigs(projects, argsCLI, outputStream);
+    } finally {
+        preRunMessager.clear(outputStream);
+    }
 
-    preRunMessager.print('Determining benckmark suites to run...', outputStream);
-    const { globalConfig, configs } = await getConfigs(projects, argsCLI, outputStream);
-    preRunMessager.clear(outputStream);
+    const { globalConfig, configs } = rawConfigs;
 
     if (argsCLI.clearCache) {
         configs.forEach(config => {
