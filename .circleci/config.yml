@@ -72,7 +72,9 @@ workflows:
       - build:
           filters:
             branches:
-              only: /\w+\/.*/
+              only:
+                - master
+                - /\w+\/.*/
 
       - unit_test:
           requires:
@@ -86,4 +88,6 @@ workflows:
             - build
           filters:
             branches:
-              only: /\w+\/.*/
+              only:
+                - master
+                - /\w+\/.*/
