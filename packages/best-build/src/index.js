@@ -42,7 +42,6 @@ export async function buildBenchmark(entry, projectConfig, globalConfig) {
     });
 
     const bundle = await rollup(inputOptions);
-
     const outputOptions = Object.assign({}, BASE_ROLLUP_OUTPUT, {
         file: path.join(benchmarkFolder, benchmarkJSFileName)
     });
