@@ -81,14 +81,13 @@ function setFromArgs(initialOptions, argsCLI) {
         .filter(key => argsCLI[key] !== undefined && specialArgs.indexOf(key) === -1)
         .reduce((options, key) => {
             switch (key) {
-                case 'externalStorage':
-                    options.externalStorage = argsCLI[key];
-                    break;
                 case 'iterations':
                     options.benchmarkIterations = argsCLI[key];
                     break;
 
-                default: break;
+                default:
+                    options[key] = argsCLI[key];
+                    break;
             }
             return options;
         }, {});
@@ -177,6 +176,7 @@ function _getConfigs(options) {
     return {
         globalConfig: Object.freeze({
             detectLeaks: options.detectLeaks,
+            compareStats: options.compareStats,
             outputFile: options.outputFile,
             externalStorage: options.externalStorage,
             projects: options.projects,

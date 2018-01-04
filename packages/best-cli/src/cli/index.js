@@ -6,6 +6,7 @@ import chalk from "chalk";
 import { getConfigs } from "@best/config";
 import { preRunMessager, errorMessager } from "@best/messager";
 import { runBest } from "../run_best";
+import { compareStats } from "../compare";
 
 function buildArgs(maybeArgv) {
     const argsv = yargs(maybeArgv || process.argv.slice(2))
@@ -63,7 +64,12 @@ export async function runCLI(argsCLI, projects) {
             rimraf.sync(config.cacheDirectory);
             process.stdout.write(`Cleared ${config.cacheDirectory}\n`);
         });
-        process.exit(0);
+        return process.exit(0);
+    }
+
+    if (argsCLI.compareStats) {
+        await compareStats(globalConfig, configs, outputStream);
+        return process.exit(0);
     }
 
     if (argsCLI.clearResults) {
@@ -81,5 +87,5 @@ export async function runCLI(argsCLI, projects) {
 
     generateTables(results, outputStream);
 
-    return { globalConfig, results };
+    return true;
 }

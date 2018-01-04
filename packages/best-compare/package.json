@@ -1,0 +1,14 @@
+{
+  "name": "@best/compare",
+  "version": "0.0.3",
+  "description": "Best Comparer",
+  "keywords": [
+    "Best",
+    "LWC"
+  ],
+  "main": "build/index.js",
+  "module": "src/index.js",
+  "dependencies": {
+    "chalk": "~2.3.0"
+  }
+}
