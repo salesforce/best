@@ -76,16 +76,35 @@ export const runBenchmarkIteration = async (node, opts) => {
     }
 
     if (run) {
+        // -- Before ----
+        if (process.env.NODE_ENV !== 'production') {
+            console.timeStamp('before_hooks_start');
+        }
         for (const hook of hookHandlers[HOOKS.BEFORE]) {
             await hook();
         }
+        if (process.env.NODE_ENV !== 'production') {
+            console.timeStamp('before_hooks_end');
+        }
 
+        if (process.env.NODE_ENV !== 'production') {
+            console.timeStamp('iteration_start');
+        }
+
+        // -- Run ----
         node.startedAt = formatTime(time());
         await executeBenchmark(run, opts);
         node.duration = formatTime(time() - node.startedAt);
 
+        // -- After ----
+        if (process.env.NODE_ENV !== 'production') {
+            console.timeStamp('after_hooks_start');
+        }
         for (const hook of hookHandlers[HOOKS.AFTER]) {
             await hook();
+        }
+        if (process.env.NODE_ENV !== 'production') {
+            console.timeStamp('after_hooks_end');
         }
     }
 
