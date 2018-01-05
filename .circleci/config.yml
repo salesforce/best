@@ -111,7 +111,7 @@ workflows:
             branches:
               only: /\w+\/.*/
 
-      - performance_test_example:
+      - perf_test:
           requires:
             - build
           filters:
@@ -120,7 +120,7 @@ workflows:
                 - master
                 - /\w+\/.*/
 
-      - comparing_benchmarks:
+      - compare_perf:
           requires:
             - performance_test_example
           filters:
