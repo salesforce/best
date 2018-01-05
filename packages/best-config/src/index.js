@@ -81,6 +81,9 @@ function setFromArgs(initialOptions, argsCLI) {
         .filter(key => argsCLI[key] !== undefined && specialArgs.indexOf(key) === -1)
         .reduce((options, key) => {
             switch (key) {
+                case 'iterations':
+                    options.benchmarkIterations = argsCLI[key];
+                    break;
                 case 'compareStats':
                     options[key] = argsCLI[key][0] !== undefined ? argsCLI[key].filter(Boolean) : undefined;
                     break;

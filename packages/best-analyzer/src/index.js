@@ -3,10 +3,6 @@ import { mean, median, variance, medianAbsoluteDeviation, quantile, compare } fr
 import path from "path";
 import fs from "fs";
 
-function isNonEmptyArray(arr) {
-    return arr && Array.isArray(arr) && arr.length;
-}
-
 function computeSampleStats(arr) {
     const q = quantile(arr, SAMPLES_THREESHOLD);
     const cleaned =  arr.filter(v => v <= q);
@@ -22,8 +18,8 @@ function computeSampleStats(arr) {
     };
 }
 
-function collectResults({ name, duration, runDuration, benchmarks}, collector, parent) {
-    const cNode = collector[name] || (collector[name] = { duration: [], runDuration: [], parent });
+function collectResults({ name, duration, runDuration, benchmarks}, collector) {
+    const cNode = collector[name] || (collector[name] = { duration: [], runDuration: [] });
     if (duration > 0) {
         cNode.duration.push(duration);
     }
@@ -36,17 +32,39 @@ function collectResults({ name, duration, runDuration, benchmarks}, collector, p
     return collector;
 }
 
+/*
+app: {
+ name: 'app-benchmark.js',
+    benchmarks: {
+        "benchmarking app": {
+            "create and render": {
+}
+*/
+
+function createStructure({ benchmarks, name, runDuration }, collector) {
+    if (runDuration) {
+        const newNode = collector[name];
+        newNode.name = name;
+        return newNode;
+    }
+
+    return { name, benchmarks: benchmarks.map(childNode => createStructure(childNode, collector)) };
+}
+
 export async function analyzeBenchmarks(benchmarkResults) {
     return Promise.all(benchmarkResults.map(async (benchmarkResult) => {
-        const { results, environment } = benchmarkResult;
+        const { results, environment, benchmarkName } = benchmarkResult;
+        const structure = results[0];
         const collector = results.reduce((c, result) => collectResults(result, c), {});
 
         const benchmarkStats = Object.keys(collector).reduce((stats, bName) => {
             const benchmarkMetrics = collector[bName];
             stats[bName] = Object.keys(benchmarkMetrics).reduce((mc, metric) => {
                 const list = benchmarkMetrics[metric];
-                if (isNonEmptyArray(list)) {
-                    mc[metric] = computeSampleStats(benchmarkMetrics[metric]);
+                if (Array.isArray(list)) {
+                    if (list.length) {
+                        mc[metric] = computeSampleStats(benchmarkMetrics[metric]);
+                    }
                 } else {
                     mc[metric] = benchmarkMetrics[metric];
                 }
@@ -55,9 +73,12 @@ export async function analyzeBenchmarks(benchmarkResults) {
             return stats;
         }, {});
 
+        const benchmarkStructure = createStructure(structure, benchmarkStats);
+
         benchmarkResult.stats = {
             version: VERSION,
-            benchmarks: benchmarkStats,
+            benchmarkName,
+            benchmarks: benchmarkStructure.benchmarks,
             environment
         };
     }));
