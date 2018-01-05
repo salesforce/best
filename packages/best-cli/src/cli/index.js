@@ -2,11 +2,10 @@ import * as args from './args';
 import { generateReportTables, generateComparisonTable } from "./output";
 import yargs from 'yargs';
 import rimraf from 'rimraf';
-import chalk from "chalk";
 import { getConfigs } from "@best/config";
 import { preRunMessager, errorMessager } from "@best/messager";
 import { runBest } from "../run_best";
-import { compareStats } from "../compare";
+import { runCompare } from "../run_compare";
 
 function buildArgs(maybeArgv) {
     const argsv = yargs(maybeArgv || process.argv.slice(2))
@@ -50,8 +49,10 @@ export async function run(maybeArgv, project) {
 export async function runCLI(argsCLI, projects) {
     const outputStream = process.stdout;
     let rawConfigs;
+    let results;
+
     try {
-        preRunMessager.print('Determining benckmark suites to run...', outputStream);
+        preRunMessager.print('Looking for Best configurations...', outputStream);
         rawConfigs = await getConfigs(projects, argsCLI, outputStream);
     } finally {
         preRunMessager.clear(outputStream);
@@ -68,25 +69,26 @@ export async function runCLI(argsCLI, projects) {
     }
 
     if (globalConfig.compareStats) {
-        const comparison = await compareStats(globalConfig, configs, outputStream);
-        generateComparisonTable(comparison, outputStream);
-        return process.exit(0);
-    }
+        results = await runCompare(globalConfig, configs, outputStream);
+        generateComparisonTable(results, outputStream);
 
-    if (argsCLI.clearResults) {
-        preRunMessager.print('Clearing previous benchmark results...', outputStream);
-        configs.forEach(config => {
-            rimraf.sync(config.benchmarkOutput);
-            process.stdout.write(`\n - Cleared: ${config.benchmarkOutput}\n`);
-        });
-    }
-    const results = await runBest(globalConfig, configs, outputStream);
+    } else {
+        if (argsCLI.clearResults) {
+            preRunMessager.print('Clearing previous benchmark results...', outputStream);
+            configs.forEach(config => {
+                rimraf.sync(config.benchmarkOutput);
+                process.stdout.write(`\n - Cleared: ${config.benchmarkOutput}\n`);
+            });
+        }
 
-    if (!results) {
-        throw new Error('AggregatedResult must be present after test run is complete');
-    }
+        results = await runBest(globalConfig, configs, outputStream);
 
-    generateReportTables(results, outputStream);
+        if (!results) {
+            throw new Error('AggregatedResult must be present after test run is complete');
+        }
+
+        generateReportTables(results, outputStream);
+    }
 
     return true;
 }

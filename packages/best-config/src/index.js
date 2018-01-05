@@ -177,6 +177,7 @@ function normalize(options, argsCLI) {
 function _getConfigs(options) {
     return {
         globalConfig: Object.freeze({
+            gitIntegration: options.gitIntegration,
             detectLeaks: options.detectLeaks,
             compareStats: options.compareStats,
             outputFile: options.outputFile,

@@ -2,7 +2,7 @@ import { preRunMessager } from "@best/messager";
 import { compareBenchmarkStats } from "@best/compare";
 
 
-export async function compareStats(globalConfig, configs, outputStream) {
+export async function runCompare(globalConfig, configs, outputStream) {
     const { externalStorage, compareStats: commits } = globalConfig;
 
     if (configs.length > 1) {

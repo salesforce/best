@@ -56,5 +56,11 @@ export const options = {
             'If --externalStorage is provided it will use that source' +
             'Otherwise it will try to find the results on the file system',
         type: 'array',
-    }
+    },
+    gitIntegration: {
+        default: undefined,
+        description:
+            'Integrates with Git, posting the results of the benchmark or comparison',
+        type: 'boolean',
+    },
 };
