@@ -1,5 +1,5 @@
 import * as args from './args';
-import { generateTables } from "./output";
+import { generateReportTables, generateComparisonTable } from "./output";
 import yargs from 'yargs';
 import rimraf from 'rimraf';
 import chalk from "chalk";
@@ -68,7 +68,8 @@ export async function runCLI(argsCLI, projects) {
     }
 
     if (globalConfig.compareStats) {
-        await compareStats(globalConfig, configs, outputStream);
+        const comparison = await compareStats(globalConfig, configs, outputStream);
+        generateComparisonTable(comparison, outputStream);
         return process.exit(0);
     }
 
@@ -85,7 +86,7 @@ export async function runCLI(argsCLI, projects) {
         throw new Error('AggregatedResult must be present after test run is complete');
     }
 
-    generateTables(results, outputStream);
+    generateReportTables(results, outputStream);
 
     return true;
 }

@@ -62,10 +62,15 @@ function generateEnviroment({ hardware, browser }, stream) {
     stream.write('\n\n');
 }
 
-export function generateTables(results, stream) {
+export function generateReportTables(results, stream) {
     results.forEach((result) => {
         const { benchmarkName, benchmarkOutputResult, stats } = result;
         generateStats(benchmarkName, benchmarkOutputResult, stats.benchmarks, stream);
         generateEnviroment(stats.environment, stream);
     });
+}
+
+
+export function generateComparisonTable(comparison, stream) {
+    console.log(comparison);
 }

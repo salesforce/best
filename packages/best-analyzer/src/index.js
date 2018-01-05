@@ -1,7 +1,5 @@
 import { SAMPLES_THREESHOLD, VERSION } from './constants';
-import { mean, median, variance, medianAbsoluteDeviation, quantile, compare } from './stats';
-import path from "path";
-import fs from "fs";
+import { mean, median, variance, medianAbsoluteDeviation, quantile, compare as compareSamples } from './stats';
 
 function computeSampleStats(arr) {
     const q = quantile(arr, SAMPLES_THREESHOLD);
@@ -83,3 +81,5 @@ export async function analyzeBenchmarks(benchmarkResults) {
         };
     }));
 }
+
+export { compareSamples };

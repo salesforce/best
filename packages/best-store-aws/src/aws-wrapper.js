@@ -3,7 +3,7 @@ import path from "path";
 import chalk from "chalk";
 import { lookup } from "mime-types";
 
-const AWS_TEXT = chalk.reset.inverse.yellow.bold(' S3-PUSH  ') + ' ';
+export const AWS_TEXT = chalk.reset.inverse.yellow.bold(' AWS-S3  ') + ' ';
 const PREFIX = 'public';
 const BENCHMARKS = 'benchmarks';
 const BENCHMARK_PREFIX = `${PREFIX}/${BENCHMARKS}`;
@@ -16,6 +16,7 @@ export class S3 {
     }
 
     async getBenchmarkUrlsForCommit(projectName, searchCommit) {
+        console.log(AWS_TEXT, `Resolving objects for commit ${searchCommit}...`);
         const branches = await this.getObjectsInFolder('commits', searchCommit);
         const branch = branches.pop();
         if (!branch) {

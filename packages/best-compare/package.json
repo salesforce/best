@@ -9,6 +9,8 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
-    "chalk": "~2.3.0"
+    "chalk": "~2.3.0",
+    "@best/analyzer": "0.0.3",
+    "@best/messager": "0.0.3"
   }
 }
