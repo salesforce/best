@@ -26,7 +26,7 @@ export async function storeBenchmarkResults(fileMap, { benchmarkName, benchmarkS
 
     await Promise.all(Object.keys(fileMap).map((file) => {
         const buffer = fs.readFileSync(fileMap[file]);
-        return s3.storeFile(file, buffer, { projectName, branch, commit, benchmarkName });
+        return s3.storeBenchmarkFile(file, buffer, { projectName, branch, commit, benchmarkName });
     }));
 
     // This will allow us to search in the bucket by commit

@@ -210,7 +210,7 @@ export class S3 {
             //     resolve(results);
             // }, []);
         });
-    },
+    }
 
     storeIndex(relativePath) {
         const url = path.join(PREFIX, relativePath, 'index.json');
