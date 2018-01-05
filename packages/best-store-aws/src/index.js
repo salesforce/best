@@ -12,26 +12,29 @@ function getS3Instance() {
     return S3_INSTANCE;
 }
 
-export function storeBenchmarkResults(fileMap, { benchmarkName, benchmarkSignature, results, projectConfig, stats, benchmarkOutputResult }, globalConfig) {
+export async function storeBenchmarkResults(fileMap, { benchmarkName, benchmarkSignature, projectConfig }, globalConfig) {
     const { gitCommit, gitBranch, gitLocalChanges } = globalConfig;
     const { projectName } = projectConfig;
 
     // Replace slashes with underscores so we prevent unambiguouus URLs
     const branch = (gitLocalChanges ? `local/${gitBranch}` : gitBranch).replace(/\//g, '_');
-    const commit = gitLocalChanges ? benchmarkSignature : gitCommit;
+    const commit = gitLocalChanges ? `${gitCommit}_${benchmarkSignature.slice(0, 7)}` : gitCommit;
 
     console.log(INIT_RUNNING_TEXT);
     const s3 = getS3Instance();
     console.log('Bucket:', `https://${s3.bucket}.s3.amazonaws.com/`, '\n');
 
-    return Promise.all(Object.keys(fileMap).map((file) => {
+    await Promise.all(Object.keys(fileMap).map((file) => {
         const buffer = fs.readFileSync(fileMap[file]);
         return s3.storeFile(file, buffer, { projectName, branch, commit, benchmarkName });
     }));
+
+    // This will allow us to search in the bucket by commit
+    await s3.storeIndex(`commits/${commit}/${branch}`);
 }
 
-export async function getBenchmarkStats(projectName, baseCommit) {
+export async function getBenchmarkStats(projectName, commit) {
     const s3 = getS3Instance();
-    const benchmarks = await s3.listBenchmarks(projectName);
+    const benchmarks = await s3.listBenchmarksPerCommit(projectName, commit);
     //console.log(benchmarks);
 }

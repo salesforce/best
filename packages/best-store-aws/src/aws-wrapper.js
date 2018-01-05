@@ -4,7 +4,8 @@ import chalk from "chalk";
 import { lookup } from "mime-types";
 
 const AWS_TEXT = chalk.reset.inverse.yellow.bold(' S3-PUSH  ') + ' ';
-const PREFIX = 'public/benchmarks';
+const PREFIX = 'public/';
+const BENCHMARK_PREFIX = 'public/benchmarks';
 export class S3 {
     constructor({
         bucket
@@ -18,7 +19,7 @@ export class S3 {
             const opts = {
                 Bucket: this.bucket,
                 Delimiter: '/',
-                Prefix: `${PREFIX}/`
+                Prefix: `${BENCHMARK_PREFIX}/`
             };
 
             this.s3.listObjectsV2(opts, (err, data) => {
@@ -41,7 +42,7 @@ export class S3 {
             const opts = {
                 Bucket: this.bucket,
                 Delimiter: '/',
-                Prefix: `${PREFIX}/${projectName}/`
+                Prefix: `${BENCHMARK_PREFIX}/${projectName}/`
             };
 
             this.s3.listObjectsV2(opts, (err, data) => {
@@ -63,7 +64,7 @@ export class S3 {
             const opts = {
                 Bucket: this.bucket,
                 Delimiter: '/',
-                Prefix: `${PREFIX}/${projectName}/${branchName}/`
+                Prefix: `${BENCHMARK_PREFIX}/${projectName}/${branchName}/`
             };
 
             this.s3.listObjectsV2(opts, (err, data) => {
@@ -80,13 +81,13 @@ export class S3 {
         });
     }
 
-    listBenchmarks(benchmarkProjectName, gitBranch) {
+    listBenchmarksPerBranch(benchmarkProjectName, gitBranch) {
         return new Promise((resolve, reject) => {
             gitBranch = (gitBranch && gitBranch.replace(/\//g, '_'));
             const opts = {
                 Bucket: this.bucket,
                 Delimiter: '/artifacts/',
-                Prefix: [`${PREFIX}/`, benchmarkProjectName, gitBranch ? `${gitBranch}/` : '/'].join('')
+                Prefix: [`${BENCHMARK_PREFIX}/`, benchmarkProjectName, gitBranch ? `${gitBranch}/` : '/'].join('')
             };
 
             this._recursiveListBenchmarks(opts, (err, results) => {
@@ -98,7 +99,7 @@ export class S3 {
                     .filter((r) => r.Key.endsWith('/stats.json'))
                     .sort((a, b) => Date.parse(a.LastModified) - Date.parse(b.LastModified))
                     .map(({ Key }) => {
-                        const parts = Key.replace(PREFIX + '/', '').split('/');
+                        const parts = Key.replace(BENCHMARK_PREFIX + '/', '').split('/');
                         const [projectName, branch, commit, benchmarkName] = parts;
                         return {
                             projectName,
@@ -111,6 +112,45 @@ export class S3 {
 
                 resolve(results);
             }, []);
+        });
+    }
+
+    listBenchmarksPerCommit(benchmarkProjectName, searchCommit) {
+        return new Promise((resolve, reject) => {
+            const opts = {
+                Bucket: this.bucket,
+                Delimiter: `/${searchCommit}/`,
+                Prefix: [`${BENCHMARK_PREFIX}/`, benchmarkProjectName, '/'].join('')
+            };
+
+            this.s3.listObjectsV2(opts, (err, data) => {
+                console.log(data);
+
+                resolve(data);
+            });
+
+            // this._recursiveListBenchmarks(opts, (err, results) => {
+            //     if (err) {
+            //         return reject(err);
+            //     }
+
+            //     results = results
+            //         .filter((r) => r.Key.endsWith('/stats.json'))
+            //         .sort((a, b) => Date.parse(a.LastModified) - Date.parse(b.LastModified))
+            //         .map(({ Key }) => {
+            //             const parts = Key.replace(PREFIX + '/', '').split('/');
+            //             const [projectName, branch, commit, benchmarkName] = parts;
+            //             return {
+            //                 projectName,
+            //                 branch: branch.replace(/_/g, '/'),
+            //                 commit,
+            //                 benchmarkName,
+            //                 stats: Key
+            //             };
+            //         });
+
+            //     resolve(results);
+            // }, []);
         });
     }
 
@@ -133,14 +173,72 @@ export class S3 {
 
         });
     }
+    findIndex(args) {
+        return new Promise((resolve, reject) => {
+            const opts = {
+                Bucket: this.bucket,
+                Delimiter: `/`,
+                Prefix: path.join(PREFIX, ...args)
+            };
 
-    storeFile(relativePath, body, {
+            this.s3.listObjectsV2(opts, (err, data) => {
+                console.log(data);
+
+                resolve(data);
+            });
+
+            // this._recursiveListBenchmarks(opts, (err, results) => {
+            //     if (err) {
+            //         return reject(err);
+            //     }
+
+            //     results = results
+            //         .filter((r) => r.Key.endsWith('/stats.json'))
+            //         .sort((a, b) => Date.parse(a.LastModified) - Date.parse(b.LastModified))
+            //         .map(({ Key }) => {
+            //             const parts = Key.replace(PREFIX + '/', '').split('/');
+            //             const [projectName, branch, commit, benchmarkName] = parts;
+            //             return {
+            //                 projectName,
+            //                 branch: branch.replace(/_/g, '/'),
+            //                 commit,
+            //                 benchmarkName,
+            //                 stats: Key
+            //             };
+            //         });
+
+            //     resolve(results);
+            // }, []);
+        });
+    },
+
+    storeIndex(relativePath) {
+        const url = path.join(PREFIX, relativePath, 'index.json');
+        const s3 = this.s3;
+        const bucket = this.bucket;
+        return new Promise((resolve, reject) => {
+            s3.putObject({
+                Bucket: bucket,
+                Key: url,
+                Body: '{}',
+                Expires: new Date(Date.now() + (1000 * 60 * 60 * 24 * 365) /* a year */),
+                ContentType: lookup(url) || undefined
+            }, (err, data) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(data);
+            });
+        });
+    }
+
+    storeBenchmarkFile(relativePath, body, {
         projectName,
         branch,
         commit,
         benchmarkName
     }) {
-        const url = path.join(PREFIX, projectName, branch, commit, benchmarkName, relativePath);
+        const url = path.join(BENCHMARK_PREFIX, projectName, branch, commit, benchmarkName, relativePath);
         const s3 = this.s3;
         const bucket = this.bucket;
 
