@@ -83,15 +83,15 @@ jobs:
           - yarn-v3-{{ .Branch }}-
 
       - run:
-        name: Make Composer executables available globally
-        command: echo 'export PATH=./node_modules/.bin:$PATH' >> $BASH_ENV
+          name: Make Composer executables available globally
+          command: echo 'export PATH=./node_modules/.bin:$PATH' >> $BASH_ENV
 
       - run: yarn install
       - run: yarn build
       - run: cd examples/simple_benchmark/
       - run:
-        name: Comparing perf examples
-        command: best --compareStats d46ad97 320b079 --externalStorage=@best/store-aws --gitIntegration
+          name: Comparing perf examples
+          command: best --compareStats d46ad97 320b079 --externalStorage=@best/store-aws --gitIntegration
 
 workflows:
   version: 2
