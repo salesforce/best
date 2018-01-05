@@ -44,7 +44,7 @@ jobs:
           name: Unit Test
           command: yarn test
 
-  performance_test_example:
+  perf_test:
     working_directory: ~/best
 
     docker:
@@ -64,7 +64,7 @@ jobs:
           name: Performance Test - Example project
           command: yarn perf:example
 
-  comparing_benchmarks:
+  compare_perf:
     working_directory: ~/best
 
     docker:
@@ -90,12 +90,12 @@ jobs:
       - run: yarn build
       - run: cd examples/simple_benchmark/
       - run:
-          name: Comparing perf examples
-          command: best --compareStats d46ad97 320b079 --externalStorage=@best/store-aws --gitIntegration
+        name: Comparing perf examples
+        command: best --compareStats d46ad97 320b079 --externalStorage=@best/store-aws --gitIntegration
 
 workflows:
   version: 2
-  ci_workflow:
+  main_workflow:
     jobs:
       - build:
           filters:
