@@ -1,9 +1,9 @@
 import { preRunMessager } from "@best/messager";
 import { compareBenchmarkStats } from "@best/compare";
-
+import { pushBenchmarkComparison } from "@best/github-integration";
 
 export async function runCompare(globalConfig, configs, outputStream) {
-    const { externalStorage, compareStats: commits } = globalConfig;
+    const { gitIntegration, externalStorage, compareStats: commits } = globalConfig;
 
     if (configs.length > 1) {
         throw new Error('WIP - Do not support multiple projects for compare just yet...');
@@ -28,5 +28,11 @@ export async function runCompare(globalConfig, configs, outputStream) {
     }
 
     preRunMessager.print('\n Fetching benchmark results to compare... \n\n', outputStream);
-    return compareBenchmarkStats(baseCommit, compareCommit, projectName, storageProvider);
+    const compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectName, storageProvider);
+
+    if (gitIntegration) {
+        await pushBenchmarkComparison(compareResults);
+    }
+
+    return compareResults;
 }

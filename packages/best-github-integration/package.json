@@ -9,6 +9,8 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
+    "@best/utils": "0.0.3",
+    "@best/messager": "0.0.3",
     "github": "^13.0.1",
     "jsonwebtoken": "8.1.0"
   }

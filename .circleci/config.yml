@@ -64,6 +64,28 @@ jobs:
           name: Performance Test - Example project
           command: yarn perf:example
 
+  comparing_benchmarks:
+    working_directory: ~/lwc
+
+    docker:
+      - image: circleci/node:8.9.3-stretch-browsers
+
+    environment:
+      - TARGET_COMMIT: $CIRCLE_SHA1
+      - BASE_COMMIT: git rev-parse master
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - yarn-v3-{{ .Branch }}-{{ checksum "package.json" }}
+          - yarn-v3-{{ .Branch }}-
+
+      - run: yarn install
+      - run: yarn build
+      - run:
+          name: Comparing perf examples
+          command: best --compareStats d46ad97 320b079 --externalStorage=@best/store-aws --gitIntegration
 
 workflows:
   version: 2
