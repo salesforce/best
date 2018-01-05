@@ -1,6 +1,7 @@
 import { S3 } from "./aws-wrapper";
 import fs from "fs";
 import chalk from "chalk";
+import fetch from "node-fetch";
 
 const INIT_RUNNING_TEXT = chalk.bold.dim('\nPushing to AWS(S3)...');
 let S3_INSTANCE;
@@ -35,6 +36,11 @@ export async function storeBenchmarkResults(fileMap, { benchmarkName, benchmarkS
 
 export async function getBenchmarkStats(projectName, commit) {
     const s3 = getS3Instance();
-    const benchmarks = await s3.listBenchmarksPerCommit(projectName, commit);
-    //console.log(benchmarks);
+    const benchmarks = await s3.getBenchmarkUrlsForCommit(projectName, commit);
+
+    return Promise.all(benchmarks.map(async (url) => {
+        const fullUrl = benchmarks[0] + '/stats.json';
+        const response = await fetch(fullUrl);
+        return response.json();
+    }));
 }
