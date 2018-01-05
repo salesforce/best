@@ -83,6 +83,7 @@ jobs:
 
       - run: yarn install
       - run: yarn build
+      - run: cd examples/simple_benchmark/
       - run:
           name: Comparing perf examples
           command: best --compareStats d46ad97 320b079 --externalStorage=@best/store-aws --gitIntegration
@@ -112,4 +113,12 @@ workflows:
             branches:
               only:
                 - master
+                - /\w+\/.*/
+
+      - comparing_benchmarks:
+          requires:
+            - performance_test_example
+          filters:
+            branches:
+              only:
                 - /\w+\/.*/
