@@ -1,5 +1,9 @@
 export async function compareBenchmarkStats(baseCommit, compareCommit, projectName, storageProvider) {
-    const statsBaseCommit = await storageProvider.getBenchmarkStats(projectName, baseCommit);
 
-    console.log(statsBaseCommit);
+    const [baseStats, compareStats] = await Promise.all([
+        storageProvider.getBenchmarkStats(projectName, baseCommit),
+        storageProvider.getBenchmarkStats(projectName, compareCommit)
+    ]);
+
+    console.log(compareStats);
 }

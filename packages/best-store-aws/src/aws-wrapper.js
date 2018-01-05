@@ -18,6 +18,9 @@ export class S3 {
     async getBenchmarkUrlsForCommit(projectName, searchCommit) {
         const branches = await this.getObjectsInFolder('commits', searchCommit);
         const branch = branches.pop();
+        if (!branch) {
+            throw new Error(`Commit ${searchCommit} could not be found in storage`);
+        }
         const benchmarks = await this.getObjectsInFolder(BENCHMARKS, projectName, branch, searchCommit);
         return benchmarks.map(bm => this.host + path.join(BENCHMARK_PREFIX, projectName, branch, searchCommit, bm));
     }
