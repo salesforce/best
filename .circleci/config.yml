@@ -122,7 +122,7 @@ workflows:
 
       - compare_perf:
           requires:
-            - performance_test_example
+            - perf_test
           filters:
             branches:
               only:
