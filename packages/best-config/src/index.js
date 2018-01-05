@@ -234,7 +234,6 @@ export async function readConfig(argsCLI, packageRoot) {
     const configPath = resolveConfigPath(customConfigPath, process.cwd());
     const rawOptions = readConfigAndSetRootDir(configPath);
     const options = normalize(rawOptions, argsCLI);
-
     try {
         await addGitInformation(options);
     } catch (e) { /*Unable to get git info */ }
@@ -251,7 +250,6 @@ export async function getConfigs(projectsFromCLIArgs, argv, outputStream) {
 
     if (projectsFromCLIArgs.length === 1) {
         const parsedConfig = await readConfig(argv, projects[0]);
-
         if (parsedConfig.globalConfig.projects) {
             // If this was a single project, and its config has `projects`
             // settings, use that value instead.
