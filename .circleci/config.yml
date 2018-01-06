@@ -87,6 +87,8 @@ jobs:
           command:
               echo '
               export PATH=./node_modules/.bin:$PATH
+              export PULL_REQUEST=${CIRCLE_PULL_REQUEST}
+              export REPO_NAME=${CIRCLE_PROJECT_REPONAME}
               export TARGET_COMMIT=${CIRCLE_SHA1}
               export BASE_COMMIT=`git rev-parse origin/master`' >> $BASH_ENV
 
