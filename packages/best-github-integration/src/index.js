@@ -8,7 +8,7 @@ export async function pushBenchmarkComparison(compareStats) {
     console.log('BASE >> ', BASE_COMMIT);
     console.log('TARGET >> ', TARGET_COMMIT);
 
-    if (!isCI()) {
+    if (!isCI) {
         //throw new Error('GitIntegration: Some of the environment configuration is not properly setup');
         console.log('SHould not log this in CI');
     }
