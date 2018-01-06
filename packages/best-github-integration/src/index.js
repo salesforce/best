@@ -15,7 +15,7 @@ export async function pushBenchmarkComparison(compareStats) {
 
     const APP = createGithubApp();
     const gitAppAuth = await APP.authAsApp();
-    const installations = gitAppAuth.apps.getInstallations({});
+    const installations = await gitAppAuth.apps.getInstallations({});
 
     console.log('>> ', installations);
 

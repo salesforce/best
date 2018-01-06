@@ -73,6 +73,7 @@ jobs:
     environment:
       - CUSTOM_BASH_ENV: ~/.bashrc
       - CIRCLE_ENV_BROKEN: $CIRCLE_SHA1
+      - PATH_GIT_APP_CERT: ~/best/git_app.pem
 
     steps:
       - checkout
@@ -82,17 +83,16 @@ jobs:
           - yarn-v3-{{ .Branch }}-
 
       - run:
-          name: Make Composer executables available globally
+          name: Setup dynamic environment variables
           command:
               echo '
               export PATH=./node_modules/.bin:$PATH
               export TARGET_COMMIT=${CIRCLE_SHA1}
-              export PATH_GIT_APP_CERT=~/best/git_app.pem
               export BASE_COMMIT=`git rev-parse origin/master`' >> $BASH_ENV
 
       - run:
           name: Decode PEM as environment variable
-          command: echo -e "$GIT_APP_CERT" | base64 -d >> ~/best/git_app.pem
+          command: echo -e "$GIT_APP_CERT" | base64 -d >> $PATH_GIT_APP_CERT
 
       - run: yarn install
       - run: yarn build
