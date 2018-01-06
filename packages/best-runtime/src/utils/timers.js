@@ -12,9 +12,9 @@ const callbacks = [];
 let pending = false;
 
 function flushCallbacks() {
-    pending = false
-    const copies = callbacks.slice(0)
-    callbacks.length = 0
+    pending = false;
+    const copies = callbacks.slice(0);
+    callbacks.length = 0;
     for (let i = 0; i < copies.length; i++) {
         copies[i]();
     }
@@ -35,16 +35,16 @@ let useMacroTask = false;
 /* istanbul ignore if */
 if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
     macroTimerFunc = () => {
-        setImmediate(flushCallbacks)
+        setImmediate(flushCallbacks);
     };
 } else if (typeof MessageChannel !== 'undefined' && (
     isNative(MessageChannel) ||
     // PhantomJS
     MessageChannel.toString() === '[object MessageChannelConstructor]'
 )) {
-    const channel = new MessageChannel()
-    const port = channel.port2
-    channel.port1.onmessage = flushCallbacks
+    const channel = new MessageChannel();
+    const port = channel.port2;
+    channel.port1.onmessage = flushCallbacks;
     macroTimerFunc = () => {
         port.postMessage(1);
     };
@@ -92,9 +92,9 @@ export function nextTick(cb, ctx) {
         } else if (_resolve) {
             _resolve(ctx);
         }
-    })
+    });
     if (!pending) {
-        pending = true
+        pending = true;
         if (useMacroTask) {
             macroTimerFunc();
         } else {

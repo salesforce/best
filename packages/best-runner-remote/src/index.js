@@ -46,7 +46,7 @@ function proxifyRunner(benchmarkEntryBundle, runnerConfig, projectConfig, global
             });
 
             socket.on('disconnect', (s) => {
-                //console.log('Disconnected??');
+                // console.log('Disconnected??');
             });
 
             socket.on('state_change', (s) => {
