@@ -4,15 +4,16 @@ import chalk from "chalk";
 import { lookup } from "mime-types";
 
 export const AWS_TEXT = chalk.reset.inverse.yellow.bold(' AWS-S3  ') + ' ';
-const PREFIX = 'public';
-const BENCHMARKS = 'benchmarks';
-const BENCHMARK_PREFIX = `${PREFIX}/${BENCHMARKS}`;
 
+const VERSION = 'v1';
+const PREFIX = `public/${VERSION}`;
+const BENCHMARKS = 'benchmarks';
 export class S3 {
-    constructor({ bucket } = {}) {
+    constructor({ bucket, version } = {}) {
         this.s3 = new AWS.S3(...arguments);
         this.bucket = bucket || process.env.AWS_BUCKET_NAME;
         this.host = `https://${this.bucket}.s3.amazonaws.com/`;
+        this.version = version || VERSION;
     }
 
     async getBenchmarkUrlsForCommit(projectName, searchCommit) {
@@ -23,7 +24,7 @@ export class S3 {
             throw new Error(`Commit ${searchCommit} could not be found in storage`);
         }
         const benchmarks = await this.getObjectsInFolder(BENCHMARKS, projectName, branch, searchCommit);
-        return benchmarks.map(bm => this.host + path.join(BENCHMARK_PREFIX, projectName, branch, searchCommit, bm));
+        return benchmarks.map(bm => this.host + path.join(PREFIX, BENCHMARKS, projectName, branch, searchCommit, bm));
     }
 
     listProjects() {
