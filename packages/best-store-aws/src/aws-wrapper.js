@@ -17,7 +17,7 @@ export class S3 {
 
     async getBenchmarkUrlsForCommit(projectName, searchCommit) {
         console.log(AWS_TEXT, `Resolving objects for commit ${searchCommit}...`);
-        const branches = await this.getObjectsInFolder('commits', searchCommit);
+        const branches = await this.getObjectsInFolder(projectName, 'commits', searchCommit);
         const branch = branches.pop();
         if (!branch) {
             throw new Error(`Commit ${searchCommit} could not be found in storage`);
@@ -76,7 +76,6 @@ export class S3 {
                     callback(null, results);
                 }
             }
-
         });
     }
 

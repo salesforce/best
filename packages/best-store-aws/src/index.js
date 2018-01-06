@@ -31,7 +31,7 @@ export async function storeBenchmarkResults(fileMap, { benchmarkName, benchmarkS
     }));
 
     // This will allow us to search in the bucket by commit
-    await s3.storeIndex(`commits/${commit}/${branch}`);
+    await s3.storeIndex(`${projectName}/commits/${commit}/${branch}`);
 }
 
 export async function getBenchmarkStats(projectName, commit) {
