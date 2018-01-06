@@ -5,7 +5,7 @@ import { lookup } from "mime-types";
 
 export const AWS_TEXT = chalk.reset.inverse.yellow.bold(' AWS-S3  ') + ' ';
 
-const VERSION = 'v1';
+const VERSION = 'v1.1';
 const PREFIX = `public/${VERSION}`;
 const BENCHMARKS = 'benchmarks';
 export class S3 {
@@ -18,25 +18,25 @@ export class S3 {
 
     async getBenchmarkUrlsForCommit(projectName, searchCommit) {
         console.log(AWS_TEXT, `Resolving objects for commit ${searchCommit}...`);
-        const branches = await this.getObjectsInFolder('commits', projectName, searchCommit);
+        const branches = await this.getObjectsInFolder(projectName, 'commits', searchCommit);
         const branch = branches.pop();
         if (!branch) {
             throw new Error(`Commit ${searchCommit} could not be found in storage`);
         }
-        const benchmarks = await this.getObjectsInFolder(BENCHMARKS, projectName, branch, searchCommit);
-        return benchmarks.map(bm => this.host + path.join(PREFIX, BENCHMARKS, projectName, branch, searchCommit, bm));
+        const benchmarks = await this.getObjectsInFolder(projectName, BENCHMARKS, branch, searchCommit);
+        return benchmarks.map(bm => this.host + path.join(PREFIX, projectName, BENCHMARKS, branch, searchCommit, bm));
     }
 
     listProjects() {
-        return this.getObjectsInFolder(BENCHMARKS);
+        return this.getObjectsInFolder('');
     }
 
     listBranches(projectName) {
-        return this.getObjectsInFolder(BENCHMARKS, projectName);
+        return this.getObjectsInFolder(projectName, BENCHMARKS);
     }
 
     listCommits(projectName, branchName) {
-        return this.getObjectsInFolder(BENCHMARKS, projectName, branchName);
+        return this.getObjectsInFolder(projectName, BENCHMARKS, branchName);
     }
 
     getObjectsInFolder(...args) {
@@ -101,7 +101,7 @@ export class S3 {
     }
 
     storeBenchmarkFile(relativePath, body, { projectName, branch, commit, benchmarkName }) {
-        const url = path.join(PREFIX, BENCHMARKS, projectName, branch, commit, benchmarkName, relativePath);
+        const url = path.join(PREFIX, projectName, BENCHMARKS, branch, commit, benchmarkName, relativePath);
         const s3 = this.s3;
         const bucket = this.bucket;
 
