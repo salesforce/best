@@ -72,8 +72,7 @@ jobs:
 
     environment:
       - CUSTOM_BASH_ENV: ~/.bashrc
-      - TARGET_COMMIT: '$CIRCLE_SHA1'
-      - BASE_COMMIT: 'git rev-parse master'
+      - CIRCLE_ENV_BROKEN: $CIRCLE_SHA1
 
     steps:
       - checkout
@@ -84,7 +83,12 @@ jobs:
 
       - run:
           name: Make Composer executables available globally
-          command: echo 'export PATH=./node_modules/.bin:$PATH' >> $BASH_ENV
+          command:
+              echo '
+              export PATH=./node_modules/.bin:$PATH
+              export TARGET_COMMIT=${CIRCLE_SHA1}
+              export BASE_COMMIT=`git rev-parse master`
+              ' >> $BASH_ENV
 
       - run: yarn install
       - run: yarn build
