@@ -15,9 +15,9 @@ jobs:
           - yarn-v3-{{ .Branch }}-
 
       - run: yarn install
-      - run:
-          name: Run Unit Tests
-          command: yarn test
+      - run: yarn build
+      - run: yarn lint
+      - run: yarn test
 
       - save_cache:
           paths:
