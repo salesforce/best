@@ -1,37 +1,37 @@
 {
-    "name": "best",
-    "private": true,
-    "description": "Benchmark tool",
-    "repository": {
-        "type": "git",
-        "url": "https://git.soma.salesforce.com/lwc/best.git"
-    },
-    "license": "MIT",
-    "scripts": {
-        "clean": "lerna run clean && lerna clean --yes && rm -rf node_modules",
-        "lint": "lerna run lint",
-        "prepare": "yarn build",
-        "build": "node scripts/build.js",
-        "watch": "yarn build && node ./scripts/watch.js",
-        "test": "echo 'No tests yet'",
-        "perf:example": "cd examples/simple_benchmark && best --externalStorage=@best/store-aws",
-        "release": "yarn prepare && lerna publish --exact --force-publish=* --registry='https://npm.lwcjs.org'",
-        "release:internal": "yarn prepare && lerna publish --exact --force-publish=* --skip-git --repo-version `node -pe \"require('./lerna.json').version\"` --yes --registry='https://nexus.soma.salesforce.com/nexus/content/repositories/npmjs-internal/'"
-    },
-    "devDependencies": {
-        "babel-core": "^6.26.0",
-        "babel-preset-env": "^1.6.1",
-        "chalk": "^2.3.0",
-        "eslint": "^4.14.0",
-        "eslint-plugin-lwc": "^0.2.4",
-        "lerna": "2.5.1",
-        "micromatch": "^3.1.4",
-        "mkdirp": "^0.5.1",
-        "rimraf": "^2.6.2",
-        "string-length": "2.0.0"
-    },
-    "workspaces": [
-        "packages/*",
-        "examples/simple_benchmark"
-    ]
+  "name": "best",
+  "private": true,
+  "description": "Benchmark tool",
+  "repository": {
+    "type": "git",
+    "url": "https://git.soma.salesforce.com/lwc/best.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "clean": "lerna run clean && lerna clean --yes && rm -rf node_modules",
+    "lint": "eslint packages/",
+    "prepare": "yarn build",
+    "build": "node scripts/build.js",
+    "watch": "yarn build && node ./scripts/watch.js",
+    "test": "echo 'No tests yet'",
+    "perf:example": "cd examples/simple_benchmark && yarn perf",
+    "release": "yarn prepare && lerna publish --exact --force-publish=* --registry='https://npm.lwcjs.org'",
+    "release:internal": "yarn prepare && lerna publish --exact --force-publish=* --skip-git --repo-version `node -pe \"require('./lerna.json').version\"` --yes --registry='https://nexus.soma.salesforce.com/nexus/content/repositories/npmjs-internal/'"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "chalk": "^2.3.0",
+    "eslint": "^4.14.0",
+    "eslint-plugin-lwc": "^0.2.4",
+    "lerna": "2.5.1",
+    "micromatch": "^3.1.4",
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.6.2",
+    "string-length": "2.0.0"
+  },
+  "workspaces": [
+    "packages/*",
+    "examples/simple_benchmark"
+  ]
 }
