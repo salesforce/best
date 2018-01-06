@@ -18,7 +18,7 @@ export async function pushBenchmarkComparison(compareStats) {
     const repoInstallation = installations.data[0];
     const installationId = repoInstallation.id;
     const owner = repoInstallation.account.login;
-    const gitHubInstallation = await APP.asInstallation(installationId);
+    const gitHubInstallation = await APP.authAsInstallation(installationId);
     const pullRequestId = parseInt(PULL_REQUEST_URL.split('/').pop(), 10);
     const comparisonComment = generateComparisonComment(BASE_COMMIT, TARGET_COMMIT, compareStats);
 
