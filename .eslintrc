@@ -13,12 +13,5 @@
         "lwc/no-inline-disable" : 0,
         "lwc/no-set-timeout": 0,
         "compat/compat": 0
-    },
-    "globals": {
-        "benchmark": true,
-        "run": true,
-        "before": true,
-        "after": true,
-        "BEST_CONFIG": true
     }
 }
