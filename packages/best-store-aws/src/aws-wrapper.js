@@ -5,7 +5,7 @@ import { lookup } from "mime-types";
 
 export const AWS_TEXT = chalk.reset.inverse.yellow.bold(' AWS-S3  ') + ' ';
 
-const VERSION = 'v1.2';
+const VERSION = 'v1.3';
 const PREFIX = `public/${VERSION}`;
 const BENCHMARKS = 'benchmarks';
 const BRANCHES = 'branches';
@@ -97,8 +97,8 @@ export class S3 {
         });
     }
 
-    storeBenchmarkFile(relativePath, body, { projectName, branch, commit, benchmarkName }) {
-        const url = path.join(PREFIX, projectName, BENCHMARKS, branch, commit, benchmarkName, relativePath);
+    storeBenchmarkFile(relativePath, body, { projectName, commit, benchmarkName }) {
+        const url = path.join(PREFIX, projectName, BENCHMARKS, commit, benchmarkName, relativePath);
         const s3 = this.s3;
         const bucket = this.bucket;
 
