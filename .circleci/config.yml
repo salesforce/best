@@ -72,8 +72,8 @@ jobs:
 
     environment:
       - CUSTOM_BASH_ENV: ~/.bashrc
-      - TARGET_COMMIT: $CIRCLE_SHA1
-      - BASE_COMMIT: git rev-parse master
+      - TARGET_COMMIT: '$CIRCLE_SHA1'
+      - BASE_COMMIT: 'git rev-parse master'
 
     steps:
       - checkout
