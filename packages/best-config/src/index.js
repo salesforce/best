@@ -100,7 +100,7 @@ function setFromArgs(initialOptions, argsCLI) {
 function normalizeRootDir(options) {
     // Assert that there *is* a rootDir
     if (!options.hasOwnProperty('rootDir')) {
-        throw new Error(`  Configuration option ${chalk.bold('rootDir')} must be specified.`,);
+        throw new Error(`  Configuration option ${chalk.bold('rootDir')} must be specified.`);
     }
 
     options.rootDir = path.normalize(options.rootDir);
@@ -130,7 +130,6 @@ function normalizeUnmockedModulePathPatterns(options, key) {
         replacePathSepForRegex(normalizeRootDirPattern(pattern, options.rootDir))
     );
 }
-
 
 function normalizeObjectPathPatterns(options, { rootDir }) {
     return Object.keys(options).reduce((m, key) => {
@@ -237,13 +236,13 @@ export async function readConfig(argsCLI, packageRoot) {
     const options = normalize(rawOptions, argsCLI);
     try {
         await addGitInformation(options);
-    } catch (e) { /*Unable to get git info */ }
+    } catch (e) { /* Unable to get git info */ }
 
     const { globalConfig, projectConfig } = _getConfigs(options);
     return { globalConfig, projectConfig };
 }
 
-export async function getConfigs(projectsFromCLIArgs, argv, outputStream) {
+export async function getConfigs(projectsFromCLIArgs, argv) {
     let globalConfig;
     let hasDeprecationWarnings;
     let configs = [];
