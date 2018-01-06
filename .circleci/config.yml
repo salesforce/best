@@ -87,7 +87,7 @@ jobs:
               echo '
               export PATH=./node_modules/.bin:$PATH
               export TARGET_COMMIT=${CIRCLE_SHA1}
-              export BASE_COMMIT=`git rev-parse master`
+              export BASE_COMMIT=`git rev-parse origin/master`
               ' >> $BASH_ENV
 
       - run: yarn install
