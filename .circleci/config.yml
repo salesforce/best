@@ -84,7 +84,7 @@ jobs:
 
       - run:
           name: Make Composer executables available globally
-          command: echo 'export PATH=./node_modules/.bin:$PATH' >> /home/circleci/.bashrc
+          command: echo 'export PATH=./node_modules/.bin:$PATH' >> $BASH_ENV
 
       - run: yarn install
       - run: yarn build
