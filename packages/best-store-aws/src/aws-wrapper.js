@@ -5,9 +5,11 @@ import { lookup } from "mime-types";
 
 export const AWS_TEXT = chalk.reset.inverse.yellow.bold(' AWS-S3  ') + ' ';
 
-const VERSION = 'v1.1';
+const VERSION = 'v1.2';
 const PREFIX = `public/${VERSION}`;
 const BENCHMARKS = 'benchmarks';
+const BRANCHES = 'branches';
+
 export class S3 {
     constructor({ bucket, version } = {}) {
         this.s3 = new AWS.S3(...arguments);
@@ -18,13 +20,8 @@ export class S3 {
 
     async getBenchmarkUrlsForCommit(projectName, searchCommit) {
         console.log(AWS_TEXT, `Resolving objects for commit ${searchCommit}...`);
-        const branches = await this.getObjectsInFolder(projectName, 'commits', searchCommit);
-        const branch = branches.pop();
-        if (!branch) {
-            throw new Error(`Commit ${searchCommit} could not be found in storage`);
-        }
-        const benchmarks = await this.getObjectsInFolder(projectName, BENCHMARKS, branch, searchCommit);
-        return benchmarks.map(bm => this.host + path.join(PREFIX, projectName, BENCHMARKS, branch, searchCommit, bm));
+        const benchmarks = await this.getObjectsInFolder(projectName, BENCHMARKS, searchCommit);
+        return benchmarks.map(bm => this.host + path.join(PREFIX, projectName, BENCHMARKS, searchCommit, bm));
     }
 
     listProjects() {
@@ -32,11 +29,11 @@ export class S3 {
     }
 
     listBranches(projectName) {
-        return this.getObjectsInFolder(projectName, BENCHMARKS);
+        return this.getObjectsInFolder(projectName, BRANCHES);
     }
 
     listCommits(projectName, branchName) {
-        return this.getObjectsInFolder(projectName, BENCHMARKS, branchName);
+        return this.getObjectsInFolder(projectName, BRANCHES, branchName);
     }
 
     getObjectsInFolder(...args) {
@@ -80,8 +77,8 @@ export class S3 {
         });
     }
 
-    storeIndex(relativePath) {
-        const url = path.join(PREFIX, relativePath, 'index.json');
+    storeBranchCommitIndex(projectName, branch, commit) {
+        const url = path.join(PREFIX, `${projectName}/${BRANCHES}/${branch}/${commit}`, 'index.json');
         const s3 = this.s3;
         const bucket = this.bucket;
         return new Promise((resolve, reject) => {
