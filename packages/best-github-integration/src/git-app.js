@@ -1,10 +1,12 @@
 /* eslint camelcase: 0 */
-
+import fs from "fs";
+import path from "path";
 import jwt from "jsonwebtoken";
 import GitHubApi from "github";
 
 const APP_ID = process.env.GIT_APP_ID;
-const APP_CERT = process.env.GIT_APP_CERT;
+const PATH_GIT_APP_CERT = process.env.PATH_GIT_APP_CERT;
+const APP_CERT = PATH_GIT_APP_CERT ? fs.readFileSync(path.resolve(PATH_GIT_APP_CERT)) : null;
 
 function generateJwt(id, cert) {
     const payload = {

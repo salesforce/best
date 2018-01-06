@@ -87,8 +87,12 @@ jobs:
               echo '
               export PATH=./node_modules/.bin:$PATH
               export TARGET_COMMIT=${CIRCLE_SHA1}
-              export BASE_COMMIT=`git rev-parse origin/master`
-              ' >> $BASH_ENV
+              export PATH_GIT_APP_CERT=~/best/git_app.pem
+              export BASE_COMMIT=`git rev-parse origin/master`' >> $BASH_ENV
+
+      - run:
+          name: Decode PEM as environment variable
+          command: echo -e "$GIT_APP_CERT" | base64 -D >> ~/best/git_app.pem
 
       - run: yarn install
       - run: yarn build
