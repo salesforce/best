@@ -101,7 +101,7 @@ export class S3 {
     }
 
     storeBenchmarkFile(relativePath, body, { projectName, branch, commit, benchmarkName }) {
-        const url = path.join(BENCHMARK_PREFIX, projectName, branch, commit, benchmarkName, relativePath);
+        const url = path.join(PREFIX, BENCHMARKS, projectName, branch, commit, benchmarkName, relativePath);
         const s3 = this.s3;
         const bucket = this.bucket;
 
