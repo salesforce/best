@@ -7,12 +7,12 @@
         "node": true
     },
     "rules": {
-        "raptor/no-inline-disable": 0,
-        "eslint-comments/no-use": 0,
-        "compat/compat": 0,
+        "no-console": ["warn", { "allow": ["timeStamp", "time", "timeEnd"] }],
         "no-await-in-loop": 0,
+        "no-confusing-arrow": ["error", { "allowParens": true }],
         "lwc/no-inline-disable" : 0,
-        "no-confusing-arrow": [ "error", {"allowParens": true} ]
+        "lwc/no-set-timeout": 0,
+        "compat/compat": 0
     },
     "globals": {
         "benchmark": true,
