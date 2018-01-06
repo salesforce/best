@@ -1,8 +1,16 @@
 import { raf, time, nextTick, withMacroTask, formatTime } from "./utils/timers";
 import { HOOKS } from "./constants";
 
-const _initHandlers = () => Object.values(HOOKS).reduce((o, k) => (o[k] = [], o), {});
-const _initHooks = (hooks) => hooks.reduce((m, { type, fn }) => (m[type].push(fn), m), _initHandlers());
+const _initHandlers = () => Object.values(HOOKS).reduce((o, k) => {
+    o[k] = [];
+    return o;
+}, {});
+
+const _initHooks = (hooks) => hooks.reduce((m, { type, fn }) => {
+    m[type].push(fn);
+    return m;
+}, _initHandlers());
+
 const _forceGC = () => (window.gc && window.gc());
 
 const executeBenchmark = async (benchmarkNode, { useMacroTaskAfterBenchmark }) => {
@@ -58,7 +66,6 @@ export const runBenchmarkIteration = async (node, opts) => {
 
     // -- For each children ----
     for (const child of children) {
-
         // -- Before Each ----
         for (const hook of hookHandlers[HOOKS.BEFORE_EACH]) {
             await hook();
@@ -114,4 +121,4 @@ export const runBenchmarkIteration = async (node, opts) => {
     }
 
     return node;
-}
+};

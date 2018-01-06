@@ -62,7 +62,6 @@ export function storeBenchmarkResults(benchmarkResults, globalConfig) {
                 const storageModule = require(externalStorage);
                 const fileMap = getStoredFileMapping(outputFolder, artifactsFolder);
                 await storageModule.storeBenchmarkResults(fileMap, benchmarkResult, globalConfig);
-
             } catch (err) {
                 const ERR_TEXT = chalk.reset.inverse.red.bold('  ERROR   ') + ' ';
                 console.log(ERR_TEXT + `Unable to push to external storage ${chalk.bold(externalStorage)}: `, err.message || err, '\n');

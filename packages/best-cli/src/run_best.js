@@ -24,7 +24,7 @@ async function getBenchmarkTests(configs, globalConfig) {
 
 async function buildBundleBenchmarks(benchmarksTests, globalConfig) {
     const bundle = await Promise.all(
-        benchmarksTests.map(async({ matches, config }) =>
+        benchmarksTests.map(async ({ matches, config }) =>
             buildBenchmarks(matches, config, globalConfig))
     );
     // Flatten the per-project benchmarks tests

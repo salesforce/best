@@ -10,7 +10,7 @@ const stringOrChar = /("(?:[^\\"]|\\.)*")|[:,]/g;
 const prettify = (string) => string.replace(stringOrChar, (match, str) => (str ? match : match + ' '));
 const comma = (array, index) => (index === array.length - 1 ? 0 : 1);
 
-export function stringify(obj = {}, { indent = 2, maxLength = 80, inlineArray = true } = {}) {
+export function stringify(o = {}, { indent = 2, maxLength = 80, inlineArray = true } = {}) {
     indent = JSON.stringify([1], null, indent).slice(2, -3);
     maxLength = (indent === '' ? Infinity : maxLength);
 
@@ -68,5 +68,5 @@ export function stringify(obj = {}, { indent = 2, maxLength = 80, inlineArray = 
         }
 
         return string;
-    }(obj, '', 0));
+    }(o, '', 0));
 }
