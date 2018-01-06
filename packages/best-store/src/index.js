@@ -36,7 +36,7 @@ function getStoredFileMapping(benchmarkFolder, artifactsFolder) {
     }, {});
 }
 
-export function storeResults(benchmarkResults, globalConfig) {
+export function storeBenchmarkResults(benchmarkResults, globalConfig) {
     return Promise.all(benchmarkResults.map(async (benchmarkResult) => {
         const { benchmarkName, benchmarkSignature, projectConfig, environment, results, stats } = benchmarkResult;
         const { benchmarkOutput, cacheDirectory } = projectConfig;
@@ -61,7 +61,7 @@ export function storeResults(benchmarkResults, globalConfig) {
             try {
                 const storageModule = require(externalStorage);
                 const fileMap = getStoredFileMapping(outputFolder, artifactsFolder);
-                await storageModule.storeResults(fileMap, benchmarkResult, globalConfig);
+                await storageModule.storeBenchmarkResults(fileMap, benchmarkResult, globalConfig);
 
             } catch (err) {
                 const ERR_TEXT = chalk.reset.inverse.red.bold('  ERROR   ') + ' ';

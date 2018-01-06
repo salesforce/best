@@ -44,8 +44,8 @@ jobs:
           name: Unit Test
           command: yarn test
 
-  performance_test_example:
-    working_directory: ~/lwc
+  perf_test:
+    working_directory: ~/best
 
     docker:
       - image: circleci/node:8.9.3-stretch-browsers
@@ -64,10 +64,47 @@ jobs:
           name: Performance Test - Example project
           command: yarn perf:example
 
+  compare_perf:
+    working_directory: ~/best
+
+    docker:
+      - image: circleci/node:8.9.3-stretch-browsers
+
+    environment:
+      - CUSTOM_BASH_ENV: ~/.bashrc
+      - CIRCLE_ENV_BROKEN: $CIRCLE_SHA1
+      - PATH_GIT_APP_CERT: ~/best/git_app.pem
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - yarn-v3-{{ .Branch }}-{{ checksum "package.json" }}
+          - yarn-v3-{{ .Branch }}-
+
+      - run:
+          name: Setup dynamic environment variables
+          command:
+              echo '
+              export PATH=./node_modules/.bin:$PATH
+              export PULL_REQUEST=${CIRCLE_PULL_REQUEST}
+              export REPO_NAME=${CIRCLE_PROJECT_REPONAME}
+              export TARGET_COMMIT=${CIRCLE_SHA1}
+              export BASE_COMMIT=`git rev-parse origin/master`' >> $BASH_ENV
+
+      - run:
+          name: Decode PEM as environment variable
+          command: echo -e "$GIT_APP_CERT" | base64 -d >> ~/best/git_app.pem
+
+      - run: yarn install
+      - run: yarn build
+      - run:
+          name: Comparing perf examples
+          command: cd examples/simple_benchmark/ && best --compareStats d46ad97 320b079 --externalStorage=@best/store-aws --gitIntegration
 
 workflows:
   version: 2
-  build_and_test:
+  main_workflow:
     jobs:
       - build:
           filters:
@@ -83,11 +120,19 @@ workflows:
             branches:
               only: /\w+\/.*/
 
-      - performance_test_example:
+      - perf_test:
           requires:
             - build
           filters:
             branches:
               only:
                 - master
+                - /\w+\/.*/
+
+      - compare_perf:
+          requires:
+            - perf_test
+          filters:
+            branches:
+              only:
                 - /\w+\/.*/

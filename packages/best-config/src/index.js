@@ -81,14 +81,15 @@ function setFromArgs(initialOptions, argsCLI) {
         .filter(key => argsCLI[key] !== undefined && specialArgs.indexOf(key) === -1)
         .reduce((options, key) => {
             switch (key) {
-                case 'externalStorage':
-                    options.externalStorage = argsCLI[key];
-                    break;
                 case 'iterations':
                     options.benchmarkIterations = argsCLI[key];
                     break;
-
-                default: break;
+                case 'compareStats':
+                    options[key] = argsCLI[key][0] !== undefined ? argsCLI[key].filter(Boolean) : undefined;
+                    break;
+                default:
+                    options[key] = argsCLI[key];
+                    break;
             }
             return options;
         }, {});
@@ -99,7 +100,7 @@ function setFromArgs(initialOptions, argsCLI) {
 function normalizeRootDir(options) {
     // Assert that there *is* a rootDir
     if (!options.hasOwnProperty('rootDir')) {
-        throw new Error(`  Configuration option ${chalk.bold('rootDir')} must be specified.`,);
+        throw new Error(`  Configuration option ${chalk.bold('rootDir')} must be specified.`);
     }
 
     options.rootDir = path.normalize(options.rootDir);
@@ -129,7 +130,6 @@ function normalizeUnmockedModulePathPatterns(options, key) {
         replacePathSepForRegex(normalizeRootDirPattern(pattern, options.rootDir))
     );
 }
-
 
 function normalizeObjectPathPatterns(options, { rootDir }) {
     return Object.keys(options).reduce((m, key) => {
@@ -176,7 +176,9 @@ function normalize(options, argsCLI) {
 function _getConfigs(options) {
     return {
         globalConfig: Object.freeze({
+            gitIntegration: options.gitIntegration,
             detectLeaks: options.detectLeaks,
+            compareStats: options.compareStats,
             outputFile: options.outputFile,
             externalStorage: options.externalStorage,
             projects: options.projects,
@@ -232,16 +234,15 @@ export async function readConfig(argsCLI, packageRoot) {
     const configPath = resolveConfigPath(customConfigPath, process.cwd());
     const rawOptions = readConfigAndSetRootDir(configPath);
     const options = normalize(rawOptions, argsCLI);
-
     try {
         await addGitInformation(options);
-    } catch (e) { /*Unable to get git info */ }
+    } catch (e) { /* Unable to get git info */ }
 
     const { globalConfig, projectConfig } = _getConfigs(options);
     return { globalConfig, projectConfig };
 }
 
-export async function getConfigs(projectsFromCLIArgs, argv, outputStream) {
+export async function getConfigs(projectsFromCLIArgs, argv) {
     let globalConfig;
     let hasDeprecationWarnings;
     let configs = [];
@@ -249,7 +250,6 @@ export async function getConfigs(projectsFromCLIArgs, argv, outputStream) {
 
     if (projectsFromCLIArgs.length === 1) {
         const parsedConfig = await readConfig(argv, projects[0]);
-
         if (parsedConfig.globalConfig.projects) {
             // If this was a single project, and its config has `projects`
             // settings, use that value instead.

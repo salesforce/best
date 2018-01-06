@@ -16,6 +16,7 @@
     "@best/analyzer": "0.0.3",
     "@best/build": "0.0.3",
     "@best/config": "0.0.3",
+    "@best/github-integration": "0.0.3",
     "@best/messager": "0.0.3",
     "@best/runner": "0.0.3",
     "@best/store": "0.0.3",

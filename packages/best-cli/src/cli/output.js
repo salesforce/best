@@ -1,32 +1,45 @@
 import Table from "cli-table";
 import chalk from "chalk";
 
-function generateStats(benchmarkName, outputFolder, stats, stream ) {
+const padding = (n) => (n > 0 ? Array.apply(null, Array((n - 1) * 3)).map(() => ' ').join('') + '└─ ' : '');
+
+function generateRow(benchmarks, table, level = 0) {
+    benchmarks.forEach((benchmarkNode) => {
+        const name = benchmarkNode.name;
+        // Root benchmark
+        if (!benchmarkNode.benchmarks) {
+            Object.keys(benchmarkNode).forEach((metric) => {
+                const metricValues = benchmarkNode[metric];
+                if (metricValues && metricValues.sampleSize) {
+                    const { sampleSize, mean, median, variance, medianAbsoluteDeviation } = metricValues;
+                    table.push([
+                        padding(level) + name,
+                        chalk.bold(metric),
+                        sampleSize,
+                        mean.toFixed(4),
+                        median.toFixed(4),
+                        variance.toFixed(4),
+                        medianAbsoluteDeviation.toFixed(4)
+                    ]);
+                }
+            });
+        // Group
+        } else {
+            const emptyFields = Array.apply(null, Array(6)).map(() => '-');
+            table.push([padding(level) + name, ...emptyFields]);
+            generateRow(benchmarkNode.benchmarks, table, level + 1);
+
+        }
+    });
+}
+
+function generateStats(benchmarkName, outputFolder, stats, stream) {
     const table = new Table({
         head: ['Benchmark name', 'Metric', 'N', 'Mean', 'Median', 'Variance', 'MedianAbsDeviation'],
         colWidths: [32, 14, 6, 12, 12, 12, 12]
     });
 
-    let level = 0;
-    const benchLevel = Object.keys(stats).reduce((r, k) => (r[k] = level++, r), {});
-    const padding = (n) => (n > 0 ? Array.apply(null, Array((n - 1) * 3)).map(() => ' ').join('') + '└─ ' : '');
-    Object.keys(stats).forEach((benchName) => {
-        Object.keys(stats[benchName]).forEach((metric) => {
-            const metricValues = stats[benchName][metric];
-            if (metricValues && metricValues.sampleSize) {
-                const { sampleSize, mean, median, variance, medianAbsoluteDeviation } = metricValues;
-                table.push([
-                    padding(benchLevel[benchName]) + benchName,
-                    metric,
-                    sampleSize,
-                    mean.toFixed(4),
-                    median.toFixed(4),
-                    variance.toFixed(4),
-                    medianAbsoluteDeviation.toFixed(4)
-                ]);
-            }
-        });
-    });
+    generateRow(stats, table);
 
     stream.write([
         chalk.bold.dim('\n Benchmark results for ') + chalk.bold.magentaBright(benchmarkName),
@@ -49,10 +62,15 @@ function generateEnviroment({ hardware, browser }, stream) {
     stream.write('\n\n');
 }
 
-export function generateTables(results, stream) {
+export function generateReportTables(results, stream) {
     results.forEach((result) => {
         const { benchmarkName, benchmarkOutputResult, stats } = result;
         generateStats(benchmarkName, benchmarkOutputResult, stats.benchmarks, stream);
         generateEnviroment(stats.environment, stream);
     });
+}
+
+
+export function generateComparisonTable(comparison, stream) {
+    console.log(comparison);
 }

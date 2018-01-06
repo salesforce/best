@@ -1,11 +1,11 @@
 import * as args from './args';
-import { generateTables } from "./output";
+import { generateReportTables, generateComparisonTable } from "./output";
 import yargs from 'yargs';
 import rimraf from 'rimraf';
-import chalk from "chalk";
 import { getConfigs } from "@best/config";
 import { preRunMessager, errorMessager } from "@best/messager";
 import { runBest } from "../run_best";
+import { runCompare } from "../run_compare";
 
 function buildArgs(maybeArgv) {
     const argsv = yargs(maybeArgv || process.argv.slice(2))
@@ -49,8 +49,10 @@ export async function run(maybeArgv, project) {
 export async function runCLI(argsCLI, projects) {
     const outputStream = process.stdout;
     let rawConfigs;
+    let results;
+
     try {
-        preRunMessager.print('Determining benckmark suites to run...', outputStream);
+        preRunMessager.print('Looking for Best configurations...', outputStream);
         rawConfigs = await getConfigs(projects, argsCLI, outputStream);
     } finally {
         preRunMessager.clear(outputStream);
@@ -63,23 +65,30 @@ export async function runCLI(argsCLI, projects) {
             rimraf.sync(config.cacheDirectory);
             process.stdout.write(`Cleared ${config.cacheDirectory}\n`);
         });
-        process.exit(0);
+        return process.exit(0);
     }
 
-    if (argsCLI.clearResults) {
-        preRunMessager.print('Clearing previous benchmark results...', outputStream);
-        configs.forEach(config => {
-            rimraf.sync(config.benchmarkOutput);
-            process.stdout.write(`\n - Cleared: ${config.benchmarkOutput}\n`);
-        });
+    if (globalConfig.compareStats) {
+        results = await runCompare(globalConfig, configs, outputStream);
+        generateComparisonTable(results, outputStream);
+
+    } else {
+        if (argsCLI.clearResults) {
+            preRunMessager.print('Clearing previous benchmark results...', outputStream);
+            configs.forEach(config => {
+                rimraf.sync(config.benchmarkOutput);
+                process.stdout.write(`\n - Cleared: ${config.benchmarkOutput}\n`);
+            });
+        }
+
+        results = await runBest(globalConfig, configs, outputStream);
+
+        if (!results) {
+            throw new Error('AggregatedResult must be present after test run is complete');
+        }
+
+        generateReportTables(results, outputStream);
     }
-    const results = await runBest(globalConfig, configs, outputStream);
 
-    if (!results) {
-        throw new Error('AggregatedResult must be present after test run is complete');
-    }
-
-    generateTables(results, outputStream);
-
-    return { globalConfig, results };
+    return true;
 }

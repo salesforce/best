@@ -1,7 +1,7 @@
 {
-  "name": "@best/store-aws",
+  "name": "@best/compare",
   "version": "0.0.3",
-  "description": "Best Store AWS",
+  "description": "Best Comparer",
   "keywords": [
     "Best",
     "LWC"
@@ -9,9 +9,8 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
-    "aws-sdk": "~2.176.0",
     "chalk": "~2.3.0",
-    "mime-types": "~2.1.17",
-    "node-fetch":"~1.7.3"
+    "@best/analyzer": "0.0.3",
+    "@best/messager": "0.0.3"
   }
 }

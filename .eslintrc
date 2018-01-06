@@ -17,6 +17,8 @@
     "globals": {
         "benchmark": true,
         "run": true,
+        "before": true,
+        "after": true,
         "BEST_CONFIG": true
     }
 }

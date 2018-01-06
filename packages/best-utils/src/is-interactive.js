@@ -1,3 +1,4 @@
 import isCI from 'is-ci';
 
-export default process.stdout.isTTY && !isCI;
+export const isInteractive = process.stdout.isTTY && !isCI;
+export { isCI };

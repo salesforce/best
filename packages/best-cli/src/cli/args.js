@@ -48,5 +48,19 @@ export const options = {
             'called `storeResults`, expecting benchmarkResults as the first argument ' +
             'and a globalConfig as the second argument',
         type: 'string',
-    }
+    },
+    compareStats: {
+        default: undefined,
+        description:
+            'Compares two benchmark runs for a given commit. ' +
+            'If --externalStorage is provided it will use that source' +
+            'Otherwise it will try to find the results on the file system',
+        type: 'array',
+    },
+    gitIntegration: {
+        default: undefined,
+        description:
+            'Integrates with Git, posting the results of the benchmark or comparison',
+        type: 'boolean',
+    },
 };

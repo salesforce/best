@@ -2,7 +2,7 @@ import globby from "globby";
 import { buildBenchmarks } from "@best/build";
 import { runBenchmarks } from "@best/runner";
 import { buildStateMessager, runnerMessager } from "@best/messager";
-import { storeResults } from "@best/store";
+import { storeBenchmarkResults } from "@best/store";
 import { analyzeBenchmarks } from "@best/analyzer";
 import path from "path";
 
@@ -50,7 +50,7 @@ export async function runBest(globalConfig, configs, outputStream) {
     runnerMessager.finishRun();
 
     await analyzeBenchmarks(benchmarkBundleResults, globalConfig);
-    await storeResults(benchmarkBundleResults, globalConfig);
+    await storeBenchmarkResults(benchmarkBundleResults, globalConfig);
 
     return benchmarkBundleResults;
 }

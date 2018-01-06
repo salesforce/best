@@ -1,0 +1,18 @@
+{
+  "name": "@best/github-integration",
+  "version": "0.0.3",
+  "description": "Best Github Integration",
+  "keywords": [
+    "Best",
+    "LWC"
+  ],
+  "main": "build/index.js",
+  "module": "src/index.js",
+  "dependencies": {
+    "@best/utils": "0.0.3",
+    "@best/messager": "0.0.3",
+    "github": "^13.0.1",
+    "jsonwebtoken": "8.1.0",
+    "expand-tilde":"~2.0.2"
+  }
+}
