@@ -27,55 +27,7 @@ jobs:
             - yarn.lock
           key: yarn-v3-{{ .Branch }}-{{ checksum "package.json" }}
 
-<<<<<<< HEAD
   perf_and_compare:
-=======
-  unit_test:
-    working_directory: ~/best
-
-    docker:
-      - image: circleci/node:8.9.3-stretch-browsers
-
-    steps:
-      - checkout
-
-      - restore_cache:
-          keys:
-          - yarn-v3-{{ .Branch }}-{{ checksum "package.json" }}
-          - yarn-v3-{{ .Branch }}-
-
-      - run: yarn install
-
-      - run:
-          name: Lint
-          command: yarn lint
-
-      - run:
-          name: Unit Test
-          command: yarn test
-
-  perf_test:
-    working_directory: ~/best
-
-    docker:
-      - image: circleci/node:8.9.3-stretch-browsers
-
-    steps:
-      - checkout
-
-      - restore_cache:
-          keys:
-          - yarn-v3-{{ .Branch }}-{{ checksum "package.json" }}
-          - yarn-v3-{{ .Branch }}-
-
-      - run: yarn install
-      - run: yarn build
-      - run:
-          name: Performance Test - Example project
-          command: yarn perf:example
-
-  compare_perf:
->>>>>>> Fix yml indent
     working_directory: ~/best
 
     docker:
