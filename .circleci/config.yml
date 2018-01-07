@@ -68,7 +68,7 @@ jobs:
 
       - run:
           name: Comparing perf examples
-          command: cd examples/simple_benchmark/ && best --compareStats d46ad97 320b079 --externalStorage=@best/store-aws --gitIntegration
+          command: cd examples/simple_benchmark/ && best --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --externalStorage=@best/store-aws --gitIntegration
 
 workflows:
   version: 2

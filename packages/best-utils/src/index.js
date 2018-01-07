@@ -3,7 +3,7 @@ import clearLine from './clear-line';
 import cacheDirectory from "./cache-directory";
 export {
     cacheDirectory,
+    clearLine,
     isInteractive,
     isCI,
-    clearLine
 };

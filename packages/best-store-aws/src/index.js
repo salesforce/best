@@ -37,9 +37,10 @@ export async function storeBenchmarkResults(fileMap, { benchmarkName, benchmarkS
 export async function getBenchmarkStats(projectName, commit) {
     const s3 = getS3Instance();
     const benchmarks = await s3.getBenchmarkUrlsForCommit(projectName, commit);
-    console.log(AWS_TEXT + ` Fetching benchmark results for commit ${commit}...`);
+    console.log(AWS_TEXT + ` Fetching benchmarks for commit ${commit}...`);
     return Promise.all(benchmarks.map(async (url) => {
-        const fullUrl = benchmarks[0] + '/stats.json';
+        const fullUrl = url + '/stats.json';
+        console.log(AWS_TEXT + ` Fetching benchmark ${fullUrl}`);
         const response = await fetch(fullUrl);
         return response.json();
     }));

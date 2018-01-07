@@ -18,7 +18,7 @@ export async function runCompare(globalConfig, configs, outputStream) {
     }
 
     const projectConfig = configs[0];
-    const [baseCommit, compareCommit] = commits.map(c => c.slice(0, 7));
+    const [baseCommit, compareCommit] = commits;
     const { projectName } = projectConfig;
     let storageProvider;
     try {
@@ -31,7 +31,7 @@ export async function runCompare(globalConfig, configs, outputStream) {
     const compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectName, storageProvider);
 
     if (gitIntegration) {
-        await pushBenchmarkComparison(compareResults);
+        await pushBenchmarkComparison(baseCommit, compareCommit, compareResults);
     }
 
     return compareResults;
