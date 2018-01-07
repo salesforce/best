@@ -7,6 +7,8 @@ import { addGitInformation } from "./git";
 
 import DEFAULT_CONFIG from './defaults';
 
+const TARGET_COMMIT = process.env.TARGET_COMMIT;
+const BASE_COMMIT = process.env.BASE_COMMIT;
 const specialArgs = ['_', '$0', 'h', 'help', 'config'];
 const isFile = filePath => fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
 
@@ -153,6 +155,12 @@ function normalizePlugins(plugins, globalOptions) {
     }, {});
 }
 
+function normalizeCommits([base, target]) {
+    base = base || BASE_COMMIT || '';
+    target = target || TARGET_COMMIT || '';
+    return [base.slice(0, 7), target.slice(0, 7)];
+}
+
 function normalize(options, argsCLI) {
     options = normalizeRootDir(setFromArgs(options, argsCLI));
     const newOptions = Object.assign({}, DEFAULT_CONFIG);
@@ -161,6 +169,9 @@ function normalize(options, argsCLI) {
         switch (key) {
             case 'plugins':
                 value = normalizePlugins(options[key], options);
+                break;
+            case 'compareStats':
+                value = normalizeCommits(options[key], options);
                 break;
             default: value = options[key];
         }
