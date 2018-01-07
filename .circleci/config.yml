@@ -89,10 +89,11 @@ workflows:
   version: 2
   main_workflow:
     jobs:
-      - build_and_test:
+      - build_and_test
+
       - perf_test:
           requires:
-            - build
+            - build_and_test
 
       - compare_perf:
           requires:
