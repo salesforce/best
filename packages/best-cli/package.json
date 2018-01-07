@@ -2,9 +2,6 @@
   "name": "best-cli",
   "version": "0.0.3",
   "description": "Best CLI",
-  "scripts": {
-    "lint": "eslint src/"
-  },
   "keywords": [
     "Best",
     "LWC"
@@ -28,8 +25,6 @@
     "yargs": "~10.0.3"
   },
   "devDependencies": {
-    "babel-preset-env": "^1.6.1",
-    "eslint": "^4.13.0",
-    "eslint-plugin-lwc": "~0.2.4"
+    "babel-preset-env": "^1.6.1"
   }
 }

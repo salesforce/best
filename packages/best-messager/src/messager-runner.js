@@ -145,7 +145,6 @@ export default ({
     _debounceUpdate() {
         if (!this._queued) {
             this._queued = true;
-            // eslint-disable-next-line lwc/no-set-timeout
             setTimeout(() => {
                 this._queued = false;
                 if (this._running) {

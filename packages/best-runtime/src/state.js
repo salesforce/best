@@ -4,7 +4,7 @@ import DEFAULT_STATE from "./utils/default-state";
 
 const eventHandlers = [
     primitivesHandler,
-    //formatNodeAssertErrors,
+    // formatNodeAssertErrors,
 ];
 
 const _benchmarkTitle = () => ((typeof BEST_CONFIG !== 'undefined') ? BEST_CONFIG.benchmarkName : 'ROOT_DESCRIBE_BLOCK');
