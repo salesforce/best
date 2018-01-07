@@ -27,27 +27,7 @@ jobs:
             - yarn.lock
           key: yarn-v3-{{ .Branch }}-{{ checksum "package.json" }}
 
-  perf_test:
-    working_directory: ~/best
-
-    docker:
-      - image: circleci/node:8.9.3-stretch-browsers
-
-    steps:
-      - checkout
-
-      - restore_cache:
-          keys:
-          - yarn-v3-{{ .Branch }}-{{ checksum "package.json" }}
-          - yarn-v3-{{ .Branch }}-
-
-      - run: yarn install
-      - run: yarn build
-      - run:
-          name: Performance Test - Example project
-          command: yarn perf:example
-
-  compare_perf:
+  perf_and_compare:
     working_directory: ~/best
 
     docker:
@@ -81,6 +61,11 @@ jobs:
 
       - run: yarn install
       - run: yarn build
+
+      - run:
+          name: Performance Test - Example project
+          command: yarn perf:example
+
       - run:
           name: Comparing perf examples
           command: cd examples/simple_benchmark/ && best --compareStats d46ad97 320b079 --externalStorage=@best/store-aws --gitIntegration
@@ -90,11 +75,6 @@ workflows:
   main_workflow:
     jobs:
       - build_and_test
-
-      - perf_test:
+      - perf_and_compare:
           requires:
             - build_and_test
-
-      - compare_perf:
-          requires:
-            - perf_test
