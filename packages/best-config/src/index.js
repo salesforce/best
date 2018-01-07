@@ -87,7 +87,7 @@ function setFromArgs(initialOptions, argsCLI) {
                     options.benchmarkIterations = argsCLI[key];
                     break;
                 case 'compareStats':
-                    options[key] = argsCLI[key][0] !== undefined ? argsCLI[key].filter(Boolean) : undefined;
+                    options[key] = argsCLI[key].filter(Boolean);
                     break;
                 default:
                     options[key] = argsCLI[key];
@@ -95,7 +95,7 @@ function setFromArgs(initialOptions, argsCLI) {
             }
             return options;
         }, {});
-
+    console.log(argvToOptions);
     return Object.assign({}, initialOptions, argvToOptions);
 }
 
@@ -171,7 +171,7 @@ function normalize(options, argsCLI) {
                 value = normalizePlugins(options[key], options);
                 break;
             case 'compareStats':
-                value = normalizeCommits(options[key], options);
+                value = options[key].length ? normalizeCommits(options[key], options) : undefined;
                 break;
             default: value = options[key];
         }
