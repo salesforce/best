@@ -95,7 +95,7 @@ function setFromArgs(initialOptions, argsCLI) {
             }
             return options;
         }, {});
-    console.log(argvToOptions);
+
     return Object.assign({}, initialOptions, argvToOptions);
 }
 

@@ -70,7 +70,9 @@ export async function runCLI(argsCLI, projects) {
 
     if (globalConfig.compareStats) {
         results = await runCompare(globalConfig, configs, outputStream);
-        generateComparisonTable(results, outputStream);
+        if (results) {
+            generateComparisonTable(results, outputStream);
+        }
 
     } else {
         if (argsCLI.clearResults) {
