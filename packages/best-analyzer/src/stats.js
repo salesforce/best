@@ -33,7 +33,7 @@ export function median(arr) {
 
 export function medianAbsoluteDeviation(arr) {
     const med = median(arr);
-    return median(arr.map(x => Math.abs(x - med)))
+    return median(arr.map(x => Math.abs(x - med)));
 }
 
 export function formatNumber(num) {
@@ -78,5 +78,5 @@ export function compare(sample1, sample2) {
     // same population (i.e. have the same median) if the z-stat is greater than 1.96 or less than -1.96
     // http://www.statisticslectures.com/topics/mannwhitneyu/
     zStat = getZ(u);
-    return Math.abs(zStat) > 1.96 ? (u == u1 ? 1 : -1) : 0;
+    return Math.abs(zStat) > 1.96 ? (u === u1 ? 1 : -1) : 0;
 }

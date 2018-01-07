@@ -2,9 +2,6 @@
   "name": "@best/build",
   "version": "0.0.3",
   "description": "Best build",
-  "scripts": {
-    "lint": "eslint src/"
-  },
   "keywords": [
     "Best",
     "LWC"
