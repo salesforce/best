@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Runtime error benchmark</title>
+</head>
+<body>
+    <script>
+        window.BEST = {
+            runBenchmark(opts) {
+                throw new Error(`I fail at runtime`)
+            }
+        }
+    </script>
+</body>
+</html>
