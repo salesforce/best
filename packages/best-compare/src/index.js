@@ -1,5 +1,6 @@
 import { compareSamples } from "@best/analyzer";
 import { preRunMessager } from "@best/messager";
+import { basename } from "path";
 
 function compareEnvironment(baseEnv, targetEnv) {
     // TODO
@@ -56,6 +57,8 @@ export async function compareBenchmarkStats(baseCommit, targetCommit, projectNam
         targetCommit,
         comparison: []
     };
+
+    //console.log('>> ', baseBenchmarks, targetBenchmarks);
 
     baseBenchmarks.forEach((baseBenchmarkBundle) => {
         const { benchmarkName } = baseBenchmarkBundle;
