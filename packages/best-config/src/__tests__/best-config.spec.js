@@ -1,7 +1,9 @@
 import * as path from 'path';
 import { readConfig, getConfigs } from '../index';
 
-describe('readConfig', () => {
+const CONFIG_FIXTURE = path.resolve(__dirname, 'fixtures', 'best_config_js');
+
+describe('config file resolution', () => {
     test('throw if not config is found in the directory', async () => {
         await expect(
             readConfig({}, '/foo/bar')
@@ -9,7 +11,12 @@ describe('readConfig', () => {
     });
 
     test('resolves config in best.config.js', async () => {
-        const config = await readConfig({}, path.resolve(__dirname, 'fixtures', 'best_config_js'));
+        const config = await readConfig({}, CONFIG_FIXTURE);
+        expect(config.projectConfig.projectName).toBe('test');
+    });
+
+    test('resolves config in best.config.js by walking up the directory tree', async () => {
+        const config = await readConfig({}, path.resolve(__dirname, 'fixtures', 'best_config_js', 'nested'));
         expect(config.projectConfig.projectName).toBe('test');
     });
 
@@ -23,13 +30,18 @@ describe('readConfig', () => {
             readConfig({}, path.resolve(__dirname, 'fixtures', 'best_config_js-invalid'))
         ).rejects.toThrow(/No "best" section has been found in/);
     });
-
-
 });
 
-// describe('getConfigs', () => {
-//     test('config', async () => {
-//         const config = await getConfigs([])
-//         console.log(config)
-//     });
-// });
+describe('config normalization', () => {
+    test('config override using argument', async () => {
+        const projectName = 'name override';
+        const config = await readConfig({ projectName }, CONFIG_FIXTURE);
+        expect(config.projectConfig.projectName).toBe(projectName);
+    });
+
+    test('remapping property iteration to benchmarkIterations', async () => {
+        const iterations = 100;
+        const config = await readConfig({ iterations }, CONFIG_FIXTURE);
+        expect(config.projectConfig.benchmarkIterations).toBe(iterations);
+    });
+});
