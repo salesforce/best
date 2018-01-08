@@ -10,6 +10,7 @@
   "module": "src/index.js",
   "dependencies": {
     "@best/regex-util": "0.0.3",
+    "@best/utils": "0.0.3",
     "chalk": "~2.3.0"
   }
 }

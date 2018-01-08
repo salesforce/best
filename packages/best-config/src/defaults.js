@@ -1,16 +1,6 @@
 import os from 'os';
 import path from 'path';
-
-const cacheDirectory = (() => {
-    const { getuid } = process;
-    if (getuid == null) {
-        return path.join(os.tmpdir(), 'best');
-    }
-    // On some platforms tmpdir() is `/tmp`, causing conflicts between different
-    // users and permission issues. Adding an additional subdivision by UID can
-    // help.
-    return path.join(os.tmpdir(), 'best_' + getuid.call(process).toString(36));
-})();
+import { cacheDirectory } from '@best/utils';
 
 export default ({
     cache: true,

@@ -1,11 +1,11 @@
-import path from "path";
-import fs from "fs";
+import fs from 'fs';
+import path from 'path';
 import chalk from 'chalk';
-import { replacePathSepForRegex } from "@best/regex-util";
-import { PACKAGE_JSON, BEST_CONFIG } from "./constants";
-import { addGitInformation } from "./git";
+import { replacePathSepForRegex } from '@best/regex-util';
 
 import DEFAULT_CONFIG from './defaults';
+import { addGitInformation } from './git';
+import { PACKAGE_JSON, BEST_CONFIG } from './constants';
 
 const specialArgs = ['_', '$0', 'h', 'help', 'config'];
 const isFile = filePath => fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
@@ -24,6 +24,10 @@ function readConfigAndSetRootDir(configPath) {
     }
 
     if (configPath.endsWith(PACKAGE_JSON)) {
+        if (!configObject.best) {
+            throw new Error(`No "best" section has been found in ${configPath}`);
+        }
+
         configObject = configObject.best;
     }
 
@@ -60,7 +64,7 @@ function resolveConfigPathByTraversing(pathToResolve, initialPath, cwd) {
     }
 
     if (pathToResolve === path.dirname(pathToResolve)) {
-        throw new Error('Config not found');
+        throw new Error(`No config found in ${initialPath}`);
     }
 
     // go up a level and try it again
