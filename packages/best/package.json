@@ -1,6 +1,6 @@
 {
   "name": "best",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "private": true,
   "description": "Best",
   "scripts": {
@@ -15,7 +15,7 @@
     "best-agent": "./bin/best-agent.js"
   },
   "dependencies": {
-    "best-agent": "0.0.4",
-    "best-cli": "0.0.4"
+    "best-agent": "0.0.5",
+    "best-cli": "0.0.5"
   }
 }
