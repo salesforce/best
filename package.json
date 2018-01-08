@@ -24,6 +24,7 @@
     "chalk": "^2.3.0",
     "eslint": "^4.14.0",
     "eslint-plugin-lwc": "^0.2.4",
+    "jest": "^22.0.4",
     "lerna": "2.5.1",
     "micromatch": "^3.1.4",
     "mkdirp": "^0.5.1",
