@@ -1,9 +1,11 @@
 import { preRunMessager } from "@best/messager";
 import { compareBenchmarkStats } from "@best/compare";
 import { pushBenchmarkComparison } from "@best/github-integration";
+import { basename } from "path";
 
 export async function runCompare(globalConfig, configs, outputStream) {
     const { gitIntegration, externalStorage, compareStats: commits } = globalConfig;
+    const [baseCommit, compareCommit] = commits;
 
     if (configs.length > 1) {
         throw new Error('WIP - Do not support multiple projects for compare just yet...');
@@ -17,8 +19,12 @@ export async function runCompare(globalConfig, configs, outputStream) {
         throw new Error('Wrong number of commmits to compare we are expectine one or two');
     }
 
+    if (baseCommit === compareCommit) {
+        console.log(`Hash of commits are identical (${baseCommit}). Skipping comparison`);
+        return false;
+    }
+
     const projectConfig = configs[0];
-    const [baseCommit, compareCommit] = commits.map(c => c.slice(0, 7));
     const { projectName } = projectConfig;
     let storageProvider;
     try {
@@ -31,7 +37,7 @@ export async function runCompare(globalConfig, configs, outputStream) {
     const compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectName, storageProvider);
 
     if (gitIntegration) {
-        await pushBenchmarkComparison(compareResults);
+        await pushBenchmarkComparison(baseCommit, compareCommit, compareResults);
     }
 
     return compareResults;

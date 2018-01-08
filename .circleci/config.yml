@@ -15,9 +15,9 @@ jobs:
           - yarn-v3-{{ .Branch }}-
 
       - run: yarn install
-      - run:
-          name: Run Unit Tests
-          command: yarn test
+      - run: yarn build
+      - run: yarn lint
+      - run: yarn test
 
       - save_cache:
           paths:
@@ -68,7 +68,7 @@ jobs:
 
       - run:
           name: Comparing perf examples
-          command: cd examples/simple_benchmark/ && best --compareStats d46ad97 320b079 --externalStorage=@best/store-aws --gitIntegration
+          command: cd examples/simple_benchmark/ && best --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --externalStorage=@best/store-aws --gitIntegration
 
 workflows:
   version: 2

@@ -1,10 +1,7 @@
 {
   "name": "best-cli",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Best CLI",
-  "scripts": {
-    "lint": "eslint src/"
-  },
   "keywords": [
     "Best",
     "LWC"
@@ -13,13 +10,13 @@
     "best": "./bin/best.js"
   },
   "dependencies": {
-    "@best/analyzer": "0.0.3",
-    "@best/build": "0.0.3",
-    "@best/config": "0.0.3",
-    "@best/github-integration": "0.0.3",
-    "@best/messager": "0.0.3",
-    "@best/runner": "0.0.3",
-    "@best/store": "0.0.3",
+    "@best/analyzer": "0.0.4",
+    "@best/build": "0.0.4",
+    "@best/config": "0.0.4",
+    "@best/github-integration": "0.0.4",
+    "@best/messager": "0.0.4",
+    "@best/runner": "0.0.4",
+    "@best/store": "0.0.4",
     "chalk": "~2.3.0",
     "cli-table": "~0.3.1",
     "globby": "~7.1.1",
@@ -28,8 +25,6 @@
     "yargs": "~10.0.3"
   },
   "devDependencies": {
-    "babel-preset-env": "^1.6.1",
-    "eslint": "^4.13.0",
-    "eslint-plugin-lwc": "~0.2.4"
+    "babel-preset-env": "^1.6.1"
   }
 }

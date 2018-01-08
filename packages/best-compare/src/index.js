@@ -1,5 +1,6 @@
 import { compareSamples } from "@best/analyzer";
 import { preRunMessager } from "@best/messager";
+import { basename } from "path";
 
 function compareEnvironment(baseEnv, targetEnv) {
     // TODO
@@ -43,7 +44,6 @@ function compareBenchmarks(baseBenchs, targetBenchs, comparison = []) {
 }
 
 export async function compareBenchmarkStats(baseCommit, targetCommit, projectName, storageProvider) {
-
     const [baseBenchmarks, targetBenchmarks] = await Promise.all([
         storageProvider.getBenchmarkStats(projectName, baseCommit),
         storageProvider.getBenchmarkStats(projectName, targetCommit)
@@ -56,6 +56,8 @@ export async function compareBenchmarkStats(baseCommit, targetCommit, projectNam
         targetCommit,
         comparison: []
     };
+
+    //console.log('>> ', baseBenchmarks, targetBenchmarks);
 
     baseBenchmarks.forEach((baseBenchmarkBundle) => {
         const { benchmarkName } = baseBenchmarkBundle;

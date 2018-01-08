@@ -28,7 +28,6 @@ function generateRow(benchmarks, table, level = 0) {
             const emptyFields = Array.apply(null, Array(6)).map(() => '-');
             table.push([padding(level) + name, ...emptyFields]);
             generateRow(benchmarkNode.benchmarks, table, level + 1);
-
         }
     });
 }
@@ -46,12 +45,11 @@ function generateStats(benchmarkName, outputFolder, stats, stream) {
         chalk.italic(' ' + outputFolder + '/'),
         table.toString() + '\n'
     ].join('\n'));
-
 }
 
 function generateEnviroment({ hardware, browser }, stream) {
     const cpuLoad = hardware.load.cpuLoad;
-    const loadColor = cpuLoad < 10 ? 'green' : cpuLoad < 50 ? 'yellow' : 'red' ;
+    const loadColor = cpuLoad < 10 ? 'green' : cpuLoad < 50 ? 'yellow' : 'red';
 
     stream.write(' ');
     stream.write([
@@ -72,5 +70,6 @@ export function generateReportTables(results, stream) {
 
 
 export function generateComparisonTable(comparison, stream) {
+    console.log('WIP: OUTPUT Comparison table here!');
     console.log(comparison);
 }

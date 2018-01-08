@@ -2,14 +2,15 @@ import { isCI } from "@best/utils";
 import { createGithubApp } from "./git-app";
 import { generateComparisonComment } from "./comment";
 
-const TARGET_COMMIT = process.env.TARGET_COMMIT;
-const BASE_COMMIT = process.env.BASE_COMMIT;
 const PULL_REQUEST_URL = process.env.PULL_REQUEST;
 const REPO_NAME = process.env.REPO_NAME;
 
-export async function pushBenchmarkComparison(compareStats) {
+export async function pushBenchmarkComparison(baseCommit, targetCommit, compareStats) {
     if (!isCI) {
-        throw new Error('GitIntegration is only supposed to run on a CI environment');
+        // throw new Error('GitIntegration is only supposed to run on a CI environment');
+        console.log('[NOT A CI] - The output will not be pushed.\n');
+        console.log(generateComparisonComment(baseCommit, targetCommit, compareStats), '\n');
+        return;
     }
 
     const APP = createGithubApp();
@@ -20,12 +21,12 @@ export async function pushBenchmarkComparison(compareStats) {
     const owner = repoInstallation.account.login;
     const gitHubInstallation = await APP.authAsInstallation(installationId);
     const pullRequestId = parseInt(PULL_REQUEST_URL.split('/').pop(), 10);
-    const comparisonComment = generateComparisonComment(BASE_COMMIT, TARGET_COMMIT, compareStats);
+    const body = generateComparisonComment(baseCommit, targetCommit, compareStats);
 
     await gitHubInstallation.issues.createComment({
         owner,
+        body,
         repo: REPO_NAME,
         number: pullRequestId,
-        body: comparisonComment
     });
 }
