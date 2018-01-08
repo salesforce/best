@@ -1,9 +1,3 @@
-import { isInteractive, isCI } from './is-interactive';
-import clearLine from './clear-line';
-import cacheDirectory from "./cache-directory";
-export {
-    cacheDirectory,
-    isInteractive,
-    isCI,
-    clearLine
-};
+export { isInteractive, isCI } from './is-interactive';
+export { default as clearLine } from './clear-line';
+export { default as cacheDirectory } from './cache-directory';
