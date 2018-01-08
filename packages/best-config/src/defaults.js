@@ -4,7 +4,7 @@ import { cacheDirectory } from '@best/utils';
 
 export default ({
     cache: true,
-    cacheDirectory,
+    cacheDirectory: cacheDirectory(),
     moduleDirectories: ['node_modules'],
     moduleFileExtensions: ['js'],
     moduleNameMapper: {},

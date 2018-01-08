@@ -1,7 +1,7 @@
 import os from 'os';
 import path from 'path';
 
-export default function cacheDirecotry(dirname = 'best') {
+export default function cacheDirectory(dirname = 'best') {
     const { getuid } = process;
 
     if (getuid == null) {

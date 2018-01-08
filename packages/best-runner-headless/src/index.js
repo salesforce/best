@@ -118,19 +118,12 @@ async function normalizeEnvironment(browser, projectConfig, globalConfig) {
 }
 
 export async function run({ benchmarkName, benchmarkEntry }, projectConfig, globalConfig, messager) {
-<<<<<<< HEAD
     const opts =  normalizeRuntimeOptions(projectConfig);
     const state =  initializeBenchmarkState(opts);
 
     let browser;
     try {
         browser = await puppeteer.launch(PUPPETEER_OPTIONS);
-=======
-    messager.onBenchmarkStart(benchmarkName);
-    return puppeteer.launch(PUPPETEER_OPTIONS).then(async browser => {
-        const opts =  normalizeRuntimeOptions(projectConfig);
-        const state =  initializeBenchmarkState(opts);
->>>>>>> master
         const environment = await normalizeEnvironment(browser, projectConfig, globalConfig);
 
         messager.onBenchmarkStart(benchmarkName);
