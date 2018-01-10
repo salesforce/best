@@ -11,8 +11,7 @@ jobs:
 
       - restore_cache:
           keys:
-          - yarn-v3-{{ .Branch }}-{{ checksum "package.json" }}
-          - yarn-v3-{{ .Branch }}-
+          - yarn-v3-{{ checksum "yarn.lock" }}
 
       - run: yarn install
       - run: yarn lint
@@ -20,11 +19,12 @@ jobs:
 
       - save_cache:
           paths:
+            - ~/.cache/yarn
+            - yarn.lock
             - node_modules
             - packages/*/node_modules
             - examples/*/node_modules
-            - yarn.lock
-          key: yarn-v3-{{ .Branch }}-{{ checksum "package.json" }}
+          key: yarn-v3-{{ checksum "yarn.lock" }}
 
   perf_and_compare:
     working_directory: ~/best
@@ -41,8 +41,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - yarn-v3-{{ .Branch }}-{{ checksum "package.json" }}
-          - yarn-v3-{{ .Branch }}-
+          - yarn-v3-{{ checksum "yarn.lock" }}
 
       - run:
           name: Setup dynamic environment variables
