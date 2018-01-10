@@ -1,21 +1,13 @@
+# OS artifacts
 .DS_STORE
-.eslintcache
-*.swp
-*~
 
-/node_modules
-/packages/*/build/
-/packages/*/coverage/
-/packages/*/node_modules/
-/examples/*/node_modules/
-/packages/*/__benchmark_results__/
-/examples/*/__benchmark_results__/
-/__benchmark_results__/
-/playground/
-
+# Tools artifacts
+node_modules
+build
 coverage
-lerna-debug.log
-npm-debug.log
-npm-debug.log*
-yarn-error.log*
-yarn.lock
+.eslintcache
+*.log
+
+# Project artifacts
+__benchmark_results__
+
