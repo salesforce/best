@@ -28,7 +28,7 @@ cd examples/simple_benchmark/
 Run the benchmark
 
 ```bash
-best --interactions 3
+yarn perf --interactions 3
 ```
 
 Be delighted!
