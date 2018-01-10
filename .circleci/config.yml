@@ -15,7 +15,6 @@ jobs:
           - yarn-v3-{{ .Branch }}-
 
       - run: yarn install
-      - run: yarn build
       - run: yarn lint
       - run: yarn test
 
@@ -60,7 +59,6 @@ jobs:
           command: echo -e "$GIT_APP_CERT" | base64 -d >> ~/best/git_app.pem
 
       - run: yarn install
-      - run: yarn build
 
       - run:
           name: Performance Test - Example project
