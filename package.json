@@ -1,5 +1,5 @@
 {
-  "name": "best",
+  "name": "best-monorepo",
   "private": true,
   "description": "Benchmark tool",
   "repository": {
@@ -13,7 +13,7 @@
     "prepare": "yarn build",
     "build": "node scripts/build.js",
     "watch": "yarn build && node ./scripts/watch.js",
-    "test": "echo 'No tests yet'",
+    "test": "jest --config jest.config.json",
     "perf:example": "cd examples/simple_benchmark && best --externalStorage=@best/store-aws",
     "release": "yarn prepare && lerna publish --exact --force-publish=* --registry='https://npm.lwcjs.org'",
     "release:internal": "yarn prepare && lerna publish --exact --force-publish=* --skip-git --repo-version `node -pe \"require('./lerna.json').version\"` --yes --registry='https://nexus.soma.salesforce.com/nexus/content/repositories/npmjs-internal/'"
@@ -24,6 +24,7 @@
     "chalk": "^2.3.0",
     "eslint": "^4.14.0",
     "eslint-plugin-lwc": "^0.2.4",
+    "jest": "^22.0.4",
     "lerna": "2.5.1",
     "micromatch": "^3.1.4",
     "mkdirp": "^0.5.1",

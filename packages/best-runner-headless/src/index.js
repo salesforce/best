@@ -1,6 +1,5 @@
 import puppeteer from "puppeteer";
 import { getSystemInfo } from "./system-info";
-import path from "path";
 import { clearInterval } from "timers";
 
 const BROWSER_ARGS = [
@@ -20,7 +19,7 @@ const PUPPETEER_OPTIONS = { args: BROWSER_ARGS };
 
 async function runIteration(page, state, opts) {
     // eslint-disable-next-line no-undef
-    return page.evaluate(async (o) => BEST.runBenchmark(o), opts);
+    return page.evaluate((o) => BEST.runBenchmark(o), opts);
 }
 
 async function runClientIterations(page, state, opts, messager) {
@@ -52,7 +51,6 @@ async function runServerIterations(page, state, opts, messager) {
         const start = Date.now();
         const results = await runIteration(page, state, opts);
         await page.reload();
-
         state.executedTime += (Date.now() - start);
         state.executedIterations += 1;
         state.results.push(results.results[0]);
@@ -102,7 +100,7 @@ async function normalizeEnvironment(browser, projectConfig, globalConfig) {
         hardware,
         browser: { version, options: BROWSER_ARGS },
         configuration: {
-            proyect: {
+            project: {
                 projectName,
                 benchmarkOnClient,
                 benchmarkRunner,
@@ -120,18 +118,26 @@ async function normalizeEnvironment(browser, projectConfig, globalConfig) {
 }
 
 export async function run({ benchmarkName, benchmarkEntry }, projectConfig, globalConfig, messager) {
-    messager.onBenchmarkStart(benchmarkName);
-    return puppeteer.launch(PUPPETEER_OPTIONS).then(async browser => {
-        const opts =  normalizeRuntimeOptions(projectConfig);
-        const state =  initializeBenchmarkState(opts);
+    const opts =  normalizeRuntimeOptions(projectConfig);
+    const state =  initializeBenchmarkState(opts);
+
+    let browser;
+    try {
+        browser = await puppeteer.launch(PUPPETEER_OPTIONS);
         const environment = await normalizeEnvironment(browser, projectConfig, globalConfig);
+
+        messager.onBenchmarkStart(benchmarkName);
 
         const page = await browser.newPage();
         await page.goto('file:///' + benchmarkEntry);
 
-        const benchmarkResults = await runIterations(page, state, opts, messager);
-        await browser.close();
+        const { results } = await runIterations(page, state, opts, messager);
+        return { results, environment };
+    } finally {
         messager.onBenchmarkEnd(benchmarkName);
-        return { results: benchmarkResults.results, environment };
-    });
+
+        if (browser) {
+            await browser.close();
+        }
+    }
 }

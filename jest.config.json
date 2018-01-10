@@ -1,0 +1,8 @@
+{
+  "modulePathIgnorePatterns": [
+    "/build/"
+  ],
+  "testPathIgnorePatterns": [
+    "/fixtures/"
+  ]
+}
