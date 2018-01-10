@@ -15,13 +15,14 @@
     "watch": "yarn build && node ./scripts/watch.js",
     "test": "jest --config jest.config.json",
     "perf:example": "cd examples/simple_benchmark && best --externalStorage=@best/store-aws",
-    "release": "yarn prepare && lerna publish --exact --force-publish=* --registry='https://npm.lwcjs.org'",
+    "release": "yarn prepare && lerna publish --conventional-commits --exact --force-publish=* --registry='https://npm.lwcjs.org'",
     "release:internal": "yarn prepare && lerna publish --exact --force-publish=* --skip-git --repo-version `node -pe \"require('./lerna.json').version\"` --yes --registry='https://nexus.soma.salesforce.com/nexus/content/repositories/npmjs-internal/'"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "chalk": "^2.3.0",
+    "commitizen": "^2.9.6",
     "eslint": "^4.14.0",
     "eslint-plugin-lwc": "^0.2.4",
     "jest": "^22.0.4",
@@ -30,6 +31,11 @@
     "mkdirp": "^0.5.1",
     "rimraf": "^2.6.2",
     "string-length": "2.0.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   },
   "workspaces": [
     "packages/*",
