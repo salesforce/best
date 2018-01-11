@@ -7,6 +7,7 @@ build
 coverage
 .eslintcache
 *.log
+*.pem
 
 # Project artifacts
 __benchmark_results__
