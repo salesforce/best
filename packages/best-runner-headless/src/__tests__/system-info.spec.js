@@ -27,5 +27,5 @@ test('getSystemInfo', async () => {
                 cpuLoad: expect.any(Number)
             }
         })
-    )
+    );
 });

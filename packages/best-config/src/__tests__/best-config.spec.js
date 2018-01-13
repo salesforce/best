@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { readConfig, getConfigs } from '../index';
+import { readConfig } from '../index';
 
 const CONFIG_FIXTURE = path.resolve(__dirname, 'fixtures', 'best_config_js');
 

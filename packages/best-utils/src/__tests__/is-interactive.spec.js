@@ -6,4 +6,4 @@ test('isCI', () => {
 
 test('isInteractive', () => {
     expect(typeof isInteractive).toBe('boolean');
-})
+});

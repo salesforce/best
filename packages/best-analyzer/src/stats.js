@@ -46,7 +46,6 @@ export function formatNumber(num) {
 
 // From https://github.com/bestiejs/benchmark.js/blob/master/benchmark.js#L1391
 export function compare(sample1, sample2) {
-    let zStat;
     const size1 = sample1.length,
         size2 = sample2.length,
         u1 = getU(sample1, sample2),
@@ -77,6 +76,6 @@ export function compare(sample1, sample2) {
     // Reject the null hypothesis the two samples come from the
     // same population (i.e. have the same median) if the z-stat is greater than 1.96 or less than -1.96
     // http://www.statisticslectures.com/topics/mannwhitneyu/
-    zStat = getZ(u);
+    const zStat = getZ(u);
     return Math.abs(zStat) > 1.96 ? (u === u1 ? 1 : -1) : 0;
 }

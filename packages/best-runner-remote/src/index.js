@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import SocketIO from "socket.io-client";
+import socketIO from "socket.io-client";
 import SocketIOFile from "./file-uploader";
 import { createTarBundle } from "./create-tar";
 import { preRunMessager } from "@best/messager";
@@ -20,12 +20,12 @@ function proxifyRunner(benchmarkEntryBundle, runnerConfig, projectConfig, global
         }
 
         preRunMessager.print(`Attempting connection with agent at ${host} ...`, process.stdout);
-        const socket = SocketIO(host, options);
+        const socket = socketIO(host, options);
 
         socket.on('connect', () => {
             preRunMessager.clear(process.stdout);
 
-            socket.on('load_benchmark', (s) => {
+            socket.on('load_benchmark', () => {
                 const uploader = new SocketIOFile(socket);
                 uploader.on('ready', () => {
                     uploader.upload(tarBundle);
@@ -45,13 +45,13 @@ function proxifyRunner(benchmarkEntryBundle, runnerConfig, projectConfig, global
                 messager.onBenchmarkEnd(benchName);
             });
 
-            socket.on('disconnect', (s) => {
-                // console.log('Disconnected??');
-            });
+            // socket.on('disconnect', (s) => {
+            //     console.log('Disconnected??');
+            // });
 
-            socket.on('state_change', (s) => {
-                // console.log('>> State change', s);
-            });
+            // socket.on('state_change', (s) => {
+            //     console.log('>> State change', s);
+            // });
 
             socket.on('benchmark_error', (err) => {
                 socket.disconnect();

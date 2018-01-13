@@ -131,11 +131,11 @@ function normalizeRootDirPattern(str, rootDir) {
     return str.replace(/<rootDir>/g, rootDir);
 }
 
-function normalizeUnmockedModulePathPatterns(options, key) {
-    return options[key].map(pattern =>
-        replacePathSepForRegex(normalizeRootDirPattern(pattern, options.rootDir))
-    );
-}
+// function normalizeUnmockedModulePathPatterns(options, key) {
+//     return options[key].map(pattern =>
+//         replacePathSepForRegex(normalizeRootDirPattern(pattern, options.rootDir))
+//     );
+// }
 
 function normalizeObjectPathPatterns(options, { rootDir }) {
     return Object.keys(options).reduce((m, key) => {

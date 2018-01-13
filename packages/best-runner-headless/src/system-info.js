@@ -4,7 +4,7 @@ export async function getSystemInfo() {
     const system = await si.system();
     const cpu = await si.cpu();
     const {platform, distro, release, kernel, arch} = await si.osInfo();
-    const { avgload, currentload } = await si.currentLoad();
+    const { currentLoad } = await si.currentLoad();
 
     return {
         system: {
@@ -20,6 +20,6 @@ export async function getSystemInfo() {
             cores: cpu.cores
         },
         os: { platform, distro, release, kernel, arch },
-        load: { cpuLoad: currentload }
+        load: { cpuLoad: currentLoad }
     };
 }

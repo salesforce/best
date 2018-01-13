@@ -90,7 +90,7 @@ class SocketClient extends EventEmitter {
         return !!this.benchmarkConfig;
     }
 
-    onLoadedBenchmarks({ name, uploadDir }) {
+    onLoadedBenchmarks({ uploadDir }) {
         extractTar({ cwd: path.dirname(uploadDir), file: uploadDir})
             .then(() => {
                 const benchmarkName = this.benchmarkConfig.benchmarkName;

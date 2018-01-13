@@ -73,7 +73,6 @@ export async function runCLI(argsCLI, projects) {
         if (results) {
             generateComparisonTable(results, outputStream);
         }
-
     } else {
         if (argsCLI.clearResults) {
             preRunMessager.print('Clearing previous benchmark results...', outputStream);

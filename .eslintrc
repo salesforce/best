@@ -10,6 +10,7 @@
         "no-console": ["warn", { "allow": ["timeStamp", "time", "timeEnd"] }],
         "no-await-in-loop": 0,
         "no-confusing-arrow": ["error", { "allowParens": true }],
+        "eslint-comments/no-use": false,
         "lwc/no-inline-disable" : 0,
         "lwc/no-set-timeout": 0,
         "compat/compat": 0
