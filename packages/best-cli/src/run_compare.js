@@ -1,26 +1,38 @@
-import { preRunMessager } from "@best/messager";
-import { compareBenchmarkStats } from "@best/compare";
-import { pushBenchmarkComparison } from "@best/github-integration";
-import { basename } from "path";
+import { preRunMessager } from '@best/messager';
+import { compareBenchmarkStats } from '@best/compare';
+import { pushBenchmarkComparison } from '@best/github-integration';
+import { basename } from 'path';
 
 export async function runCompare(globalConfig, configs, outputStream) {
-    const { gitIntegration, externalStorage, compareStats: commits } = globalConfig;
+    const {
+        gitIntegration,
+        externalStorage,
+        compareStats: commits,
+    } = globalConfig;
     const [baseCommit, compareCommit] = commits;
 
     if (configs.length > 1) {
-        throw new Error('WIP - Do not support multiple projects for compare just yet...');
+        throw new Error(
+            'WIP - Do not support multiple projects for compare just yet...',
+        );
     }
 
     if (!externalStorage) {
-        throw new Error('WIP - Do not support local comparison just yet. You need a --externalStorage');
+        throw new Error(
+            'WIP - Do not support local comparison just yet. You need a --externalStorage',
+        );
     }
 
     if (commits.length === 0 || commits.length > 2) {
-        throw new Error('Wrong number of commmits to compare we are expectine one or two');
+        throw new Error(
+            'Wrong number of commmits to compare we are expectine one or two',
+        );
     }
 
     if (baseCommit === compareCommit) {
-        console.log(`Hash of commits are identical (${baseCommit}). Skipping comparison`);
+        console.log(
+            `Hash of commits are identical (${baseCommit}). Skipping comparison`,
+        );
         return false;
     }
 
@@ -33,11 +45,23 @@ export async function runCompare(globalConfig, configs, outputStream) {
         throw new Error(`Can't resolve the externalStorage ${externalStorage}`);
     }
 
-    preRunMessager.print('\n Fetching benchmark results to compare... \n\n', outputStream);
-    const compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectName, storageProvider);
+    preRunMessager.print(
+        '\n Fetching benchmark results to compare... \n\n',
+        outputStream,
+    );
+    const compareResults = await compareBenchmarkStats(
+        baseCommit,
+        compareCommit,
+        projectName,
+        storageProvider,
+    );
 
     if (gitIntegration) {
-        await pushBenchmarkComparison(baseCommit, compareCommit, compareResults);
+        await pushBenchmarkComparison(
+            baseCommit,
+            compareCommit,
+            compareResults,
+        );
     }
 
     return compareResults;

@@ -8,7 +8,7 @@ export const print = (message, stream) => {
     }
 };
 
-export const clear = (stream) => {
+export const clear = stream => {
     if (isInteractive) {
         clearLine(stream);
     }

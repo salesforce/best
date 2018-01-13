@@ -10,6 +10,7 @@
   "scripts": {
     "clean": "lerna run clean && lerna clean --yes && rm -rf node_modules",
     "lint": "eslint packages/",
+    "prettier": "prettier --write '**/*.{js,md}'",
     "prepare": "yarn build",
     "build": "node scripts/build.js",
     "watch": "yarn build && node ./scripts/watch.js",
@@ -29,6 +30,7 @@
     "lerna": "2.5.1",
     "micromatch": "^3.1.4",
     "mkdirp": "^0.5.1",
+    "prettier": "^1.10.2",
     "rimraf": "^2.6.2",
     "string-length": "2.0.0"
   },

@@ -2,7 +2,7 @@ import os from 'os';
 import path from 'path';
 import { cacheDirectory } from '@best/utils';
 
-export default ({
+export default {
     cache: true,
     cacheDirectory: cacheDirectory(),
     moduleDirectories: ['node_modules'],
@@ -20,4 +20,4 @@ export default ({
     benchmarkEnvironmentOptions: {},
 
     testMatch: ['**/__benchmarks__/**/*.js', '**/?(*.)(spec|test).js'],
-});
+};

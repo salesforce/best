@@ -10,11 +10,11 @@ test('getSystemInfo', async () => {
             },
             cpu: {
                 manufacturer: expect.any(String),
-                brand : expect.any(String),
+                brand: expect.any(String),
                 family: expect.any(String),
                 model: expect.any(String),
                 speed: expect.any(String),
-                cores: expect.any(Number)
+                cores: expect.any(Number),
             },
             os: {
                 platform: expect.any(String),
@@ -24,8 +24,8 @@ test('getSystemInfo', async () => {
                 arch: expect.any(String),
             },
             load: {
-                cpuLoad: expect.any(Number)
-            }
-        })
-    )
+                cpuLoad: expect.any(Number),
+            },
+        }),
+    );
 });

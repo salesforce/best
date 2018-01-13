@@ -1,5 +1,5 @@
-import SocketIO from "socket.io";
-import AgentBroker from "./broker";
+import SocketIO from 'socket.io';
+import AgentBroker from './broker';
 
 let BROKER;
 

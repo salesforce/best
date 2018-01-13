@@ -1,6 +1,6 @@
-import express from "express";
-import { Server } from "http";
-import { runAgent } from "../agent-service";
+import express from 'express';
+import { Server } from 'http';
+import { runAgent } from '../agent-service';
 const PORT = process.env.port || 5000;
 
 export function run(maybeArgv) {

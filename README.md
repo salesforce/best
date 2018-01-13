@@ -1,4 +1,5 @@
 # Best
+
 Delightful JavaScript performance benchmarking. It's like Jest but for benchmarking ;)
 
 ## Getting Started
@@ -38,8 +39,8 @@ Be delighted!
 You can find an example benchmark under `examples/simple_benchmark/src/simple-item/__benchmarks__`
 
 ```javascript
-import Ctor from "simple-item";
-import { createElement } from "engine";
+import Ctor from 'simple-item';
+import { createElement } from 'engine';
 
 benchmark('create_and_render', () => {
     let element;

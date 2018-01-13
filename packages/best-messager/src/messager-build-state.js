@@ -1,12 +1,12 @@
-import path from "path";
-import chalk from "chalk";
+import path from 'path';
+import chalk from 'chalk';
 import { isInteractive } from '@best/utils';
 
 export const BUILD_STATE = {
     QUEUED: 'queued',
     BUILDING: 'building',
     DONE: 'done',
-    ERROR: 'error'
+    ERROR: 'error',
 };
 const INIT_BUILD_TEXT = chalk.bold.dim('Building benchmarks... \n\n');
 const BUILDING_TEXT = ' BUILDING ';
@@ -16,22 +16,26 @@ const QUEUED = chalk.reset.inverse.gray.bold(QUEUED_TEXT) + ' ';
 const DONE_TEXT = '  BUILT   ';
 const DONE = chalk.reset.inverse.green.bold(DONE_TEXT) + ' ';
 
-const printState = (state) => {
+const printState = state => {
     switch (state) {
-        case BUILD_STATE.QUEUED: return QUEUED;
-        case BUILD_STATE.BUILDING: return BUILDING;
-        case BUILD_STATE.DONE: return DONE;
-        default: return '';
+        case BUILD_STATE.QUEUED:
+            return QUEUED;
+        case BUILD_STATE.BUILDING:
+            return BUILDING;
+        case BUILD_STATE.DONE:
+            return DONE;
+        default:
+            return '';
     }
 };
 
-const printDisplayName = (relativeDir) => {
+const printDisplayName = relativeDir => {
     const dirname = path.dirname(relativeDir);
     const basename = path.basename(relativeDir);
     return chalk.dim(dirname + path.sep) + chalk.bold(basename);
 };
 
-const clearStream = (buffer) => {
+const clearStream = buffer => {
     let height = 0;
     for (let i = 0; i < buffer.length; i++) {
         if (buffer[i] === '\n') {
@@ -41,8 +45,7 @@ const clearStream = (buffer) => {
     return '\r\x1B[K\r\x1B[1A'.repeat(height);
 };
 
-
-export default ({
+export default {
     _state: null,
     _out: null,
     _bufferStream: [],
@@ -51,7 +54,7 @@ export default ({
     // so we can manage how to clear/update
     _wrapStream(stream) {
         const _write = stream.write;
-        stream.write = (buffer) => {
+        stream.write = buffer => {
             this._bufferStream.push(buffer);
             _write.call(stream, buffer);
         };
@@ -66,15 +69,21 @@ export default ({
         this._out = outputStream.write.bind(outputStream);
         this._wrapStream(process.stderr);
         this._wrapStream(process.stdout);
-        const benchmarksState = benchmarksBundle.reduce((map, { config, matches }) => {
-            matches.forEach((benchmarkPath) => {
-                map[benchmarkPath] = {
-                    state: BUILD_STATE.QUEUED,
-                    displayPath: path.relative(config.rootDir, benchmarkPath)
-                };
-            });
-            return map;
-        }, {});
+        const benchmarksState = benchmarksBundle.reduce(
+            (map, { config, matches }) => {
+                matches.forEach(benchmarkPath => {
+                    map[benchmarkPath] = {
+                        state: BUILD_STATE.QUEUED,
+                        displayPath: path.relative(
+                            config.rootDir,
+                            benchmarkPath,
+                        ),
+                    };
+                });
+                return map;
+            },
+            {},
+        );
 
         this._state = { benchmarks: benchmarksState, buffer: '', clear: '' };
         this._update();
@@ -113,11 +122,14 @@ export default ({
         const benchmarks = this._state.benchmarks;
         const buffer = Object.keys(benchmarks).reduce((str, key) => {
             const benchState = benchmarks[key];
-            str += printState(benchState.state) + printDisplayName(benchState.displayPath) + '\n';
+            str +=
+                printState(benchState.state) +
+                printDisplayName(benchState.displayPath) +
+                '\n';
             return str;
         }, '\n' + INIT_BUILD_TEXT);
 
         this._state.clear = clearStream(buffer);
         this._out(buffer);
-    }
-});
+    },
+};

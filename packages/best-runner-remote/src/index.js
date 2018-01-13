@@ -1,59 +1,76 @@
-import path from "path";
-import fs from "fs";
-import SocketIO from "socket.io-client";
-import SocketIOFile from "./file-uploader";
-import { createTarBundle } from "./create-tar";
-import { preRunMessager } from "@best/messager";
+import path from 'path';
+import fs from 'fs';
+import SocketIO from 'socket.io-client';
+import SocketIOFile from './file-uploader';
+import { createTarBundle } from './create-tar';
+import { preRunMessager } from '@best/messager';
 
-function proxifyRunner(benchmarkEntryBundle, runnerConfig, projectConfig, globalConfig, messager) {
+function proxifyRunner(
+    benchmarkEntryBundle,
+    runnerConfig,
+    projectConfig,
+    globalConfig,
+    messager,
+) {
     return new Promise(async (resolve, reject) => {
-        const { benchmarkName, benchmarkEntry, benchmarkSignature } = benchmarkEntryBundle;
+        const {
+            benchmarkName,
+            benchmarkEntry,
+            benchmarkSignature,
+        } = benchmarkEntryBundle;
         const { host, options, remoteRunner } = runnerConfig;
         const bundleDirname = path.dirname(benchmarkEntry);
-        const remoteprojectConfig = Object.assign({}, projectConfig, { benchmarkRunner: remoteRunner });
+        const remoteprojectConfig = Object.assign({}, projectConfig, {
+            benchmarkRunner: remoteRunner,
+        });
         const tarBundle = path.resolve(bundleDirname, `${benchmarkName}.tgz`);
 
         await createTarBundle(bundleDirname, benchmarkName);
 
         if (!fs.existsSync(tarBundle)) {
-            return reject(new Error('Benchmark artifact not found (${tarBundle})'));
+            return reject(
+                new Error('Benchmark artifact not found (${tarBundle})'),
+            );
         }
 
-        preRunMessager.print(`Attempting connection with agent at ${host} ...`, process.stdout);
+        preRunMessager.print(
+            `Attempting connection with agent at ${host} ...`,
+            process.stdout,
+        );
         const socket = SocketIO(host, options);
 
         socket.on('connect', () => {
             preRunMessager.clear(process.stdout);
 
-            socket.on('load_benchmark', (s) => {
+            socket.on('load_benchmark', s => {
                 const uploader = new SocketIOFile(socket);
                 uploader.on('ready', () => {
                     uploader.upload(tarBundle);
                 });
             });
 
-            socket.on('running_benchmark_start', (benchName) => {
+            socket.on('running_benchmark_start', benchName => {
                 messager.onBenchmarkStart(benchName, {
-                    displayPath: `${host}/${benchName}`
+                    displayPath: `${host}/${benchName}`,
                 });
             });
 
             socket.on('running_benchmark_update', ({ state, opts }) => {
                 messager.updateBenchmarkProgress(state, opts);
             });
-            socket.on('running_benchmark_end', (benchName) => {
+            socket.on('running_benchmark_end', benchName => {
                 messager.onBenchmarkEnd(benchName);
             });
 
-            socket.on('disconnect', (s) => {
+            socket.on('disconnect', s => {
                 // console.log('Disconnected??');
             });
 
-            socket.on('state_change', (s) => {
+            socket.on('state_change', s => {
                 // console.log('>> State change', s);
             });
 
-            socket.on('benchmark_error', (err) => {
+            socket.on('benchmark_error', err => {
                 socket.disconnect();
                 reject(err);
             });
@@ -63,12 +80,28 @@ function proxifyRunner(benchmarkEntryBundle, runnerConfig, projectConfig, global
                 resolve({ results, environment });
             });
 
-            socket.emit('benchmark_task', { benchmarkName, benchmarkSignature, projectConfig: remoteprojectConfig, globalConfig });
+            socket.emit('benchmark_task', {
+                benchmarkName,
+                benchmarkSignature,
+                projectConfig: remoteprojectConfig,
+                globalConfig,
+            });
         });
     });
 }
 
-export function run(benchmarkEntryBundle, projectConfig, globalConfig, messager) {
+export function run(
+    benchmarkEntryBundle,
+    projectConfig,
+    globalConfig,
+    messager,
+) {
     const { benchmarkRunnerConfig } = projectConfig;
-    return proxifyRunner(benchmarkEntryBundle, benchmarkRunnerConfig, projectConfig, globalConfig, messager);
+    return proxifyRunner(
+        benchmarkEntryBundle,
+        benchmarkRunnerConfig,
+        projectConfig,
+        globalConfig,
+        messager,
+    );
 }

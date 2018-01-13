@@ -1,0 +1,6 @@
+.github/
+build/
+coverage/
+public/
+
+CHANGELOG.md
