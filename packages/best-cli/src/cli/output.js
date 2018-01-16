@@ -69,7 +69,33 @@ export function generateReportTables(results, stream) {
 }
 
 
-export function generateComparisonTable(comparison, stream) {
-    console.log('WIP: OUTPUT Comparison table here!');
-    console.log(JSON.stringify(comparison, null, '  '));
+function generateComparisonRows(table, stats, name = '') {
+    return stats.comparison.map((node) => {
+        if (node.comparison) {
+            return generateComparisonRows(table, node, `${node.benchmarkName || node.name}:`).reduce((a, b) => a.concat(b));
+        }
+
+        const durationMetric = node.metrics.duration;
+        const { baseStats, targetStats, samplesComparison } = durationMetric;
+
+        table.push([
+            name + node.name,
+            `${baseStats.median.toFixed(2)} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)}ms)`,
+            `${targetStats.median.toFixed(2)} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)}ms)`,
+            samplesComparison === 0 ? 'SAME' : samplesComparison === 1 ? 'SLOWER' : 'FASTER'
+        ]);
+    });
+}
+
+export function generateComparisonTable(comparisonStats, stream) {
+    const { baseCommit, targetCommit, comparison } = comparisonStats;
+    const table = new Table({
+        head: ['Benchmark name', `base(${baseCommit})`, `base(${targetCommit})`, 'Trend'],
+        colWidths: [50, 20, 20, 10]
+    });
+
+    generateComparisonRows(table, comparisonStats);
+
+    console.log(table.toString());
+
 }
