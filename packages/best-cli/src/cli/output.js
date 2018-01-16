@@ -71,5 +71,5 @@ export function generateReportTables(results, stream) {
 
 export function generateComparisonTable(comparison, stream) {
     console.log('WIP: OUTPUT Comparison table here!');
-    console.log(comparison);
+    console.log(JSON.stringify(comparison, null, '  '));
 }
