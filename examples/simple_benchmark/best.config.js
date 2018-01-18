@@ -1,12 +1,12 @@
 module.exports = {
-    projectName: 'perf-best-example',
+    projectName: "perf-best-example",
     plugins: {
-        'rollup-plugin-lwc-compiler': {
-            rootDir: '<rootDir>/src/',
-        },
+        "rollup-plugin-lwc-compiler": {
+            "rootDir": "<rootDir>/src/"
+        }
     },
-    benchmarkOnClient: false,
-    benchmarkRunner: '@best/runner-headless',
+    "benchmarkOnClient": false,
+    "benchmarkRunner": "@best/runner-headless",
 
     // This is for running @best/runner-remote
     // "benchmarkRunnerConfig": {

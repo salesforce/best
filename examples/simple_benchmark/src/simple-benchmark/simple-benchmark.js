@@ -1,3 +1,5 @@
-import { Element } from 'engine';
+import { Element } from "engine";
 
-export default class SimpleBench extends Element {}
+export default class SimpleBench extends Element {
+
+}
