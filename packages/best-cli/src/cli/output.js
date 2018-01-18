@@ -1,12 +1,13 @@
 import Table from 'cli-table';
 import chalk from 'chalk';
 
-const padding = n =>
-    n > 0
+function padding(n) {
+    return n > 0
         ? Array.apply(null, Array((n - 1) * 3))
               .map(() => ' ')
               .join('') + '└─ '
         : '';
+}
 
 function generateRow(benchmarks, table, level = 0) {
     benchmarks.forEach(benchmarkNode => {

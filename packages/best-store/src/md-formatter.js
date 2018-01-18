@@ -27,16 +27,15 @@ export function formatEnvironment(env) {
                         } else if (Array.isArray(subValue)) {
                             md.push({ h3: subKey }, { ul: subValue });
                         } else {
+                            const rows = Object.entries(subValue).map(row =>
+                                row.map(item => (item ? item.toString() : '-')),
+                            );
+
                             md.push({ h3: subKey });
                             md.push({
                                 table: {
                                     headers: [`${subKey} property`, 'Value'],
-                                    rows: Object.entries(subValue).map(row =>
-                                        row.map(
-                                            item =>
-                                                item ? item.toString() : '-',
-                                        ),
-                                    ),
+                                    rows,
                                 },
                             });
                         }
