@@ -2,7 +2,7 @@ import { rollup } from "rollup";
 import path from "path";
 import benchmarkRollup from "./rollup-plugin-benchmark-import";
 import { generateDefaultHTML } from "./html-templating";
-import { buildStateMessager } from "@best/messager";
+import { BuildStateMessager } from "@best/messager";
 import fs from "fs";
 import crypto from "crypto";
 
@@ -26,8 +26,8 @@ function addResolverPlugins({ plugins }) {
     });
 }
 
-export async function buildBenchmark(entry, projectConfig, globalConfig) {
-    buildStateMessager.onBenchmarkBuildStart(entry);
+export async function buildBenchmark(entry, projectConfig, globalConfig, messager) {
+    messager.onBenchmarkBuildStart(entry);
 
     const ext = path.extname(entry);
     const benchmarkName = path.basename(entry, ext);
@@ -53,7 +53,7 @@ export async function buildBenchmark(entry, projectConfig, globalConfig) {
     const html = generateDefaultHTML({ benchmarkJS : `./${benchmarkJSFileName}`, benchmarkName });
     fs.writeFileSync(htmlPath, html, 'utf8');
 
-    buildStateMessager.onBenchmarkBuildEnd(entry);
+    messager.onBenchmarkBuildEnd(entry);
 
     return {
         benchmarkName,
@@ -65,6 +65,6 @@ export async function buildBenchmark(entry, projectConfig, globalConfig) {
     };
 }
 
-export async function buildBenchmarks(tests, projectConfig, globalConfig) {
-    return Promise.all(tests.map(test => buildBenchmark(test, projectConfig, globalConfig)));
+export async function buildBenchmarks(tests, projectConfig, globalConfig, messager) {
+    return Promise.all(tests.map(test => buildBenchmark(test, projectConfig, globalConfig, messager)));
 }

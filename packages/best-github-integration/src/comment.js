@@ -3,7 +3,7 @@ import json2md from "json2md";
 function template({ targetCommit, baseCommit, table }) {
     return json2md([
         { h2 : 'Benchmark comparison '},
-        { p : `Base commit: \`${targetCommit}\` | Target commit: \`${baseCommit}\`` },
+        { p : `Base commit: \`${baseCommit}\` | Target commit: \`${targetCommit}\`` },
         table
     ]);
 }

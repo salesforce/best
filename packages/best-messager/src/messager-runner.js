@@ -95,13 +95,11 @@ const clearStream = (buffer) => {
     return '\r\x1B[K\r\x1B[1A'.repeat(height);
 };
 
-export default ({
-    _state: null,
-    _out: null,
-    _running: false,
-
-    initRun(benchmarksBundle, globalConfig, outputStream) {
+export default class RunnerMessager {
+    constructor(benchmarksBundle, globalConfig, outputStream) {
+        this._running = false;
         this._out = outputStream.write.bind(outputStream);
+
         const benchmarksState = benchmarksBundle.reduce((map, { benchmarkName, benchmarkEntry, projectConfig }) => {
             map[benchmarkName] = {
                 state: BUILD_STATE.QUEUED,
@@ -118,8 +116,10 @@ export default ({
             benchmarks: benchmarksState,
             buffer: ''
         };
+
         this._write();
-    },
+    }
+
     onBenchmarkStart(benchmarkName, overrideOpts) {
         this._running = benchmarkName;
         const bench = this._state.benchmarks[benchmarkName];
@@ -128,20 +128,24 @@ export default ({
         }
         bench.state = BUILD_STATE.RUNNING;
         this._update();
-    },
+    }
+
     updateBenchmarkProgress(state, opts) {
         this._state.progress = generateProgressState(state, opts);
         this._debounceUpdate();
-    },
+    }
+
     onBenchmarkEnd(benchmarkName) {
         this._running = null;
         const bench = this._state.benchmarks[benchmarkName];
         bench.state = BUILD_STATE.DONE;
         this._update();
-    },
+    }
+
     finishRun() {
         this._update(true);
-    },
+    }
+
     _debounceUpdate() {
         if (!this._queued) {
             this._queued = true;
@@ -152,16 +156,19 @@ export default ({
                 }
             }, 300);
         }
-    },
+    }
+
     _update(force) {
         if (isInteractive || force) {
             this._clear();
             this._write();
         }
-    },
+    }
+
     _clear() {
         this._out(this._state.clear);
-    },
+    }
+
     _write() {
         const progress = this._state.progress;
         const benchmarks = this._state.benchmarks;
@@ -187,4 +194,4 @@ export default ({
         this._state.clear = clearStream(buffer);
         this._out(buffer);
     }
-});
+}
