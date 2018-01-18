@@ -19,5 +19,5 @@ export default ({
     benchmarkOutput: '<rootDir>/__benchmark_results__',
     benchmarkEnvironmentOptions: {},
 
-    testMatch: ['**/__benchmarks__/**/*.js', '**/?(*.)(spec|test).js'],
+    testMatch: ['**/__benchmarks__/**/*.benchmark.js'],
 });
