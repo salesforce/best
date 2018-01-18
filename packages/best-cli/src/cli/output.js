@@ -97,5 +97,4 @@ export function generateComparisonTable(comparisonStats, stream) {
     generateComparisonRows(table, comparisonStats);
 
     console.log(table.toString());
-
 }

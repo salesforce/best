@@ -24,7 +24,7 @@ const handler = (event, state) => {
         case 'finish_benchmark_definition': {
             const { currentDescribeBlock } = state;
             if (!currentDescribeBlock) {
-                throw new Error(`"currentDescribeBlock" has to be there since we're finishing its definition.`, );
+                throw new Error(`"currentDescribeBlock" has to be there since we're finishing its definition.`);
             }
             if (currentDescribeBlock.parent) {
                 state.currentDescribeBlock = currentDescribeBlock.parent;

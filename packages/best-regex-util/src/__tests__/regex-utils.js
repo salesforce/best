@@ -1,3 +1,5 @@
+/* eslint-disable no-useless-escape */
+
 import { replacePathSepForRegex, escapeStrForRegex, escapePathForRegex } from '../index';
 
 jest.mock('path');
@@ -11,7 +13,7 @@ describe('escapeStrForRegex', () => {
         ['^.*\.test\.js$', '\\^\\.\\*\\.test\\.js\\$']
     ];
 
-    for (let [actual, expected] of ESCAPED_STR) {
+    for (const [actual, expected] of ESCAPED_STR) {
         test(`${actual}`, () => {
             expect(escapeStrForRegex(actual)).toBe(expected);
         });

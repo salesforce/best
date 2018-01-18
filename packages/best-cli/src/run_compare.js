@@ -1,7 +1,6 @@
 import { preRunMessager } from "@best/messager";
 import { compareBenchmarkStats } from "@best/compare";
 import { pushBenchmarkComparison } from "@best/github-integration";
-import { basename } from "path";
 
 export async function runCompare(globalConfig, configs, outputStream) {
     const { gitIntegration, externalStorage, compareStats: commits } = globalConfig;

@@ -20,7 +20,7 @@ function flushCallbacks() {
     }
 }
 
-function handleError(e, ctx, type) {
+function handleError(e) {
     console.error(e);
 }
 
@@ -82,6 +82,7 @@ export function withMacroTask(fn) {
 
 export function nextTick(cb, ctx) {
     let _resolve;
+
     callbacks.push(() => {
         if (cb) {
             try {
@@ -93,6 +94,7 @@ export function nextTick(cb, ctx) {
             _resolve(ctx);
         }
     });
+
     if (!pending) {
         pending = true;
         if (useMacroTask) {
