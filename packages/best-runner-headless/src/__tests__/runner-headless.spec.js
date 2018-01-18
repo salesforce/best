@@ -3,7 +3,7 @@ import { run } from '../index';
 
 const BENCHMARK_CONFIG = {
     benchmarkName: 'test',
-    benchmarkEntry: path.resolve(__dirname, 'fixtures', 'test.html'),
+    benchmarkEntry: path.resolve(__dirname, 'fixtures', 'test.html')
 };
 
 const PROJECT_CONFIG = {
@@ -20,32 +20,22 @@ const MOCK_MESSAGER = {
 
 describe('run', () => {
     test('result', async () => {
-        const results = await run(
-            BENCHMARK_CONFIG,
-            PROJECT_CONFIG,
-            GLOBAL_CONFIG,
-            MOCK_MESSAGER,
-        );
+        const results = await run(BENCHMARK_CONFIG, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER);
         expect(results).toMatchObject({
             environment: {
                 browser: expect.any(Object),
                 configuration: expect.any(Object),
-                hardware: expect.any(Object),
+                hardware: expect.any(Object)
             },
-            results: expect.any(Array),
+            results: expect.any(Array)
         });
     });
 
     test('benchmarkIterations config', async () => {
         const iterations = 3;
-        const { results } = await run(
-            BENCHMARK_CONFIG,
-            {
-                benchmarkIterations: iterations,
-            },
-            GLOBAL_CONFIG,
-            MOCK_MESSAGER,
-        );
+        const { results } = await run(BENCHMARK_CONFIG, {
+            benchmarkIterations: iterations,
+        }, GLOBAL_CONFIG, MOCK_MESSAGER);
 
         expect(results).toHaveLength(iterations);
     });
@@ -61,15 +51,10 @@ describe('run', () => {
 
     test('benchmarkMinIterations config', async () => {
         const minIterations = 3;
-        const { results } = await run(
-            BENCHMARK_CONFIG,
-            {
-                benchmarkMaxDuration: -1,
-                benchmarkMinIterations: minIterations,
-            },
-            GLOBAL_CONFIG,
-            MOCK_MESSAGER,
-        );
+        const { results } = await run(BENCHMARK_CONFIG, {
+            benchmarkMaxDuration: -1,
+            benchmarkMinIterations: minIterations,
+        }, GLOBAL_CONFIG, MOCK_MESSAGER);
 
         expect(results.length).toBeGreaterThanOrEqual(minIterations);
     });
@@ -79,30 +64,22 @@ describe('errors', () => {
     test('syntax error', async () => {
         const benchmarkConfig = {
             benchmarkName: 'test',
-            benchmarkEntry: path.resolve(
-                __dirname,
-                'fixtures',
-                'syntax-error.html',
-            ),
+            benchmarkEntry: path.resolve(__dirname, 'fixtures', 'syntax-error.html')
         };
 
         return expect(
-            run(benchmarkConfig, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER),
+            run(benchmarkConfig, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER)
         ).rejects.toThrow(/BEST is not defined/);
     });
 
     test('runtime error', async () => {
         const benchmarkConfig = {
             benchmarkName: 'test',
-            benchmarkEntry: path.resolve(
-                __dirname,
-                'fixtures',
-                'runtime-error.html',
-            ),
+            benchmarkEntry: path.resolve(__dirname, 'fixtures', 'runtime-error.html')
         };
 
         return expect(
-            run(benchmarkConfig, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER),
+            run(benchmarkConfig, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER)
         ).rejects.toThrow(/I fail at runtime/);
     });
 });

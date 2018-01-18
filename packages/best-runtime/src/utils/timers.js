@@ -20,7 +20,7 @@ function flushCallbacks() {
     }
 }
 
-function handleError(e, ctx, type) {
+function handleError(e) {
     console.error(e);
 }
 
@@ -37,12 +37,11 @@ if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
     macroTimerFunc = () => {
         setImmediate(flushCallbacks);
     };
-} else if (
-    typeof MessageChannel !== 'undefined' &&
-    (isNative(MessageChannel) ||
-        // PhantomJS
-        MessageChannel.toString() === '[object MessageChannelConstructor]')
-) {
+} else if (typeof MessageChannel !== 'undefined' && (
+    isNative(MessageChannel) ||
+    // PhantomJS
+    MessageChannel.toString() === '[object MessageChannelConstructor]'
+)) {
     const channel = new MessageChannel();
     const port = channel.port2;
     channel.port1.onmessage = flushCallbacks;
@@ -73,19 +72,17 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
  * the changes are queued using a Task instead of a MicroTask.
  */
 export function withMacroTask(fn) {
-    return (
-        fn._withTask ||
-        (fn._withTask = function() {
-            useMacroTask = true;
-            const res = fn.apply(null, arguments);
-            useMacroTask = false;
-            return res;
-        })
-    );
+    return fn._withTask || (fn._withTask = function () {
+        useMacroTask = true;
+        const res = fn.apply(null, arguments);
+        useMacroTask = false;
+        return res;
+    });
 }
 
 export function nextTick(cb, ctx) {
     let _resolve;
+
     callbacks.push(() => {
         if (cb) {
             try {
@@ -97,6 +94,7 @@ export function nextTick(cb, ctx) {
             _resolve(ctx);
         }
     });
+
     if (!pending) {
         pending = true;
         if (useMacroTask) {
@@ -114,8 +112,5 @@ export function nextTick(cb, ctx) {
 }
 
 export const time = window.performance.now.bind(window.performance);
-export const formatTime = t => parseFloat(Math.round(t * 1000) / 1000);
-export const raf =
-    window && window.requestAnimationFrame
-        ? window.requestAnimationFrame
-        : nextTick;
+export const formatTime = (t) => parseFloat(Math.round((t) * 1000) / 1000);
+export const raf = (window && window.requestAnimationFrame) ? window.requestAnimationFrame : nextTick;

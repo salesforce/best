@@ -1,4 +1,4 @@
-import path from 'path';
+import path from "path";
 
 const PRIMITIVES = [
     'beforeAll',
@@ -9,7 +9,7 @@ const PRIMITIVES = [
     'after',
     'benchmark',
     'describe',
-    'run',
+    'run'
 ];
 
 function resolveModuleEntryFromPackage(module) {
@@ -25,11 +25,9 @@ function resolveModuleEntryFromPackage(module) {
 }
 
 const BENCHMARK_RUNTIME_MODULE = '@best/runtime';
-const BENCHMARK_IMPORT = `import { ${PRIMITIVES.join(
-    ',',
-)} } from "${BENCHMARK_RUNTIME_MODULE}" \n`;
+const BENCHMARK_IMPORT = `import { ${PRIMITIVES.join(',')} } from "${BENCHMARK_RUNTIME_MODULE}" \n`;
 
-export default function() {
+export default function () {
     let input;
     return {
         name: 'benchmark-import',
@@ -48,6 +46,6 @@ export default function() {
             }
 
             return { code: src, map: null };
-        },
+        }
     };
 }

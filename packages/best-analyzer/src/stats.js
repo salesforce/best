@@ -26,9 +26,9 @@ export function median(arr) {
     const sorted = sort(arr);
     const middle = Math.floor(arr.length / 2);
 
-    return arr.length % 2
-        ? sorted[middle]
-        : (sorted[middle] + sorted[middle - 1]) / 2;
+    return arr.length % 2 ?
+        sorted[middle] :
+        ((sorted[middle] + sorted[middle - 1]) / 2);
 }
 
 export function medianAbsoluteDeviation(arr) {
@@ -38,10 +38,7 @@ export function medianAbsoluteDeviation(arr) {
 
 export function formatNumber(num) {
     if (typeof num != 'number') {
-        throw new TypeError(
-            'formatNumber expects a number, received',
-            typeof num,
-        );
+        throw new TypeError('formatNumber expects a number, received', typeof num);
     }
 
     return num.toFixed(3);
@@ -49,7 +46,6 @@ export function formatNumber(num) {
 
 // From https://github.com/bestiejs/benchmark.js/blob/master/benchmark.js#L1391
 export function compare(sample1, sample2) {
-    let zStat;
     const size1 = sample1.length,
         size2 = sample2.length,
         u1 = getU(sample1, sample2),
@@ -69,22 +65,17 @@ export function compare(sample1, sample2) {
     }
 
     function getZ(n) {
-        return (
-            (n - size1 * size2 / 2) /
-            Math.sqrt(size1 * size2 * (size1 + size2 + 1) / 12)
-        );
+        return (n - ((size1 * size2) / 2)) / Math.sqrt((size1 * size2 * (size1 + size2 + 1)) / 12);
     }
 
     if (size1 + size2 < 30) {
-        console.warn(
-            `Samples size should be at least greater than 30 to use the z Test`,
-        );
+        console.warn(`Samples size should be at least greater than 30 to use the z Test`);
         return 0;
     }
 
     // Reject the null hypothesis the two samples come from the
     // same population (i.e. have the same median) if the z-stat is greater than 1.96 or less than -1.96
     // http://www.statisticslectures.com/topics/mannwhitneyu/
-    zStat = getZ(u);
+    const zStat = getZ(u);
     return Math.abs(zStat) > 1.96 ? (u === u1 ? 1 : -1) : 0;
 }

@@ -3,8 +3,7 @@ export const check = () => {
     return true;
 };
 
-export const usage =
-    'Usage: $0 [--config=<pathToConfigFile>] [BenchmarkPathPattern]';
+export const usage = 'Usage: $0 [--config=<pathToConfigFile>] [BenchmarkPathPattern]';
 export const docs = 'Documentation: https://best.lwcjs.org';
 
 export const options = {
@@ -15,7 +14,7 @@ export const options = {
             'and execute benchmark runs. If no rootDir is set in the config, the current ' +
             'directory is assumed to be the rootDir for the project. This can also ' +
             'be a JSON encoded value which Best will use as configuration.',
-        type: 'string',
+        type: 'string'
     },
     projects: {
         description:

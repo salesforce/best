@@ -1,5 +1,5 @@
-import SocketClient from './client';
-import BenchmarkTask from './task';
+import SocketClient from "./client";
+import BenchmarkTask from "./task";
 
 export default class Broker {
     constructor(socketServer) {
@@ -7,7 +7,7 @@ export default class Broker {
         this.clientQueue = [];
         this.runningTask = null;
         this.socketServer = socketServer;
-        socketServer.on('connect', socket => this.connectedClient(socket));
+        socketServer.on('connect', (socket) => this.connectedClient(socket));
     }
 
     isTaskRunning() {
@@ -45,5 +45,7 @@ export default class Broker {
         this.runNextInQueue();
     }
 
-    status() {}
+    status() {
+
+    }
 }

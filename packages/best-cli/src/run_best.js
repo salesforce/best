@@ -1,10 +1,10 @@
-import globby from 'globby';
-import { buildBenchmarks } from '@best/build';
-import { runBenchmarks } from '@best/runner';
-import { buildStateMessager, runnerMessager } from '@best/messager';
-import { storeBenchmarkResults } from '@best/store';
-import { analyzeBenchmarks } from '@best/analyzer';
-import path from 'path';
+import globby from "globby";
+import { buildBenchmarks } from "@best/build";
+import { runBenchmarks } from "@best/runner";
+import { BuildStateMessager, RunnerMessager } from "@best/messager";
+import { storeBenchmarkResults } from "@best/store";
+import { analyzeBenchmarks } from "@best/analyzer";
+import path from "path";
 
 async function getBenchmarkPaths(globalConfig, config) {
     const rootDir = globalConfig.rootDir;
@@ -18,15 +18,14 @@ async function getBenchmarkTests(configs, globalConfig) {
         configs.map(async config => {
             const matches = await getBenchmarkPaths(globalConfig, config);
             return { config, matches };
-        }),
+        })
     );
 }
 
-async function buildBundleBenchmarks(benchmarksTests, globalConfig) {
+async function buildBundleBenchmarks(benchmarksTests, globalConfig, messager) {
     const bundle = await Promise.all(
         benchmarksTests.map(async ({ matches, config }) =>
-            buildBenchmarks(matches, config, globalConfig),
-        ),
+            buildBenchmarks(matches, config, globalConfig, messager))
     );
     // Flatten the per-project benchmarks tests
     return bundle.reduce((benchmarks, benchBundle) => {
@@ -42,19 +41,12 @@ async function runBundleBenchmarks(benchmarksBuilds, globalConfig, messager) {
 export async function runBest(globalConfig, configs, outputStream) {
     const benchmarksTests = await getBenchmarkTests(configs, globalConfig);
 
-    buildStateMessager.initBuild(benchmarksTests, globalConfig, outputStream);
-    const benchmarksBuilds = await buildBundleBenchmarks(
-        benchmarksTests,
-        globalConfig,
-    );
-    buildStateMessager.finishBuild();
+    const buildMessager = new BuildStateMessager(benchmarksTests, globalConfig, outputStream);
+    const benchmarksBuilds = await buildBundleBenchmarks(benchmarksTests, globalConfig, buildMessager);
+    buildMessager.finishBuild();
 
-    runnerMessager.initRun(benchmarksBuilds, globalConfig, outputStream);
-    const benchmarkBundleResults = await runBundleBenchmarks(
-        benchmarksBuilds,
-        globalConfig,
-        runnerMessager,
-    );
+    const runnerMessager = new RunnerMessager(benchmarksBuilds, globalConfig, outputStream);
+    const benchmarkBundleResults = await runBundleBenchmarks(benchmarksBuilds, globalConfig, runnerMessager);
     runnerMessager.finishRun();
 
     await analyzeBenchmarks(benchmarkBundleResults, globalConfig);

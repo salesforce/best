@@ -1,6 +1,6 @@
-import EventEmitter from 'events';
-import SocketClient from './client';
-import { runBenchmark } from '@best/runner';
+import EventEmitter from "events";
+import SocketClient from "./client";
+import { runBenchmark } from "@best/runner";
 
 const WAITING_FOR_CONFIG = 'waiting_for_config';
 const WAITING_FOR_BENCHMARK = 'waiting_for_benchmark';
@@ -16,9 +16,7 @@ export default class BenchmarkTask extends EventEmitter {
         this.id = ++counter;
         this.state = WAITING_FOR_CONFIG;
         this.client = client;
-        client.on(SocketClient.CONFIG_READY, config =>
-            this.onBenchmarkConfigReady(config),
-        );
+        client.on(SocketClient.CONFIG_READY, (config) => this.onBenchmarkConfigReady(config));
         client.on(SocketClient.BENCHMARK_READY, () => this.onBenchmarksReady());
         client.on('disconnect', () => this.onDisconnectedClient());
     }
@@ -36,9 +34,7 @@ export default class BenchmarkTask extends EventEmitter {
 
     onDisconnectedClient() {
         if (this.state === RUNNING) {
-            this._log(
-                'Aborting task. Client disconnected while running the task',
-            );
+            this._log('Aborting task. Client disconnected while running the task');
             this._log('Benchmark will finish before releasing the task');
             this.state = WAITING_FOR_ABORT;
         }
@@ -58,10 +54,7 @@ export default class BenchmarkTask extends EventEmitter {
         const { benchmarkName } = benchmarkConfig;
         try {
             this._log(`Running benchmark ${benchmarkName}`);
-            const results = await runBenchmark(
-                benchmarkConfig,
-                this.client.getMessager(),
-            );
+            const results = await runBenchmark(benchmarkConfig, this.client.getMessager());
             this._log(`Benchmark ${benchmarkName} completed successfully`);
             this.afterRunBenchmark(results);
         } catch (err) {

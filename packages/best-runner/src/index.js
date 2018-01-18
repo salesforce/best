@@ -9,30 +9,12 @@ export async function runBenchmarks(benchmarksBuilds, globalConfig, messager) {
     return results;
 }
 
-export async function runBenchmark(
-    {
-        benchmarkName,
-        benchmarkEntry,
-        benchmarkSignature,
-        projectConfig,
-        globalConfig,
-    },
-    messager,
-) {
+export async function runBenchmark({ benchmarkName, benchmarkEntry, benchmarkSignature, projectConfig, globalConfig }, messager) {
     const { benchmarkRunner } = projectConfig;
     const runner = require(benchmarkRunner);
 
-    const benchmarkBundleName = {
-        benchmarkName,
-        benchmarkEntry,
-        benchmarkSignature,
-    };
-    const results = await runner.run(
-        benchmarkBundleName,
-        projectConfig,
-        globalConfig,
-        messager,
-    );
+    const benchmarkBundleName = { benchmarkName, benchmarkEntry, benchmarkSignature };
+    const results = await runner.run(benchmarkBundleName, projectConfig, globalConfig, messager);
 
     results.benchmarkSignature = benchmarkSignature;
     results.benchmarkName = benchmarkName;

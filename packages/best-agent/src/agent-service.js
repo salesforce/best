@@ -1,10 +1,10 @@
-import SocketIO from 'socket.io';
-import AgentBroker from './broker';
+import socketIO from "socket.io";
+import AgentBroker from "./broker";
 
 let BROKER;
 
-export async function runAgent(server, opts = {}) {
-    const socketServer = SocketIO(server, { path: '/best' });
+export async function runAgent(server) {
+    const socketServer = socketIO(server, { path: '/best' });
     BROKER = new AgentBroker(socketServer);
 }
 

@@ -2,9 +2,9 @@
 // The browser version is in:
 // https://github.com/rico345100/socket.io-file-client
 
-import fs from 'fs';
-import path from 'path';
-import EventEmitter from 'events';
+import fs from "fs";
+import path from "path";
+import EventEmitter from "events";
 
 let instanceId = 0;
 const getInstanceId = () => instanceId++;
@@ -14,10 +14,7 @@ export default class SocketIOFileClient extends EventEmitter {
         super();
 
         if (!socket) {
-            return this.emit(
-                'error',
-                new Error('SocketIOFile requires Socket.'),
-            );
+            return this.emit('error', new Error('SocketIOFile requires Socket.'));
         }
 
         this.instanceId = getInstanceId(); // using for identifying multiple file upload from SocketIOFileClient objects
@@ -28,15 +25,12 @@ export default class SocketIOFileClient extends EventEmitter {
         this.uploadingFiles = {};
         this.isDestroyed = false;
 
-        socket.on(
-            'socket.io-file::recvSync',
-            ({ maxFileSize, accepts, chunkSize }) => {
-                this.maxFileSize = maxFileSize || undefined;
-                this.accepts = accepts || [];
-                this.chunkSize = chunkSize || 10240;
-                this.emit('ready');
-            },
-        );
+        socket.on('socket.io-file::recvSync', ({ maxFileSize, accepts, chunkSize }) => {
+            this.maxFileSize = maxFileSize || undefined;
+            this.accepts = accepts || [];
+            this.chunkSize = chunkSize || 10240;
+            this.emit('ready');
+        });
 
         socket.emit('socket.io-file::reqSync');
         socket.on('socket.io-file::disconnectByServer', () => {
@@ -51,14 +45,7 @@ export default class SocketIOFileClient extends EventEmitter {
     _upload(file, { uploadTo, data = {} } = {}) {
         const { uploadingFiles, socket, chunkSize } = this;
         const { buffer, name, size, uploadId } = file;
-        const fileState = {
-            id: uploadId,
-            name,
-            size,
-            chunkSize,
-            sent: 0,
-            data,
-        };
+        const fileState = { id: uploadId, name, size, chunkSize, sent: 0, data };
 
         // put into uploadingFiles list
         uploadingFiles[uploadId] = uploadId;
@@ -77,19 +64,9 @@ export default class SocketIOFileClient extends EventEmitter {
                 return;
             }
 
-            const chunk = buffer.slice(
-                fileState.sent,
-                fileState.sent + chunkSize,
-            );
+            const chunk = buffer.slice(fileState.sent, fileState.sent + chunkSize);
 
-            this.emit('stream', {
-                uploadId,
-                name,
-                size,
-                sent: fileState.sent,
-                uploadTo,
-                data,
-            });
+            this.emit('stream', { uploadId, name, size, sent: fileState.sent, uploadTo, data });
             socket.once('socket.io-file::request::' + uploadId, sendChunk);
             socket.emit('socket.io-file::stream::' + uploadId, chunk);
 
@@ -98,7 +75,7 @@ export default class SocketIOFileClient extends EventEmitter {
         };
 
         socket.once('socket.io-file::request::' + uploadId, sendChunk);
-        socket.on('socket.io-file::complete::' + uploadId, info => {
+        socket.on('socket.io-file::complete::' + uploadId, (info) => {
             info.uploadId = fileState.id;
             info.data = fileState.data;
 
@@ -109,7 +86,7 @@ export default class SocketIOFileClient extends EventEmitter {
             this.uploadingFiles[uploadId] = null;
             this.emit('complete', info);
         });
-        socket.on('socket.io-file::abort::' + uploadId, info => {
+        socket.on('socket.io-file::abort::' + uploadId, (info) => {
             fileState.aborted = true;
             this.emit('abort', {
                 uploadId: fileState.id,
@@ -118,17 +95,19 @@ export default class SocketIOFileClient extends EventEmitter {
                 sent: fileState.sent,
                 wrote: info.wrote,
                 uploadTo,
-                data,
+                data
             });
         });
-        socket.on('socket.io-file::error::' + uploadId, err => {
-            this.emit('error', new Error(err.message), {
-                uploadId: fileState.id,
-                name: fileState.name,
-                size: fileState.size,
-                uploadTo,
-                data,
-            });
+        socket.on('socket.io-file::error::' + uploadId, (err) => {
+            this.emit('error',
+                new Error(err.message), {
+                    uploadId: fileState.id,
+                    name: fileState.name,
+                    size: fileState.size,
+                    uploadTo,
+                    data
+                }
+            );
         });
     }
 
@@ -144,7 +123,7 @@ export default class SocketIOFileClient extends EventEmitter {
             type: path.extname(filePath),
             uploadId: this.getUploadId(),
             buffer,
-            size,
+            size
         };
 
         this._upload(file, options);
@@ -163,7 +142,7 @@ export default class SocketIOFileClient extends EventEmitter {
             throw new Error('SocketIOFileClient is closed.');
         }
 
-        Object.keys(this.uploadingFiles).forEach(k => this.abort(k));
+        Object.keys(this.uploadingFiles).forEach((k) => this.abort(k));
         this.socket = null;
         this.uploadingFiles = null;
         this.ev = null;

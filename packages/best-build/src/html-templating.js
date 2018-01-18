@@ -1,6 +1,7 @@
 const REGEX_BRACKETS = /{{([\w]+)}}/g;
 
-const DEFAULT_HTML = `<!DOCTYPE html>
+const DEFAULT_HTML =
+`<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8">
@@ -14,10 +15,7 @@ const DEFAULT_HTML = `<!DOCTYPE html>
 `;
 
 export function generateParametrizedHTML(html, options) {
-    return html.replace(
-        REGEX_BRACKETS,
-        (m, p) => options[p] || `{{undefined_${p}}}`,
-    );
+    return html.replace(REGEX_BRACKETS, (m, p) => options[p] || `{{undefined_${p}}}`);
 }
 
 export function generateDefaultHTML(options) {
