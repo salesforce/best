@@ -1614,7 +1614,7 @@ conventional-changelog-atom@^0.1.2:
   dependencies:
     q "^1.4.1"
 
-conventional-changelog-cli@^1.3.2:
+conventional-changelog-cli@^1.3.2, conventional-changelog-cli@^1.3.5:
   version "1.3.5"
   resolved "http://npm.lwcjs.org/conventional-changelog-cli/-/conventional-changelog-cli-1.3.5/46c51496216b7406588883defa6fac589e9bb31e.tgz#46c51496216b7406588883defa6fac589e9bb31e"
   dependencies:

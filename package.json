@@ -16,14 +16,18 @@
     "watch": "yarn build && node ./scripts/watch.js",
     "test": "jest --config jest.config.json",
     "perf:example": "cd examples/simple_benchmark && best --externalStorage=@best/store-aws",
-    "release": "yarn prepare && lerna publish --conventional-commits --exact --force-publish=* --registry='https://npm.lwcjs.org'",
-    "release:internal": "yarn prepare && lerna publish --exact --force-publish=* --skip-git --repo-version `node -pe \"require('./lerna.json').version\"` --yes --registry='https://nexus.soma.salesforce.com/nexus/content/repositories/npmjs-internal/'"
+    "release": "yarn prepare && lerna publish --exact --force-publish=* --registry='https://npm.lwcjs.org' && yarn changelog",
+    "release:internal": "yarn prepare && lerna publish --exact --force-publish=* --skip-git --repo-version `node -pe \"require('./lerna.json').version\"` --yes --registry='https://nexus.soma.salesforce.com/nexus/content/repositories/npmjs-internal/'",
+    "changelog": "yarn changelog:generate && yarn changelog:publish",
+    "changelog:generate": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "changelog:publish": "git add CHANGELOG.md && git commit -m 'docs(changelog): publish release changelog' && git push"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "chalk": "^2.3.0",
     "commitizen": "^2.9.6",
+    "conventional-changelog-cli": "^1.3.5",
     "eslint": "^4.14.0",
     "eslint-plugin-lwc": "^0.2.4",
     "jest": "^22.0.4",
