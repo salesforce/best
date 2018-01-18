@@ -41,31 +41,14 @@ const clearStream = (buffer) => {
     return '\r\x1B[K\r\x1B[1A'.repeat(height);
 };
 
+export default class BuildStateMessager {
+    constructor(benchmarksBundle, globalConfig, outputStream) {
+        this._bufferStream = [];
 
-export default ({
-    _state: null,
-    _out: null,
-    _bufferStream: [],
-
-    // In order to preserve other writes we need to wrap/unwrap the stream
-    // so we can manage how to clear/update
-    _wrapStream(stream) {
-        const _write = stream.write;
-        stream.write = (buffer) => {
-            this._bufferStream.push(buffer);
-            _write.call(stream, buffer);
-        };
-        stream.write._original = _write;
-    },
-    _unwrapStream(stream) {
-        if (stream.write._original) {
-            stream.write = stream.write._original;
-        }
-    },
-    initBuild(benchmarksBundle, globalConfig, outputStream) {
         this._out = outputStream.write.bind(outputStream);
         this._wrapStream(process.stderr);
         this._wrapStream(process.stdout);
+
         const benchmarksState = benchmarksBundle.reduce((map, { config, matches }) => {
             matches.forEach((benchmarkPath) => {
                 map[benchmarkPath] = {
@@ -77,23 +60,45 @@ export default ({
         }, {});
 
         this._state = { benchmarks: benchmarksState, buffer: '', clear: '' };
+
         this._update();
-    },
+    }
+
+    // In order to preserve other writes we need to wrap/unwrap the stream
+    // so we can manage how to clear/update
+    _wrapStream(stream) {
+        const _write = stream.write;
+        stream.write = (buffer) => {
+            this._bufferStream.push(buffer);
+            _write.call(stream, buffer);
+        };
+        stream.write._original = _write;
+    }
+
+    _unwrapStream(stream) {
+        if (stream.write._original) {
+            stream.write = stream.write._original;
+        }
+    }
+
     onBenchmarkBuildStart(id) {
         const bench = this._state.benchmarks[id];
         bench.state = BUILD_STATE.BUILDING;
         this._update();
-    },
+    }
+
     onBenchmarkBuildEnd(id) {
         const bench = this._state.benchmarks[id];
         bench.state = BUILD_STATE.DONE;
         this._update();
-    },
+    }
+
     finishBuild() {
         this._update(true);
         this._unwrapStream(process.stderr);
         this._unwrapStream(process.stdout);
-    },
+    }
+
     _update(force) {
         if (isInteractive || force) {
             const _externalBuffer = this._bufferStream.join('');
@@ -105,10 +110,12 @@ export default ({
 
             this._out(_externalBuffer);
         }
-    },
+    }
+
     _clear() {
         this._out(this._state.clear);
-    },
+    }
+
     _write() {
         const benchmarks = this._state.benchmarks;
         const buffer = Object.keys(benchmarks).reduce((str, key) => {
@@ -120,4 +127,4 @@ export default ({
         this._state.clear = clearStream(buffer);
         this._out(buffer);
     }
-});
+}
