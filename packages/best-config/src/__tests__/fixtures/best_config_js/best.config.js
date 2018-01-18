@@ -1,3 +1,3 @@
 module.exports = {
-    projectName: 'test'
+    projectName: 'test',
 };

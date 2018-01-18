@@ -14,7 +14,9 @@ test('print error in passed stream', () => {
 });
 
 test('print error on process.stdout', () => {
-    const spy = jest.spyOn(process.stdout, 'write').mockImplementation(() => {});
+    const spy = jest
+        .spyOn(process.stdout, 'write')
+        .mockImplementation(() => {});
 
     errorMessager.print(MSG, stack);
 

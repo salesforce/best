@@ -1,6 +1,6 @@
-import puppeteer from "puppeteer";
-import { getSystemInfo } from "./system-info";
-import { clearInterval } from "timers";
+import puppeteer from 'puppeteer';
+import { getSystemInfo } from './system-info';
+import { clearInterval } from 'timers';
 
 const BROWSER_ARGS = [
     '--no-sandbox',
@@ -19,12 +19,12 @@ const PUPPETEER_OPTIONS = { args: BROWSER_ARGS };
 
 async function runIteration(page, state, opts) {
     // eslint-disable-next-line no-undef
-    return page.evaluate((o) => BEST.runBenchmark(o), opts);
+    return page.evaluate(o => BEST.runBenchmark(o), opts);
 }
 
 async function runClientIterations(page, state, opts, messager) {
     // Run an iteration to estimate the time it will take
-    const testResult = await runIteration(page, state, { iterations : 1 });
+    const testResult = await runIteration(page, state, { iterations: 1 });
     const estimatedIterationTime = testResult.executedTime;
 
     const start = Date.now();
@@ -32,7 +32,9 @@ async function runClientIterations(page, state, opts, messager) {
     const intervalId = setInterval(() => {
         const executing = Date.now() - start;
         state.executedTime = executing;
-        state.executedIterations = Math.round(executing / estimatedIterationTime);
+        state.executedIterations = Math.round(
+            executing / estimatedIterationTime,
+        );
         messager.updateBenchmarkProgress(state, opts);
     }, UPDATE_INTERVAL);
 
@@ -47,11 +49,14 @@ async function runClientIterations(page, state, opts, messager) {
 }
 
 async function runServerIterations(page, state, opts, messager) {
-    if (state.executedTime < opts.maxDuration || state.executedIterations < opts.minSampleCount) {
+    if (
+        state.executedTime < opts.maxDuration ||
+        state.executedIterations < opts.minSampleCount
+    ) {
         const start = Date.now();
         const results = await runIteration(page, state, opts);
         await page.reload();
-        state.executedTime += (Date.now() - start);
+        state.executedTime += Date.now() - start;
         state.executedIterations += 1;
         state.results.push(results.results[0]);
         messager.updateBenchmarkProgress(state, opts);
@@ -70,10 +75,14 @@ async function runIterations(page, state, opts, messager) {
 
 function normalizeRuntimeOptions(projectConfig) {
     const { benchmarkIterations, benchmarkOnClient } = projectConfig;
-    const definedIterations =  Number.isInteger(benchmarkIterations);
+    const definedIterations = Number.isInteger(benchmarkIterations);
     // For benchmarking on the client or a defined number of iterations duration is irrelevant
-    const maxDuration = definedIterations ? 1 : projectConfig.benchmarkMaxDuration;
-    const minSampleCount = definedIterations ? benchmarkIterations : projectConfig.benchmarkMinIterations;
+    const maxDuration = definedIterations
+        ? 1
+        : projectConfig.benchmarkMaxDuration;
+    const minSampleCount = definedIterations
+        ? benchmarkIterations
+        : projectConfig.benchmarkMinIterations;
 
     return {
         maxDuration,
@@ -88,12 +97,18 @@ function initializeBenchmarkState(opts) {
         executedTime: 0,
         executedIterations: 0,
         results: [],
-        iterateOnClient: opts.iterateOnClient
+        iterateOnClient: opts.iterateOnClient,
     };
 }
 
 async function normalizeEnvironment(browser, projectConfig, globalConfig) {
-    const { benchmarkOnClient, benchmarkRunner, benchmarkEnvironment, benchmarkIterations, projectName } = projectConfig;
+    const {
+        benchmarkOnClient,
+        benchmarkRunner,
+        benchmarkEnvironment,
+        benchmarkIterations,
+        projectName,
+    } = projectConfig;
     const hardware = await getSystemInfo();
     const version = await browser.version();
     return {
@@ -105,26 +120,34 @@ async function normalizeEnvironment(browser, projectConfig, globalConfig) {
                 benchmarkOnClient,
                 benchmarkRunner,
                 benchmarkEnvironment,
-                benchmarkIterations
+                benchmarkIterations,
             },
             global: {
                 commitHash: globalConfig.gitCommit,
                 hasLocalGitChanges: globalConfig.gitLocalChanges,
-                branch: globalConfig.gitBranch
-
-            }
-        }
+                branch: globalConfig.gitBranch,
+            },
+        },
     };
 }
 
-export async function run({ benchmarkName, benchmarkEntry }, projectConfig, globalConfig, messager) {
-    const opts =  normalizeRuntimeOptions(projectConfig);
-    const state =  initializeBenchmarkState(opts);
+export async function run(
+    { benchmarkName, benchmarkEntry },
+    projectConfig,
+    globalConfig,
+    messager,
+) {
+    const opts = normalizeRuntimeOptions(projectConfig);
+    const state = initializeBenchmarkState(opts);
 
     let browser;
     try {
         browser = await puppeteer.launch(PUPPETEER_OPTIONS);
-        const environment = await normalizeEnvironment(browser, projectConfig, globalConfig);
+        const environment = await normalizeEnvironment(
+            browser,
+            projectConfig,
+            globalConfig,
+        );
 
         messager.onBenchmarkStart(benchmarkName);
 

@@ -1,11 +1,19 @@
-import { makeDescribe, makeBenchmark, makeBenchmarkRun } from "./utils/primitives-nodes";
+import {
+    makeDescribe,
+    makeBenchmark,
+    makeBenchmarkRun,
+} from './utils/primitives-nodes';
 
 const handler = (event, state) => {
     switch (event.name) {
         case 'start_describe_definition': {
             const { blockName, mode } = event;
             const { currentDescribeBlock } = state;
-            const describeBlock = makeDescribe(blockName, currentDescribeBlock, mode);
+            const describeBlock = makeDescribe(
+                blockName,
+                currentDescribeBlock,
+                mode,
+            );
             currentDescribeBlock.children.push(describeBlock);
             state.currentDescribeBlock = describeBlock;
             break;
@@ -14,7 +22,11 @@ const handler = (event, state) => {
         case 'start_benchmark_definition': {
             const { blockName, mode } = event;
             const { currentDescribeBlock } = state;
-            const describeBlock = makeBenchmark(blockName, currentDescribeBlock, mode);
+            const describeBlock = makeBenchmark(
+                blockName,
+                currentDescribeBlock,
+                mode,
+            );
             currentDescribeBlock.children.push(describeBlock);
             state.currentDescribeBlock = describeBlock;
             break;
@@ -24,7 +36,9 @@ const handler = (event, state) => {
         case 'finish_benchmark_definition': {
             const { currentDescribeBlock } = state;
             if (!currentDescribeBlock) {
-                throw new Error(`"currentDescribeBlock" has to be there since we're finishing its definition.`);
+                throw new Error(
+                    `"currentDescribeBlock" has to be there since we're finishing its definition.`,
+                );
             }
             if (currentDescribeBlock.parent) {
                 state.currentDescribeBlock = currentDescribeBlock.parent;
@@ -47,7 +61,8 @@ const handler = (event, state) => {
             break;
         }
 
-        default: break;
+        default:
+            break;
     }
 };
 

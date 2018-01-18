@@ -1,0 +1,7 @@
+.github/
+build/
+coverage/
+__benchmark_results__/
+public/
+
+CHANGELOG.md

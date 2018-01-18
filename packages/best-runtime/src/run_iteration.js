@@ -1,19 +1,24 @@
-import { raf, time, nextTick, withMacroTask, formatTime } from "./utils/timers";
-import { HOOKS } from "./constants";
+import { raf, time, nextTick, withMacroTask, formatTime } from './utils/timers';
+import { HOOKS } from './constants';
 
-const _initHandlers = () => Object.values(HOOKS).reduce((o, k) => {
-    o[k] = [];
-    return o;
-}, {});
+const _initHandlers = () =>
+    Object.values(HOOKS).reduce((o, k) => {
+        o[k] = [];
+        return o;
+    }, {});
 
-const _initHooks = (hooks) => hooks.reduce((m, { type, fn }) => {
-    m[type].push(fn);
-    return m;
-}, _initHandlers());
+const _initHooks = hooks =>
+    hooks.reduce((m, { type, fn }) => {
+        m[type].push(fn);
+        return m;
+    }, _initHandlers());
 
-const _forceGC = () => (window.gc && window.gc());
+const _forceGC = () => window.gc && window.gc();
 
-const executeBenchmark = async (benchmarkNode, { useMacroTaskAfterBenchmark }) => {
+const executeBenchmark = async (
+    benchmarkNode,
+    { useMacroTaskAfterBenchmark },
+) => {
     // Force garbage collection before executing an iteration (--js-flags=--expose-gc)
     _forceGC();
     return new Promise((resolve, reject) => {
@@ -26,19 +31,25 @@ const executeBenchmark = async (benchmarkNode, { useMacroTaskAfterBenchmark }) =
 
             try {
                 await benchmarkNode.fn();
-                benchmarkNode.runDuration = formatTime(time() - benchmarkNode.startedAt);
+                benchmarkNode.runDuration = formatTime(
+                    time() - benchmarkNode.startedAt,
+                );
 
                 if (useMacroTaskAfterBenchmark) {
                     withMacroTask(async () => {
                         await nextTick();
-                        benchmarkNode.duration = formatTime(time() - benchmarkNode.startedAt);
+                        benchmarkNode.duration = formatTime(
+                            time() - benchmarkNode.startedAt,
+                        );
                         if (process.env.NODE_ENV !== 'production') {
                             console.timeStamp('iteration_end');
                         }
                         resolve();
                     })();
                 } else {
-                    benchmarkNode.duration = formatTime(time() - benchmarkNode.startedAt);
+                    benchmarkNode.duration = formatTime(
+                        time() - benchmarkNode.startedAt,
+                    );
                     if (process.env.NODE_ENV !== 'production') {
                         console.timeStamp('iteration_end');
                     }

@@ -1,5 +1,5 @@
-import Ctor from "simple-item";
-import { createElement } from "engine";
+import Ctor from 'simple-item';
+import { createElement } from 'engine';
 
 benchmark('create_and_render', () => {
     let element;
@@ -11,4 +11,3 @@ benchmark('create_and_render', () => {
         return element && element.parentElement.removeChild(element);
     });
 });
-

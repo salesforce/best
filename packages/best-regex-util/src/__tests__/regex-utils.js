@@ -1,6 +1,10 @@
 /* eslint-disable no-useless-escape */
 
-import { replacePathSepForRegex, escapeStrForRegex, escapePathForRegex } from '../index';
+import {
+    replacePathSepForRegex,
+    escapeStrForRegex,
+    escapePathForRegex,
+} from '../index';
 
 jest.mock('path');
 
@@ -10,7 +14,7 @@ describe('escapeStrForRegex', () => {
         ['*.js', '\\*\\.js'],
         ['b?r', 'b\\?r'],
         ['foo|bar', 'foo\\|bar'],
-        ['^.*\.test\.js$', '\\^\\.\\*\\.test\\.js\\$']
+        ['^.*.test.js$', '\\^\\.\\*\\.test\\.js\\$'],
     ];
 
     for (const [actual, expected] of ESCAPED_STR) {
@@ -24,15 +28,23 @@ describe('replacePathSepFromRegex', () => {
     test('with slash separator', () => {
         require('path').__setSep('/');
 
-        expect(replacePathSepForRegex('/foo/bar/.*\.test.js')).toBe('/foo/bar/.*\.test.js');
-        expect(replacePathSepForRegex('\\foo\\bar\\.*\.test.js')).toBe('\\foo\\bar\\.*\.test.js');
+        expect(replacePathSepForRegex('/foo/bar/.*.test.js')).toBe(
+            '/foo/bar/.*.test.js',
+        );
+        expect(replacePathSepForRegex('\\foo\\bar\\.*.test.js')).toBe(
+            '\\foo\\bar\\.*.test.js',
+        );
     });
 
     test('with back-slash speparator', () => {
         require('path').__setSep('\\');
 
-        expect(replacePathSepForRegex('/foo/bar/.*\.test.js')).toBe('\\\\foo\\\\bar\\\\.*\.test.js');
-        expect(replacePathSepForRegex('\\foo\\bar\\.*\.test.js')).toBe('\\\\foo\\\\bar\\.*\.test.js');
+        expect(replacePathSepForRegex('/foo/bar/.*.test.js')).toBe(
+            '\\\\foo\\\\bar\\\\.*.test.js',
+        );
+        expect(replacePathSepForRegex('\\foo\\bar\\.*.test.js')).toBe(
+            '\\\\foo\\\\bar\\.*.test.js',
+        );
     });
 });
 
@@ -40,14 +52,22 @@ describe('escapePathForRegex', () => {
     test('with slash separator', () => {
         require('path').__setSep('/');
 
-        expect(escapePathForRegex('/foo/bar/.*\.test.js')).toBe('/foo/bar/\\.\\*\\.test\\.js');
-        expect(escapePathForRegex('\\foo\\bar\\.*\.test.js')).toBe('\\\\foo\\\\bar\\\\\\.\\*\\.test\\.js');
+        expect(escapePathForRegex('/foo/bar/.*.test.js')).toBe(
+            '/foo/bar/\\.\\*\\.test\\.js',
+        );
+        expect(escapePathForRegex('\\foo\\bar\\.*.test.js')).toBe(
+            '\\\\foo\\\\bar\\\\\\.\\*\\.test\\.js',
+        );
     });
 
     test('with back-slash separator', () => {
         require('path').__setSep('\\');
 
-        expect(escapePathForRegex('/foo/bar/.*\.test.js')).toBe('\\\\foo\\\\bar\\\\\\.\\\\*\\.test\\.js');
-        expect(escapePathForRegex('\\foo\\bar\\.*\.test.js')).toBe('\\\\foo\\\\bar\\\\\\.\\\\*\\.test\\.js');
+        expect(escapePathForRegex('/foo/bar/.*.test.js')).toBe(
+            '\\\\foo\\\\bar\\\\\\.\\\\*\\.test\\.js',
+        );
+        expect(escapePathForRegex('\\foo\\bar\\.*.test.js')).toBe(
+            '\\\\foo\\\\bar\\\\\\.\\\\*\\.test\\.js',
+        );
     });
 });
