@@ -1,9 +1,9 @@
-import SocketIOFile from "socket.io-file";
-import EventEmitter from "events";
-import path from "path";
-import { BENCHMARK_TASK, DISCONNECT, LOAD_BENCHMARK } from "./operations";
-import { cacheDirectory } from "@best/utils";
-import { x as extractTar } from "tar";
+import SocketIOFile from 'socket.io-file';
+import EventEmitter from 'events';
+import path from 'path';
+import { BENCHMARK_TASK, DISCONNECT, LOAD_BENCHMARK } from './operations';
+import { cacheDirectory } from '@best/utils';
+import { x as extractTar } from 'tar';
 
 const STATE_QUEUED = 'queued';
 const STATE_CONFIG_READY = 'config_ready';
@@ -19,7 +19,7 @@ const LOADER_CONFIG = {
     maxFileSize: 4194304,
     chunkSize: 10240, // 1kb
     transmissionDelay: 0,
-    overwrite: true
+    overwrite: true,
 };
 
 function initializeForwarder(config, socket, logger) {
@@ -34,7 +34,7 @@ function initializeForwarder(config, socket, logger) {
         onBenchmarkEnd(benchmarkName) {
             logger(`STATUS: finished_benchmark (${benchmarkName})`);
             socket.emit('running_benchmark_end', benchmarkName);
-        }
+        },
     };
 }
 
@@ -45,7 +45,7 @@ class SocketClient extends EventEmitter {
         this.state = 'init';
         this.benchmarkConfig = null;
         socket.on(DISCONNECT, () => this.disconnectClient());
-        socket.on(BENCHMARK_TASK, (data) => this.onBenchmarkTaskReceived(data));
+        socket.on(BENCHMARK_TASK, data => this.onBenchmarkTaskReceived(data));
         this.setTimeout(5000);
         this._log('STATUS: connected');
     }
@@ -54,7 +54,10 @@ class SocketClient extends EventEmitter {
     }
 
     setTimeout(t) {
-        this._timeout = setTimeout(() => this.disconnectClient('timeout - waiting for event'), t);
+        this._timeout = setTimeout(
+            () => this.disconnectClient('timeout - waiting for event'),
+            t,
+        );
     }
 
     getBenchmarkConfig() {
@@ -74,7 +77,10 @@ class SocketClient extends EventEmitter {
                 this.socket.disconnect(true);
             }
             this.emit(DISCONNECT);
-            this._log(`STATUS: disconnected (${forcedError || 'socket disconnected'})`);
+            this._log(
+                `STATUS: disconnected (${forcedError ||
+                    'socket disconnected'})`,
+            );
         }
     }
 
@@ -91,24 +97,30 @@ class SocketClient extends EventEmitter {
     }
 
     onLoadedBenchmarks({ uploadDir }) {
-        extractTar({ cwd: path.dirname(uploadDir), file: uploadDir})
-            .then(() => {
+        extractTar({ cwd: path.dirname(uploadDir), file: uploadDir }).then(
+            () => {
                 const benchmarkName = this.benchmarkConfig.benchmarkName;
                 const benchmarkDirname = path.dirname(uploadDir);
 
-                this.benchmarkConfig.benchmarkEntry = path.join(benchmarkDirname, `${benchmarkName}.html`);
+                this.benchmarkConfig.benchmarkEntry = path.join(
+                    benchmarkDirname,
+                    `${benchmarkName}.html`,
+                );
                 this.setState(STATE_BENCHMARK_READY);
 
                 this._log(`STATUS: ${this.state} (${benchmarkName})`);
                 this.emit(STATE_BENCHMARK_READY);
-            });
+            },
+        );
     }
 
     loadBenchmarks() {
         const uploader = new SocketIOFile(this.socket, LOADER_CONFIG);
         uploader.on('start', () => clearTimeout(this._timeout));
-        uploader.on('stream', ({ wrote, size }) => this._log(`downloading ${wrote} / ${size}`));
-        uploader.on('complete', (info) => this.onLoadedBenchmarks(info));
+        uploader.on('stream', ({ wrote, size }) =>
+            this._log(`downloading ${wrote} / ${size}`),
+        );
+        uploader.on('complete', info => this.onLoadedBenchmarks(info));
         this.setState(STATE_LOADING_FILES);
         this.socket.emit(LOAD_BENCHMARK);
         this.setTimeout(5000);
@@ -134,7 +146,11 @@ class SocketClient extends EventEmitter {
     }
 
     getMessager() {
-        return initializeForwarder(this.benchmarkConfig, this.socket, this._log.bind(this));
+        return initializeForwarder(
+            this.benchmarkConfig,
+            this.socket,
+            this._log.bind(this),
+        );
     }
 }
 

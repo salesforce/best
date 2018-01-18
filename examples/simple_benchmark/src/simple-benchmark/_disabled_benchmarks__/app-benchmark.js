@@ -1,6 +1,6 @@
-import Ctor from "simple-benchmark";
-import { createElement } from "engine";
-import { appendFile } from "fs";
+import Ctor from 'simple-benchmark';
+import { createElement } from 'engine';
+import { appendFile } from 'fs';
 
 describe('benchmarking app', () => {
     benchmark('create and render', () => {
@@ -28,46 +28,44 @@ describe('benchmarking app2', () => {
     });
 });
 
-app-benchmarks.js
-    > benchmarking app
-        > create and render
-            jsTime:
-            layout:
-            duration:
+// app-benchmarks.js
+//     > benchmarking app
+//         > create and render
+//             jsTime:
+//             layout:
+//             duration:
 
+// {
+//     name: 'app-benchmark.js',
+//     benchmarks: {
+//         "benchmarking app": {
+//             "create and render": {
+//                 duration: 0
+//                 layout: 0
+//             }
+//         },
+//         "benchmarking app2": {
+//             "create and render": {
+//                 duration: 0
+//                 layout: 0
+//             }
+//         }
+//     }
+// }
 
-{
-    name: 'app-benchmark.js',
-    benchmarks: {
-        "benchmarking app": {
-            "create and render": {
-                duration: 0
-                layout: 0
-            }
-        },
-        "benchmarking app2": {
-            "create and render": {
-                duration: 0
-                layout: 0
-            }
-        }
-    }
-}
-
-
-{
-    name: 'app-benchmark.js',
-    benchmarks: {
-        "benchmarking app": {
-            "create and render": {
-                duration: 0
-                layout: 0
-            }
-        },
-        "benchmarking app2": {
-            "create and render": {
-                duration: 0
-                layout: 0
-            }
-        }
-}
+// {
+//     name: 'app-benchmark.js',
+//     benchmarks: {
+//         "benchmarking app": {
+//             "create and render": {
+//                 duration: 0
+//                 layout: 0
+//             }
+//         },
+//         "benchmarking app2": {
+//             "create and render": {
+//                 duration: 0
+//                 layout: 0
+//             }
+//         }
+// }

@@ -24,5 +24,5 @@ module.exports = {
         file: path.resolve(__dirname, `../public/js/${fileName}`),
         format: 'iife',
     },
-    plugins
+    plugins,
 };

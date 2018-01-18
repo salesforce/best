@@ -18,7 +18,12 @@ describe('buildBenchmark', () => {
     test('generating index.js and index.html', async () => {
         const cacheDirectory = tempDir();
         const res = await buildBenchmark(
-            path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
+            path.resolve(
+                __dirname,
+                'fixtures',
+                'single-file',
+                'single-file.js',
+            ),
             {
                 cacheDirectory,
             },
@@ -26,14 +31,34 @@ describe('buildBenchmark', () => {
             MOCK_MESSAGER,
         );
 
-        expect(fs.statSync(`${cacheDirectory}/single-file`).isDirectory()).toBe(true);
-        expect(fs.statSync(`${cacheDirectory}/single-file/single-file.html`).isFile()).toBe(true);
-        expect(fs.statSync(`${cacheDirectory}/single-file/single-file.js`).isFile()).toBe(true);
+        expect(fs.statSync(`${cacheDirectory}/single-file`).isDirectory()).toBe(
+            true,
+        );
+        expect(
+            fs
+                .statSync(`${cacheDirectory}/single-file/single-file.html`)
+                .isFile(),
+        ).toBe(true);
+        expect(
+            fs
+                .statSync(`${cacheDirectory}/single-file/single-file.js`)
+                .isFile(),
+        ).toBe(true);
     });
 
     test('build output', async () => {
-        const { benchmarkName, benchmarkEntry, benchmarkFolder, benchmarkSignature } = await buildBenchmark(
-            path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
+        const {
+            benchmarkName,
+            benchmarkEntry,
+            benchmarkFolder,
+            benchmarkSignature,
+        } = await buildBenchmark(
+            path.resolve(
+                __dirname,
+                'fixtures',
+                'single-file',
+                'single-file.js',
+            ),
             {
                 cacheDirectory: tempDir(),
             },
@@ -43,7 +68,9 @@ describe('buildBenchmark', () => {
 
         expect(benchmarkName).toBe('single-file');
         expect(benchmarkFolder.endsWith('single-file')).toBe(true);
-        expect(benchmarkEntry.endsWith('single-file/single-file.html')).toBe(true);
+        expect(benchmarkEntry.endsWith('single-file/single-file.html')).toBe(
+            true,
+        );
         expect(typeof benchmarkSignature).toBe('string');
     });
 
@@ -54,7 +81,12 @@ describe('buildBenchmark', () => {
         };
 
         await buildBenchmark(
-            path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
+            path.resolve(
+                __dirname,
+                'fixtures',
+                'single-file',
+                'single-file.js',
+            ),
             {
                 cacheDirectory: tempDir(),
             },
@@ -70,25 +102,34 @@ describe('buildBenchmark', () => {
         expect.hasAssertions();
 
         const PLUGIN_OPTIONS = {
-            foo: 'bar'
+            foo: 'bar',
         };
 
-        jest.doMock('build-plugin-opts', () => {
-            return (options) => {
-                expect(options).toBe(PLUGIN_OPTIONS);
-                return {};
-            };
-        }, {
-            virtual: true
-        });
+        jest.doMock(
+            'build-plugin-opts',
+            () => {
+                return options => {
+                    expect(options).toBe(PLUGIN_OPTIONS);
+                    return {};
+                };
+            },
+            {
+                virtual: true,
+            },
+        );
 
         await buildBenchmark(
-            path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
+            path.resolve(
+                __dirname,
+                'fixtures',
+                'single-file',
+                'single-file.js',
+            ),
             {
                 cacheDirectory: tempDir(),
                 plugins: {
-                    'build-plugin-opts': PLUGIN_OPTIONS
-                }
+                    'build-plugin-opts': PLUGIN_OPTIONS,
+                },
             },
             {},
             MOCK_MESSAGER,
@@ -96,28 +137,46 @@ describe('buildBenchmark', () => {
     });
 
     test('plugin hooks into rollup lifecycle hooks', async () => {
-        const entry = path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js');
+        const entry = path.resolve(
+            __dirname,
+            'fixtures',
+            'single-file',
+            'single-file.js',
+        );
         const loaded = [];
         const transformed = [];
 
-        jest.doMock('build-plugin-hooks', () => {
-            return (options) => {
-                return {
-                    load: (id) => { loaded.push(id) },
-                    transform: (src, id) => { transformed.push(id) },
+        jest.doMock(
+            'build-plugin-hooks',
+            () => {
+                return options => {
+                    return {
+                        load: id => {
+                            loaded.push(id);
+                        },
+                        transform: (src, id) => {
+                            transformed.push(id);
+                        },
+                    };
                 };
-            };
-        }, {
-            virtual: true
-        });
+            },
+            {
+                virtual: true,
+            },
+        );
 
         await buildBenchmark(
-            path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
+            path.resolve(
+                __dirname,
+                'fixtures',
+                'single-file',
+                'single-file.js',
+            ),
             {
                 cacheDirectory: tempDir(),
                 plugins: {
-                    'build-plugin-hooks': true
-                }
+                    'build-plugin-hooks': true,
+                },
             },
             {},
             MOCK_MESSAGER,

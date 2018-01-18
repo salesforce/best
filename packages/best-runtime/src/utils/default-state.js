@@ -15,5 +15,5 @@ export default Object.freeze({
 
     // Memory
     memoryAllocatedStart: 0,
-    memoryAllocatedFinish: 0
+    memoryAllocatedFinish: 0,
 });

@@ -10,7 +10,8 @@ import { PACKAGE_JSON, BEST_CONFIG } from './constants';
 const TARGET_COMMIT = process.env.TARGET_COMMIT;
 const BASE_COMMIT = process.env.BASE_COMMIT;
 const specialArgs = ['_', '$0', 'h', 'help', 'config'];
-const isFile = filePath => fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
+const isFile = filePath =>
+    fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
 
 function readConfigAndSetRootDir(configPath) {
     const isJSON = configPath.endsWith('.json');
@@ -19,7 +20,9 @@ function readConfigAndSetRootDir(configPath) {
         configObject = require(configPath);
     } catch (error) {
         if (isJSON) {
-            throw new Error(`Best: Failed to parse config file ${configPath}\n`);
+            throw new Error(
+                `Best: Failed to parse config file ${configPath}\n`,
+            );
         } else {
             throw error;
         }
@@ -27,14 +30,16 @@ function readConfigAndSetRootDir(configPath) {
 
     if (configPath.endsWith(PACKAGE_JSON)) {
         if (!configObject.best) {
-            throw new Error(`No "best" section has been found in ${configPath}`);
+            throw new Error(
+                `No "best" section has been found in ${configPath}`,
+            );
         }
 
         configObject = configObject.best;
     }
 
     if (!configObject) {
-        throw new Error('Couldn\'t find any configuration for Best.');
+        throw new Error("Couldn't find any configuration for Best.");
     }
 
     if (configObject.rootDir) {
@@ -70,11 +75,17 @@ function resolveConfigPathByTraversing(pathToResolve, initialPath, cwd) {
     }
 
     // go up a level and try it again
-    return resolveConfigPathByTraversing(path.dirname(pathToResolve), initialPath, cwd);
+    return resolveConfigPathByTraversing(
+        path.dirname(pathToResolve),
+        initialPath,
+        cwd,
+    );
 }
 
 function resolveConfigPath(pathToResolve, cwd) {
-    const absolutePath = path.isAbsolute(pathToResolve) ? pathToResolve : path.resolve(cwd, pathToResolve);
+    const absolutePath = path.isAbsolute(pathToResolve)
+        ? pathToResolve
+        : path.resolve(cwd, pathToResolve);
     if (isFile(absolutePath)) {
         return absolutePath;
     }
@@ -84,7 +95,10 @@ function resolveConfigPath(pathToResolve, cwd) {
 
 function setFromArgs(initialOptions, argsCLI) {
     const argvToOptions = Object.keys(argsCLI)
-        .filter(key => argsCLI[key] !== undefined && specialArgs.indexOf(key) === -1)
+        .filter(
+            key =>
+                argsCLI[key] !== undefined && specialArgs.indexOf(key) === -1,
+        )
         .reduce((options, key) => {
             switch (key) {
                 case 'iterations':
@@ -106,7 +120,11 @@ function setFromArgs(initialOptions, argsCLI) {
 function normalizeRootDir(options) {
     // Assert that there *is* a rootDir
     if (!options.hasOwnProperty('rootDir')) {
-        throw new Error(`  Configuration option ${chalk.bold('rootDir')} must be specified.`);
+        throw new Error(
+            `  Configuration option ${chalk.bold(
+                'rootDir',
+            )} must be specified.`,
+        );
     }
 
     options.rootDir = path.normalize(options.rootDir);
@@ -153,7 +171,10 @@ function normalizePlugins(plugins, globalOptions) {
     return Object.keys(plugins).reduce((m, plugin) => {
         const pluginOptions = plugins[plugin];
         if (pluginOptions) {
-            m[plugin] = normalizeObjectPathPatterns(pluginOptions, globalOptions);
+            m[plugin] = normalizeObjectPathPatterns(
+                pluginOptions,
+                globalOptions,
+            );
         }
         return m;
     }, {});
@@ -175,9 +196,12 @@ function normalize(options, argsCLI) {
                 value = normalizePlugins(options[key], options);
                 break;
             case 'compareStats':
-                value = options[key].length ? normalizeCommits(options[key], options) : undefined;
+                value = options[key].length
+                    ? normalizeCommits(options[key], options)
+                    : undefined;
                 break;
-            default: value = options[key];
+            default:
+                value = options[key];
         }
         newOptions[key] = value;
         return newOpts;
@@ -232,7 +256,10 @@ function _getConfigs(options) {
             benchmarkMinIterations: options.benchmarkMinIterations,
             benchmarkIterations: options.benchmarkIterations,
             benchmarkOnClient: options.benchmarkOnClient,
-            benchmarkOutput: normalizeRootDirPattern(options.benchmarkOutput, options.rootDir),
+            benchmarkOutput: normalizeRootDirPattern(
+                options.benchmarkOutput,
+                options.rootDir,
+            ),
 
             testMatch: options.testMatch,
             testPathIgnorePatterns: options.testPathIgnorePatterns,
@@ -240,7 +267,7 @@ function _getConfigs(options) {
             testURL: options.testURL,
             transform: options.transform,
             transformIgnorePatterns: options.transformIgnorePatterns,
-        })
+        }),
     };
 }
 
@@ -251,7 +278,9 @@ export async function readConfig(argsCLI, packageRoot) {
     const options = normalize(rawOptions, argsCLI);
     try {
         await addGitInformation(options);
-    } catch (e) { /* Unable to get git info */ }
+    } catch (e) {
+        /* Unable to get git info */
+    }
 
     const { globalConfig, projectConfig } = _getConfigs(options);
     return { globalConfig, projectConfig };
@@ -283,7 +312,7 @@ export async function getConfigs(projectsFromCLIArgs, argv) {
     }
 
     if (projects.length > 1) {
-        throw new Error("WIP");
+        throw new Error('WIP');
     }
 
     return {

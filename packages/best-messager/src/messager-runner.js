@@ -1,12 +1,12 @@
-import path from "path";
-import chalk from "chalk";
+import path from 'path';
+import chalk from 'chalk';
 import { isInteractive } from '@best/utils';
 
 export const BUILD_STATE = {
     QUEUED: 'queued',
     RUNNING: 'running',
     DONE: 'done',
-    ERROR: 'error'
+    ERROR: 'error',
 };
 
 const INIT_RUNNING_TEXT = chalk.bold.dim('Running benchmarks... \n\n');
@@ -19,7 +19,7 @@ const DONE_TEXT = '   DONE   ';
 const DONE = chalk.reset.inverse.green.bold(DONE_TEXT) + ' ';
 const PROGRESS_BAR_WIDTH = 40;
 
-const printState = (state) => {
+const printState = state => {
     switch (state) {
         case BUILD_STATE.QUEUED:
             return QUEUED;
@@ -32,7 +32,7 @@ const printState = (state) => {
     }
 };
 
-const printDisplayPath = (relativeDir) => {
+const printDisplayPath = relativeDir => {
     if (relativeDir) {
         const dirname = path.dirname(relativeDir);
         const basename = path.basename(relativeDir);
@@ -46,22 +46,24 @@ const generateProgressState = (progress, { iterations, maxDuration }) => {
     const { executedIterations, executedTime } = progress;
     const avgIteration = executedTime / executedIterations;
     const runtime = parseInt(executedTime / 1000, 10);
-    const estimated = iterations ? Math.round(iterations * avgIteration / 1000) + 1 : maxDuration / 1000;
+    const estimated = iterations
+        ? Math.round(iterations * avgIteration / 1000) + 1
+        : maxDuration / 1000;
 
     return {
         executedIterations,
         estimated,
         runtime,
-        avgIteration
+        avgIteration,
     };
 };
 
 const renderTime = (runTime, estimatedTime, width) => {
     // If we are more than one second over the estimated time, highlight it.
     const renderedTime =
-        estimatedTime && runTime >= estimatedTime + 1 ?
-            chalk.bold.yellow(runTime + 's') :
-            runTime + 's';
+        estimatedTime && runTime >= estimatedTime + 1
+            ? chalk.bold.yellow(runTime + 's')
+            : runTime + 's';
 
     let time = chalk.bold(`Time:`) + `        ${renderedTime}`;
     if (runTime < estimatedTime) {
@@ -85,7 +87,7 @@ const renderTime = (runTime, estimatedTime, width) => {
     return time;
 };
 
-const clearStream = (buffer) => {
+const clearStream = buffer => {
     let height = 0;
     for (let i = 0; i < buffer.length; i++) {
         if (buffer[i] === '\n') {
@@ -100,21 +102,27 @@ export default class RunnerMessager {
         this._running = false;
         this._out = outputStream.write.bind(outputStream);
 
-        const benchmarksState = benchmarksBundle.reduce((map, { benchmarkName, benchmarkEntry, projectConfig }) => {
-            map[benchmarkName] = {
-                state: BUILD_STATE.QUEUED,
-                opts: {
-                    displayName: benchmarkName,
-                    displayPath: path.relative(projectConfig.cacheDirectory, benchmarkEntry)
-                }
-            };
+        const benchmarksState = benchmarksBundle.reduce(
+            (map, { benchmarkName, benchmarkEntry, projectConfig }) => {
+                map[benchmarkName] = {
+                    state: BUILD_STATE.QUEUED,
+                    opts: {
+                        displayName: benchmarkName,
+                        displayPath: path.relative(
+                            projectConfig.cacheDirectory,
+                            benchmarkEntry,
+                        ),
+                    },
+                };
 
-            return map;
-        }, {});
+                return map;
+            },
+            {},
+        );
 
         this._state = {
             benchmarks: benchmarksState,
-            buffer: ''
+            buffer: '',
         };
 
         this._write();
@@ -176,16 +184,26 @@ export default class RunnerMessager {
 
         let buffer = Object.keys(benchmarks).reduce((str, key) => {
             const benchState = benchmarks[key];
-            str += printState(benchState.state) + printDisplayPath(benchState.opts.displayPath) + '\n';
+            str +=
+                printState(benchState.state) +
+                printDisplayPath(benchState.opts.displayPath) +
+                '\n';
             return str;
         }, '\n' + INIT_RUNNING_TEXT);
 
         if (benchmarkRunning && progress) {
-            buffer += [
-                '\n ' + PROGRESS_TEXT + chalk.bold.black(benchmarkRunning.opts.displayName) + ' \n',
-                chalk.bold.black('Avg iteration:        ') + progress.avgIteration.toFixed(2) + 'ms',
-                chalk.bold.black('Completed iterations: ') + progress.executedIterations,
-            ].join('\n') + '\n\n';
+            buffer +=
+                [
+                    '\n ' +
+                        PROGRESS_TEXT +
+                        chalk.bold.black(benchmarkRunning.opts.displayName) +
+                        ' \n',
+                    chalk.bold.black('Avg iteration:        ') +
+                        progress.avgIteration.toFixed(2) +
+                        'ms',
+                    chalk.bold.black('Completed iterations: ') +
+                        progress.executedIterations,
+                ].join('\n') + '\n\n';
 
             buffer += renderTime(progress.runtime, progress.estimated, 40);
         }

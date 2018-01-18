@@ -1,23 +1,26 @@
-import primitivesHandler from "./primitives-handler";
-import { makeDescribe } from "./utils/primitives-nodes";
-import DEFAULT_STATE from "./utils/default-state";
+import primitivesHandler from './primitives-handler';
+import { makeDescribe } from './utils/primitives-nodes';
+import DEFAULT_STATE from './utils/default-state';
 
 const eventHandlers = [
     primitivesHandler,
     // formatNodeAssertErrors,
 ];
 
-const _benchmarkTitle = () => ((typeof BEST_CONFIG !== 'undefined') ? BEST_CONFIG.benchmarkName : 'ROOT_DESCRIBE_BLOCK');
+const _benchmarkTitle = () =>
+    typeof BEST_CONFIG !== 'undefined'
+        ? BEST_CONFIG.benchmarkName
+        : 'ROOT_DESCRIBE_BLOCK';
 const ROOT_DESCRIBE_BLOCK_NAME = _benchmarkTitle();
 const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
 
 const STATE = Object.assign({}, DEFAULT_STATE, {
     currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
-    rootDescribeBlock: ROOT_DESCRIBE_BLOCK
+    rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
 });
 
 const _getInternalState = () => STATE;
-const _cloneState = (state) => {
+const _cloneState = state => {
     const stateClone = Object.assign({}, state);
 
     if (stateClone.children) {
@@ -30,7 +33,7 @@ const _cloneState = (state) => {
 export const getBenckmarkState = () => _cloneState(STATE);
 export const getBenchmarkRootNode = () => getBenckmarkState().rootDescribeBlock;
 
-export const initializeBenchmarkConfig = (newOpts) => {
+export const initializeBenchmarkConfig = newOpts => {
     if (newOpts.iterations !== undefined) {
         if (newOpts.iterateOnClient === undefined) {
             newOpts.iterateOnClient = true;

@@ -1,4 +1,4 @@
-import { RUN_BENCHMARK } from "../constants";
+import { RUN_BENCHMARK } from '../constants';
 export const makeDescribe = (name, parent, mode) => {
     if (parent && !mode) {
         // If not set explicitly, inherit from the parent describe.
@@ -10,10 +10,9 @@ export const makeDescribe = (name, parent, mode) => {
         hooks: [],
         mode,
         name,
-        parent
+        parent,
     };
 };
-
 
 export const makeBenchmark = (name, parent, mode) => {
     if (parent && !mode) {
