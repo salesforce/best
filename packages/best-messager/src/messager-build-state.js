@@ -53,21 +53,15 @@ export default class BuildStateMessager {
         this._wrapStream(process.stderr);
         this._wrapStream(process.stdout);
 
-        const benchmarksState = benchmarksBundle.reduce(
-            (map, { config, matches }) => {
-                matches.forEach(benchmarkPath => {
-                    map[benchmarkPath] = {
-                        state: BUILD_STATE.QUEUED,
-                        displayPath: path.relative(
-                            config.rootDir,
-                            benchmarkPath,
-                        ),
-                    };
-                });
-                return map;
-            },
-            {},
-        );
+        const benchmarksState = benchmarksBundle.reduce((map, { config, matches }) => {
+            matches.forEach(benchmarkPath => {
+                map[benchmarkPath] = {
+                    state: BUILD_STATE.QUEUED,
+                    displayPath: path.relative(config.rootDir, benchmarkPath),
+                };
+            });
+            return map;
+        }, {});
 
         this._state = { benchmarks: benchmarksState, buffer: '', clear: '' };
 
@@ -130,10 +124,7 @@ export default class BuildStateMessager {
         const benchmarks = this._state.benchmarks;
         const buffer = Object.keys(benchmarks).reduce((str, key) => {
             const benchState = benchmarks[key];
-            str +=
-                printState(benchState.state) +
-                printDisplayName(benchState.displayPath) +
-                '\n';
+            str += printState(benchState.state) + printDisplayName(benchState.displayPath) + '\n';
             return str;
         }, '\n' + INIT_BUILD_TEXT);
 

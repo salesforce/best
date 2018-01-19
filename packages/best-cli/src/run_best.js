@@ -24,9 +24,7 @@ async function getBenchmarkTests(configs, globalConfig) {
 
 async function buildBundleBenchmarks(benchmarksTests, globalConfig, messager) {
     const bundle = await Promise.all(
-        benchmarksTests.map(async ({ matches, config }) =>
-            buildBenchmarks(matches, config, globalConfig, messager),
-        ),
+        benchmarksTests.map(async ({ matches, config }) => buildBenchmarks(matches, config, globalConfig, messager)),
     );
     // Flatten the per-project benchmarks tests
     return bundle.reduce((benchmarks, benchBundle) => {
@@ -42,28 +40,12 @@ async function runBundleBenchmarks(benchmarksBuilds, globalConfig, messager) {
 export async function runBest(globalConfig, configs, outputStream) {
     const benchmarksTests = await getBenchmarkTests(configs, globalConfig);
 
-    const buildMessager = new BuildStateMessager(
-        benchmarksTests,
-        globalConfig,
-        outputStream,
-    );
-    const benchmarksBuilds = await buildBundleBenchmarks(
-        benchmarksTests,
-        globalConfig,
-        buildMessager,
-    );
+    const buildMessager = new BuildStateMessager(benchmarksTests, globalConfig, outputStream);
+    const benchmarksBuilds = await buildBundleBenchmarks(benchmarksTests, globalConfig, buildMessager);
     buildMessager.finishBuild();
 
-    const runnerMessager = new RunnerMessager(
-        benchmarksBuilds,
-        globalConfig,
-        outputStream,
-    );
-    const benchmarkBundleResults = await runBundleBenchmarks(
-        benchmarksBuilds,
-        globalConfig,
-        runnerMessager,
-    );
+    const runnerMessager = new RunnerMessager(benchmarksBuilds, globalConfig, outputStream);
+    const benchmarkBundleResults = await runBundleBenchmarks(benchmarksBuilds, globalConfig, runnerMessager);
     runnerMessager.finishRun();
 
     await analyzeBenchmarks(benchmarkBundleResults, globalConfig);

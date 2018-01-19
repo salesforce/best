@@ -27,12 +27,8 @@ function getStoredFileMapping(benchmarkFolder, artifactsFolder) {
     const WHITELIST = ['.js', '.html', '.css', '.json'];
 
     const currentFiles = fs.readdirSync(benchmarkFolder);
-    const artifactFiles = fs
-        .readdirSync(artifactsFolder)
-        .map(p => path.join('artifacts', p));
-    const files = [...currentFiles, ...artifactFiles].filter(p =>
-        WHITELIST.includes(path.extname(p)),
-    );
+    const artifactFiles = fs.readdirSync(artifactsFolder).map(p => path.join('artifacts', p));
+    const files = [...currentFiles, ...artifactFiles].filter(p => WHITELIST.includes(path.extname(p)));
 
     return files.reduce((map, file) => {
         map[file] = path.join(benchmarkFolder, file);
@@ -43,20 +39,10 @@ function getStoredFileMapping(benchmarkFolder, artifactsFolder) {
 export function storeBenchmarkResults(benchmarkResults, globalConfig) {
     return Promise.all(
         benchmarkResults.map(async benchmarkResult => {
-            const {
-                benchmarkName,
-                benchmarkSignature,
-                projectConfig,
-                environment,
-                results,
-                stats,
-            } = benchmarkResult;
+            const { benchmarkName, benchmarkSignature, projectConfig, environment, results, stats } = benchmarkResult;
             const { benchmarkOutput, cacheDirectory } = projectConfig;
             const { externalStorage } = globalConfig;
-            const outputFolder = path.resolve(
-                benchmarkOutput,
-                `${benchmarkName}_${benchmarkSignature.substr(0, 6)}`,
-            );
+            const outputFolder = path.resolve(benchmarkOutput, `${benchmarkName}_${benchmarkSignature.substr(0, 6)}`);
             const artifactsFolder = path.resolve(outputFolder, 'artifacts');
             const benchmarkFolder = path.resolve(cacheDirectory, benchmarkName);
 
@@ -65,52 +51,26 @@ export function storeBenchmarkResults(benchmarkResults, globalConfig) {
             await copyArtifacts(benchmarkFolder, artifactsFolder);
 
             // Environment
-            fs.writeFileSync(
-                path.resolve(outputFolder, 'environment.md'),
-                formatEnvironment(environment),
-                'utf8',
-            );
+            fs.writeFileSync(path.resolve(outputFolder, 'environment.md'), formatEnvironment(environment), 'utf8');
 
             // Results
-            fs.writeFileSync(
-                path.resolve(outputFolder, 'stats.json'),
-                formatJSON(stats),
-                'utf8',
-            );
-            fs.writeFileSync(
-                path.resolve(outputFolder, 'raw_results.json'),
-                formatJSON(results),
-                'utf8',
-            );
+            fs.writeFileSync(path.resolve(outputFolder, 'stats.json'), formatJSON(stats), 'utf8');
+            fs.writeFileSync(path.resolve(outputFolder, 'raw_results.json'), formatJSON(results), 'utf8');
             benchmarkResult.benchmarkOutputResult = outputFolder;
 
             if (externalStorage) {
                 try {
                     const storageModule = require(externalStorage);
-                    const fileMap = getStoredFileMapping(
-                        outputFolder,
-                        artifactsFolder,
-                    );
-                    await storageModule.storeBenchmarkResults(
-                        fileMap,
-                        benchmarkResult,
-                        globalConfig,
-                    );
+                    const fileMap = getStoredFileMapping(outputFolder, artifactsFolder);
+                    await storageModule.storeBenchmarkResults(fileMap, benchmarkResult, globalConfig);
                 } catch (err) {
-                    const ERR_TEXT =
-                        chalk.reset.inverse.red.bold('  ERROR   ') + ' ';
+                    const ERR_TEXT = chalk.reset.inverse.red.bold('  ERROR   ') + ' ';
                     console.log(
-                        ERR_TEXT +
-                            `Unable to push to external storage ${chalk.bold(
-                                externalStorage,
-                            )}: `,
+                        ERR_TEXT + `Unable to push to external storage ${chalk.bold(externalStorage)}: `,
                         err.message || err,
                         '\n',
                     );
-                    throw new Error(
-                        '[best-store] Error executing externalStorage: ' +
-                            externalStorage,
-                    );
+                    throw new Error('[best-store] Error executing externalStorage: ' + externalStorage);
                 }
             }
             return true;

@@ -8,9 +8,7 @@ const eventHandlers = [
 ];
 
 function _benchmarkTitle() {
-    return typeof BEST_CONFIG !== 'undefined'
-        ? BEST_CONFIG.benchmarkName
-        : 'ROOT_DESCRIBE_BLOCK';
+    return typeof BEST_CONFIG !== 'undefined' ? BEST_CONFIG.benchmarkName : 'ROOT_DESCRIBE_BLOCK';
 }
 const ROOT_DESCRIBE_BLOCK_NAME = _benchmarkTitle();
 const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
