@@ -52,10 +52,7 @@ export async function runCLI(argsCLI, projects) {
     let results;
 
     try {
-        preRunMessager.print(
-            'Looking for Best configurations...',
-            outputStream,
-        );
+        preRunMessager.print('Looking for Best configurations...', outputStream);
         rawConfigs = await getConfigs(projects, argsCLI, outputStream);
     } finally {
         preRunMessager.clear(outputStream);
@@ -78,24 +75,17 @@ export async function runCLI(argsCLI, projects) {
         }
     } else {
         if (argsCLI.clearResults) {
-            preRunMessager.print(
-                'Clearing previous benchmark results...',
-                outputStream,
-            );
+            preRunMessager.print('Clearing previous benchmark results...', outputStream);
             configs.forEach(config => {
                 rimraf.sync(config.benchmarkOutput);
-                process.stdout.write(
-                    `\n - Cleared: ${config.benchmarkOutput}\n`,
-                );
+                process.stdout.write(`\n - Cleared: ${config.benchmarkOutput}\n`);
             });
         }
 
         results = await runBest(globalConfig, configs, outputStream);
 
         if (!results) {
-            throw new Error(
-                'AggregatedResult must be present after test run is complete',
-            );
+            throw new Error('AggregatedResult must be present after test run is complete');
         }
 
         generateReportTables(results, outputStream);

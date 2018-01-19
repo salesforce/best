@@ -5,19 +5,9 @@ import SocketIOFile from './file-uploader';
 import { createTarBundle } from './create-tar';
 import { preRunMessager } from '@best/messager';
 
-function proxifyRunner(
-    benchmarkEntryBundle,
-    runnerConfig,
-    projectConfig,
-    globalConfig,
-    messager,
-) {
+function proxifyRunner(benchmarkEntryBundle, runnerConfig, projectConfig, globalConfig, messager) {
     return new Promise(async (resolve, reject) => {
-        const {
-            benchmarkName,
-            benchmarkEntry,
-            benchmarkSignature,
-        } = benchmarkEntryBundle;
+        const { benchmarkName, benchmarkEntry, benchmarkSignature } = benchmarkEntryBundle;
         const { host, options, remoteRunner } = runnerConfig;
         const bundleDirname = path.dirname(benchmarkEntry);
         const remoteprojectConfig = Object.assign({}, projectConfig, {
@@ -28,15 +18,10 @@ function proxifyRunner(
         await createTarBundle(bundleDirname, benchmarkName);
 
         if (!fs.existsSync(tarBundle)) {
-            return reject(
-                new Error('Benchmark artifact not found (${tarBundle})'),
-            );
+            return reject(new Error('Benchmark artifact not found (${tarBundle})'));
         }
 
-        preRunMessager.print(
-            `Attempting connection with agent at ${host} ...`,
-            process.stdout,
-        );
+        preRunMessager.print(`Attempting connection with agent at ${host} ...`, process.stdout);
         const socket = socketIO(host, options);
 
         socket.on('connect', () => {
@@ -90,18 +75,7 @@ function proxifyRunner(
     });
 }
 
-export function run(
-    benchmarkEntryBundle,
-    projectConfig,
-    globalConfig,
-    messager,
-) {
+export function run(benchmarkEntryBundle, projectConfig, globalConfig, messager) {
     const { benchmarkRunnerConfig } = projectConfig;
-    return proxifyRunner(
-        benchmarkEntryBundle,
-        benchmarkRunnerConfig,
-        projectConfig,
-        globalConfig,
-        messager,
-    );
+    return proxifyRunner(benchmarkEntryBundle, benchmarkRunnerConfig, projectConfig, globalConfig, messager);
 }

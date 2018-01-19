@@ -15,10 +15,7 @@ const _initHooks = hooks =>
 
 const _forceGC = () => window.gc && window.gc();
 
-const executeBenchmark = async (
-    benchmarkNode,
-    { useMacroTaskAfterBenchmark },
-) => {
+const executeBenchmark = async (benchmarkNode, { useMacroTaskAfterBenchmark }) => {
     // Force garbage collection before executing an iteration (--js-flags=--expose-gc)
     _forceGC();
     return new Promise((resolve, reject) => {
@@ -31,25 +28,19 @@ const executeBenchmark = async (
 
             try {
                 await benchmarkNode.fn();
-                benchmarkNode.runDuration = formatTime(
-                    time() - benchmarkNode.startedAt,
-                );
+                benchmarkNode.runDuration = formatTime(time() - benchmarkNode.startedAt);
 
                 if (useMacroTaskAfterBenchmark) {
                     withMacroTask(async () => {
                         await nextTick();
-                        benchmarkNode.duration = formatTime(
-                            time() - benchmarkNode.startedAt,
-                        );
+                        benchmarkNode.duration = formatTime(time() - benchmarkNode.startedAt);
                         if (process.env.NODE_ENV !== 'production') {
                             console.timeStamp('iteration_end');
                         }
                         resolve();
                     })();
                 } else {
-                    benchmarkNode.duration = formatTime(
-                        time() - benchmarkNode.startedAt,
-                    );
+                    benchmarkNode.duration = formatTime(time() - benchmarkNode.startedAt);
                     if (process.env.NODE_ENV !== 'production') {
                         console.timeStamp('iteration_end');
                     }

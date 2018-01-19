@@ -14,10 +14,7 @@ export default class SocketIOFileClient extends EventEmitter {
         super();
 
         if (!socket) {
-            return this.emit(
-                'error',
-                new Error('SocketIOFile requires Socket.'),
-            );
+            return this.emit('error', new Error('SocketIOFile requires Socket.'));
         }
 
         this.instanceId = getInstanceId(); // using for identifying multiple file upload from SocketIOFileClient objects
@@ -28,15 +25,12 @@ export default class SocketIOFileClient extends EventEmitter {
         this.uploadingFiles = {};
         this.isDestroyed = false;
 
-        socket.on(
-            'socket.io-file::recvSync',
-            ({ maxFileSize, accepts, chunkSize }) => {
-                this.maxFileSize = maxFileSize || undefined;
-                this.accepts = accepts || [];
-                this.chunkSize = chunkSize || 10240;
-                this.emit('ready');
-            },
-        );
+        socket.on('socket.io-file::recvSync', ({ maxFileSize, accepts, chunkSize }) => {
+            this.maxFileSize = maxFileSize || undefined;
+            this.accepts = accepts || [];
+            this.chunkSize = chunkSize || 10240;
+            this.emit('ready');
+        });
 
         socket.emit('socket.io-file::reqSync');
         socket.on('socket.io-file::disconnectByServer', () => {
@@ -77,10 +71,7 @@ export default class SocketIOFileClient extends EventEmitter {
                 return;
             }
 
-            const chunk = buffer.slice(
-                fileState.sent,
-                fileState.sent + chunkSize,
-            );
+            const chunk = buffer.slice(fileState.sent, fileState.sent + chunkSize);
 
             this.emit('stream', {
                 uploadId,

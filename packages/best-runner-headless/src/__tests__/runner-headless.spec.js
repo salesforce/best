@@ -20,12 +20,7 @@ const MOCK_MESSAGER = {
 
 describe('run', () => {
     test('result', async () => {
-        const results = await run(
-            BENCHMARK_CONFIG,
-            PROJECT_CONFIG,
-            GLOBAL_CONFIG,
-            MOCK_MESSAGER,
-        );
+        const results = await run(BENCHMARK_CONFIG, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER);
         expect(results).toMatchObject({
             environment: {
                 browser: expect.any(Object),
@@ -79,31 +74,23 @@ describe('errors', () => {
     test('syntax error', async () => {
         const benchmarkConfig = {
             benchmarkName: 'test',
-            benchmarkEntry: path.resolve(
-                __dirname,
-                'fixtures',
-                'syntax-error.html',
-            ),
+            benchmarkEntry: path.resolve(__dirname, 'fixtures', 'syntax-error.html'),
         };
 
-        return expect(
-            run(benchmarkConfig, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER),
-        ).rejects.toThrow(/BEST is not defined/);
+        return expect(run(benchmarkConfig, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER)).rejects.toThrow(
+            /BEST is not defined/,
+        );
     });
 
     test('runtime error', async () => {
         const benchmarkConfig = {
             benchmarkName: 'test',
-            benchmarkEntry: path.resolve(
-                __dirname,
-                'fixtures',
-                'runtime-error.html',
-            ),
+            benchmarkEntry: path.resolve(__dirname, 'fixtures', 'runtime-error.html'),
         };
 
-        return expect(
-            run(benchmarkConfig, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER),
-        ).rejects.toThrow(/I fail at runtime/);
+        return expect(run(benchmarkConfig, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER)).rejects.toThrow(
+            /I fail at runtime/,
+        );
     });
 });
 

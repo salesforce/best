@@ -21,14 +21,9 @@ export async function storeBenchmarkResults(
     const { gitCommit, gitBranch, gitLocalChanges } = globalConfig;
     const { projectName } = projectConfig;
 
-    // Replace slashes with underscores so we prevent unambiguouus URLs
-    const branch = (gitLocalChanges ? `local/${gitBranch}` : gitBranch).replace(
-        /\//g,
-        '_',
-    );
-    const commit = gitLocalChanges
-        ? `${gitCommit}_${benchmarkSignature.slice(0, 7)}`
-        : gitCommit;
+    // Replace slashes with underscores so we prevent ambiguous URLs
+    const branch = (gitLocalChanges ? `local/${gitBranch}` : gitBranch).replace(/\//g, '_');
+    const commit = gitLocalChanges ? `${gitCommit}_${benchmarkSignature.slice(0, 7)}` : gitCommit.slice(0, 7);
 
     console.log(INIT_RUNNING_TEXT);
     const s3 = getS3Instance();

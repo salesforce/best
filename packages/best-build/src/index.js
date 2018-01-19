@@ -29,20 +29,12 @@ function addResolverPlugins({ plugins }) {
     });
 }
 
-export async function buildBenchmark(
-    entry,
-    projectConfig,
-    globalConfig,
-    messager,
-) {
+export async function buildBenchmark(entry, projectConfig, globalConfig, messager) {
     messager.onBenchmarkBuildStart(entry);
 
     const ext = path.extname(entry);
     const benchmarkName = path.basename(entry, ext);
-    const benchmarkFolder = path.join(
-        projectConfig.cacheDirectory,
-        benchmarkName,
-    );
+    const benchmarkFolder = path.join(projectConfig.cacheDirectory, benchmarkName);
     const benchmarkJSFileName = benchmarkName + ext;
     const inputOptions = Object.assign({}, BASE_ROLLUP_INPUT, {
         input: entry,
@@ -57,9 +49,7 @@ export async function buildBenchmark(
     const { code } = await bundle.generate(outputOptions);
     await bundle.write(outputOptions);
 
-    const htmlPath = path.resolve(
-        path.join(benchmarkFolder, benchmarkName + '.html'),
-    );
+    const htmlPath = path.resolve(path.join(benchmarkFolder, benchmarkName + '.html'));
     const html = generateDefaultHTML({
         benchmarkJS: `./${benchmarkJSFileName}`,
         benchmarkName,
@@ -78,15 +68,6 @@ export async function buildBenchmark(
     };
 }
 
-export async function buildBenchmarks(
-    tests,
-    projectConfig,
-    globalConfig,
-    messager,
-) {
-    return Promise.all(
-        tests.map(test =>
-            buildBenchmark(test, projectConfig, globalConfig, messager),
-        ),
-    );
+export async function buildBenchmarks(tests, projectConfig, globalConfig, messager) {
+    return Promise.all(tests.map(test => buildBenchmark(test, projectConfig, globalConfig, messager)));
 }
