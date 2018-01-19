@@ -41,11 +41,7 @@ function getBranch(cwd) {
 
 export async function addGitInformation(options) {
     const cwd = options.rootDir;
-    const [hash, localChanges, branch] = await Promise.all([
-        getCurrentHash(cwd),
-        hasLocalChanges(cwd),
-        getBranch(cwd),
-    ]);
+    const [hash, localChanges, branch] = await Promise.all([getCurrentHash(cwd), hasLocalChanges(cwd), getBranch(cwd)]);
 
     options.gitCommit = hash;
     options.gitLocalChanges = localChanges;

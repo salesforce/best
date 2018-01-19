@@ -46,9 +46,7 @@ const generateProgressState = (progress, { iterations, maxDuration }) => {
     const { executedIterations, executedTime } = progress;
     const avgIteration = executedTime / executedIterations;
     const runtime = parseInt(executedTime / 1000, 10);
-    const estimated = iterations
-        ? Math.round(iterations * avgIteration / 1000) + 1
-        : maxDuration / 1000;
+    const estimated = iterations ? Math.round(iterations * avgIteration / 1000) + 1 : maxDuration / 1000;
 
     return {
         executedIterations,
@@ -61,9 +59,7 @@ const generateProgressState = (progress, { iterations, maxDuration }) => {
 const renderTime = (runTime, estimatedTime, width) => {
     // If we are more than one second over the estimated time, highlight it.
     const renderedTime =
-        estimatedTime && runTime >= estimatedTime + 1
-            ? chalk.bold.yellow(runTime + 's')
-            : runTime + 's';
+        estimatedTime && runTime >= estimatedTime + 1 ? chalk.bold.yellow(runTime + 's') : runTime + 's';
 
     let time = chalk.bold(`Time:`) + `        ${renderedTime}`;
     if (runTime < estimatedTime) {
@@ -73,15 +69,9 @@ const renderTime = (runTime, estimatedTime, width) => {
     // Only show a progress bar if the test run is actually going to take some time
     if (estimatedTime > 2 && runTime < estimatedTime && width) {
         const availableWidth = Math.min(PROGRESS_BAR_WIDTH, width);
-        const length = Math.min(
-            Math.floor(runTime / estimatedTime * availableWidth),
-            availableWidth,
-        );
+        const length = Math.min(Math.floor(runTime / estimatedTime * availableWidth), availableWidth);
         if (availableWidth >= 2) {
-            time +=
-                '\n' +
-                chalk.green('█').repeat(length) +
-                chalk.white('█').repeat(availableWidth - length);
+            time += '\n' + chalk.green('█').repeat(length) + chalk.white('█').repeat(availableWidth - length);
         }
     }
     return time;
@@ -102,23 +92,17 @@ export default class RunnerMessager {
         this._running = false;
         this._out = outputStream.write.bind(outputStream);
 
-        const benchmarksState = benchmarksBundle.reduce(
-            (map, { benchmarkName, benchmarkEntry, projectConfig }) => {
-                map[benchmarkName] = {
-                    state: BUILD_STATE.QUEUED,
-                    opts: {
-                        displayName: benchmarkName,
-                        displayPath: path.relative(
-                            projectConfig.cacheDirectory,
-                            benchmarkEntry,
-                        ),
-                    },
-                };
+        const benchmarksState = benchmarksBundle.reduce((map, { benchmarkName, benchmarkEntry, projectConfig }) => {
+            map[benchmarkName] = {
+                state: BUILD_STATE.QUEUED,
+                opts: {
+                    displayName: benchmarkName,
+                    displayPath: path.relative(projectConfig.cacheDirectory, benchmarkEntry),
+                },
+            };
 
-                return map;
-            },
-            {},
-        );
+            return map;
+        }, {});
 
         this._state = {
             benchmarks: benchmarksState,
@@ -184,25 +168,16 @@ export default class RunnerMessager {
 
         let buffer = Object.keys(benchmarks).reduce((str, key) => {
             const benchState = benchmarks[key];
-            str +=
-                printState(benchState.state) +
-                printDisplayPath(benchState.opts.displayPath) +
-                '\n';
+            str += printState(benchState.state) + printDisplayPath(benchState.opts.displayPath) + '\n';
             return str;
         }, '\n' + INIT_RUNNING_TEXT);
 
         if (benchmarkRunning && progress) {
             buffer +=
                 [
-                    '\n ' +
-                        PROGRESS_TEXT +
-                        chalk.bold.black(benchmarkRunning.opts.displayName) +
-                        ' \n',
-                    chalk.bold.black('Avg iteration:        ') +
-                        progress.avgIteration.toFixed(2) +
-                        'ms',
-                    chalk.bold.black('Completed iterations: ') +
-                        progress.executedIterations,
+                    '\n ' + PROGRESS_TEXT + chalk.bold.black(benchmarkRunning.opts.displayName) + ' \n',
+                    chalk.bold.black('Avg iteration:        ') + progress.avgIteration.toFixed(2) + 'ms',
+                    chalk.bold.black('Completed iterations: ') + progress.executedIterations,
                 ].join('\n') + '\n\n';
 
             buffer += renderTime(progress.runtime, progress.estimated, 40);

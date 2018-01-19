@@ -14,9 +14,7 @@ const BUILD_DIR = 'build';
 const JS_FILES_PATTERN = '**/*.js';
 const IGNORE_PATTERN = '**/__tests__/**';
 const PACKAGES_DIR = path.resolve(__dirname, '../packages');
-const transformOptions = JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, '..', '.babelrc'), 'utf8'),
-);
+const transformOptions = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', '.babelrc'), 'utf8'));
 transformOptions.babelrc = false;
 
 const adjustToTerminalWidth = str => {
@@ -63,12 +61,7 @@ function buildFile(file, silent) {
     mkdirp.sync(path.dirname(destPath));
 
     if (micromatch.isMatch(file, IGNORE_PATTERN)) {
-        silent ||
-            process.stdout.write(
-                chalk.dim('  \u2022 ') +
-                    path.relative(PACKAGES_DIR, file) +
-                    ' (ignore)\n',
-            );
+        silent || process.stdout.write(chalk.dim('  \u2022 ') + path.relative(PACKAGES_DIR, file) + ' (ignore)\n');
     } else if (!micromatch.isMatch(file, JS_FILES_PATTERN)) {
         fs.createReadStream(file).pipe(fs.createWriteStream(destPath));
 

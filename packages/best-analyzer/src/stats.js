@@ -26,9 +26,7 @@ export function median(arr) {
     const sorted = sort(arr);
     const middle = Math.floor(arr.length / 2);
 
-    return arr.length % 2
-        ? sorted[middle]
-        : (sorted[middle] + sorted[middle - 1]) / 2;
+    return arr.length % 2 ? sorted[middle] : (sorted[middle] + sorted[middle - 1]) / 2;
 }
 
 export function medianAbsoluteDeviation(arr) {
@@ -38,10 +36,7 @@ export function medianAbsoluteDeviation(arr) {
 
 export function formatNumber(num) {
     if (typeof num != 'number') {
-        throw new TypeError(
-            'formatNumber expects a number, received',
-            typeof num,
-        );
+        throw new TypeError('formatNumber expects a number, received', typeof num);
     }
 
     return num.toFixed(3);
@@ -68,16 +63,11 @@ export function compare(sample1, sample2) {
     }
 
     function getZ(n) {
-        return (
-            (n - size1 * size2 / 2) /
-            Math.sqrt(size1 * size2 * (size1 + size2 + 1) / 12)
-        );
+        return (n - size1 * size2 / 2) / Math.sqrt(size1 * size2 * (size1 + size2 + 1) / 12);
     }
 
     if (size1 + size2 < 30) {
-        console.warn(
-            `Samples size should be at least greater than 30 to use the z Test`,
-        );
+        console.warn(`Samples size should be at least greater than 30 to use the z Test`);
         return 0;
     }
 

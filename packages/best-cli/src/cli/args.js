@@ -3,8 +3,7 @@ export const check = () => {
     return true;
 };
 
-export const usage =
-    'Usage: $0 [--config=<pathToConfigFile>] [BenchmarkPathPattern]';
+export const usage = 'Usage: $0 [--config=<pathToConfigFile>] [BenchmarkPathPattern]';
 export const docs = 'Documentation: https://best.lwcjs.org';
 
 export const options = {
@@ -19,13 +18,11 @@ export const options = {
     },
     projects: {
         description:
-            'A list of projects that use Best to run all tests of all ' +
-            'projects in a single instance of Best.',
+            'A list of projects that use Best to run all tests of all ' + 'projects in a single instance of Best.',
         type: 'array',
     },
     iterations: {
-        description:
-            'Define the number of iterations to run for all the benchmarks',
+        description: 'Define the number of iterations to run for all the benchmarks',
         type: 'number',
     },
     clearCache: {
@@ -37,8 +34,7 @@ export const options = {
     },
     clearResults: {
         default: undefined,
-        description:
-            'Clear all generated benchmarks from the `benchmarkOutput` folder',
+        description: 'Clear all generated benchmarks from the `benchmarkOutput` folder',
         type: 'boolean',
     },
     externalStorage: {
@@ -60,8 +56,7 @@ export const options = {
     },
     gitIntegration: {
         default: undefined,
-        description:
-            'Integrates with Git, posting the results of the benchmark or comparison',
+        description: 'Integrates with Git, posting the results of the benchmark or comparison',
         type: 'boolean',
     },
 };

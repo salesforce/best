@@ -13,10 +13,7 @@ function template({ targetCommit, baseCommit, table }) {
 function generateRows(stats, name = '') {
     return stats.comparison.map(node => {
         if (node.comparison) {
-            return generateRows(
-                node,
-                `${node.benchmarkName || node.name}:`,
-            ).reduce((a, b) => a.concat(b));
+            return generateRows(node, `${node.benchmarkName || node.name}:`).reduce((a, b) => a.concat(b));
         }
 
         const durationMetric = node.metrics.duration;
@@ -24,15 +21,9 @@ function generateRows(stats, name = '') {
 
         return [
             name + node.name,
-            `${baseStats.median.toFixed(
-                2,
-            )} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)} ms)`,
-            `${targetStats.median.toFixed(
-                2,
-            )} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)} ms)`,
-            samplesComparison === 0
-                ? '👌'
-                : samplesComparison === 1 ? '👎' : '👍',
+            `${baseStats.median.toFixed(2)} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)} ms)`,
+            `${targetStats.median.toFixed(2)} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)} ms)`,
+            samplesComparison === 0 ? '👌' : samplesComparison === 1 ? '👎' : '👍',
         ];
     });
 }
@@ -40,12 +31,7 @@ function generateRows(stats, name = '') {
 function generateTable(baseCommit, targetCommit, stats) {
     return {
         table: {
-            headers: [
-                'benchmark',
-                `base(\`${baseCommit}\`)`,
-                `target(\`${targetCommit}\`)`,
-                'trend',
-            ],
+            headers: ['benchmark', `base(\`${baseCommit}\`)`, `target(\`${targetCommit}\`)`, 'trend'],
             rows: generateRows(stats),
         },
     };

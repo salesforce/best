@@ -16,10 +16,7 @@ function collectResults(node) {
 }
 
 async function runIterations(config) {
-    if (
-        config.executedTime < config.maxDuration ||
-        config.executedIterations < config.minSampleCount
-    ) {
+    if (config.executedTime < config.maxDuration || config.executedIterations < config.minSampleCount) {
         const { useMacroTaskAfterBenchmark } = config;
         const benchmark = await runBenchmarkIteration(getBenchmarkRootNode(), {
             useMacroTaskAfterBenchmark,

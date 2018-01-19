@@ -17,13 +17,7 @@ function generateRow(benchmarks, table, level = 0) {
             Object.keys(benchmarkNode).forEach(metric => {
                 const metricValues = benchmarkNode[metric];
                 if (metricValues && metricValues.sampleSize) {
-                    const {
-                        sampleSize,
-                        mean,
-                        median,
-                        variance,
-                        medianAbsoluteDeviation,
-                    } = metricValues;
+                    const { sampleSize, mean, median, variance, medianAbsoluteDeviation } = metricValues;
                     table.push([
                         padding(level) + name,
                         chalk.bold(metric),
@@ -46,15 +40,7 @@ function generateRow(benchmarks, table, level = 0) {
 
 function generateStats(benchmarkName, outputFolder, stats, stream) {
     const table = new Table({
-        head: [
-            'Benchmark name',
-            'Metric',
-            'N',
-            'Mean',
-            'Median',
-            'Variance',
-            'MedianAbsDeviation',
-        ],
+        head: ['Benchmark name', 'Metric', 'N', 'Mean', 'Median', 'Variance', 'MedianAbsDeviation'],
         colWidths: [32, 14, 6, 12, 12, 12, 12],
     });
 
@@ -62,8 +48,7 @@ function generateStats(benchmarkName, outputFolder, stats, stream) {
 
     stream.write(
         [
-            chalk.bold.dim('\n Benchmark results for ') +
-                chalk.bold.magentaBright(benchmarkName),
+            chalk.bold.dim('\n Benchmark results for ') + chalk.bold.magentaBright(benchmarkName),
             chalk.italic(' ' + outputFolder + '/'),
             table.toString() + '\n',
         ].join('\n'),
@@ -78,9 +63,7 @@ function generateEnviroment({ hardware, browser }, stream) {
     stream.write(
         [
             'Browser version:    ' + chalk.bold(browser.version),
-            `Benchmark CPU load: ${chalk.bold[loadColor](
-                cpuLoad.toFixed(3) + '%',
-            )}`,
+            `Benchmark CPU load: ${chalk.bold[loadColor](cpuLoad.toFixed(3) + '%')}`,
         ].join('\n '),
     );
 
@@ -90,12 +73,7 @@ function generateEnviroment({ hardware, browser }, stream) {
 export function generateReportTables(results, stream) {
     results.forEach(result => {
         const { benchmarkName, benchmarkOutputResult, stats } = result;
-        generateStats(
-            benchmarkName,
-            benchmarkOutputResult,
-            stats.benchmarks,
-            stream,
-        );
+        generateStats(benchmarkName, benchmarkOutputResult, stats.benchmarks, stream);
         generateEnviroment(stats.environment, stream);
     });
 }
@@ -103,11 +81,9 @@ export function generateReportTables(results, stream) {
 function generateComparisonRows(table, stats, name = '') {
     return stats.comparison.map(node => {
         if (node.comparison) {
-            return generateComparisonRows(
-                table,
-                node,
-                `${node.benchmarkName || node.name}:`,
-            ).reduce((a, b) => a.concat(b));
+            return generateComparisonRows(table, node, `${node.benchmarkName || node.name}:`).reduce((a, b) =>
+                a.concat(b),
+            );
         }
 
         const durationMetric = node.metrics.duration;
@@ -115,15 +91,9 @@ function generateComparisonRows(table, stats, name = '') {
 
         table.push([
             name + node.name,
-            `${baseStats.median.toFixed(
-                2,
-            )} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)}ms)`,
-            `${targetStats.median.toFixed(
-                2,
-            )} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)}ms)`,
-            samplesComparison === 0
-                ? 'SAME'
-                : samplesComparison === 1 ? 'SLOWER' : 'FASTER',
+            `${baseStats.median.toFixed(2)} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)}ms)`,
+            `${targetStats.median.toFixed(2)} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)}ms)`,
+            samplesComparison === 0 ? 'SAME' : samplesComparison === 1 ? 'SLOWER' : 'FASTER',
         ]);
     });
 }
@@ -131,12 +101,7 @@ function generateComparisonRows(table, stats, name = '') {
 export function generateComparisonTable(comparisonStats, stream) {
     const { baseCommit, targetCommit, comparison } = comparisonStats;
     const table = new Table({
-        head: [
-            'Benchmark name',
-            `base(${baseCommit})`,
-            `base(${targetCommit})`,
-            'Trend',
-        ],
+        head: ['Benchmark name', `base(${baseCommit})`, `base(${targetCommit})`, 'Trend'],
         colWidths: [50, 20, 20, 10],
     });
 
