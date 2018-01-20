@@ -1,6 +1,6 @@
 {
   "name": "best-agent",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Best Agent",
   "keywords": [
     "Best",
@@ -9,8 +9,8 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
-    "@best/runner": "0.0.6",
-    "@best/utils": "0.0.6",
+    "@best/runner": "0.0.7",
+    "@best/utils": "0.0.7",
     "chalk": "~2.3.0",
     "express": "~4.16.2",
     "socket.io": "~2.0.4",
