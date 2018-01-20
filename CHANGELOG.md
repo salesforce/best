@@ -1,10 +1,20 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.0.5...v) (2018-01-10)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.0.6...v) (2018-01-20)
+
+
+
+<a name="0.0.6"></a>
+## [0.0.6](https://git.soma.salesforce.com/lwc/best/compare/v0.0.5...v0.0.6) (2018-01-20)
+
+
+### Bug Fixes
+
+* **store:** Adding default commit size to 7 characters ([#50](https://git.soma.salesforce.com/lwc/best/issues/50)) ([e3261c0](https://git.soma.salesforce.com/lwc/best/commits/e3261c0))
 
 
 ### Features
 
-* **package.json:** Add conventional-commit and commitizen to enable semantic commit and changelog g ([ee342a5](https://git.soma.salesforce.com/lwc/best/commits/ee342a5)), closes [#22](https://git.soma.salesforce.com/lwc/best/issues/22)
+* **changelog:** Add conventional-commits, commitizen, and auto-changelog generation ([#39](https://git.soma.salesforce.com/lwc/best/issues/39)) ([93d853d](https://git.soma.salesforce.com/lwc/best/commits/93d853d))
 
 
 
