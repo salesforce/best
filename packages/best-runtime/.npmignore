@@ -1,1 +1,1 @@
-src
+# We push both versions: ES6 in /src and ES5 in /build
