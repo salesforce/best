@@ -1,6 +1,6 @@
 {
   "name": "@best/compare",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Best Comparer",
   "keywords": [
     "Best",
@@ -9,8 +9,8 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
-    "@best/analyzer": "0.0.5",
-    "@best/messager": "0.0.5",
+    "@best/analyzer": "0.0.6",
+    "@best/messager": "0.0.6",
     "chalk": "~2.3.0"
   }
 }
