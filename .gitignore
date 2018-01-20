@@ -6,6 +6,7 @@ node_modules
 build
 coverage
 .eslintcache
+.vscode
 *.log
 *.pem
 
