@@ -196,6 +196,7 @@ function _getConfigs(options) {
             externalStorage: options.externalStorage,
             projects: options.projects,
             rootDir: options.rootDir,
+            nonFlagArgs: options.nonFlagArgs,
             testNamePattern: options.testNamePattern,
             testPathPattern: options.testPathPattern,
             verbose: options.verbose,
