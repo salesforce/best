@@ -2,7 +2,7 @@
 
 Delightful JavaScript performance benchmarking. It's like Jest but for benchmarking ;)
 
-[![asciicast](https://asciinema.org/a/158771.png)](https://asciinema.org/a/158771)
+[![asciicast](https://asciinema.org/a/158780.png)](https://asciinema.org/a/158780)
 
 ## Getting Started
 
