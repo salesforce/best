@@ -26,6 +26,13 @@ const handler = (event, state) => {
             if (!currentDescribeBlock) {
                 throw new Error(`"currentDescribeBlock" has to be there since we're finishing its definition.`);
             }
+
+            if (currentDescribeBlock.children.length === 0 && !currentDescribeBlock.run) {
+                throw new Error(
+                    `Benchmark "${currentDescribeBlock.name}" must have a 'run()' function or contain benchmarks inside.`
+                );
+            }
+
             if (currentDescribeBlock.parent) {
                 state.currentDescribeBlock = currentDescribeBlock.parent;
             }

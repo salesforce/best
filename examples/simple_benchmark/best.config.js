@@ -1,6 +1,7 @@
 module.exports = {
     projectName: 'perf-best-simple-example',
-    benchmarkOnClient: false,
+    benchmarkOnClient: true,
+    useMacroTaskAfterBenchmark: false,
     benchmarkRunner: '@best/runner-headless',
 
     // This is for running @best/runner-remote

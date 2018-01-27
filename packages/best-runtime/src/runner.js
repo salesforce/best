@@ -7,6 +7,7 @@ function collectResults(node) {
     const resultNode = { name, duration, startedAt };
 
     if (run) {
+        resultNode.duration = run.duration;
         resultNode.runDuration = run.runDuration;
     } else {
         resultNode.benchmarks = node.children.map(c => collectResults(c));
@@ -37,6 +38,10 @@ async function runIterations(config) {
 }
 
 export async function runBenchmark(benchmarkState) {
+    if (benchmarkState.benchmarkDefinitionError) {
+        throw benchmarkState.benchmarkDefinitionError;
+    }
+
     benchmarkState.results = [];
     await runIterations(benchmarkState);
     return normalizeResults(benchmarkState);

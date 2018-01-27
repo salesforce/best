@@ -46,7 +46,11 @@ export const initializeBenchmarkConfig = newOpts => {
 
 // PROTECTED: Should only be used by the primitives
 export function dispatch(event) {
-    for (const handler of eventHandlers) {
-        handler(event, _getInternalState());
+    try {
+        for (const handler of eventHandlers) {
+            handler(event, _getInternalState());
+        }
+    } catch (err) {
+        STATE.benchmarkDefinitionError = err;
     }
 }
