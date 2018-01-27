@@ -21,7 +21,11 @@ export class S3 {
     async getBenchmarkUrlsForCommit(projectName, searchCommit) {
         console.log(AWS_TEXT, `Resolving objects for commit ${searchCommit}...`);
         const benchmarks = await this.getObjectsInFolder(projectName, BENCHMARKS, searchCommit);
-        return benchmarks.map(bm => this.host + path.join(PREFIX, projectName, BENCHMARKS, searchCommit, bm));
+        return benchmarks.map(bm => this.getBenchmarkStatsUrl(projectName, searchCommit, bm));
+    }
+
+    getBenchmarkStatsUrl(projectName, searchCommit, bm) {
+        return this.host + path.join(PREFIX, projectName, BENCHMARKS, searchCommit, bm);
     }
 
     listProjects() {
@@ -34,6 +38,10 @@ export class S3 {
 
     listCommits(projectName, branchName) {
         return this.getObjectsInFolder(projectName, BRANCHES, branchName);
+    }
+
+    listBenchmarks(projectName, commit) {
+        return this.getObjectsInFolder(projectName, BENCHMARKS, commit);
     }
 
     getObjectsInFolder(...args) {
@@ -86,7 +94,7 @@ export class S3 {
                 {
                     Bucket: bucket,
                     Key: url,
-                    Body: '{}',
+                    Body: `{ time: ${'' + new Date()} }`,
                     Expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 /* a year */),
                     ContentType: lookup(url) || undefined,
                 },
