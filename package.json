@@ -15,7 +15,7 @@
     "build": "node scripts/build.js",
     "watch": "yarn build && node ./scripts/watch.js",
     "test": "jest --config jest.config.json",
-    "perf:example": "cd examples/simple_benchmark && best --externalStorage=@best/store-aws",
+    "perf:lwc": "cd examples/simple_lwc_benchmark && best --externalStorage=@best/store-aws",
     "release": "yarn prepare && lerna publish --exact --force-publish=* --registry='https://npm.lwcjs.org' && yarn changelog",
     "release:internal": "yarn prepare && lerna publish --exact --force-publish=* --skip-git --repo-version `node -pe \"require('./lerna.json').version\"` --yes --registry='https://nexus.soma.salesforce.com/nexus/content/repositories/npmjs-internal/'",
     "changelog": "yarn changelog:generate && yarn changelog:publish",
@@ -45,6 +45,6 @@
   },
   "workspaces": [
     "packages/*",
-    "examples/simple_benchmark"
+    "examples/*"
   ]
 }
