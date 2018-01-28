@@ -40,7 +40,7 @@ export async function run(maybeArgv, project) {
     } catch (error) {
         const errParts = error.stack.split('\n');
         errorMessager.print(errParts.shift());
-        console.error(errParts.join('\n'));
+        console.warn(errParts.join('\n'));
         process.exit(1);
         throw error;
     }

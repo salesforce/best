@@ -17,7 +17,7 @@ function tempDir() {
 describe('buildBenchmark', () => {
     test('generating index.js and index.html', async () => {
         const cacheDirectory = tempDir();
-        const res = await buildBenchmark(
+        await buildBenchmark(
             path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
             {
                 cacheDirectory,
@@ -107,7 +107,7 @@ describe('buildBenchmark', () => {
         jest.doMock(
             'build-plugin-hooks',
             () => {
-                return options => {
+                return () => {
                     return {
                         load: id => {
                             loaded.push(id);

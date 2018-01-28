@@ -1,4 +1,4 @@
-import path, { relative } from 'path';
+import path from 'path';
 import chalk from 'chalk';
 import { isInteractive } from '@best/utils';
 

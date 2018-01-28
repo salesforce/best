@@ -2,7 +2,6 @@ import { rollup } from 'rollup';
 import path from 'path';
 import benchmarkRollup from './rollup-plugin-benchmark-import';
 import { generateDefaultHTML } from './html-templating';
-import { BuildStateMessager } from '@best/messager';
 import fs from 'fs';
 import crypto from 'crypto';
 

@@ -4,8 +4,8 @@ import chalk from 'chalk';
 function padding(n) {
     return n > 0
         ? Array.apply(null, Array((n - 1) * 3))
-              .map(() => ' ')
-              .join('') + '└─ '
+            .map(() => ' ')
+            .join('') + '└─ '
         : '';
 }
 
@@ -79,9 +79,9 @@ export function generateReportTables(results, stream) {
 }
 
 function generateComparisonRows(table, stats, name = '') {
-    return stats.comparison.map(node => {
+    stats.comparison.forEach(node => {
         if (node.comparison) {
-            return generateComparisonRows(table, node, `${node.benchmarkName || node.name}:`).reduce((a, b) =>
+            generateComparisonRows(table, node, `${node.benchmarkName || node.name}:`).reduce((a, b) =>
                 a.concat(b),
             );
         }
@@ -99,7 +99,7 @@ function generateComparisonRows(table, stats, name = '') {
 }
 
 export function generateComparisonTable(comparisonStats, stream) {
-    const { baseCommit, targetCommit, comparison } = comparisonStats;
+    const { baseCommit, targetCommit } = comparisonStats;
     const table = new Table({
         head: ['Benchmark name', `base(${baseCommit})`, `base(${targetCommit})`, 'Trend'],
         colWidths: [50, 20, 20, 10],
@@ -107,5 +107,5 @@ export function generateComparisonTable(comparisonStats, stream) {
 
     generateComparisonRows(table, comparisonStats);
 
-    console.log(table.toString());
+    stream.write(table.toString() + '\n');
 }

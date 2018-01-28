@@ -18,7 +18,8 @@ export const options = {
     },
     projects: {
         description:
-            'A list of projects that use Best to run all tests of all ' + 'projects in a single instance of Best.',
+            'A list of projects that use Best to run all tests of all ' +
+            'projects in a single instance of Best.',
         type: 'array',
     },
     iterations: {

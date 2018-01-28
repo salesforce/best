@@ -254,8 +254,8 @@ const ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
         if (configPathSet.has(configPath)) {
             let message = 'One or more specified projects share the same config file\n';
 
-            parsedConfigs.forEach(({ configPath }, index) => {
-                message = message + '\nProject: "' + projects[index] + '"\nConfig: "' + String(configPath) + '"';
+            parsedConfigs.forEach((projectConfig, index) => {
+                message = message + '\nProject: "' + projects[index] + '"\nConfig: "' + String(projectConfig.configPath) + '"';
             });
             throw new Error(message);
         }

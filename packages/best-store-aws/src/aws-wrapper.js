@@ -95,7 +95,7 @@ export class S3 {
                     Bucket: bucket,
                     Key: url,
                     Body: `{ time: ${'' + new Date()} }`,
-                    Expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 /* a year */),
+                    Expires: new Date(Date.now() + (1000 * 60 * 60 * 24 * 365 /* a year */)),
                     ContentType: lookup(url) || undefined,
                 },
                 (err, data) => {
@@ -119,7 +119,7 @@ export class S3 {
                     Bucket: bucket,
                     Key: url,
                     Body: body,
-                    Expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 /* a year */),
+                    Expires: new Date(Date.now() + (1000 * 60 * 60 * 24 * 365 /* a year */)),
                     ContentType: lookup(url) || undefined,
                 },
                 (err, data) => {

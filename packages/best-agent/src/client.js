@@ -50,7 +50,7 @@ class SocketClient extends EventEmitter {
         this._log('STATUS: connected');
     }
     _log(msg) {
-        console.log(`Client[${this.socket.id}] - ${msg}`);
+        process.stdout.write(`Client[${this.socket.id}] - ${msg}\n`);
     }
 
     setTimeout(t) {
