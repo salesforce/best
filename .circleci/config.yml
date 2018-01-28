@@ -61,7 +61,7 @@ jobs:
 
       - run:
           name: Performance Test - Example project
-          command: yarn perf:example
+          command: yarn perf:lwc
 
       - run:
           name: Comparing perf examples
