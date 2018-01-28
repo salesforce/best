@@ -71,5 +71,5 @@ export async function addGitInformation(options) {
         getRepository(cwd)
     ]);
 
-    return { gitCommit, gitLocalChanges, gitBranch, gitRepository };
+    return Object.assign(options, { gitCommit, gitLocalChanges, gitBranch, gitRepository });
 }

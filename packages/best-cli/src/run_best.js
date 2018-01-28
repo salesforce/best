@@ -6,18 +6,12 @@ import { storeBenchmarkResults } from '@best/store';
 import { analyzeBenchmarks } from '@best/analyzer';
 import path from 'path';
 
-async function getBenchmarkPaths(globalConfig, config) {
-    const rootDir = globalConfig.rootDir;
-    if (globalConfig.nonFlagArgs && globalConfig.nonFlagArgs.length) {
-        const results = await globby(globalConfig.nonFlagArgs, { cwd: rootDir });
-        if (results && results.length) {
-            return results.map(p => path.resolve(rootDir, p));
-        }
-        throw new Error(`Couldn't find any tests based on globby expression given.` + results);
-    }
-    const { testMatch } = config;
-    const results = await globby(testMatch, { cwd: rootDir });
-    return results.map(p => path.resolve(rootDir, p));
+async function getBenchmarkPaths({ nonFlagArgs, rootDir }, config) {
+    const { testMatch, rootDir: projectRoot } = config;
+    const rootPath = projectRoot || rootDir;
+    const paths = nonFlagArgs && nonFlagArgs.length ? nonFlagArgs : testMatch;
+    const results = await globby(paths, { cwd: rootPath });
+    return results.map(p => path.resolve(rootPath, p));
 }
 
 async function getBenchmarkTests(configs, globalConfig) {

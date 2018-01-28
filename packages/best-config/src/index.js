@@ -128,11 +128,11 @@ function normalizeRootDirPattern(str, rootDir) {
     return str.replace(/<rootDir>/g, rootDir);
 }
 
-// function normalizeUnmockedModulePathPatterns(options, key) {
-//     return options[key].map(pattern =>
-//         replacePathSepForRegex(normalizeRootDirPattern(pattern, options.rootDir))
-//     );
-// }
+function normalizeUnmockedModulePathPatterns(options, key) {
+    return options[key].map(pattern =>
+        replacePathSepForRegex(normalizeRootDirPattern(pattern, options.rootDir))
+    );
+}
 
 function normalizeObjectPathPatterns(options, { rootDir }) {
     return Object.keys(options).reduce((m, key) => {
@@ -165,9 +165,13 @@ function normalizeCommits([base, target]) {
 function normalize(options, argsCLI) {
     options = normalizeRootDir(setFromArgs(options, argsCLI));
     const newOptions = Object.assign({}, DEFAULT_CONFIG);
+
     Object.keys(options).reduce((newOpts, key) => {
         let value = newOpts[key];
         switch (key) {
+            case 'projects':
+                value = normalizeUnmockedModulePathPatterns(options, key);
+                break;
             case 'plugins':
                 value = normalizePlugins(options[key], options);
                 break;
@@ -243,19 +247,44 @@ function _getConfigs(options) {
     };
 }
 
-export async function readConfig(argsCLI, packageRoot) {
+const ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
+    const configPathSet = new Set();
+
+    for (const { configPath } of parsedConfigs) {
+        if (configPathSet.has(configPath)) {
+            let message = 'One or more specified projects share the same config file\n';
+
+            parsedConfigs.forEach(({ configPath }, index) => {
+                message = message + '\nProject: "' + projects[index] + '"\nConfig: "' + String(configPath) + '"';
+            });
+            throw new Error(message);
+        }
+
+        if (configPath !== null) {
+            configPathSet.add(configPath);
+        }
+    }
+};
+
+export async function readConfig(argsCLI, packageRoot, parentConfigPath) {
     const customConfigPath = argsCLI.config ? argsCLI.config : packageRoot;
     const configPath = resolveConfigPath(customConfigPath, process.cwd());
     const rawOptions = readConfigAndSetRootDir(configPath);
     const options = normalize(rawOptions, argsCLI);
-    try {
-        await addGitInformation(options);
-    } catch (e) {
-        /* Unable to get git info */
+
+    // We assume all projects are within the same mono-repo
+    // No need to get version control status again
+    if (!parentConfigPath) {
+        try {
+            await addGitInformation(options);
+        } catch (e) {
+            console.log('[WARN] - Unable to get git information');
+            /* Unable to get git info */
+        }
     }
 
     const { globalConfig, projectConfig } = _getConfigs(options);
-    return { globalConfig, projectConfig };
+    return { configPath, globalConfig, projectConfig  };
 }
 
 export async function getConfigs(projectsFromCLIArgs, argv) {
@@ -263,9 +292,12 @@ export async function getConfigs(projectsFromCLIArgs, argv) {
     let hasDeprecationWarnings;
     let configs = [];
     let projects = projectsFromCLIArgs;
+    let configPath;
 
     if (projectsFromCLIArgs.length === 1) {
         const parsedConfig = await readConfig(argv, projects[0]);
+        configPath = parsedConfig.configPath;
+
         if (parsedConfig.globalConfig.projects) {
             // If this was a single project, and its config has `projects`
             // settings, use that value instead.
@@ -284,7 +316,17 @@ export async function getConfigs(projectsFromCLIArgs, argv) {
     }
 
     if (projects.length > 1) {
-        throw new Error('WIP');
+        const parsedConfigs = await Promise.all(projects.map(root => readConfig(argv, root, configPath)));
+        ensureNoDuplicateConfigs(parsedConfigs, projects);
+        configs = parsedConfigs.map(({ projectConfig }) => projectConfig);
+
+        if (!globalConfig) {
+            globalConfig = parsedConfigs[0].globalConfig;
+        }
+
+        if (!globalConfig || !configs.length) {
+            throw new Error('best: No configuration found for any project.');
+        }
     }
 
     return {
