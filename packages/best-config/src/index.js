@@ -157,15 +157,14 @@ function normalizePlugins(plugins, globalOptions) {
 }
 
 function normalizeCommits([base, target]) {
-    base = base || BASE_COMMIT || '';
-    target = target || TARGET_COMMIT || '';
+    base = base + '' || BASE_COMMIT || '';
+    target = target + '' || TARGET_COMMIT || '';
     return [base.slice(0, 7), target.slice(0, 7)];
 }
 
 function normalize(options, argsCLI) {
     options = normalizeRootDir(setFromArgs(options, argsCLI));
     const newOptions = Object.assign({}, DEFAULT_CONFIG);
-
     Object.keys(options).reduce((newOpts, key) => {
         let value = newOpts[key];
         switch (key) {

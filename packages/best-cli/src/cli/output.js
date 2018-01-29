@@ -79,11 +79,10 @@ export function generateReportTables(results, stream) {
 }
 
 function generateComparisonRows(table, stats, name = '') {
-    stats.comparison.forEach(node => {
+    return stats.comparison.map(node => {
         if (node.comparison) {
-            generateComparisonRows(table, node, `${node.benchmarkName || node.name}:`).reduce((a, b) =>
-                a.concat(b),
-            );
+            const nodeName = `${node.benchmarkName || node.name}:`;
+            return generateComparisonRows(table, node, nodeName).reduce((a, b) => a.concat(b), []);
         }
 
         const durationMetric = node.metrics.duration;
@@ -95,6 +94,8 @@ function generateComparisonRows(table, stats, name = '') {
             `${targetStats.median.toFixed(2)} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)}ms)`,
             samplesComparison === 0 ? 'SAME' : samplesComparison === 1 ? 'SLOWER' : 'FASTER',
         ]);
+
+        return [];
     });
 }
 
@@ -104,7 +105,7 @@ export function generateComparisonTable(comparisonStats, stream) {
         head: ['Benchmark name', `base(${baseCommit})`, `base(${targetCommit})`, 'Trend'],
         colWidths: [50, 20, 20, 10],
     });
-
+    console.log(JSON.stringify(comparisonStats, null, '  '));
     generateComparisonRows(table, comparisonStats);
 
     stream.write(table.toString() + '\n');
