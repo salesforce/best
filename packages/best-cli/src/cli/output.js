@@ -102,7 +102,7 @@ function generateComparisonRows(table, stats, name = '') {
 export function generateComparisonTable(comparisonStats, stream) {
     const { baseCommit, targetCommit } = comparisonStats;
     const table = new Table({
-        head: ['Benchmark name', `base(${baseCommit})`, `base(${targetCommit})`, 'Trend'],
+        head: ['Benchmark name', `base(${baseCommit})`, `target(${targetCommit})`, 'Trend'],
         colWidths: [50, 20, 20, 10],
     });
     console.log(JSON.stringify(comparisonStats, null, '  '));
