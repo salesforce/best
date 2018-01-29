@@ -72,6 +72,8 @@ function proxifyRunner(benchmarkEntryBundle, runnerConfig, projectConfig, global
                 globalConfig,
             });
         });
+
+        return true;
     });
 }
 

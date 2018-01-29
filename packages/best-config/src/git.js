@@ -39,12 +39,37 @@ function getBranch(cwd) {
     });
 }
 
+function getRepository(cwd) {
+    return new Promise((resolve, reject) => {
+        const args = ['ls-remote', '--get-url'];
+        const child = childProcess.spawn('git', args, { cwd });
+        let stdout = '';
+        let stderr = '';
+        child.stdout.on('data', data => (stdout += data));
+        child.stderr.on('data', data => (stderr += data));
+        child.on('error', e => reject(e));
+        child.on('close', code => {
+            if (code === 0) {
+                const rawValue = stdout.trim();
+                const [owner, repo] = rawValue.split(':')
+                    .pop()
+                    .split('.git')[0].split('/');
+                resolve({ owner, repo });
+            } else {
+                reject(code + ': ' + stderr);
+            }
+        });
+    });
+}
+
 export async function addGitInformation(options) {
     const cwd = options.rootDir;
-    const [hash, localChanges, branch] = await Promise.all([getCurrentHash(cwd), hasLocalChanges(cwd), getBranch(cwd)]);
+    const [gitCommit, gitLocalChanges, gitBranch, gitRepository] = await Promise.all([
+        getCurrentHash(cwd),
+        hasLocalChanges(cwd),
+        getBranch(cwd),
+        getRepository(cwd)
+    ]);
 
-    options.gitCommit = hash;
-    options.gitLocalChanges = localChanges;
-    options.gitBranch = branch;
-    return options;
+    return Object.assign(options, { gitCommit, gitLocalChanges, gitBranch, gitRepository });
 }

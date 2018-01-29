@@ -21,7 +21,7 @@ export default class BenchmarkTask extends EventEmitter {
         client.on('disconnect', () => this.onDisconnectedClient());
     }
     _log(msg) {
-        console.log(`Task[${this.id}] - ${msg}`);
+        process.stdout.write(`Task[${this.id}] - ${msg}\n`);
     }
 
     start() {
@@ -59,7 +59,7 @@ export default class BenchmarkTask extends EventEmitter {
             this.afterRunBenchmark(results);
         } catch (err) {
             this._log(`Something went wrong while running ${benchmarkName}`);
-            console.log(err);
+            process.stderr.write(err + '\n');
             this.client.sendBenchmarkResults(err);
         }
     }

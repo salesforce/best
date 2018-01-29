@@ -27,7 +27,7 @@ function resolveModuleEntryFromPackage(module) {
 const BENCHMARK_RUNTIME_MODULE = '@best/runtime';
 const BENCHMARK_IMPORT = `import { ${PRIMITIVES.join(',')} } from "${BENCHMARK_RUNTIME_MODULE}" \n`;
 
-export default function() {
+export default function () {
     let input;
     return {
         name: 'benchmark-import',

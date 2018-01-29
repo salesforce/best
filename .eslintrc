@@ -7,7 +7,7 @@
         "node": true
     },
     "rules": {
-        "no-console": ["warn", { "allow": ["timeStamp", "time", "timeEnd"] }],
+        "no-console": ["warn", { "allow": ["timeStamp", "time", "timeEnd", "log", "warn", "error"] }],
         "no-await-in-loop": 0,
         "no-confusing-arrow": ["error", { "allowParens": true }],
         "eslint-comments/no-use": false,
