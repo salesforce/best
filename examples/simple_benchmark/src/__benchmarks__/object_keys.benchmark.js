@@ -1,4 +1,5 @@
 import { MOCK_DATA_SMALL } from "./mock_data";
+import merge from "./deep_merge";
 
 describe('deep_clone', () => {
     benchmark('stringify_parse', () => {
@@ -7,9 +8,9 @@ describe('deep_clone', () => {
         });
     });
 
-    benchmark('object_assign', () => {
+    benchmark('deep_merge', () => {
         run(() => {
-            Object.assign({}, MOCK_DATA_SMALL);
+            merge({}, MOCK_DATA_SMALL);
         });
     });
 });
