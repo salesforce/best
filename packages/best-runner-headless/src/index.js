@@ -100,10 +100,11 @@ async function normalizeEnvironment(browser, projectConfig, globalConfig) {
         benchmarkIterations,
         projectName,
     } = projectConfig;
-    const hardware = await getSystemInfo();
+    const { system, cpu, os, load } = await getSystemInfo();
     const version = await browser.version();
     return {
-        hardware,
+        hardware: { system, cpu, os },
+        runtime: { load },
         browser: { version, options: BROWSER_ARGS },
         configuration: {
             project: {
@@ -114,9 +115,10 @@ async function normalizeEnvironment(browser, projectConfig, globalConfig) {
                 benchmarkIterations,
             },
             global: {
-                commitHash: globalConfig.gitCommit,
-                hasLocalGitChanges: globalConfig.gitLocalChanges,
-                branch: globalConfig.gitBranch,
+                gitCommitHash: globalConfig.gitCommit,
+                gitHasLocalChanges: globalConfig.gitLocalChanges,
+                gitBranch: globalConfig.gitBranch,
+                gitRepository: globalConfig.gitRepository
             },
         },
     };

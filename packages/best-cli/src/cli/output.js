@@ -55,8 +55,8 @@ function generateStats(benchmarkName, outputFolder, stats, stream) {
     );
 }
 
-function generateEnviroment({ hardware, browser }, stream) {
-    const cpuLoad = hardware.load.cpuLoad;
+function generateEnviroment({ browser, runtime }, stream) {
+    const cpuLoad = runtime.load.cpuLoad;
     const loadColor = cpuLoad < 10 ? 'green' : cpuLoad < 50 ? 'yellow' : 'red';
 
     stream.write(' ');
