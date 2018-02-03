@@ -206,6 +206,7 @@ function _getConfigs(options) {
             gitCommit: options.gitCommit,
             gitLocalChanges: options.gitLocalChanges,
             gitBranch: options.gitBranch,
+            gitRepository: options.gitRepository
         }),
         projectConfig: Object.freeze({
             cache: options.cache,
