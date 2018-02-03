@@ -29,7 +29,9 @@ const handler = (event, state) => {
 
             if (currentDescribeBlock.children.length === 0 && !currentDescribeBlock.run) {
                 throw new Error(
-                    `Benchmark "${currentDescribeBlock.name}" must have a 'run()' function or contain benchmarks inside.`
+                    `Benchmark "${
+                        currentDescribeBlock.name
+                    }" must have a 'run()' function or contain benchmarks inside.`,
                 );
             }
 

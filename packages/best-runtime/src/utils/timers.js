@@ -75,7 +75,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
 export function withMacroTask(fn) {
     return (
         fn._withTask ||
-        (fn._withTask = function () {
+        (fn._withTask = function() {
             useMacroTask = true;
             const res = fn.apply(null, arguments);
             useMacroTask = false;

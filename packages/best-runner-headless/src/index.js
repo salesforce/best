@@ -118,7 +118,7 @@ async function normalizeEnvironment(browser, projectConfig, globalConfig) {
                 gitCommitHash: globalConfig.gitCommit,
                 gitHasLocalChanges: globalConfig.gitLocalChanges,
                 gitBranch: globalConfig.gitBranch,
-                gitRepository: globalConfig.gitRepository
+                gitRepository: globalConfig.gitRepository,
             },
         },
     };

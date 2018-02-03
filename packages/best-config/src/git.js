@@ -51,9 +51,11 @@ function getRepository(cwd) {
         child.on('close', code => {
             if (code === 0) {
                 const rawValue = stdout.trim();
-                const [owner, repo] = rawValue.split(':')
+                const [owner, repo] = rawValue
+                    .split(':')
                     .pop()
-                    .split('.git')[0].split('/');
+                    .split('.git')[0]
+                    .split('/');
                 resolve({ owner, repo });
             } else {
                 reject(code + ': ' + stderr);
@@ -68,7 +70,7 @@ export async function addGitInformation(options) {
         getCurrentHash(cwd),
         hasLocalChanges(cwd),
         getBranch(cwd),
-        getRepository(cwd)
+        getRepository(cwd),
     ]);
 
     return Object.assign(options, { gitCommit, gitLocalChanges, gitBranch, gitRepository });

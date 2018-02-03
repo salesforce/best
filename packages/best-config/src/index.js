@@ -129,9 +129,7 @@ function normalizeRootDirPattern(str, rootDir) {
 }
 
 function normalizeUnmockedModulePathPatterns(options, key) {
-    return options[key].map(pattern =>
-        replacePathSepForRegex(normalizeRootDirPattern(pattern, options.rootDir))
-    );
+    return options[key].map(pattern => replacePathSepForRegex(normalizeRootDirPattern(pattern, options.rootDir)));
 }
 
 function normalizeObjectPathPatterns(options, { rootDir }) {
@@ -207,7 +205,7 @@ function _getConfigs(options) {
             gitCommit: options.gitCommit,
             gitLocalChanges: options.gitLocalChanges,
             gitBranch: options.gitBranch,
-            gitRepository: options.gitRepository
+            gitRepository: options.gitRepository,
         }),
         projectConfig: Object.freeze({
             cache: options.cache,
@@ -256,7 +254,13 @@ const ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
             let message = 'One or more specified projects share the same config file\n';
 
             parsedConfigs.forEach((projectConfig, index) => {
-                message = message + '\nProject: "' + projects[index] + '"\nConfig: "' + String(projectConfig.configPath) + '"';
+                message =
+                    message +
+                    '\nProject: "' +
+                    projects[index] +
+                    '"\nConfig: "' +
+                    String(projectConfig.configPath) +
+                    '"';
             });
             throw new Error(message);
         }
@@ -285,7 +289,7 @@ export async function readConfig(argsCLI, packageRoot, parentConfigPath) {
     }
 
     const { globalConfig, projectConfig } = _getConfigs(options);
-    return { configPath, globalConfig, projectConfig  };
+    return { configPath, globalConfig, projectConfig };
 }
 
 export async function getConfigs(projectsFromCLIArgs, argv) {
