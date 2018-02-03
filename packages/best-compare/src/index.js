@@ -18,7 +18,7 @@ function compareBenchmarks(baseBenchs, targetBenchs, comparison = []) {
             }
 
             if (baseBenchmark.benchmarks) {
-                compareBenchmarks(baseBenchmark.benchmarks, targetBenchmark.benchmarks);
+                comparison.push(...compareBenchmarks(baseBenchmark.benchmarks, targetBenchmark.benchmarks));
             } else {
                 // For now compare only duration metrics, we should compare more things
                 const baseDurationMetrics = baseBenchmark.duration;
@@ -59,8 +59,6 @@ export async function compareBenchmarkStats(baseCommit, targetCommit, projectNam
         targetCommit,
         comparison: [],
     };
-
-    // console.log('>> ', baseBenchmarks, targetBenchmarks);
 
     baseBenchmarks.forEach(baseBenchmarkBundle => {
         const { benchmarkName } = baseBenchmarkBundle;
