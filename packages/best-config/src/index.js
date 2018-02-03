@@ -199,6 +199,7 @@ function _getConfigs(options) {
             externalStorage: options.externalStorage,
             projects: options.projects,
             rootDir: options.rootDir,
+            rootProjectName: options.projectName,
             nonFlagArgs: options.nonFlagArgs,
             testNamePattern: options.testNamePattern,
             testPathPattern: options.testPathPattern,
@@ -293,10 +294,12 @@ export async function getConfigs(projectsFromCLIArgs, argv) {
     let configs = [];
     let projects = projectsFromCLIArgs;
     let configPath;
+    let rootProjectName;
 
     if (projectsFromCLIArgs.length === 1) {
         const parsedConfig = await readConfig(argv, projects[0]);
         configPath = parsedConfig.configPath;
+        rootProjectName = parsedConfig.projectName;
 
         if (parsedConfig.globalConfig.projects) {
             // If this was a single project, and its config has `projects`

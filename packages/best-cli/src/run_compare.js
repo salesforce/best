@@ -6,10 +6,6 @@ export async function runCompare(globalConfig, configs, outputStream) {
     const { gitIntegration, externalStorage, compareStats: commits } = globalConfig;
     const [baseCommit, compareCommit] = commits;
 
-    if (configs.length > 1) {
-        throw new Error('WIP - Do not support multiple projects for compare just yet...');
-    }
-
     if (!externalStorage) {
         throw new Error('WIP - Do not support local comparison just yet. You need a --externalStorage');
     }
@@ -23,8 +19,7 @@ export async function runCompare(globalConfig, configs, outputStream) {
         return false;
     }
 
-    const projectConfig = configs[0];
-    const { projectName } = projectConfig;
+    const projectName = globalConfig.rootProjectName;
     let storageProvider;
     try {
         storageProvider = require(externalStorage);
