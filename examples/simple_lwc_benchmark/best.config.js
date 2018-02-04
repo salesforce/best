@@ -3,7 +3,7 @@ module.exports = {
     plugins: {
         'rollup-plugin-lwc-compiler': {
             rootDir: '<rootDir>/src/',
-            mode: 'dev' // We don't really need prod here since this is for test best itself
+            mode: 'dev', // We don't really need prod here since this is for test best itself
         },
     },
     benchmarkOnClient: false,

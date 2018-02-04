@@ -1,5 +1,5 @@
-import { MOCK_DATA_SMALL } from "./mock_data";
-import merge from "./deep_merge";
+import { MOCK_DATA_SMALL } from './mock_data';
+import merge from './deep_merge';
 
 describe('deep_clone', () => {
     benchmark('stringify_parse', () => {

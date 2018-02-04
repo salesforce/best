@@ -4,8 +4,8 @@ import chalk from 'chalk';
 function padding(n) {
     return n > 0
         ? Array.apply(null, Array((n - 1) * 3))
-            .map(() => ' ')
-            .join('') + '└─ '
+              .map(() => ' ')
+              .join('') + '└─ '
         : '';
 }
 
