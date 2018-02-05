@@ -82,6 +82,7 @@ function addRoutes(router, store) {
 
 async function getLastCommitStats(store, projectName, branch, size = 30) {
     const commits = await store.getCommits(projectName, branch);
+    console.log(`>>> ${projectName}/${branch}`, commits);
     const lastCommits = commits.slice(0, size);
     return Promise.all(lastCommits.map(async (commit) => {
         let benchmarks = await memoizedGetBenchPerCommit(projectName, commit);

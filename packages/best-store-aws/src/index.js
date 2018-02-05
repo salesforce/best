@@ -45,7 +45,7 @@ export async function storeBenchmarkResults(
     await s3.storeBranchCommitIndex(projectName, branch, commit);
 }
 
-export async function getBenchmarkStats(projectName, commit) {
+export async function getAllBenchmarkStatsPerCommit(projectName, commit) {
     const s3 = getS3Instance();
     const benchmarks = await s3.getBenchmarkUrlsForCommit(projectName, commit);
     console.log(AWS_TEXT + ` Fetching benchmarks for commit ${commit}...`);
@@ -66,5 +66,5 @@ export function getProjects() {
 
 export function getCommits(projectName, branch) {
     const s3 = getS3Instance();
-    return s3.getCommits();
+    return s3.getCommits(projectName, branch);
 }
