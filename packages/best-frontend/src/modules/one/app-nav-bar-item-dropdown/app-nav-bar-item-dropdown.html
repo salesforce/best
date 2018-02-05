@@ -1,0 +1,34 @@
+<template>
+    <div class={classNames}>
+        <one-tmp-button-menu
+            icon-name="utility:chevrondown"
+            menu-alignment="center"
+            nubbin="true"
+            onselect={handleSelect}
+            onopen={loadMenuItems}
+            alternative-text={buttonAltText}
+            size="small"
+            style="font-style:normal">
+
+            <template if:true={isLoading}>
+                <div class="slds-p-around--xx-large">
+                    <one-tmp-spinner variant="brand"></one-tmp-spinner>
+                </div>
+            </template>
+
+            <template if:true={isEmptyDropdown}>
+                <p class="slds-dropdown__header" role="separator">{i18n.empty}</p>
+            </template>
+            <template if:true={hasDropdownItems}>
+                <template for:each={dropdownItems} for:item="item">
+                    <template if:true={item.separator}>
+                        <p role="separator" class={item.className}>{item.label}</p>
+                    </template>
+                    <template if:true={item.action}>
+                        <one-tmp-menu-item url={item.url} key={item.id} action-id={item.id} label={item.label} left-icon-name={item.iconKey}></one-tmp-menu-item>
+                    </template>
+                </template>
+            </template>
+        </one-tmp-button-menu>
+    </div>
+</template>

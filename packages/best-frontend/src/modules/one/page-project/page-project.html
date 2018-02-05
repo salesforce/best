@@ -1,0 +1,23 @@
+<template>
+    <section class="slds-grid slds-gutters">
+        <section class="main-panel slds-col slds-size--2-of-3">
+            <template if:true={isDataReady}>
+                <section class="charts">
+                    <template for:each={benchmarks} for:item="benchmark">
+                        <div class="benchmark" data-id={benchmark}></div>
+                    </template>
+                </section>
+            </template>
+
+            <template if:false={isDataReady}>
+                <one-tmp-spinner></one-tmp-spinner>
+            </template>
+        </section>
+
+        <section class="side-panel slds-col slds-size--1-of-3">
+            <template if:true={hasSelectedCommits}>
+                <one-page-project-panel selected-commit-benchmarks={selectedCommitsBenchmarks}></one-page-project-panel>
+            </template>
+        </section>
+    </section>
+</template>

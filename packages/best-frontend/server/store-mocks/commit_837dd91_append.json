@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "benchmarkName": "append-1k.benchmark",
+  "benchmarks": [{
+      "duration": {
+        "samples": [362.59, 334.55, 315.215, 337.055, 328.935, 354.395, 335.67, 314.31, 349.635, 334.7, 347.395, 345.675, 360.76, 333.49, 369.05, 327.665, 341.735, 321.08, 353.095, 351.22, 343.995, 328.405, 358.34, 334.475, 373.44],
+        "sampleSize": 25,
+        "samplesQuantileThreshold": 0.8,
+        "mean": 342.275,
+        "median": 341.735,
+        "variance": 240.522188,
+        "medianAbsoluteDeviation": 11.360000000000014
+      },
+      "runDuration": {
+        "samples": [138.665, 143.56, 124.255, 138.765, 111.295, 133.99, 117.97, 138.22, 126.47, 106.345, 134.82, 122.805, 132.23, 134.3, 146.11, 119.405, 118.5, 132.465, 110.845, 140.08, 125.615, 134.425, 121.4, 145.475, 115.715],
+        "sampleSize": 25,
+        "samplesQuantileThreshold": 0.8,
+        "mean": 128.549,
+        "median": 132.23,
+        "variance": 123.986368,
+        "medianAbsoluteDeviation": 7.974999999999994
+      },
+      "name": "benchmark-table/add/1k"
+    }],
+  "environment": {
+    "hardware": {
+      "system": {"manufacturer": "", "model": "Docker Container"},
+      "cpu": {
+        "manufacturer": "IntelÂ®",
+        "brand": "XeonÂ®  E5-2680 v2",
+        "family": "6",
+        "model": "62",
+        "speed": "2.80",
+        "cores": 32
+      },
+      "os": {
+        "platform": "Linux",
+        "distro": "Debian GNU/Linux",
+        "release": "9",
+        "kernel": "4.4.0-109-generic",
+        "arch": "x64"
+      }
+    },
+    "runtime": {
+      "load": {"cpuLoad": 18.54102338884295}
+    },
+    "browser": {
+      "version": "HeadlessChrome/64.0.3264.0",
+      "options": ["--no-sandbox", "--js-flags=--expose-gc", "--disable-infobars", "--disable-background-networking", "--disable-extensions", "--disable-translate", "--no-first-run", "--ignore-certificate-errors", "--enable-precise-memory-info"]
+    },
+    "configuration": {
+      "proyect": {
+        "projectName": "lwc-engine-benchmark",
+        "benchmarkOnClient": false,
+        "benchmarkRunner": "@best/runner-headless",
+        "benchmarkEnvironment": "production"
+      },
+      "global": {
+        "commitHash": "837dd91",
+        "hasLocalGitChanges": false,
+        "branch": "master"
+      }
+    }
+  }
+}

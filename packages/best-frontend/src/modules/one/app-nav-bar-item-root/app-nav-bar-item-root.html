@@ -1,0 +1,34 @@
+<template>
+    <a
+        class="slds-context-bar__label-action"
+        onclick={handleClick}
+        href={url}
+        title={label}
+        tabindex={tabIndex}
+    >
+        <abbr if:true={temporary} class="slds-indicator_unsaved slds-p-right_xx-small" title={i18n.unsaved}>*</abbr>
+        <span class="slds-truncate">{label}</span>
+    </a>
+
+    <one-app-nav-bar-item-dropdown
+        if:true={showMenu}
+        label={label}
+        entity-api-name={entityApiName}
+        dropdown-menu={dropdownMenu}
+        temporary={temporary}
+        action={action}
+        onshowmenu={handleBubble}
+        onselect={handleBubble}
+    ></one-app-nav-bar-item-dropdown>
+
+    <!-- close button for temporary tabs -->
+    <button class="slds-button slds-button_icon slds-m-right_x-small"
+        if:true={temporary}
+        onclick={handleClose}
+        data-id={customId}
+        >
+        <one-tmp-primitive-icon icon-name="utility:close" size="xx-small"></one-tmp-primitive-icon>
+        <span class="slds-assistive-text">{i18n.closeTab}</span>
+    </button>
+
+</template>

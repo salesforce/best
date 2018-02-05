@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "benchmarkName": "clear-1k.benchmark",
+  "benchmarks": [{
+      "duration": {
+        "samples": [50.96, 51.14, 52.535, 54.36, 55.01, 51.125, 53.39, 55.205, 55.035, 57.175, 55.995, 52.365, 54.545, 56.02, 53.63, 55.03, 54.79, 56.65, 53.695, 55.635, 53.635, 51.995, 52.225, 53.565, 54.35, 53.6, 54.325, 53.675, 55.815, 52.165, 53.71, 54.11, 52.23, 51.405, 57.235, 52.375, 56.805, 54.46, 53.87, 50.62, 50.535, 52.45, 56.27, 55.98, 57.075],
+        "sampleSize": 45,
+        "samplesQuantileThreshold": 0.8,
+        "mean": 53.97266666666663,
+        "median": 53.87,
+        "variance": 3.4387173333333334,
+        "medianAbsoluteDeviation": 1.4949999999999974
+      },
+      "runDuration": {
+        "samples": [18.21, 16.445, 16.685, 16.47, 18.54, 18.755, 17.445, 18.15, 16.905, 17.42, 20.46, 19.63, 18.175, 20.285, 19.085, 16.65, 18.74, 19.155, 17.85, 17.7, 19.23, 17.95, 18.345, 16.29, 19.705, 18.765, 19.295, 18.18, 18.36, 19.385, 18.7, 17.395, 18.185, 16.13, 17.605, 19.905, 17.705, 18.195, 18.175, 16.975, 17.2, 16.765, 18.8, 19.6, 17.985],
+        "sampleSize": 45,
+        "samplesQuantileThreshold": 0.8,
+        "mean": 18.168444444444447,
+        "median": 18.18,
+        "variance": 1.1886486913580254,
+        "medianAbsoluteDeviation": 0.759999999999998
+      },
+      "name": "benchmark-table/clear/1k"
+    }],
+  "environment": {
+    "hardware": {
+      "system": {"manufacturer": "", "model": "Docker Container"},
+      "cpu": {
+        "manufacturer": "IntelÂ®",
+        "brand": "XeonÂ®  E5-2680 v2",
+        "family": "6",
+        "model": "62",
+        "speed": "2.80",
+        "cores": 32
+      },
+      "os": {
+        "platform": "Linux",
+        "distro": "Debian GNU/Linux",
+        "release": "9",
+        "kernel": "4.4.0-109-generic",
+        "arch": "x64"
+      }
+    },
+    "runtime": {
+      "load": {"cpuLoad": 25.57764642665234}
+    },
+    "browser": {
+      "version": "HeadlessChrome/64.0.3264.0",
+      "options": ["--no-sandbox", "--js-flags=--expose-gc", "--disable-infobars", "--disable-background-networking", "--disable-extensions", "--disable-translate", "--no-first-run", "--ignore-certificate-errors", "--enable-precise-memory-info"]
+    },
+    "configuration": {
+      "proyect": {
+        "projectName": "lwc-engine-benchmark",
+        "benchmarkOnClient": false,
+        "benchmarkRunner": "@best/runner-headless",
+        "benchmarkEnvironment": "production"
+      },
+      "global": {
+        "commitHash": "837dd91",
+        "hasLocalGitChanges": false,
+        "branch": "master"
+      }
+    }
+  }
+}
