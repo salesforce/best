@@ -48,8 +48,8 @@ function compareBenchmarks(baseBenchs, targetBenchs, comparison = []) {
 
 export async function compareBenchmarkStats(baseCommit, targetCommit, projectName, storageProvider) {
     const [baseBenchmarks, targetBenchmarks] = await Promise.all([
-        storageProvider.getBenchmarkStats(projectName, baseCommit),
-        storageProvider.getBenchmarkStats(projectName, targetCommit),
+        storageProvider.getAllBenchmarkStatsPerCommit(projectName, baseCommit),
+        storageProvider.getAllBenchmarkStatsPerCommit(projectName, targetCommit),
     ]);
 
     preRunMessager.print('\n Running comparison... \n\n', process.stdout);
