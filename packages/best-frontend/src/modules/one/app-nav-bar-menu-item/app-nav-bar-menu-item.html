@@ -1,0 +1,35 @@
+<template>
+    <a href={url}
+        role={role}
+        tabindex="-1"
+        aria-checked={checked}
+        aria-disabled={disabled}
+        onclick={select}
+        onblur={handleBlur}
+        class={className}
+        draggable="false"
+        >
+
+        <span class="slds-truncate">
+            <template if:true={computedLeftIconName}>
+                <one-tmp-primitive-icon
+                    icon-name={computedLeftIconName}
+                    size="x-small"
+                    class={leftIconClassNames}
+                    variant="bare">
+                </one-tmp-primitive-icon>
+            </template>
+            <span>{label}</span>
+        </span>
+
+        <!-- Right icon -->
+        <template if:true={iconName}>
+            <one-tmp-primitive-icon
+                icon-name={iconName}
+                size="x-small"
+                class="slds-icon-text-default slds-m-left--small slds-shrink-none"
+                variant="bare">
+            </one-tmp-primitive-icon>
+        </template>
+    </a>
+</template>

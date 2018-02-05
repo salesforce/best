@@ -1,0 +1,37 @@
+one-app-nav-bar-item,
+one-app-nav-menu,
+one-appnav,
+one-app-nav-bar-item-dropdown,
+one-app-router,
+one-page-home,
+one-page-project {
+    display: inherit; /* custon elements have default display: inline, so we need to override it */
+}
+
+one-tmp-menu-item {
+    display: block;
+}
+
+.fill-color {
+    fill: currentColor;
+}
+
+.hidden {
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    visibility: hidden;
+    z-index: -1;
+}
+
+
+/* side-project */
+.main-panel {
+
+}
+
+.side-panel {
+    min-width: 200px;
+    border-left: 1px solid #eee;
+    padding: 10px;
+}

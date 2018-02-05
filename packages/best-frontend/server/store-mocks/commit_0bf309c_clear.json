@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "benchmarkName": "clear-1k.benchmark",
+  "benchmarks": [{
+      "duration": {
+        "samples": [41.54, 44.67, 43.9, 45.34, 45.69, 47.055, 46.99, 48.79, 46.71, 45.08, 46.53, 45.365, 46.24, 49.865, 48.57, 46.815, 46.165, 50.265, 43.57, 48.08, 45.275, 46.9, 46.2, 45.005, 50.25, 44.615, 46.48, 45.395, 45.785, 46.445, 45.8, 47.17, 43.755, 45.88, 47.51, 47.415, 44.67, 47.23, 49.17, 45.69, 49.17, 47.615, 47.35, 43.935, 50.14, 45.28, 46.7, 47.205, 46.275],
+        "sampleSize": 49,
+        "samplesQuantileThreshold": 0.8,
+        "mean": 46.48040816326532,
+        "median": 46.445,
+        "variance": 3.3407743231986675,
+        "medianAbsoluteDeviation": 1.0649999999999977
+      },
+      "runDuration": {
+        "samples": [14.01, 14.965, 14.255, 14.28, 15.265, 15.975, 15.81, 16.345, 14.34, 14.27, 14.71, 15.56, 15.53, 14.54, 15.015, 15.27, 15.275, 13.48, 16.3, 15.045, 15.45, 13.75, 14.265, 14.335, 13.725, 13.995, 13.925, 13.84, 15.33, 15.87, 14.99, 14.825, 13.79, 14.49, 14.24, 15.77, 15.225, 16.25, 16.425, 15.09, 15.57, 15.95, 15.905, 13.835, 14.35, 15.415, 15.635, 15.515, 15.255],
+        "sampleSize": 49,
+        "samplesQuantileThreshold": 0.8,
+        "mean": 14.964285714285717,
+        "median": 15.045,
+        "variance": 0.643823469387755,
+        "medianAbsoluteDeviation": 0.7099999999999991
+      },
+      "name": "benchmark-table/clear/1k"
+    }],
+  "environment": {
+    "hardware": {
+      "system": {"manufacturer": "", "model": "Docker Container"},
+      "cpu": {
+        "manufacturer": "IntelÂ®",
+        "brand": "XeonÂ®  E5-2680 v2",
+        "family": "6",
+        "model": "62",
+        "speed": "2.80",
+        "cores": 32
+      },
+      "os": {
+        "platform": "Linux",
+        "distro": "Debian GNU/Linux",
+        "release": "9",
+        "kernel": "4.4.0-109-generic",
+        "arch": "x64"
+      }
+    },
+    "runtime": {
+      "load": {"cpuLoad": 7.475002032355094}
+    },
+    "browser": {
+      "version": "HeadlessChrome/64.0.3264.0",
+      "options": ["--no-sandbox", "--js-flags=--expose-gc", "--disable-infobars", "--disable-background-networking", "--disable-extensions", "--disable-translate", "--no-first-run", "--ignore-certificate-errors", "--enable-precise-memory-info"]
+    },
+    "configuration": {
+      "proyect": {
+        "projectName": "lwc-engine-benchmark",
+        "benchmarkOnClient": false,
+        "benchmarkRunner": "@best/runner-headless",
+        "benchmarkEnvironment": "production"
+      },
+      "global": {
+        "commitHash": "0bf309c",
+        "hasLocalGitChanges": false,
+        "branch": "master"
+      }
+    }
+  }
+}

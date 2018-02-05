@@ -5,7 +5,7 @@ import { lookup } from 'mime-types';
 
 export const AWS_TEXT = chalk.reset.inverse.yellow.bold(' AWS-S3  ') + ' ';
 
-const VERSION = 'v1.3';
+const VERSION = 'v1.4';
 const PREFIX = `public/${VERSION}`;
 const BENCHMARKS = 'benchmarks';
 const BRANCHES = 'branches';
@@ -28,7 +28,7 @@ export class S3 {
         return this.host + path.join(PREFIX, projectName, BENCHMARKS, searchCommit, bm);
     }
 
-    listProjects() {
+    getProjects() {
         return this.getObjectsInFolder('');
     }
 
@@ -36,7 +36,7 @@ export class S3 {
         return this.getObjectsInFolder(projectName, BRANCHES);
     }
 
-    listCommits(projectName, branchName) {
+    getCommits(projectName, branchName) {
         return this.getObjectsInFolder(projectName, BRANCHES, branchName);
     }
 

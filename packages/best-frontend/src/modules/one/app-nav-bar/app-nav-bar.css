@@ -1,0 +1,11 @@
+li.navItem.transitioning {
+	transition: left 175ms ease-out;
+}
+
+/* 
+  	when we drag an item over the More button we add slds-is-active but
+  	we don't want the hard top border for it
+*/
+.more-item.slds-is-active:before {
+	background: transparent;
+}
