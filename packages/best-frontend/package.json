@@ -32,7 +32,8 @@
   "dependencies": {
     "apicache": "^1.2.0",
     "express": "^4.16.2",
-    "memoizee": "^0.4.11"
+    "memoizee": "^0.4.11",
+    "@best/store-aws": "0.0.7"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",

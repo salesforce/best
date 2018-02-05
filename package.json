@@ -17,6 +17,7 @@
     "test": "jest --config jest.config.json",
     "perf": "best --externalStorage=@best/store-aws",
     "web:watch": "lerna exec --scope @best/frontend 'yarn watch'",
+    "web:watch:s3": "STORE_PLUGIN=@best/store-aws lerna exec --scope @best/frontend 'yarn watch'",
     "release": "yarn prepare && lerna publish --exact --force-publish=* --registry='https://npm.lwcjs.org' && yarn changelog",
     "release:internal": "yarn prepare && lerna publish --exact --force-publish=* --skip-git --repo-version `node -pe \"require('./lerna.json').version\"` --yes --registry='https://nexus.soma.salesforce.com/nexus/content/repositories/npmjs-internal/'",
     "changelog": "yarn changelog:generate && yarn changelog:publish",

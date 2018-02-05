@@ -58,3 +58,13 @@ export async function getBenchmarkStats(projectName, commit) {
         }),
     );
 }
+
+export function getProjects() {
+    const s3 = getS3Instance();
+    return s3.getProjects();
+}
+
+export function getCommits(projectName, branch) {
+    const s3 = getS3Instance();
+    return s3.getCommits();
+}
