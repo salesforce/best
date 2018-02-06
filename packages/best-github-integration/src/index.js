@@ -31,3 +31,5 @@ export async function pushBenchmarkComparison(baseCommit, targetCommit, compareS
         number: pullRequestId,
     });
 }
+
+export { createGithubApp };
