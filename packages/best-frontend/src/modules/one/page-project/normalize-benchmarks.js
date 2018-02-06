@@ -29,7 +29,8 @@ function collectBenchmarkData(commitBenchmarks, commit, stat, collector = {}, na
 function collectBenchmarkNames(benchmarkTreeNode, list = {}, name = '') {
     if (benchmarkTreeNode.benchmarks) {
         return benchmarkTreeNode.benchmarks.reduce((l, b) => {
-            return collectBenchmarkNames(b, l, name + (benchmarkTreeNode.benchmarkName || ''));
+            const postName = benchmarkTreeNode.benchmarkName || benchmarkTreeNode.name || '';
+            return collectBenchmarkNames(b, l, name ? `${name}:${postName}` : postName);
         }, list);
     }
     name += ':' + benchmarkTreeNode.name;
