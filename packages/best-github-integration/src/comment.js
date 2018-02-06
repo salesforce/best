@@ -20,7 +20,7 @@ function generateRows(stats, name = '', rows = []) {
 
             allRows.push([
                 name + node.name,
-                `${baseStats.median.toFixed(2)} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)} ms)`,
+                `${baseStats.median.toFixed(2)} (± ${baseStats.medianAbsoluteDeviation.toFixed(2)} ms)`,
                 `${targetStats.median.toFixed(2)} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)} ms)`,
                 samplesComparison === 0 ? '👌' : samplesComparison === 1 ? '👎' : '👍',
             ]);
