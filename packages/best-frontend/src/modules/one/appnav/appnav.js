@@ -1,4 +1,4 @@
-import { Element } from 'engine';
+import { api, Element } from 'engine';
 import { isPureLeftClick } from 'one-tmp-utils';
 const NAV_TYPE_HORIZONTAL = 'horizontal';
 const NAV_TYPE_DROPDOWN = 'dropdown';

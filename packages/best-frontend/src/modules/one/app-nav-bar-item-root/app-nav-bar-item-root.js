@@ -1,4 +1,4 @@
-import { Element } from 'engine';
+import { api, Element } from 'engine';
 import { isPureLeftClick } from 'one-tmp-utils';
 
 const Labels = {

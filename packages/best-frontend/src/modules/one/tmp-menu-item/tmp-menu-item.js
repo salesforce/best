@@ -1,4 +1,4 @@
-import { Element } from "engine";
+import { api, Element } from "engine";
 import { joinClassNames, isPureLeftClick } from "one-tmp-utils";
 
 export default class LightningMenuItem extends Element {

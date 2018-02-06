@@ -4,7 +4,7 @@
             <template if:true={isDataReady}>
                 <section class="charts">
                     <template for:each={benchmarks} for:item="benchmark">
-                        <div class="benchmark" data-id={benchmark}></div>
+                        <div key={benchmark} class="benchmark" data-id={benchmark}></div>
                     </template>
                 </section>
             </template>

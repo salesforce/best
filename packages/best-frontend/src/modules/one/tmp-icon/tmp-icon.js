@@ -1,4 +1,4 @@
-import { Element } from 'engine';
+import { api, Element } from 'engine';
 import { classListMutation, icon as iconUtil } from 'one-tmp-utils';
 
 const validVariants = new Set([

@@ -1,4 +1,4 @@
-import { Element } from 'engine';
+import { api, track, Element } from 'engine';
 import { normalizeForTrending, normalizeForComparison } from "./normalize-benchmarks";
 import { generatePlot, cleanupPlots, isPlot } from "./plots";
 
@@ -15,22 +15,20 @@ export default class HomePage extends Element {
 
     @api set projectState(newState) {
         const { commitBenchmarks } = newState;
-        if (commitBenchmarks) {
-            this._projectState = newState;
-            this.benchmarksTrend = normalizeForTrending(commitBenchmarks);
+        this._projectState = newState;
+        this.benchmarksTrend = normalizeForTrending(commitBenchmarks);
 
-            // TODO: remove me one we have the logc for clicking correct
-            if (commitBenchmarks.length && this.benchmarksTrend && !this.selectedCommits.length) {
-                this.selectedCommits.push({
-                    commit: newState.commits[newState.commits.length - 1],
-                    benchmarkName: Object.keys(this.benchmarksTrend)[0]
-                });
-            }
-        }
+        // TODO: remove me one we have the logc for clicking correct
+        // if (commitBenchmarks && commitBenchmarks.length && this.benchmarksTrend && !this.selectedCommits.length) {
+        //     this.selectedCommits.push({
+        //         commit: newState.commits[newState.commits.length - 1],
+        //         benchmarkName: Object.keys(this.benchmarksTrend)[0]
+        //     });
+        // }
     }
 
     get isDataReady() {
-        return !!this.benchmarksTrend;
+        return !!(this.benchmarksTrend && Object.keys(this.benchmarksTrend).length);
     }
     get benchmarks() {
         return Object.keys(this.benchmarksTrend);
