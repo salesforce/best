@@ -14,7 +14,6 @@ const onlyStatus200 = (req, res) => res.statusCode === 2000;
 const cacheSuccesses = cache('5 minutes', onlyStatus200);
 
 // -- Routes ---------------------------
-
 // API for benchmarks, stats & artifacts
 app.use('/api/v1', ApiV1.addRoutes(express.Router(), storeInstance));
 

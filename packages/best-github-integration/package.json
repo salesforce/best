@@ -9,6 +9,7 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
+    "base-64": "^0.1.0",
     "@best/messager": "0.0.10",
     "@best/utils": "0.0.10",
     "expand-tilde": "~2.0.2",

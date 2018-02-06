@@ -48,15 +48,18 @@ export async function storeBenchmarkResults(
 export async function getAllBenchmarkStatsPerCommit(projectName, commit) {
     const s3 = getS3Instance();
     const benchmarks = await s3.getBenchmarkUrlsForCommit(projectName, commit);
-    console.log(AWS_TEXT + ` Fetching benchmarks for commit ${commit}...`);
-    return Promise.all(
-        benchmarks.map(async url => {
-            const fullUrl = url + '/stats.json';
-            console.log(AWS_TEXT + ` Fetching benchmark ${fullUrl}`);
-            const response = await fetch(fullUrl);
-            return response.json();
-        }),
-    );
+    if (benchmarks && benchmarks.length) {
+        console.log(AWS_TEXT + ` Fetching benchmarks for commit ${commit}...`);
+        return Promise.all(
+            benchmarks.map(async url => {
+                const fullUrl = url + '/stats.json';
+                console.log(AWS_TEXT + ` Fetching benchmark ${fullUrl}`);
+                const response = await fetch(fullUrl);
+                return response.json();
+            }),
+        );
+    }
+    return benchmarks;
 }
 
 export function getProjects() {

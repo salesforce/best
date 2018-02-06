@@ -2,20 +2,52 @@
 const apicache = require('apicache');
 const memoize = require('memoizee');
 const crypto = require('crypto');
+const gitIntegration = require("@best/github-integration");
 
 const cache = apicache.middleware;
 const onlyStatus200 = (req, res) => res.statusCode === 0;
 const cacheSuccesses = cache('2 minutes', onlyStatus200);
-const memoizeConfig = { promise: true };
 
+// -- Globals configs ---------------------
+
+const GIT_ORG = process.env.GIT_ORG;
+const GIT_PROJECTS = process.env.GIT_PROJECTS || '{}';
+let GIT_ORG_API;
+let PROJECTS = {};
+
+const memoizeConfig = { promise: true };
 let memoizedGetBenchPerCommit;
 
-function addRoutes(router, store) {
-    // memoize calls when routers gets invoked
+// -- Internal APIs ------------------------
+
+async function getOrganizationInstallation(org) {
+    const APP = gitIntegration.createGithubApp();
+    const gitAppAuth = await APP.authAsApp();
+    const installations = await gitAppAuth.apps.getInstallations({});
+    const repoInstallation = installations.data.find((i) => i.account.login === org);
+    const installationId = repoInstallation.id;
+    const owner = repoInstallation.account.login;
+    const gitOrgApi = await APP.authAsInstallation(installationId);
+    return gitOrgApi;
+}
+
+function initialize(store) {
+    if (GIT_ORG) {
+        PROJECTS = JSON.parse(GIT_PROJECTS[0] === '\'' ? GIT_PROJECTS.slice(1, -1) : GIT_PROJECTS);
+        getOrganizationInstallation(GIT_ORG).then((gitAPI) => {
+            GIT_ORG_API = gitAPI;
+        }, () => {
+            console.log(`Unable to initialize Github API`);
+        });
+    }
+    // Memoize calls when routers gets invoked
     memoizedGetBenchPerCommit = memoize(async (project, commit) =>
         Object.freeze(store.getAllBenchmarkStatsPerCommit(project, commit), memoizeConfig)
     );
+}
 
+function addRoutes(router, store) {
+    initialize(store);
     router.get('/cache/index', (req, res) => res.json(apicache.getIndex()));
     router.get('/cache/clear', (req, res) => res.json(apicache.clear()));
 
@@ -81,12 +113,23 @@ function addRoutes(router, store) {
 }
 
 async function getLastCommitStats(store, projectName, branch, size = 30) {
+    const gitRepo = PROJECTS[projectName];
+    let gitLastCommits = [];
+    if (GIT_ORG_API && gitRepo) {
+        const [owner, repo] = gitRepo.split('/');
+        const { data } = await GIT_ORG_API.repos.getCommits({ owner, repo, per_page: size });
+        gitLastCommits = data.map(c => c.sha.slice(0, 7));
+    }
+
     const commits = await store.getCommits(projectName, branch);
-    const lastCommits = commits.slice(0, size);
-    return Promise.all(lastCommits.map(async (commit) => {
+    const lastCommits = gitLastCommits.length ? gitLastCommits.reverse().filter((i) => commits.indexOf(i) !== -1 ) : commits.slice(0, size);
+
+    const lastCommitBenchmarks = await Promise.all(lastCommits.map(async (commit) => {
         let benchmarks = await memoizedGetBenchPerCommit(projectName, commit);
         return { commit, benchmarks };
     }));
+
+    return lastCommitBenchmarks;
 }
 
 exports.addRoutes = addRoutes;
