@@ -7114,9 +7114,9 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "http://npm.lwcjs.org/typedarray/-/typedarray-0.0.6/867ac74e3864187b1d3d47d996a78ec5c8830777.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-uglify-es@^3.3.7:
-  version "3.3.9"
-  resolved "http://npm.lwcjs.org/uglify-es/-/uglify-es-3.3.9/0c1c4f0700bed8dbc124cdb304d2592ca203e677.tgz#0c1c4f0700bed8dbc124cdb304d2592ca203e677"
+uglify-es@3.3.7:
+  version "3.3.7"
+  resolved "http://npm.lwcjs.org/uglify-es/-/uglify-es-3.3.7/d1249af668666aba7cb1163e277455be9eb393cf.tgz#d1249af668666aba7cb1163e277455be9eb393cf"
   dependencies:
     commander "~2.13.0"
     source-map "~0.6.1"
