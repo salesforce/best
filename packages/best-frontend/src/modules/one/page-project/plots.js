@@ -28,7 +28,8 @@ function buildPlottyLayout({ title }) {
 
 function buildPlottyTrace({ commits, values, metric }, opts) {
     return {
-        x: commits,
+        // Using a zero-width char (https://en.wikipedia.org/wiki/Zero-width_space) to force plotty to render labels
+        x: commits.map(c => '#\u200B' + c),
         y: values,
         mode: 'lines+markers',
         name: metric,

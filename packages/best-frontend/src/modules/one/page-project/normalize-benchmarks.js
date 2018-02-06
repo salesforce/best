@@ -1,7 +1,8 @@
 function collectBenchmarkData(commitBenchmarks, commit, stat, collector = {}, name = '') {
     if (commitBenchmarks.benchmarks) {
         return commitBenchmarks.benchmarks.reduce((l, b) => {
-            return collectBenchmarkData(b, commit, stat, l, name + (commitBenchmarks.benchmarkName || ''));
+            const postName = commitBenchmarks.benchmarkName || commitBenchmarks.name || '';
+            return collectBenchmarkData(b, commit, stat, l, name ? `${name}:${postName}` : postName);
         }, collector);
     }
 
