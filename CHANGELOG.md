@@ -1,5 +1,23 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.0.7...v) (2018-01-20)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.0.10...v) (2018-02-06)
+
+
+
+<a name="0.0.10"></a>
+## [0.0.10](https://git.soma.salesforce.com/lwc/best/compare/v0.0.7...v0.0.10) (2018-02-06)
+
+
+### Features
+
+* **best-build:** Allow prod + Upgrade LWC deps ([#71](https://git.soma.salesforce.com/lwc/best/issues/71)) ([e3376ac](https://git.soma.salesforce.com/lwc/best/commits/e3376ac))
+* **best-compare:** Fix comparer recursivity ([#65](https://git.soma.salesforce.com/lwc/best/issues/65)) ([bf6efec](https://git.soma.salesforce.com/lwc/best/commits/bf6efec))
+* **best-config:** Enable multi-project configurations ([#60](https://git.soma.salesforce.com/lwc/best/issues/60)) ([aa0a3d7](https://git.soma.salesforce.com/lwc/best/commits/aa0a3d7))
+* **best-frontend:** Adding frontend package ([#66](https://git.soma.salesforce.com/lwc/best/issues/66)) ([f9f5222](https://git.soma.salesforce.com/lwc/best/commits/f9f5222))
+* **best-frontend:** Allow heroku deployment ([#70](https://git.soma.salesforce.com/lwc/best/issues/70)) ([a3d5ce1](https://git.soma.salesforce.com/lwc/best/commits/a3d5ce1))
+* **best-frontend:** Fix naming ([#68](https://git.soma.salesforce.com/lwc/best/issues/68)) ([013b196](https://git.soma.salesforce.com/lwc/best/commits/013b196))
+* **best-frontend:** Fix ploty axis ([#69](https://git.soma.salesforce.com/lwc/best/issues/69)) ([38d5092](https://git.soma.salesforce.com/lwc/best/commits/38d5092))
+* **best-stats:** Normalize stats for results ([#62](https://git.soma.salesforce.com/lwc/best/issues/62)) ([1ddaa57](https://git.soma.salesforce.com/lwc/best/commits/1ddaa57))
+* **best-store:** Closing the gaps store APIs ([6159192](https://git.soma.salesforce.com/lwc/best/commits/6159192))
 
 
 
