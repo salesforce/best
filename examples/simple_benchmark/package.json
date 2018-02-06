@@ -1,12 +1,12 @@
 {
   "name": "@best/simple_benchmark",
-  "version": "0.0.7",
+  "version": "0.0.10",
   "private": true,
   "scripts": {
     "build": "cross-env rollup -c ./scripts/rollup.config.js",
     "perf": "best"
   },
   "devDependencies": {
-    "best": "0.0.7"
+    "best": "0.0.10"
   }
 }

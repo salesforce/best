@@ -1,6 +1,6 @@
 {
   "name": "@best/github-integration",
-  "version": "0.0.7",
+  "version": "0.0.10",
   "description": "Best Github Integration",
   "keywords": [
     "Best",
@@ -9,8 +9,8 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
-    "@best/messager": "0.0.7",
-    "@best/utils": "0.0.7",
+    "@best/messager": "0.0.10",
+    "@best/utils": "0.0.10",
     "expand-tilde": "~2.0.2",
     "github": "^13.0.1",
     "json2md": "~1.5.11",
