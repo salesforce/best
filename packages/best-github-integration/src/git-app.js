@@ -19,7 +19,7 @@ const APP_ID = process.env.GIT_APP_ID;
 const GIT_APP_CERT_PATH = process.env.GIT_APP_CERT_PATH;
 const GIT_APP_CERT_BASE64 = process.env.GIT_APP_CERT_BASE64;
 
-const APP_CERT_BASE64 = GIT_APP_CERT_BASE64[0] === '\'' ? base64.decode(GIT_APP_CERT_BASE64.slice(1, -1)) : base64.decode(GIT_APP_CERT_BASE64);
+const APP_CERT_BASE64 = GIT_APP_CERT_BASE64 ? (GIT_APP_CERT_BASE64[0] === '\'' ? base64.decode(GIT_APP_CERT_BASE64.slice(1, -1)) : base64.decode(GIT_APP_CERT_BASE64)) : null;
 const APP_CERT = GIT_APP_CERT_PATH ? fs.readFileSync(expandTilde(GIT_APP_CERT_PATH)) : APP_CERT_BASE64;
 
 function generateJwt(id, cert) {
