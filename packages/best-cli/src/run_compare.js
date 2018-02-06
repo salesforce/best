@@ -31,7 +31,7 @@ export async function runCompare(globalConfig, configs, outputStream) {
     const compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectName, storageProvider);
 
     if (gitIntegration) {
-        await pushBenchmarkComparison(baseCommit, compareCommit, compareResults);
+        await pushBenchmarkComparison(baseCommit, compareCommit, compareResults, globalConfig);
     }
 
     return compareResults;

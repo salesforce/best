@@ -5,7 +5,7 @@ import { generateComparisonComment } from './comment';
 const PULL_REQUEST_URL = process.env.PULL_REQUEST;
 const REPO_NAME = process.env.REPO_NAME;
 
-export async function pushBenchmarkComparison(baseCommit, targetCommit, compareStats) {
+export async function pushBenchmarkComparison(baseCommit, targetCommit, compareStats, { gitRepository }) {
     if (!isCI) {
         // throw new Error('GitIntegration is only supposed to run on a CI environment');
         console.log('[NOT A CI] - The output will not be pushed.\n');
@@ -13,10 +13,11 @@ export async function pushBenchmarkComparison(baseCommit, targetCommit, compareS
         return;
     }
 
+    const repoOwner = gitRepository.owner;
     const APP = createGithubApp();
     const gitAppAuth = await APP.authAsApp();
     const installations = await gitAppAuth.apps.getInstallations({});
-    const repoInstallation = installations.data[0];
+    const repoInstallation = installations.data.find((i) => i.account.login === repoOwner);
     const installationId = repoInstallation.id;
     const owner = repoInstallation.account.login;
     const gitHubInstallation = await APP.authAsInstallation(installationId);
