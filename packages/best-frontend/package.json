@@ -30,6 +30,7 @@
     "url": "https://github.com/salesforce/best"
   },
   "dependencies": {
+    "@best/github-integration": "0.0.10",
     "@best/store-aws": "0.0.10",
     "apicache": "^1.2.0",
     "express": "^4.16.2",
