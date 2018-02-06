@@ -1,4 +1,4 @@
-import { Element } from 'engine';
+import { api, Element } from 'engine';
 
 export default class ComparePanel extends Element {
     @api selectedCommitBenchmarks;

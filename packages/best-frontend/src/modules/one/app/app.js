@@ -1,4 +1,4 @@
-import { Element, unwrap } from 'engine';
+import { Element, unwrap, track } from 'engine';
 import INITIAL_STATE from './state';
 import { reifyBranches, emulateFetch, initializeState, normalizeStats, updateURL} from './utils';
 
@@ -42,6 +42,7 @@ export default class App extends Element {
     async setProjectLastestStats(project, branch = "master") {
         const projectBranch = `${project}:${branch}`;
         if (!this.state.lastCommits[projectBranch]) {
+            this.state.pageState = {};
             const response = await fetch(`/api/v1/projects/${project}/${branch}/lastcommits`);
             if (response.ok) {
                 const stats = await response.json();
