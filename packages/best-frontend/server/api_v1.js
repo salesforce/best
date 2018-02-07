@@ -112,7 +112,7 @@ function addRoutes(router, store) {
     return router;
 }
 
-async function getLatestsCommits(gitRepo, retried = false) {
+async function getLatestsCommits(gitRepo, size, retried = false) {
     const [owner, repo] = gitRepo.split('/');
     try {
         const { data } = await GIT_ORG_API.repos.getCommits({ owner, repo, per_page: size });
@@ -130,7 +130,7 @@ async function getLastCommitStats(store, projectName, branch, size = 30) {
     const gitRepo = PROJECTS[projectName];
     let gitLastCommits = [];
     if (GIT_ORG_API && gitRepo) {
-        const gitCommits = await getLatestsCommits(gitRepo);
+        const gitCommits = await getLatestsCommits(gitRepo, size);
         gitLastCommits = gitCommits.map(c => c.sha.slice(0, 7));
     }
 
