@@ -1,5 +1,16 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.0.10...v) (2018-02-06)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.0.11...v) (2018-02-07)
+
+
+
+<a name="0.0.11"></a>
+## [0.0.11](https://git.soma.salesforce.com/lwc/best/compare/v0.0.10...v0.0.11) (2018-02-07)
+
+
+### Bug Fixes
+
+* **best-frontend:** Fix Tab switching ([#73](https://git.soma.salesforce.com/lwc/best/issues/73)) ([57f2d08](https://git.soma.salesforce.com/lwc/best/commits/57f2d08))
+* **best-github-integration:** Simplify authentication + Git based order ([#74](https://git.soma.salesforce.com/lwc/best/issues/74)) ([a2f92ed](https://git.soma.salesforce.com/lwc/best/commits/a2f92ed))
 
 
 
