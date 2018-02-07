@@ -112,13 +112,26 @@ function addRoutes(router, store) {
     return router;
 }
 
+async function getLatestsCommits(gitRepo, retried = false) {
+    const [owner, repo] = gitRepo.split('/');
+    try {
+        const { data } = await GIT_ORG_API.repos.getCommits({ owner, repo, per_page: size });
+        return data;
+    } catch(err) {
+        if (err.code === 401 && !retried) {
+            GIT_ORG_API = await getOrganizationInstallation(GIT_ORG);
+            return getLatestsCommits(gitRepo, true);
+        }
+        throw err;
+    }
+}
+
 async function getLastCommitStats(store, projectName, branch, size = 30) {
     const gitRepo = PROJECTS[projectName];
     let gitLastCommits = [];
     if (GIT_ORG_API && gitRepo) {
-        const [owner, repo] = gitRepo.split('/');
-        const { data } = await GIT_ORG_API.repos.getCommits({ owner, repo, per_page: size });
-        gitLastCommits = data.map(c => c.sha.slice(0, 7));
+        const gitCommits = await getLatestsCommits(gitRepo);
+        gitLastCommits = gitCommits.map(c => c.sha.slice(0, 7));
     }
 
     const commits = await store.getCommits(projectName, branch);
