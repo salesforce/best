@@ -18,10 +18,6 @@ export default class LightningMenuItem extends Element {
         this.classList.add("slds-dropdown__item");
     }
 
-    get i18n() {
-        return Labels;
-    }
-
     get role() {
         return this.checked == null ? "menuitem" : "menuitemcheckbox";
     }

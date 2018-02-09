@@ -115,13 +115,16 @@ function addRoutes(router, store) {
 async function getLatestsCommits(gitRepo, size, retried = false) {
     const [owner, repo] = gitRepo.split('/');
     try {
+        console.log('[GIT] getCommits() >> FETCH');
         const { data } = await GIT_ORG_API.repos.getCommits({ owner, repo, per_page: size });
         return data;
     } catch(err) {
+        console.log('[GIT] getCommits() >> RETRY');
         if (err.code === 401 && !retried) {
             GIT_ORG_API = await getOrganizationInstallation(GIT_ORG);
-            return getLatestsCommits(gitRepo, true);
+            return getLatestsCommits(gitRepo, size, true);
         }
+        console.log('[GIT] getCommits() >> ERROR');
         throw err;
     }
 }
@@ -129,20 +132,23 @@ async function getLatestsCommits(gitRepo, size, retried = false) {
 async function getLastCommitStats(store, projectName, branch, size = 30) {
     const gitRepo = PROJECTS[projectName];
     let gitLastCommits = [];
+
     if (GIT_ORG_API && gitRepo) {
         const gitCommits = await getLatestsCommits(gitRepo, size);
         gitLastCommits = gitCommits.map(c => c.sha.slice(0, 7));
     }
 
-    const commits = await store.getCommits(projectName, branch);
-    const lastCommits = gitLastCommits.length ? gitLastCommits.reverse().filter((i) => commits.indexOf(i) !== -1 ) : commits.slice(0, size);
+    return gitLastCommits;
 
-    const lastCommitBenchmarks = await Promise.all(lastCommits.map(async (commit) => {
-        let benchmarks = await memoizedGetBenchPerCommit(projectName, commit);
-        return { commit, benchmarks };
-    }));
+    // const commits = await store.getCommits(projectName, branch);
+    // const lastCommits = gitLastCommits.length ? gitLastCommits.reverse().filter((i) => commits.indexOf(i) !== -1 ) : commits.slice(0, size);
 
-    return lastCommitBenchmarks;
+    // const lastCommitBenchmarks = await Promise.all(lastCommits.map(async (commit) => {
+    //     let benchmarks = await memoizedGetBenchPerCommit(projectName, commit);
+    //     return { commit, benchmarks };
+    // }));
+
+    // return lastCommitBenchmarks;
 }
 
 exports.addRoutes = addRoutes;

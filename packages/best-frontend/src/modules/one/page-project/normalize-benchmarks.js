@@ -84,6 +84,7 @@ export function normalizeForComparison(benchmarks, finalBenchmarkName) {
     let benchName;
     const benchmark = {};
     while ((benchName = benchNameParts.shift())) {
+        // eslint-disable-next-line no-loop-func
         const benchmarkNode = benchmarks.find(b => b.benchmarkName === benchName || b.name === benchName);
 
         if (benchmarkNode.environment) {
