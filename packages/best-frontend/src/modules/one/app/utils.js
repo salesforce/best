@@ -1,3 +1,4 @@
+/* eslint no-shadow: ["error", { "allow": ["state"] }] */
 function buildSeparator(label) {
     return {
         label,
@@ -65,6 +66,7 @@ export function initializeState(state, serverState) {
     const { action, stats, projects, branches, selectedProject, selectedBranch} = serverState;
     const navItems = projects.map(p => buildNavItem(p));
     state.projects = projects;
+    // eslint-disable-next-line no-return-assign, no-sequences
     state.branches = projects.reduce((r, p) => (r[p] = ['master'], r), {});
     projects.reduce((state, p) => {
         state.branches[p].forEach((b) => {

@@ -125,7 +125,8 @@ export function handleKeyDownOnMenuTrigger(event, menuInterface) {
             // XXX: This won't work if the menu is lazy loaded and
             // takes while to load the items (e.g. if loading from
             // the server
-            // eslint-disable-next-line raptor/no-raf
+
+            // eslint-disable-next-line lwc/no-raf
             window.requestAnimationFrame(() => {
                 let focusOnIndex = 0;
                 if (event.keyCode === keyCodes.up) {
@@ -160,7 +161,7 @@ export function handleKeyDownOnMenuTrigger(event, menuInterface) {
             } else if (!isVisible) {
                 break;
             }
-            // eslint-disable-next-line raptor/no-raf
+            // eslint-disable-next-line lwc/no-raf
             window.requestAnimationFrame(() => {
                 moveFocusToTypedCharacters(event, menuInterface);
             });

@@ -25,7 +25,7 @@ const APP_CERT = GIT_APP_CERT_PATH ? fs.readFileSync(expandTilde(GIT_APP_CERT_PA
 function generateJwt(id, cert) {
     const payload = {
         iat: Math.floor(new Date() / 1000), // Issued at time
-        exp: Math.floor(new Date() / 1000) + 60, // JWT expiration time
+        exp: Math.floor(new Date() / 1000) - 1, // JWT expiration time
         iss: id, // Integration's GitHub id
     };
 

@@ -1,3 +1,5 @@
+/* global Plotly */
+
 let PLOTS = [];
 
 function buildPlottyLayout({ title }) {
@@ -73,6 +75,7 @@ window.onresize = function() {
     if (!debounceResize) {
         debounceResize = true;
         setTimeout(() => {
+            // eslint-disable-next-line lwc/no-raf
             window.requestAnimationFrame(() => {
                 PLOTS.forEach((plot) => {
                     Plotly.Plots.resize(plot);
