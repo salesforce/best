@@ -46,8 +46,14 @@ export function isPlot(element) {
     return PLOTS.includes(element);
 }
 
+function normalizeTitle(benchmarkName) {
+    const parts = benchmarkName.split(':');
+    parts.shift();
+    return parts.join(':');
+}
+
 export async function generatePlot(element, benchmarkName, metrics) {
-    const layout = buildPlottyLayout({ title: benchmarkName });
+    const layout = buildPlottyLayout({ title: normalizeTitle(benchmarkName) });
     const data = Object.keys(metrics).map(metric => buildPlottyTrace(metrics[metric]));
     const plot = await window.Plotly.newPlot(element, data, layout, {
         displaylogo: false,

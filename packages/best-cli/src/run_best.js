@@ -14,12 +14,25 @@ async function getBenchmarkPaths({ nonFlagArgs, rootDir }, config) {
     return results.map(p => path.resolve(rootPath, p));
 }
 
+function validateBenchmarkNames(matches) {
+    matches.reduce((visited, p) => {
+        const filename = path.basename(p);
+        if (visited[filename]) {
+            throw new Error(`Duplicated benchmark filename "${filename}". All benchmark file names must be unique.`);
+        }
+        visited[filename] = true;
+        return visited;
+    }, {});
+
+}
+
 async function getBenchmarkTests(configs, globalConfig) {
     return Promise.all(
         configs.map(async config => {
             const matches = await getBenchmarkPaths(globalConfig, config);
+            validateBenchmarkNames(matches);
             return { config, matches };
-        }),
+        })
     );
 }
 
