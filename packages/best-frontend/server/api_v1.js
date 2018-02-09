@@ -138,17 +138,15 @@ async function getLastCommitStats(store, projectName, branch, size = 30) {
         gitLastCommits = gitCommits.map(c => c.sha.slice(0, 7));
     }
 
-    return gitLastCommits;
+    const commits = await store.getCommits(projectName, branch);
+    const lastCommits = gitLastCommits.length ? gitLastCommits.reverse().filter((i) => commits.indexOf(i) !== -1 ) : commits.slice(0, size);
 
-    // const commits = await store.getCommits(projectName, branch);
-    // const lastCommits = gitLastCommits.length ? gitLastCommits.reverse().filter((i) => commits.indexOf(i) !== -1 ) : commits.slice(0, size);
+    const lastCommitBenchmarks = await Promise.all(lastCommits.map(async (commit) => {
+        let benchmarks = await memoizedGetBenchPerCommit(projectName, commit);
+        return { commit, benchmarks };
+    }));
 
-    // const lastCommitBenchmarks = await Promise.all(lastCommits.map(async (commit) => {
-    //     let benchmarks = await memoizedGetBenchPerCommit(projectName, commit);
-    //     return { commit, benchmarks };
-    // }));
-
-    // return lastCommitBenchmarks;
+    return lastCommitBenchmarks;
 }
 
 exports.addRoutes = addRoutes;
