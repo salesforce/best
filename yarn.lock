@@ -115,6 +115,17 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
+"@octokit/rest@^14.0.9":
+  version "14.0.9"
+  resolved "http://npm.lwcjs.org/@octokit/rest/-/rest-14.0.9/d5e0a00dcb78901dd7b2ef852acfc0aea7c479ef.tgz#d5e0a00dcb78901dd7b2ef852acfc0aea7c479ef"
+  dependencies:
+    before-after-hook "^1.1.0"
+    debug "^3.1.0"
+    is-array-buffer "^1.0.0"
+    is-stream "^1.1.0"
+    lodash "^4.17.4"
+    url-template "^2.0.8"
+
 "@types/node@*":
   version "9.3.0"
   resolved "http://npm.lwcjs.org/@types/node/-/node-9.3.0/3a129cda7c4e5df2409702626892cb4b96546dd5.tgz#3a129cda7c4e5df2409702626892cb4b96546dd5"
@@ -1226,6 +1237,10 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
+before-after-hook@^1.1.0:
+  version "1.1.0"
+  resolved "http://npm.lwcjs.org/before-after-hook/-/before-after-hook-1.1.0/83165e15a59460d13702cb8febd6a1807896db5a.tgz#83165e15a59460d13702cb8febd6a1807896db5a"
+
 better-assert@~1.0.0:
   version "1.0.2"
   resolved "http://npm.lwcjs.org/better-assert/-/better-assert-1.0.2/40866b9e1b9e0b55b481894311e68faffaebc522.tgz#40866b9e1b9e0b55b481894311e68faffaebc522"
@@ -2311,10 +2326,6 @@ dot-prop@^4.1.0, dot-prop@^4.1.1:
   dependencies:
     is-obj "^1.0.0"
 
-dotenv@^4.0.0:
-  version "4.0.0"
-  resolved "http://npm.lwcjs.org/dotenv/-/dotenv-4.0.0/864ef1379aced55ce6f95debecdce179f7a0cd1d.tgz#864ef1379aced55ce6f95debecdce179f7a0cd1d"
-
 duplexer3@^0.1.4:
   version "0.1.4"
   resolved "http://npm.lwcjs.org/duplexer3/-/duplexer3-0.1.4/ee01dd1cac0ed3cbc7fdbea37dc0a8f1ce002ce2.tgz#ee01dd1cac0ed3cbc7fdbea37dc0a8f1ce002ce2"
@@ -3231,17 +3242,6 @@ gitconfiglocal@^1.0.0:
   dependencies:
     ini "^1.3.2"
 
-github@^13.0.1:
-  version "13.0.1"
-  resolved "http://npm.lwcjs.org/github/-/github-13.0.1/4ccf4a41df662f92367e77a474674eabb1b6c78d.tgz#4ccf4a41df662f92367e77a474674eabb1b6c78d"
-  dependencies:
-    debug "^3.1.0"
-    dotenv "^4.0.0"
-    https-proxy-agent "^2.1.0"
-    lodash "^4.17.4"
-    proxy-from-env "^1.0.0"
-    url-template "^2.0.8"
-
 glob-base@^0.3.0:
   version "0.3.0"
   resolved "http://npm.lwcjs.org/glob-base/-/glob-base-0.3.0/dbb164f6221b1c0b1ccf82aea328b497df0ea3c4.tgz#dbb164f6221b1c0b1ccf82aea328b497df0ea3c4"
@@ -3694,6 +3694,10 @@ is-accessor-descriptor@^1.0.0:
   resolved "http://npm.lwcjs.org/is-accessor-descriptor/-/is-accessor-descriptor-1.0.0/169c2f6d3df1f992618072365c9b0ea1f6878656.tgz#169c2f6d3df1f992618072365c9b0ea1f6878656"
   dependencies:
     kind-of "^6.0.0"
+
+is-array-buffer@^1.0.0:
+  version "1.0.0"
+  resolved "http://npm.lwcjs.org/is-array-buffer/-/is-array-buffer-1.0.0/f32497a0509d109423f472003f98bab6a8ea34cb.tgz#f32497a0509d109423f472003f98bab6a8ea34cb"
 
 is-arrayish@^0.2.1:
   version "0.2.1"

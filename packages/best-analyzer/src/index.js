@@ -22,7 +22,7 @@ function collectResults({ name, duration, runDuration, benchmarks }, collector) 
         cNode.duration.push(duration);
     }
 
-    if (runDuration) {
+    if (runDuration !== undefined) {
         cNode.runDuration.push(runDuration);
     } else {
         benchmarks.forEach(node => collectResults(node, collector, name));
@@ -40,7 +40,7 @@ app: {
 */
 
 function createStructure({ benchmarks, name, runDuration }, collector) {
-    if (runDuration) {
+    if (runDuration !== undefined) {
         const newNode = collector[name];
         newNode.name = name;
         return newNode;
