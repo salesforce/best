@@ -7,7 +7,7 @@ export default {
     moduleFileExtensions: ['js'],
     moduleNameMapper: {},
     modulePathIgnorePatterns: [],
-    benchmarkRunner: 'best-runner-headless',
+    benchmarkRunner: '@best/runner-headless',
     benchmarkRunnerConfig: {},
     benchmarkEnvironment: 'production',
     benchmarkMaxDuration: 1000 * 10, // 10s
