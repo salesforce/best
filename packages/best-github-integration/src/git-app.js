@@ -3,7 +3,7 @@ import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import base64 from 'base-64';
 import expandTilde from 'expand-tilde';
-import GitHubApi from 'github';
+import GitHubApi from '@octokit/rest';
 
 const APP_ID = process.env.GIT_APP_ID;
 
