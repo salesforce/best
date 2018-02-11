@@ -1,6 +1,6 @@
 {
   "name": "@best/frontend",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "main": "index.js",
   "description": "Best frontend for express",
   "scripts": {
@@ -26,7 +26,7 @@
     "url": "https://github.com/salesforce/best"
   },
   "dependencies": {
-    "@best/github-integration": "0.0.11",
+    "@best/github-integration": "0.0.12",
     "apicache": "^1.2.0",
     "memoizee": "^0.4.11"
   },
@@ -34,13 +34,13 @@
     "express": "^4.16.2"
   },
   "devDependencies": {
-    "express": "^4.16.2",
     "babel-eslint": "^8.2.1",
     "concurrently": "^3.5.1",
     "cross-env": "^5.1.3",
     "eslint": "^4.15.0",
     "eslint-plugin-babel": "^4.1.2",
     "eslint-plugin-lwc": "^0.2.4",
+    "express": "^4.16.2",
     "lwc-compiler": "0.17.14",
     "lwc-engine": "0.17.14",
     "nodemon": "~1.14.12",
