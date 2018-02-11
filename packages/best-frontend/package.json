@@ -1,21 +1,17 @@
 {
   "name": "@best/frontend",
   "version": "0.0.11",
-  "private": true,
-  "description": "Best frontend",
+  "main": "index.js",
+  "description": "Best frontend for express",
   "scripts": {
-    "clean": "rimraf public/assets/js",
-    "eslint": "eslint src/",
-    "flow": "flow --show-all-errors",
-    "lint": "yarn run eslint && yarn run flow",
-    "serve": "node server/index.js",
-    "start": "yarn build:prod && node server/index.js",
-    "serve:watch": "nodemon --watch public --watch server server/index.js",
+    "clean": "rimraf public/assets/js/main.js",
+    "lint": "yarn run eslint",
+    "serve": "node serve.js",
+    "start": "yarn build:prod && yarn serve",
+    "serve:watch": "nodemon --watch public --watch server serve.js",
     "build": "cross-env NODE_ENV=development rollup -c",
     "build:prod": "cross-env NODE_ENV=production rollup -c",
-    "watch": "concurrently \"yarn run build --watch\" \"yarn run serve:watch\"",
-    "deploy": "yarn run build-prod && gh-pages -d .",
-    "test": "jest"
+    "watch": "concurrently \"yarn run build --watch\" \"yarn run serve:watch\""
   },
   "keywords": [
     "lwc",
@@ -31,12 +27,14 @@
   },
   "dependencies": {
     "@best/github-integration": "0.0.11",
-    "@best/store-aws": "0.0.11",
     "apicache": "^1.2.0",
-    "express": "^4.16.2",
     "memoizee": "^0.4.11"
   },
+  "peerDependencies": {
+    "express": "^4.16.2"
+  },
   "devDependencies": {
+    "express": "^4.16.2",
     "babel-eslint": "^8.2.1",
     "concurrently": "^3.5.1",
     "cross-env": "^5.1.3",
