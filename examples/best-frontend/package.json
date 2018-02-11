@@ -1,0 +1,27 @@
+{
+  "name": "best-frontend-example",
+  "version": "0.0.11",
+  "private": true,
+  "description": "Best frontend Example",
+  "scripts": {
+    "serve": "node index.js",
+    "start": "yarn serve"
+  },
+  "keywords": [
+    "lwc",
+    "benchmark",
+    "perf",
+    "testing"
+  ],
+  "author": "LWC Team",
+  "homepage": "https://github.com/salesforce/best",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/salesforce/best"
+  },
+  "dependencies": {
+    "@best/frontend": "0.0.11",
+    "@best/store-aws": "0.0.11",
+    "express": "^4.16.2"
+  }
+}
