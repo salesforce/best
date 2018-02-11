@@ -1,5 +1,21 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.0.11...v) (2018-02-07)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.0.12...v) (2018-02-11)
+
+
+
+<a name="0.0.12"></a>
+## [0.0.12](https://git.soma.salesforce.com/lwc/best/compare/v0.0.11...v0.0.12) (2018-02-11)
+
+
+### Bug Fixes
+
+* **best-build:**  Guard against ambiguous benchmark filename  ([#78](https://git.soma.salesforce.com/lwc/best/issues/78)) ([b9c3f71](https://git.soma.salesforce.com/lwc/best/commits/b9c3f71))
+* **best-frontend:** Allow retry for gitIntegration ([#76](https://git.soma.salesforce.com/lwc/best/issues/76)) ([53c4cf6](https://git.soma.salesforce.com/lwc/best/commits/53c4cf6))
+* **best-frontend:** Fix defaults. Adding minor guards ([#81](https://git.soma.salesforce.com/lwc/best/issues/81)) ([5992eaf](https://git.soma.salesforce.com/lwc/best/commits/5992eaf))
+* **best-frontend:** Fix Retry for git authorization ([#79](https://git.soma.salesforce.com/lwc/best/issues/79)) ([57b7c21](https://git.soma.salesforce.com/lwc/best/commits/57b7c21))
+* **best-frontend:** Missing parameter ([6373de4](https://git.soma.salesforce.com/lwc/best/commits/6373de4))
+* **best-frontend:** Refactor FE package ([1fb2089](https://git.soma.salesforce.com/lwc/best/commits/1fb2089))
+* **best-frontend:** Uncomment critical code ([1fe9f61](https://git.soma.salesforce.com/lwc/best/commits/1fe9f61))
 
 
 
