@@ -1,5 +1,5 @@
 module.exports = {
-    projectName: 'perf-best-examples',
+    projectName: 'simple-benchmarks',
     benchmarkOnClient: true,
     useMacroTaskAfterBenchmark: false,
     benchmarkRunner: '@best/runner-headless',
