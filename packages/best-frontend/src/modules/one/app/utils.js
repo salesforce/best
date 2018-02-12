@@ -63,8 +63,9 @@ export function normalizeStats(state, stats, project, branch) {
 }
 
 export function initializeState(state, serverState) {
-    const { action, stats, projects, branches, selectedProject, selectedBranch} = serverState;
+    const { action, stats, projects, branches, selectedProject, selectedBranch, title } = serverState;
     const navItems = projects.map(p => buildNavItem(p));
+    state.title = title;
     state.projects = projects;
     // eslint-disable-next-line no-return-assign, no-sequences
     state.branches = projects.reduce((r, p) => (r[p] = ['master'], r), {});

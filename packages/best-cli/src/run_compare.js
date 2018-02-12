@@ -19,7 +19,8 @@ export async function runCompare(globalConfig, configs, outputStream) {
         return false;
     }
 
-    const projectName = globalConfig.rootProjectName;
+    const projects = configs.map(cfg => cfg.projectName);
+    const projectNames = projects.length ? projects : [globalConfig.rootProjectName];
     let storageProvider;
     try {
         storageProvider = require(externalStorage);
@@ -28,7 +29,7 @@ export async function runCompare(globalConfig, configs, outputStream) {
     }
 
     preRunMessager.print('\n Fetching benchmark results to compare... \n\n', outputStream);
-    const compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectName, storageProvider);
+    const compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectNames, storageProvider);
 
     if (gitIntegration) {
         await pushBenchmarkComparison(baseCommit, compareCommit, compareResults, globalConfig);

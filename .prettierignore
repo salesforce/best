@@ -3,5 +3,5 @@ build/
 coverage/
 __benchmark_results__/
 public/
-
+examples
 CHANGELOG.md

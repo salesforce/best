@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 const config = {
+    title: 'Best',
     // store: "@best/store-aws",
     storeConfig: {
         // Config shall be passed as env parameters
