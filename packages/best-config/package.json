@@ -1,6 +1,6 @@
 {
   "name": "@best/config",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Best config",
   "keywords": [
     "Best",
@@ -9,8 +9,8 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
-    "@best/regex-util": "0.0.12",
-    "@best/utils": "0.0.12",
+    "@best/regex-util": "0.0.13",
+    "@best/utils": "0.0.13",
     "chalk": "~2.3.0"
   }
 }
