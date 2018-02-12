@@ -1,5 +1,15 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.0.12...v) (2018-02-11)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.0.13...v) (2018-02-12)
+
+
+
+<a name="0.0.13"></a>
+## [0.0.13](https://git.soma.salesforce.com/lwc/best/compare/v0.0.12...v0.0.13) (2018-02-12)
+
+
+### Bug Fixes
+
+* **best-analyzer:** Allow multi-project comparison ([#82](https://git.soma.salesforce.com/lwc/best/issues/82)) ([3431292](https://git.soma.salesforce.com/lwc/best/commits/3431292))
 
 
 
