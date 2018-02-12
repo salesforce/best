@@ -13,7 +13,7 @@ const cacheSuccesses = cache('5 minutes', onlyStatus200);
 // -- Middleware definition ------------------------
 module.exports = function (options = {}) {
     const config = Object.assign({}, defaultOptions, options);
-    const { apiVersion, store } = config;
+    const { apiVersion, store, title } = config;
     const ApiV1 = require(`./server/api_${apiVersion}`);
     const storeInstance = require(store);
     const app = express();
@@ -31,6 +31,7 @@ module.exports = function (options = {}) {
         parent.get(['/', '/home'], cacheSuccesses, async (req, res) => {
             const projects = await storeInstance.getProjects();
             res.send(template.generateHTML({
+                title,
                 projects,
                 action: { type: 'navigateHome', page: 'home' }
             }));
@@ -48,6 +49,7 @@ module.exports = function (options = {}) {
             // const stats = await statsFuture;
 
             const data = {
+                title,
                 projects,
                 // stats,
                 selectedProject: projectName,

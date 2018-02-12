@@ -46,11 +46,18 @@ function compareBenchmarks(baseBenchs, targetBenchs, comparison = []) {
     return comparison;
 }
 
-export async function compareBenchmarkStats(baseCommit, targetCommit, projectName, storageProvider) {
-    const [baseBenchmarks, targetBenchmarks] = await Promise.all([
-        storageProvider.getAllBenchmarkStatsPerCommit(projectName, baseCommit),
-        storageProvider.getAllBenchmarkStatsPerCommit(projectName, targetCommit),
-    ]);
+export async function compareBenchmarkStats(baseCommit, targetCommit, projectNames, storageProvider) {
+    const stats = await Promise.all(
+        projectNames.reduce((reducer, projectName) => [
+            ...reducer,
+            storageProvider.getAllBenchmarkStatsPerCommit(projectName, baseCommit),
+            storageProvider.getAllBenchmarkStatsPerCommit(projectName, targetCommit)
+        ], [])
+    );
+
+    if (stats.length % 2) {
+        throw new Error('Recovered odd number of stats to compare');
+    }
 
     preRunMessager.print('\n Running comparison... \n\n', process.stdout);
 
@@ -60,25 +67,30 @@ export async function compareBenchmarkStats(baseCommit, targetCommit, projectNam
         comparison: [],
     };
 
-    baseBenchmarks.forEach(baseBenchmarkBundle => {
-        const { benchmarkName } = baseBenchmarkBundle;
-        const targetBenchmarkBundle = targetBenchmarks.find(b => b.benchmarkName === benchmarkName);
-        if (!targetBenchmarkBundle) {
-            console.log(`Skipping benchmark ${benchmarkName} since we couldn't find it in commit ${targetCommit}`);
-            return;
-        }
-        const { version: baseVersion, environment: baseEnv, benchmarks: baseBenchs } = baseBenchmarkBundle;
-        const { version: targetVersion, environment: targetEnv, benchmarks: targetBenchs } = targetBenchmarkBundle;
+    while (stats.length) {
+        const baseBenchmarks = stats.shift();
+        const targetBenchmarks = stats.shift();
 
-        if (baseVersion !== targetVersion) {
-            console.log(`Skipping comparing ${benchmarkName} since stat versions are different`);
-        }
+        baseBenchmarks.forEach(baseBenchmarkBundle => {
+            const { benchmarkName } = baseBenchmarkBundle;
+            const targetBenchmarkBundle = targetBenchmarks.find(b => b.benchmarkName === benchmarkName);
+            if (!targetBenchmarkBundle) {
+                console.log(`Skipping benchmark ${benchmarkName} since we couldn't find it in commit ${targetCommit}`);
+                return;
+            }
+            const { version: baseVersion, environment: baseEnv, benchmarks: baseBenchs } = baseBenchmarkBundle;
+            const { version: targetVersion, environment: targetEnv, benchmarks: targetBenchs } = targetBenchmarkBundle;
 
-        compareEnvironment(baseEnv, targetEnv);
+            if (baseVersion !== targetVersion) {
+                console.log(`Skipping comparing ${benchmarkName} since stat versions are different`);
+            }
 
-        const comparison = compareBenchmarks(baseBenchs, targetBenchs);
-        commitComparison.comparison.push({ benchmarkName, comparison });
-    });
+            compareEnvironment(baseEnv, targetEnv);
+
+            const comparison = compareBenchmarks(baseBenchs, targetBenchs);
+            commitComparison.comparison.push({ benchmarkName, comparison });
+        });
+    }
 
     return commitComparison;
 }
