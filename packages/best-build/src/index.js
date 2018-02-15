@@ -22,9 +22,14 @@ function addResolverPlugins({ plugins }) {
         return [];
     }
 
-    const pluginNames = Object.keys(plugins);
-    return pluginNames.map(pluginName => {
-        return require(pluginName)(plugins[pluginName]);
+    return plugins.map((plugin) => {
+        if (typeof plugin === 'string') {
+            return require(plugin)();
+        } else if (Array.isArray(plugin)) {
+            return require(plugin[0])(plugin[1]);
+        }
+
+        return [];
     });
 }
 
@@ -40,10 +45,14 @@ export async function buildBenchmark(entry, projectConfig, globalConfig, message
         plugins: [benchmarkRollup(), ...addResolverPlugins(projectConfig)],
     });
 
+    messager.logState('Bundling benchmark files...');
+
     const bundle = await rollup(inputOptions);
     const outputOptions = Object.assign({}, BASE_ROLLUP_OUTPUT, {
         file: path.join(benchmarkFolder, benchmarkJSFileName),
     });
+
+    messager.logState('Generating artifacts...');
 
     const { code } = await bundle.generate(outputOptions);
     await bundle.write(outputOptions);
@@ -53,6 +62,9 @@ export async function buildBenchmark(entry, projectConfig, globalConfig, message
         benchmarkJS: `./${benchmarkJSFileName}`,
         benchmarkName,
     });
+
+    messager.logState('Saving artifacts...');
+
     fs.writeFileSync(htmlPath, html, 'utf8');
 
     messager.onBenchmarkBuildEnd(entry);

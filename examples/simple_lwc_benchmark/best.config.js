@@ -1,11 +1,12 @@
 module.exports = {
     projectName: 'lwc-examples',
-    plugins: {
-        'rollup-plugin-lwc-compiler': {
+    plugins: [
+        '<rootDir>/custom-rollup-transformer/test.js',
+        ['rollup-plugin-lwc-compiler', {
             rootDir: '<rootDir>/src/',
             mode: 'prod', // We don't really need prod here since this is for test best itself
-        },
-    },
+        }]
+    ],
     benchmarkOnClient: false,
     benchmarkRunner: '@best/runner-headless',
 
