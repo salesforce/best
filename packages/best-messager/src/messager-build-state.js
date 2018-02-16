@@ -42,7 +42,8 @@ const clearStream = buffer => {
             height++;
         }
     }
-    return '\r\x1B[K\r\x1B[1A'.repeat(height);
+
+    return height > 1 ? '\r\x1B[K\r\x1B[1A'.repeat(height) : '';
 };
 
 export default class BuildStateMessager {
@@ -135,7 +136,7 @@ export default class BuildStateMessager {
             return str;
         }, '\n' + INIT_BUILD_TEXT);
 
-        buffer += this._currentState ? `\n Status: ${this._currentState} \n\n` : '\n\n';
+        buffer += this._currentState ? `\n Status: ${this._currentState} \n` : '\n';
 
         this._state.clear = clearStream(buffer);
         this._out(buffer);

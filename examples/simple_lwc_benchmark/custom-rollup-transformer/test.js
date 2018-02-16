@@ -2,7 +2,7 @@
 module.exports = function () {
     return {
         resolveId(importee, importer) {
-            console.log('resolving: ', importee);
+            // console.log('resolving: ', importee, importer);
         }
     };
 };
