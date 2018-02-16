@@ -37,9 +37,15 @@ async function getBenchmarkTests(configs, globalConfig) {
 }
 
 async function buildBundleBenchmarks(benchmarksTests, globalConfig, messager) {
-    const bundle = await Promise.all(
-        benchmarksTests.map(async ({ matches, config }) => buildBenchmarks(matches, config, globalConfig, messager)),
-    );
+    const bundle = [];
+    // @dval: We don't paralelize here for now since this wouldn't give us much,
+    // Unless we do proper spawning on threads
+    for (const benchmarkTest of benchmarksTests) {
+        const { matches, config } = benchmarkTest;
+        const result = await buildBenchmarks(matches, config, globalConfig, messager);
+        bundle.push(result);
+    }
+
     // Flatten the per-project benchmarks tests
     return bundle.reduce((benchmarks, benchBundle) => {
         benchmarks.push(...benchBundle);

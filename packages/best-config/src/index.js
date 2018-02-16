@@ -132,7 +132,7 @@ function normalizeUnmockedModulePathPatterns(options, key) {
     return options[key].map(pattern => replacePathSepForRegex(normalizeRootDirPattern(pattern, options.rootDir)));
 }
 
-function normalizeObjectPathPatterns(options, { rootDir }) {
+function normalizeObjectPathPatterns(options, rootDir) {
     return Object.keys(options).reduce((m, key) => {
         const value = options[key];
         if (typeof value === 'string') {
@@ -144,14 +144,15 @@ function normalizeObjectPathPatterns(options, { rootDir }) {
     }, {});
 }
 
-function normalizePlugins(plugins, globalOptions) {
-    return Object.keys(plugins).reduce((m, plugin) => {
-        const pluginOptions = plugins[plugin];
-        if (pluginOptions) {
-            m[plugin] = normalizeObjectPathPatterns(pluginOptions, globalOptions);
+function normalizePlugins(plugins, { rootDir }) {
+    return plugins.map((plugin) => {
+        if (typeof plugin === 'string') {
+            return normalizeRootDirPattern(plugin, rootDir);
+        } else if (Array.isArray(plugin)) {
+            return [plugin[0], normalizeObjectPathPatterns(plugin[1], rootDir)];
         }
-        return m;
-    }, {});
+        return plugin;
+    });
 }
 
 function normalizeCommits([base, target]) {

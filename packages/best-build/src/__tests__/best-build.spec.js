@@ -8,6 +8,7 @@ const TEMP_DIR_PREFIX = 'best-test-';
 const MOCK_MESSAGER = {
     onBenchmarkBuildStart() {},
     onBenchmarkBuildEnd() {},
+    logState() {}
 };
 
 function tempDir() {
@@ -51,6 +52,7 @@ describe('buildBenchmark', () => {
         const messager = {
             onBenchmarkBuildStart: jest.fn(),
             onBenchmarkBuildEnd: jest.fn(),
+            logState: jest.fn
         };
 
         await buildBenchmark(
@@ -90,9 +92,7 @@ describe('buildBenchmark', () => {
             path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
             {
                 cacheDirectory: tempDir(),
-                plugins: {
-                    'build-plugin-opts': PLUGIN_OPTIONS,
-                },
+                plugins: [['build-plugin-opts', PLUGIN_OPTIONS]],
             },
             {},
             MOCK_MESSAGER,
@@ -127,9 +127,7 @@ describe('buildBenchmark', () => {
             path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
             {
                 cacheDirectory: tempDir(),
-                plugins: {
-                    'build-plugin-hooks': true,
-                },
+                plugins: ['build-plugin-hooks'],
             },
             {},
             MOCK_MESSAGER,

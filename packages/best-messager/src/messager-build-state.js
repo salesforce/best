@@ -42,12 +42,14 @@ const clearStream = buffer => {
             height++;
         }
     }
-    return '\r\x1B[K\r\x1B[1A'.repeat(height);
+
+    return height > 1 ? '\r\x1B[K\r\x1B[1A'.repeat(height) : '';
 };
 
 export default class BuildStateMessager {
     constructor(benchmarksBundle, globalConfig, outputStream) {
         this._bufferStream = [];
+        this._currentState = '';
 
         this._out = outputStream.write.bind(outputStream);
         this._wrapStream(process.stderr);
@@ -94,6 +96,12 @@ export default class BuildStateMessager {
     onBenchmarkBuildEnd(id) {
         const bench = this._state.benchmarks[id];
         bench.state = BUILD_STATE.DONE;
+        this._currentState = '';
+        this._update();
+    }
+
+    logState(state) {
+        this._currentState = state;
         this._update();
     }
 
@@ -122,11 +130,13 @@ export default class BuildStateMessager {
 
     _write() {
         const benchmarks = this._state.benchmarks;
-        const buffer = Object.keys(benchmarks).reduce((str, key) => {
+        let buffer = Object.keys(benchmarks).reduce((str, key) => {
             const benchState = benchmarks[key];
             str += printState(benchState.state) + printDisplayName(benchState.displayPath) + '\n';
             return str;
         }, '\n' + INIT_BUILD_TEXT);
+
+        buffer += this._currentState ? `\n Status: ${this._currentState} \n` : '\n';
 
         this._state.clear = clearStream(buffer);
         this._out(buffer);
