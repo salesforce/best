@@ -1,5 +1,15 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.0.13...v) (2018-02-12)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.1.0...v) (2018-02-16)
+
+
+
+<a name="0.1.0"></a>
+# [0.1.0](https://git.soma.salesforce.com/lwc/best/compare/v0.0.13...v0.1.0) (2018-02-16)
+
+
+### Bug Fixes
+
+* **best-build:** Allow custom plugins ([#84](https://git.soma.salesforce.com/lwc/best/issues/84)) ([8f77b1e](https://git.soma.salesforce.com/lwc/best/commits/8f77b1e))
 
 
 
