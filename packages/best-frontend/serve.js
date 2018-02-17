@@ -27,7 +27,8 @@ const config = {
         // projectsMapping
         // GIT_APP_ID
         // GIT_ORG
-    }
+    },
+    excludeBenchmarks: [],
 };
 
 app.use(BestFE(config));
