@@ -1,5 +1,15 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.2.0...v) (2018-02-16)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.3.0...v) (2018-03-07)
+
+
+
+<a name="0.3.0"></a>
+# [0.3.0](https://git.soma.salesforce.com/lwc/best/compare/v0.2.0...v0.3.0) (2018-03-07)
+
+
+### Bug Fixes
+
+* Disambiguate multiple project benchmarks ([#86](https://git.soma.salesforce.com/lwc/best/issues/86)) ([8eb441c](https://git.soma.salesforce.com/lwc/best/commits/8eb441c))
 
 
 
