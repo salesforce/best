@@ -17,7 +17,7 @@
     "watch": "yarn build && node ./scripts/watch.js",
     "test": "jest --config jest.config.json",
     "perf": "best --externalStorage=@best/store-aws",
-    "start": "lerna exec --scope @best/frontend \"yarn start\"",
+    "start": "lerna exec --scope best-frontend-example \"yarn serve\"",
     "web:watch": "lerna exec --scope @best/frontend 'yarn watch'",
     "web:watch:s3": "STORE_PLUGIN=@best/store-aws lerna exec --scope @best/frontend 'yarn watch'",
     "release": "yarn prepare && lerna publish --exact --force-publish=* --registry='https://npm.lwcjs.org' && yarn changelog",
