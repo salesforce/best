@@ -30,9 +30,6 @@
     "apicache": "^1.2.0",
     "memoizee": "^0.4.11"
   },
-  "peerDependencies": {
-    "express": "~4.16.2"
-  },
   "devDependencies": {
     "concurrently": "^3.5.1",
     "express": "~4.16.2",

@@ -3111,7 +3111,7 @@ expect@^22.0.5:
     jest-message-util "^22.0.3"
     jest-regex-util "^22.0.5"
 
-express@^4.16.2, express@~4.16.2:
+express@~4.16.2:
   version "4.16.2"
   resolved "http://npm.lwcjs.org/express/-/express-4.16.2/e35c6dfe2d64b7dca0a5cd4f21781be3299e076c.tgz#e35c6dfe2d64b7dca0a5cd4f21781be3299e076c"
   dependencies:
