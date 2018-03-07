@@ -30,12 +30,9 @@
     "apicache": "^1.2.0",
     "memoizee": "^0.4.11"
   },
-  "peerDependencies": {
-    "express": "^4.16.2"
-  },
   "devDependencies": {
     "concurrently": "^3.5.1",
-    "express": "^4.16.2",
+    "express": "~4.16.2",
     "lwc-compiler": "0.17.19",
     "lwc-engine": "0.17.19",
     "nodemon": "~1.14.12",
