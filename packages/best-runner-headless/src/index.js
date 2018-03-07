@@ -127,21 +127,25 @@ async function normalizeEnvironment(browser, projectConfig, globalConfig) {
 export async function run({ benchmarkName, benchmarkEntry }, projectConfig, globalConfig, messager) {
     const opts = normalizeRuntimeOptions(projectConfig);
     const state = initializeBenchmarkState(opts);
+    const { projectName } = projectConfig;
 
     let browser;
     try {
         browser = await puppeteer.launch(PUPPETEER_OPTIONS);
         const environment = await normalizeEnvironment(browser, projectConfig, globalConfig);
 
-        messager.onBenchmarkStart(benchmarkName);
+        messager.onBenchmarkStart(benchmarkName, projectName);
 
         const page = await browser.newPage();
         await page.goto('file:///' + benchmarkEntry);
 
         const { results } = await runIterations(page, state, opts, messager);
         return { results, environment };
+    } catch (e) {
+        messager.onBenchmarkError(benchmarkName, projectName);
+        throw e;
     } finally {
-        messager.onBenchmarkEnd(benchmarkName);
+        messager.onBenchmarkEnd(benchmarkName, projectName);
 
         if (browser) {
             await browser.close();

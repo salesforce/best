@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const mkdirp = require('mkdirp');
 const stringLength = require('string-length');
 const micromatch = require('micromatch');
-const babel = require('babel-core');
+const babel = require('@babel/core');
 const getPackages = require('./_getPackages');
 
 const OK = chalk.reset.inverse.bold.green(' DONE ');

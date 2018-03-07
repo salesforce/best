@@ -35,6 +35,10 @@ const printDisplayName = relativeDir => {
     return chalk.dim(dirname + path.sep) + chalk.bold(basename);
 };
 
+const printProject = projectName => {
+    return ' ' + chalk.reset.cyan.dim(`(${projectName})`);
+};
+
 const clearStream = buffer => {
     let height = 0;
     for (let i = 0; i < buffer.length; i++) {
@@ -56,10 +60,12 @@ export default class BuildStateMessager {
         this._wrapStream(process.stdout);
 
         const benchmarksState = benchmarksBundle.reduce((map, { config, matches }) => {
+            const { projectName } = config;
             matches.forEach(benchmarkPath => {
-                map[benchmarkPath] = {
+                map[`${projectName}:${benchmarkPath}`] = {
                     state: BUILD_STATE.QUEUED,
                     displayPath: path.relative(config.rootDir, benchmarkPath),
+                    projectName: config.projectName
                 };
             });
             return map;
@@ -87,14 +93,14 @@ export default class BuildStateMessager {
         }
     }
 
-    onBenchmarkBuildStart(id) {
-        const bench = this._state.benchmarks[id];
+    onBenchmarkBuildStart(benchmarkPath, projectName) {
+        const bench = this._state.benchmarks[`${projectName}:${benchmarkPath}`];
         bench.state = BUILD_STATE.BUILDING;
         this._update();
     }
 
-    onBenchmarkBuildEnd(id) {
-        const bench = this._state.benchmarks[id];
+    onBenchmarkBuildEnd(benchmarkPath, projectName) {
+        const bench = this._state.benchmarks[`${projectName}:${benchmarkPath}`];
         bench.state = BUILD_STATE.DONE;
         this._currentState = '';
         this._update();
@@ -131,8 +137,8 @@ export default class BuildStateMessager {
     _write() {
         const benchmarks = this._state.benchmarks;
         let buffer = Object.keys(benchmarks).reduce((str, key) => {
-            const benchState = benchmarks[key];
-            str += printState(benchState.state) + printDisplayName(benchState.displayPath) + '\n';
+            const { state, displayPath, projectName } = benchmarks[key];
+            str += printState(state) + printDisplayName(displayPath) + printProject(projectName) + '\n';
             return str;
         }, '\n' + INIT_BUILD_TEXT);
 

@@ -1,5 +1,5 @@
 module.exports = {
-    projectName: 'lwc-examples',
+    projectName: 'lwc-examples-prod',
     plugins: [
         '<rootDir>/custom-rollup-transformer/empty-example.js',
         ['rollup-plugin-lwc-compiler', {
