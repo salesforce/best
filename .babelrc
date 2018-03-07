@@ -1,6 +1,5 @@
 {
     "plugins": [
-        "syntax-object-rest-spread",
         ["transform-es2015-modules-commonjs", {
             "allowTopLevelThis": true
         }]

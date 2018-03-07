@@ -1,7 +1,7 @@
 .github/
 build/
 coverage/
-__benchmark_results__/
+__benchmarks_results__/
 public/
 examples
 CHANGELOG.md

@@ -40,22 +40,22 @@ export function storeBenchmarkResults(benchmarkResults, globalConfig) {
     return Promise.all(
         benchmarkResults.map(async benchmarkResult => {
             const { benchmarkName, benchmarkSignature, projectConfig, environment, results, stats } = benchmarkResult;
-            const { benchmarkOutput, cacheDirectory } = projectConfig;
+            const { benchmarkOutput, cacheDirectory, projectName } = projectConfig;
             const { externalStorage } = globalConfig;
-            const outputFolder = path.resolve(benchmarkOutput, `${benchmarkName}_${benchmarkSignature.substr(0, 6)}`);
-            const artifactsFolder = path.resolve(outputFolder, 'artifacts');
-            const benchmarkFolder = path.resolve(cacheDirectory, benchmarkName);
+            const outputFolder = path.join(benchmarkOutput, projectName, `${benchmarkName}_${benchmarkSignature.substr(0, 6)}`);
+            const artifactsFolder = path.join(outputFolder, 'artifacts');
+            const benchmarkFolder = path.join(cacheDirectory, benchmarkName);
 
             mkdirp.sync(outputFolder);
             rimraf.sync(artifactsFolder);
             await copyArtifacts(benchmarkFolder, artifactsFolder);
 
             // Environment
-            fs.writeFileSync(path.resolve(outputFolder, 'environment.md'), formatEnvironment(environment), 'utf8');
+            fs.writeFileSync(path.join(outputFolder, 'environment.md'), formatEnvironment(environment), 'utf8');
 
             // Results
-            fs.writeFileSync(path.resolve(outputFolder, 'stats.json'), formatJSON(stats), 'utf8');
-            fs.writeFileSync(path.resolve(outputFolder, 'raw_results.json'), formatJSON(results), 'utf8');
+            fs.writeFileSync(path.join(outputFolder, 'stats.json'), formatJSON(stats), 'utf8');
+            fs.writeFileSync(path.join(outputFolder, 'raw_results.json'), formatJSON(results), 'utf8');
             benchmarkResult.benchmarkOutputResult = outputFolder;
 
             if (externalStorage) {

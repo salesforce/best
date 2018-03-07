@@ -34,7 +34,7 @@ function addResolverPlugins({ plugins }) {
 }
 
 export async function buildBenchmark(entry, projectConfig, globalConfig, messager) {
-    messager.onBenchmarkBuildStart(entry);
+    messager.onBenchmarkBuildStart(entry, projectConfig.projectName);
 
     const ext = path.extname(entry);
     const benchmarkName = path.basename(entry, ext);
@@ -67,7 +67,7 @@ export async function buildBenchmark(entry, projectConfig, globalConfig, message
 
     fs.writeFileSync(htmlPath, html, 'utf8');
 
-    messager.onBenchmarkBuildEnd(entry);
+    messager.onBenchmarkBuildEnd(entry, projectConfig.projectName);
 
     return {
         benchmarkName,
@@ -79,6 +79,11 @@ export async function buildBenchmark(entry, projectConfig, globalConfig, message
     };
 }
 
-export async function buildBenchmarks(tests, projectConfig, globalConfig, messager) {
-    return Promise.all(tests.map(test => buildBenchmark(test, projectConfig, globalConfig, messager)));
+export async function buildBenchmarks(benchmarks, projectConfig, globalConfig, messager) {
+    const benchBuild = [];
+    for (const benchmark of benchmarks) {
+        const build = await buildBenchmark(benchmark, projectConfig, globalConfig, messager);
+        benchBuild.push(build);
+    }
+    return benchBuild;
 }

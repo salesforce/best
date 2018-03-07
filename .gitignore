@@ -11,5 +11,5 @@ coverage
 *.pem
 
 # Project artifacts
-__benchmark_results__
+__benchmarks_results__
 
