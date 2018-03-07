@@ -1,6 +1,6 @@
 {
   "name": "@best/build",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Best build",
   "keywords": [
     "Best",
@@ -9,8 +9,8 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
-    "@best/messager": "0.2.0",
-    "@best/runtime": "0.2.0",
+    "@best/messager": "0.3.0",
+    "@best/runtime": "0.3.0",
     "rollup": "~0.53.0"
   }
 }
