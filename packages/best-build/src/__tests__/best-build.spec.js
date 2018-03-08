@@ -10,6 +10,7 @@ const MOCK_MESSAGER = {
     onBenchmarkBuildEnd() {},
     logState() {}
 };
+const projectName = 'test';
 
 function tempDir() {
     return fs.mkdtempSync(path.join(os.tmpdir(), TEMP_DIR_PREFIX));
@@ -22,14 +23,15 @@ describe('buildBenchmark', () => {
             path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
             {
                 cacheDirectory,
+                projectName
             },
             {},
             MOCK_MESSAGER,
         );
 
-        expect(fs.statSync(`${cacheDirectory}/single-file`).isDirectory()).toBe(true);
-        expect(fs.statSync(`${cacheDirectory}/single-file/single-file.html`).isFile()).toBe(true);
-        expect(fs.statSync(`${cacheDirectory}/single-file/single-file.js`).isFile()).toBe(true);
+        expect(fs.statSync(`${cacheDirectory}/${projectName}/single-file`).isDirectory()).toBe(true);
+        expect(fs.statSync(`${cacheDirectory}/${projectName}/single-file/single-file.html`).isFile()).toBe(true);
+        expect(fs.statSync(`${cacheDirectory}/${projectName}/single-file/single-file.js`).isFile()).toBe(true);
     });
 
     test('build output', async () => {
@@ -37,6 +39,7 @@ describe('buildBenchmark', () => {
             path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
             {
                 cacheDirectory: tempDir(),
+                projectName
             },
             {},
             MOCK_MESSAGER,
@@ -59,6 +62,8 @@ describe('buildBenchmark', () => {
             path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
             {
                 cacheDirectory: tempDir(),
+                projectName
+
             },
             {},
             messager,
@@ -92,6 +97,7 @@ describe('buildBenchmark', () => {
             path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
             {
                 cacheDirectory: tempDir(),
+                projectName,
                 plugins: [['build-plugin-opts', PLUGIN_OPTIONS]],
             },
             {},
@@ -127,6 +133,7 @@ describe('buildBenchmark', () => {
             path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
             {
                 cacheDirectory: tempDir(),
+                projectName,
                 plugins: ['build-plugin-hooks'],
             },
             {},
