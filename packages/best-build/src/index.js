@@ -34,11 +34,12 @@ function addResolverPlugins({ plugins }) {
 }
 
 export async function buildBenchmark(entry, projectConfig, globalConfig, messager) {
-    messager.onBenchmarkBuildStart(entry, projectConfig.projectName);
+    const { projectName, cacheDirectory } = projectConfig;
+    messager.onBenchmarkBuildStart(entry, projectName);
 
     const ext = path.extname(entry);
     const benchmarkName = path.basename(entry, ext);
-    const benchmarkFolder = path.join(projectConfig.cacheDirectory, benchmarkName);
+    const benchmarkFolder = path.join(cacheDirectory, projectName, benchmarkName);
     const benchmarkJSFileName = benchmarkName + ext;
     const inputOptions = Object.assign({}, BASE_ROLLUP_INPUT, {
         input: entry,
@@ -67,7 +68,7 @@ export async function buildBenchmark(entry, projectConfig, globalConfig, message
 
     fs.writeFileSync(htmlPath, html, 'utf8');
 
-    messager.onBenchmarkBuildEnd(entry, projectConfig.projectName);
+    messager.onBenchmarkBuildEnd(entry, projectName);
 
     return {
         benchmarkName,
