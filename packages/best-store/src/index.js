@@ -44,7 +44,7 @@ export function storeBenchmarkResults(benchmarkResults, globalConfig) {
             const { externalStorage } = globalConfig;
             const outputFolder = path.join(benchmarkOutput, projectName, `${benchmarkName}_${benchmarkSignature.substr(0, 6)}`);
             const artifactsFolder = path.join(outputFolder, 'artifacts');
-            const benchmarkFolder = path.join(cacheDirectory, benchmarkName);
+            const benchmarkFolder = path.join(cacheDirectory, projectName, benchmarkName);
 
             mkdirp.sync(outputFolder);
             rimraf.sync(artifactsFolder);
