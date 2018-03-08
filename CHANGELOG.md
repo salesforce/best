@@ -1,5 +1,15 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.3.0...v) (2018-03-07)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.3.1...v) (2018-03-08)
+
+
+
+<a name="0.3.1"></a>
+## [0.3.1](https://git.soma.salesforce.com/lwc/best/compare/v0.3.0...v0.3.1) (2018-03-08)
+
+
+### Bug Fixes
+
+* Disambiguate paths for build ([#88](https://git.soma.salesforce.com/lwc/best/issues/88)) ([f5e6290](https://git.soma.salesforce.com/lwc/best/commits/f5e6290))
 
 
 
