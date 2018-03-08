@@ -1,7 +1,7 @@
 {
   "name": "best-monorepo",
   "private": true,
-  "description": "Benchmark tool",
+  "description": "Benchmark & Performance tool",
   "repository": {
     "type": "git",
     "url": "https://git.soma.salesforce.com/lwc/best.git"
