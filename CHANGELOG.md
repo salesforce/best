@@ -1,5 +1,15 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.3.1...v) (2018-03-08)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.3.2...v) (2018-03-15)
+
+
+
+<a name="0.3.2"></a>
+## [0.3.2](https://git.soma.salesforce.com/lwc/best/compare/v0.3.1...v0.3.2) (2018-03-15)
+
+
+### Bug Fixes
+
+* Git integration, FE plot index ([#93](https://git.soma.salesforce.com/lwc/best/issues/93)) ([9dad1fb](https://git.soma.salesforce.com/lwc/best/commits/9dad1fb))
 
 
 
