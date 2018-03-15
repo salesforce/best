@@ -44,10 +44,6 @@ function buildPlottyTrace({ commits, values, metric }, opts) {
     };
 }
 
-export function isPlot(element) {
-    return PLOTS.includes(element);
-}
-
 function normalizeTitle(benchmarkName) {
     const parts = benchmarkName.split(':');
     parts.shift();

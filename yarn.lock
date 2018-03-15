@@ -1303,6 +1303,14 @@ babel-plugin-transform-lwc-class@0.17.19:
     "@babel/plugin-proposal-class-properties" "7.0.0-beta.40"
     comment-parser "^0.5.0"
 
+babel-plugin-transform-lwc-class@0.18.0:
+  version "0.18.0"
+  resolved "http://npm.lwcjs.org/babel-plugin-transform-lwc-class/-/babel-plugin-transform-lwc-class-0.18.0/d79949b4b7bc888035522a3c0b2e87eaca7ff6d5.tgz#d79949b4b7bc888035522a3c0b2e87eaca7ff6d5"
+  dependencies:
+    "@babel/helper-module-imports" "7.0.0-beta.40"
+    "@babel/plugin-proposal-class-properties" "7.0.0-beta.40"
+    comment-parser "^0.5.0"
+
 babel-plugin-transform-member-expression-literals@^6.10.0-alpha.caaefb4c:
   version "6.10.0-alpha.f95869d4"
   resolved "http://npm.lwcjs.org/babel-plugin-transform-member-expression-literals/-/babel-plugin-transform-member-expression-literals-6.10.0-alpha.f95869d4/272ebd2a2d4341b86c24dcd84374ae5aa3702874.tgz#272ebd2a2d4341b86c24dcd84374ae5aa3702874"
@@ -5032,11 +5040,36 @@ lwc-compiler@0.17.19:
     rollup "~0.56.2"
     rollup-plugin-replace "^2.0.0"
 
+lwc-compiler@0.18.0:
+  version "0.18.0"
+  resolved "http://npm.lwcjs.org/lwc-compiler/-/lwc-compiler-0.18.0/f8d458104c869210350ee09523a4ae3e7df5661f.tgz#f8d458104c869210350ee09523a4ae3e7df5661f"
+  dependencies:
+    "@babel/core" "7.0.0-beta.40"
+    "@babel/plugin-proposal-class-properties" "7.0.0-beta.40"
+    "@babel/plugin-proposal-object-rest-spread" "7.0.0-beta.40"
+    babel-plugin-transform-lwc-class "0.18.0"
+    babel-preset-compat "0.17.31"
+    babel-preset-minify "0.4.0-alpha.caaefb4c"
+    cssnano "^3.10.0"
+    lwc-template-compiler "0.18.0"
+    parse5 "^3.0.3"
+    postcss "~6.0.19"
+    postcss-plugin-lwc "0.18.0"
+    postcss-selector-parser "^3.1.1"
+    rollup "~0.56.2"
+    rollup-plugin-replace "^2.0.0"
+
 lwc-engine@0.17.19:
   version "0.17.19"
   resolved "http://npm.lwcjs.org/lwc-engine/-/lwc-engine-0.17.19/6a4fd5cb6dd41e1722a3dc31ac491903f9af3257.tgz#6a4fd5cb6dd41e1722a3dc31ac491903f9af3257"
   dependencies:
     observable-membrane "0.17.19"
+
+lwc-engine@0.18.0:
+  version "0.18.0"
+  resolved "http://npm.lwcjs.org/lwc-engine/-/lwc-engine-0.18.0/d3c9fd1a7a84c9a102f9f471721b3e07fa62bb5e.tgz#d3c9fd1a7a84c9a102f9f471721b3e07fa62bb5e"
+  dependencies:
+    observable-membrane "0.18.0"
 
 lwc-module-resolver@0.17.19:
   version "0.17.19"
@@ -5045,9 +5078,31 @@ lwc-module-resolver@0.17.19:
     glob "^7.1.2"
     resolve "1.5.0"
 
+lwc-module-resolver@0.18.0:
+  version "0.18.0"
+  resolved "http://npm.lwcjs.org/lwc-module-resolver/-/lwc-module-resolver-0.18.0/f6f3219fc6cb89466e4b13820e7601a6b30d210c.tgz#f6f3219fc6cb89466e4b13820e7601a6b30d210c"
+  dependencies:
+    glob "^7.1.2"
+    resolve "1.5.0"
+
 lwc-template-compiler@0.17.19:
   version "0.17.19"
   resolved "http://npm.lwcjs.org/lwc-template-compiler/-/lwc-template-compiler-0.17.19/ac0eee7c73664bcfed107090932470e8a085d9a2.tgz#ac0eee7c73664bcfed107090932470e8a085d9a2"
+  dependencies:
+    babel-generator "^6.26.1"
+    babel-template "^6.26.0"
+    babel-traverse "^6.26.0"
+    babel-types "^6.26.0"
+    babylon "^6.17.0"
+    camelcase "^4.1.0"
+    css-parse "^2.0.0"
+    decamelize "^1.2.0"
+    he "^1.1.1"
+    parse5-with-errors "^4.0.1"
+
+lwc-template-compiler@0.18.0:
+  version "0.18.0"
+  resolved "http://npm.lwcjs.org/lwc-template-compiler/-/lwc-template-compiler-0.18.0/b3d4fc47a94dfc5a67934eeff32b64cbd468eeed.tgz#b3d4fc47a94dfc5a67934eeff32b64cbd468eeed"
   dependencies:
     babel-generator "^6.26.1"
     babel-template "^6.26.0"
@@ -5503,6 +5558,10 @@ observable-membrane@0.17.19:
   version "0.17.19"
   resolved "http://npm.lwcjs.org/observable-membrane/-/observable-membrane-0.17.19/5c106a1ced20f1ac2e9f3b542af72ace5452eb07.tgz#5c106a1ced20f1ac2e9f3b542af72ace5452eb07"
 
+observable-membrane@0.18.0:
+  version "0.18.0"
+  resolved "http://npm.lwcjs.org/observable-membrane/-/observable-membrane-0.18.0/f6f0242964253c975821ac88b094a944d0a1af06.tgz#f6f0242964253c975821ac88b094a944d0a1af06"
+
 on-finished@~2.3.0:
   version "2.3.0"
   resolved "http://npm.lwcjs.org/on-finished/-/on-finished-2.3.0/20f1336481b083cd75337992a16971aa2d906947.tgz#20f1336481b083cd75337992a16971aa2d906947"
@@ -5915,6 +5974,13 @@ postcss-ordered-values@^2.1.0:
 postcss-plugin-lwc@0.17.19:
   version "0.17.19"
   resolved "http://npm.lwcjs.org/postcss-plugin-lwc/-/postcss-plugin-lwc-0.17.19/5f8c45a21872f1be155e0f3bc07d91daa736b2f9.tgz#5f8c45a21872f1be155e0f3bc07d91daa736b2f9"
+  dependencies:
+    postcss "^6.0.13"
+    postcss-selector-parser "3.1.1"
+
+postcss-plugin-lwc@0.18.0:
+  version "0.18.0"
+  resolved "http://npm.lwcjs.org/postcss-plugin-lwc/-/postcss-plugin-lwc-0.18.0/6fedd01b93d6887a7cdc988e6193eaa6dfca2735.tgz#6fedd01b93d6887a7cdc988e6193eaa6dfca2735"
   dependencies:
     postcss "^6.0.13"
     postcss-selector-parser "3.1.1"
@@ -6533,6 +6599,15 @@ rollup-plugin-lwc-compiler@0.17.19:
   dependencies:
     glob "^7.1.2"
     lwc-module-resolver "0.17.19"
+    rollup-plugin-compat "0.17.31"
+    rollup-pluginutils "^2.0.1"
+
+rollup-plugin-lwc-compiler@0.18.0:
+  version "0.18.0"
+  resolved "http://npm.lwcjs.org/rollup-plugin-lwc-compiler/-/rollup-plugin-lwc-compiler-0.18.0/04c529d74abb879ae2453586ca2cf080e80ab287.tgz#04c529d74abb879ae2453586ca2cf080e80ab287"
+  dependencies:
+    glob "^7.1.2"
+    lwc-module-resolver "0.18.0"
     rollup-plugin-compat "0.17.31"
     rollup-pluginutils "^2.0.1"
 

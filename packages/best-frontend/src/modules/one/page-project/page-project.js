@@ -1,6 +1,6 @@
 import { api, track, Element } from 'engine';
 import { normalizeForTrending, normalizeForComparison } from "./normalize-benchmarks";
-import { generatePlot, cleanupPlots, isPlot } from "./plots";
+import { generatePlot, cleanupPlots } from "./plots";
 
 export default class HomePage extends Element {
     @api projectId;
@@ -56,10 +56,8 @@ export default class HomePage extends Element {
             cleanupPlots();
             const benchmarks = this.root.querySelectorAll('.benchmark');
             benchmarks.forEach(element => {
-                if (!isPlot(element)) {
-                    const benchmarkName = element.dataset.id;
-                    generatePlot(element, benchmarkName, this.benchmarksTrend[benchmarkName]);
-                }
+                const benchmarkName = element.dataset.id;
+                generatePlot(element, benchmarkName, this.benchmarksTrend[benchmarkName]);
             });
         }
     }
