@@ -1,6 +1,6 @@
 import { api, track, Element } from 'engine';
 import { normalizeForTrending, normalizeForComparison } from "./normalize-benchmarks";
-import { generatePlot, cleanupPlots, isPlot } from "./plots";
+import { generatePlot, cleanupPlots } from "./plots";
 
 export default class HomePage extends Element {
     @api projectId;
