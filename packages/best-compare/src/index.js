@@ -72,7 +72,7 @@ export async function compareBenchmarkStats(baseCommit, targetCommit, projectNam
         const targetBenchmarks = stats.shift();
 
         baseBenchmarks.forEach(baseBenchmarkBundle => {
-            const { benchmarkName } = baseBenchmarkBundle;
+            const { benchmarkName, projectName } = baseBenchmarkBundle;
             const targetBenchmarkBundle = targetBenchmarks.find(b => b.benchmarkName === benchmarkName);
             if (!targetBenchmarkBundle) {
                 console.log(`Skipping benchmark ${benchmarkName} since we couldn't find it in commit ${targetCommit}`);
@@ -88,7 +88,7 @@ export async function compareBenchmarkStats(baseCommit, targetCommit, projectNam
             compareEnvironment(baseEnv, targetEnv);
 
             const comparison = compareBenchmarks(baseBenchs, targetBenchs);
-            commitComparison.comparison.push({ benchmarkName, comparison });
+            commitComparison.comparison.push({ projectName, benchmarkName, comparison });
         });
     }
 

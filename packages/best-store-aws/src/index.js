@@ -55,7 +55,8 @@ export async function getAllBenchmarkStatsPerCommit(projectName, commit) {
                 const fullUrl = url + '/stats.json';
                 console.log(AWS_TEXT + ` Fetching benchmark ${fullUrl}`);
                 const response = await fetch(fullUrl);
-                return response.json();
+                const json = await response.json();
+                return Object.assign(json, { projectName });
             }),
         );
     }

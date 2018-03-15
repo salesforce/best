@@ -52,6 +52,7 @@ export default class App extends Element {
 
         const commits = this.state.lastCommits[projectBranch];
         this.state.pageState = {
+            projectBranch,
             commits,
             commitBenchmarks: commits.map(commit => ({
                 commit,

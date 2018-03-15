@@ -56,10 +56,8 @@ export default class HomePage extends Element {
             cleanupPlots();
             const benchmarks = this.root.querySelectorAll('.benchmark');
             benchmarks.forEach(element => {
-                if (!isPlot(element)) {
-                    const benchmarkName = element.dataset.id;
-                    generatePlot(element, benchmarkName, this.benchmarksTrend[benchmarkName]);
-                }
+                const benchmarkName = element.dataset.id;
+                generatePlot(element, benchmarkName, this.benchmarksTrend[benchmarkName]);
             });
         }
     }
