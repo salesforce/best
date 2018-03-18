@@ -47,7 +47,6 @@ export const options = {
         type: 'string',
     },
     compareStats: {
-        default: undefined,
         description:
             'Compares two benchmark runs for a given commit. ' +
             'If --externalStorage is provided it will use that source' +

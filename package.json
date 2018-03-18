@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.0.0-beta.40",
-    "@babel/plugin-transform-modules-commonjs": "^7.0.0-beta.40",
+    "@babel/plugin-transform-modules-commonjs": "7.0.0-beta.40",
     "chalk": "^2.3.0",
     "commitizen": "^2.9.6",
     "conventional-changelog-cli": "^1.3.5",

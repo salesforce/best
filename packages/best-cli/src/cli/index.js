@@ -38,7 +38,6 @@ export async function run(maybeArgv, project) {
         const projects = getProjectListFromCLIArgs(argsCLI, project);
         await runCLI(argsCLI, projects);
     } catch (error) {
-        console.log('>>', error);
         const errParts = error.stack ? error.stack.split('\n') : ['unknown', 'unknown'];
         errorMessager.print(errParts.shift());
         console.warn(errParts.join('\n'));
