@@ -2,6 +2,7 @@
 .DS_STORE
 
 # Tools artifacts
+playground.js
 node_modules
 build
 coverage
