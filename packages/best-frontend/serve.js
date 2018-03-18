@@ -27,6 +27,7 @@ const config = {
         // projectsMapping
         // GIT_APP_ID
         // GIT_ORG
+        // GIT_REPO
     }
 };
 

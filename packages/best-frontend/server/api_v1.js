@@ -9,45 +9,51 @@ const onlyStatus200 = (req, res) => res.statusCode === 0;
 const cacheSuccesses = cache('2 minutes', onlyStatus200);
 
 // -- Globals configs ---------------------
-
-const GIT_ORG = process.env.GIT_ORG;
-const GIT_PROJECTS = process.env.GIT_PROJECTS || '{}';
+const GIT_REPO = process.env.GIT_REPO;
 let GIT_ORG_API;
-let PROJECTS = {};
 
 const memoizeConfig = { promise: true };
 let memoizedGetBenchPerCommit;
 
 // -- Internal APIs ------------------------
 
-async function getOrganizationInstallation(org) {
+async function getOrganizationInstallation(repo) {
+    const org = repo.split('/')[0];
     const APP = gitIntegration.createGithubApp();
     const gitAppAuth = await APP.authAsApp();
     const installations = await gitAppAuth.apps.getInstallations({});
     const repoInstallation = installations.data.find((i) => i.account.login === org);
     const installationId = repoInstallation.id;
-    const owner = repoInstallation.account.login;
     const gitOrgApi = await APP.authAsInstallation(installationId);
+    const repos = await gitOrgApi.apps.getInstallationRepositories();
+    const activeRepo = repos.data.repositories.find((r) => r.full_name === repo);
+
+    if (!activeRepo) {
+        throw new Error(`Couldn't match git repository '${repo}'`);
+    }
+
     return gitOrgApi;
 }
 
-function initialize(store) {
-    if (GIT_ORG) {
-        PROJECTS = JSON.parse(GIT_PROJECTS[0] === '\'' ? GIT_PROJECTS.slice(1, -1) : GIT_PROJECTS);
-        getOrganizationInstallation(GIT_ORG).then((gitAPI) => {
+function initialize(store, { githubConfig = {} }) {
+    const repo = githubConfig.repo || GIT_REPO;
+    if (repo) {
+        getOrganizationInstallation(repo).then((gitAPI) => {
             GIT_ORG_API = gitAPI;
-        }, () => {
+        }, (err) => {
+            console.log(err);
             console.log(`Unable to initialize Github API`);
         });
     }
+
     // Memoize calls when routers gets invoked
     memoizedGetBenchPerCommit = memoize(async (project, commit) =>
         Object.freeze(store.getAllBenchmarkStatsPerCommit(project, commit), memoizeConfig)
     );
 }
 
-function addRoutes(router, store) {
-    initialize(store);
+function addRoutes(router, store, config) {
+    initialize(store, config);
     router.get('/cache/index', (req, res) => res.json(apicache.getIndex()));
     router.get('/cache/clear', (req, res) => res.json(apicache.clear()));
 
@@ -130,11 +136,10 @@ async function getLatestsCommits(gitRepo, size, retried = false) {
 }
 
 async function getLastCommitStats(store, projectName, branch, size = 30) {
-    const gitRepo = PROJECTS[projectName];
     let gitLastCommits = [];
 
-    if (GIT_ORG_API && gitRepo) {
-        const gitCommits = await getLatestsCommits(gitRepo, size);
+    if (GIT_ORG_API) {
+        const gitCommits = await getLatestsCommits(GIT_REPO, size);
         gitLastCommits = gitCommits.map(c => c.sha.slice(0, 7));
     }
 
