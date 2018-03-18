@@ -14,6 +14,7 @@ let GIT_ORG_API;
 
 const memoizeConfig = { promise: true };
 let memoizedGetBenchPerCommit;
+let gitRepository;
 
 // -- Internal APIs ------------------------
 
@@ -36,9 +37,9 @@ async function getOrganizationInstallation(repo) {
 }
 
 function initialize(store, { githubConfig = {} }) {
-    const repo = githubConfig.repo || GIT_REPO;
-    if (repo) {
-        getOrganizationInstallation(repo).then((gitAPI) => {
+    gitRepository = githubConfig.repo || GIT_REPO;
+    if (gitRepository) {
+        getOrganizationInstallation(gitRepository).then((gitAPI) => {
             GIT_ORG_API = gitAPI;
         }, (err) => {
             console.log(err);
@@ -124,10 +125,10 @@ async function getLatestsCommits(gitRepo, size, retried = false) {
         console.log('[GIT] getCommits() >> FETCH');
         const { data } = await GIT_ORG_API.repos.getCommits({ owner, repo, per_page: size });
         return data;
-    } catch(err) {
+    } catch (err) {
         console.log('[GIT] getCommits() >> RETRY');
         if (err.code === 401 && !retried) {
-            GIT_ORG_API = await getOrganizationInstallation(GIT_ORG);
+            GIT_ORG_API = await getOrganizationInstallation(gitRepository);
             return getLatestsCommits(gitRepo, size, true);
         }
         console.log('[GIT] getCommits() >> ERROR');
