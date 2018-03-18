@@ -22,7 +22,7 @@ module.exports = function (options = {}) {
         // -- Routes ---------------------------
 
         // API for benchmarks, stats & artifacts
-        parent.use('/api/v1', ApiV1.addRoutes(express.Router(), storeInstance));
+        parent.use('/api/v1', ApiV1.addRoutes(express.Router(), storeInstance, config));
 
         // Static assets
         parent.use('/assets', express.static(path.resolve(__dirname, 'public/assets')));
