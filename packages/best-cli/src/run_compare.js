@@ -3,8 +3,13 @@ import { compareBenchmarkStats } from '@best/compare';
 import { pushBenchmarkComparison } from '@best/github-integration';
 
 export async function runCompare(globalConfig, configs, outputStream) {
-    const { gitIntegration, externalStorage, compareStats: commits } = globalConfig;
+    const { gitLocalChanges, gitIntegration, externalStorage, compareStats } = globalConfig;
+    const commits = compareStats || [];
     const [baseCommit, compareCommit] = commits;
+
+    if (gitLocalChanges) {
+        throw new Error('No local changes are allowed when comparing benchmarks');
+    }
 
     if (!externalStorage) {
         throw new Error('WIP - Do not support local comparison just yet. You need a --externalStorage');
