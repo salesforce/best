@@ -1,5 +1,15 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.4.0...v) (2018-03-19)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.4.1...v) (2018-03-19)
+
+
+
+<a name="0.4.1"></a>
+## [0.4.1](https://git.soma.salesforce.com/lwc/best/compare/v0.4.0...v0.4.1) (2018-03-19)
+
+
+### Bug Fixes
+
+* Best agent configuration and forwarding methods ([#98](https://git.soma.salesforce.com/lwc/best/issues/98)) ([6c9e9c1](https://git.soma.salesforce.com/lwc/best/commits/6c9e9c1))
 
 
 
