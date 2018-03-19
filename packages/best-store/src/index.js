@@ -41,8 +41,9 @@ export function storeBenchmarkResults(benchmarkResults, globalConfig) {
         benchmarkResults.map(async benchmarkResult => {
             const { benchmarkName, benchmarkSignature, projectConfig, environment, results, stats } = benchmarkResult;
             const { benchmarkOutput, cacheDirectory, projectName } = projectConfig;
-            const { externalStorage } = globalConfig;
-            const outputFolder = path.join(benchmarkOutput, projectName, `${benchmarkName}_${benchmarkSignature.substr(0, 6)}`);
+            const { externalStorage, gitCommit, gitLocalChanges } = globalConfig;
+            const hash = gitLocalChanges ? 'local_' + benchmarkSignature.substr(0, 6) : gitCommit;
+            const outputFolder = path.join(benchmarkOutput, projectName, `${benchmarkName}_${hash}`);
             const artifactsFolder = path.join(outputFolder, 'artifacts');
             const benchmarkFolder = path.join(cacheDirectory, projectName, benchmarkName);
 

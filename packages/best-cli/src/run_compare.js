@@ -1,6 +1,7 @@
 import { preRunMessager } from '@best/messager';
 import { compareBenchmarkStats } from '@best/compare';
 import { pushBenchmarkComparison } from '@best/github-integration';
+import { runBest } from "./run_best";
 import git from "simple-git/promise";
 
 const isHex = x => /^[0-9a-fA-F]+$/.test(x);
@@ -21,7 +22,6 @@ const normalizeCommit = async (commit, gitCLI) => {
 export async function runCompare(globalConfig, configs, outputStream) {
     const { gitLocalChanges, rootDir, gitIntegration, externalStorage, compareStats = [] } = globalConfig;
     let [baseCommit, compareCommit] = compareStats;
-
 
     if (gitLocalChanges) {
         throw new Error(`Can't compare benchmmarks due to uncommited local changes in this branch.`);
@@ -59,7 +59,10 @@ export async function runCompare(globalConfig, configs, outputStream) {
             preRunMessager.print('\n Fetching benchmark results to compare... \n\n', outputStream);
             compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectNames, storageProvider);
         } else {
-            console.log('Run like a puta!');
+            git.checkout(baseCommit);
+            await runBest({ ...globalConfig, gitCommit: baseCommit }, configs, outputStream);
+
+            console.log('WIP');
         }
 
         if (gitIntegration) {
