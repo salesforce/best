@@ -6,7 +6,7 @@ function template({ targetCommit, baseCommit, tables }) {
         return list;
     }, new Set()));
 
-    const groupTables = projectNames.reduce((projectName, group) => {
+    const groupTables = projectNames.reduce((group, projectName) => {
         const filterTables = tables.filter(t => t.table.projectName === projectName);
         group.push({ 'h2': `*${projectName}*` });
         group.push(...filterTables);
