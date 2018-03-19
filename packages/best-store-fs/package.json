@@ -9,6 +9,7 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
-    "chalk": "~2.3.0"
+    "chalk": "~2.3.0",
+    "globby": "~7.1.1"
   }
 }

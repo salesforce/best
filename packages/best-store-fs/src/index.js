@@ -1,7 +1,16 @@
 import fs from 'fs';
 import chalk from 'chalk';
+import globby from 'globby';
 
-const INIT_RUNNING_TEXT = chalk.bold.dim('\nPushing to AWS(S3)...');
+let ROOT_DIR = process.cwd();
+const IGNORE_PATHS = [
+    '**/node_modules/**',
+    '**/__tests__/**'
+];
+
+export function initialize({ rootDir }) {
+    ROOT_DIR = rootDir || ROOT_DIR;
+}
 
 export async function storeBenchmarkResults(
     fileMap,
@@ -12,7 +21,13 @@ export async function storeBenchmarkResults(
 }
 
 export async function getAllBenchmarkStatsPerCommit(projectName, commit) {
-    console.log('WIP');
+    const pattern = `'**/${projectName}/*.benchmark_${commit}/stats.json'`;
+    const results = await globby([pattern], { cwd: ROOT_DIR, ignore: IGNORE_PATHS });
+    const statsResults = results.map(statsPath => {
+        const stats = JSON.parse(fs.readFileSync(statsPath, 'utf8'));
+        return { ...stats, projectName };
+    });
+    return statsResults;
 }
 
 export function getProjects() {

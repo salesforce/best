@@ -52,6 +52,7 @@ export async function runCompare(globalConfig, configs, outputStream) {
         // If not external storage we will run the benchmarks and compare using fs
         if (!externalStorage) {
             storageProvider = require(STORAGE_FS);
+            storageProvider.initialize({ rootDir });
             // Run base commit
             preRunMessager.print(`\n Running best for commit ${baseCommit} \n`, outputStream);
             await gitCLI.checkout(baseCommit);
@@ -64,6 +65,7 @@ export async function runCompare(globalConfig, configs, outputStream) {
         } else {
             try {
                 storageProvider = require(externalStorage);
+                storageProvider.initialize({});
             } catch (err) {
                 throw new Error(`Can't resolve the externalStorage ${externalStorage}`);
             }
