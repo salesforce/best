@@ -20,6 +20,9 @@ const DONE = chalk.reset.inverse.green.bold(DONE_TEXT) + ' ';
 const ERROR_TEXT = '  ERROR   ';
 const ERROR = chalk.reset.inverse.red.bold(ERROR_TEXT) + ' ';
 const PROGRESS_BAR_WIDTH = 40;
+const COLUMNS = process.stdout.columns || 80;
+const TRUNCATED_TEXT = chalk.reset.dim('(truncated)');
+const TRUNCATED = `.../${TRUNCATED_TEXT}/`;
 
 const printState = state => {
     switch (state) {
@@ -34,6 +37,14 @@ const printState = state => {
         default:
             return '';
     }
+};
+
+const printBenchmarkEntry = benchmarkEntry => {
+    if (benchmarkEntry.length > COLUMNS) {
+        benchmarkEntry = TRUNCATED + benchmarkEntry.slice(TRUNCATED.length - COLUMNS);
+    }
+
+    return chalk.dim(`${benchmarkEntry}\n`);
 };
 
 const printDisplayPath = relativeDir => {
@@ -123,10 +134,7 @@ export default class RunnerMessager {
             return map;
         }, {});
 
-        this._state = {
-            benchmarks: benchmarksState,
-            buffer: '',
-        };
+        this._state = { benchmarks: benchmarksState, buffer: '' };
 
         this._write();
     }
@@ -186,7 +194,7 @@ export default class RunnerMessager {
     }
 
     _clear() {
-        this._out(this._state.clear);
+        this._out(clearStream(this._state.buffer));
     }
 
     _write() {
@@ -214,7 +222,7 @@ export default class RunnerMessager {
             buffer +=
                 [
                     '\n' + PROGRESS_TEXT + chalk.bold.black(displayName) + ' ',
-                    chalk.dim(`${benchmarkEntry}\n`),
+                    printBenchmarkEntry(benchmarkEntry),
                     chalk.bold.black('Avg iteration:        ') + progress.avgIteration.toFixed(2) + 'ms',
                     chalk.bold.black('Completed iterations: ') + progress.executedIterations,
                 ].join('\n') + '\n\n';
@@ -227,7 +235,6 @@ export default class RunnerMessager {
         }
 
         this._state.buffer = buffer;
-        this._state.clear = clearStream(buffer);
         this._out(buffer);
     }
 }

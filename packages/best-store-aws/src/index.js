@@ -13,6 +13,10 @@ function getS3Instance() {
     return S3_INSTANCE;
 }
 
+export function initialize(/* config */) {
+    getS3Instance();
+}
+
 export async function storeBenchmarkResults(
     fileMap,
     { benchmarkName, benchmarkSignature, projectConfig },
