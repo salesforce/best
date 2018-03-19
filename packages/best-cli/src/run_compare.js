@@ -48,29 +48,28 @@ export async function runCompare(globalConfig, configs, outputStream) {
         const projects = configs.map(cfg => cfg.projectName);
         const projectNames = projects.length ? projects : [globalConfig.rootProjectName];
         let storageProvider;
-        let compareResults;
 
-        if (externalStorage) {
+        // If not external storage we will run the benchmarks and compare using fs
+        if (!externalStorage) {
+            storageProvider = require(STORAGE_FS);
+            // Run base commit
+            preRunMessager.print(`\n Running best for commit ${baseCommit} \n\n`, outputStream);
+            await gitCLI.checkout(baseCommit);
+            await runBest({ ...globalConfig, gitCommit: baseCommit }, configs, outputStream);
+
+            // Run compare Commit
+            preRunMessager.print(`\n Running best for commit ${compareCommit} \n\n`, outputStream);
+            await gitCLI.checkout(compareCommit);
+            await runBest({ ...globalConfig, gitCommit: compareCommit }, configs, outputStream);
+        } else {
             try {
                 storageProvider = require(externalStorage);
             } catch (err) {
                 throw new Error(`Can't resolve the externalStorage ${externalStorage}`);
             }
-
-            preRunMessager.print('\n Fetching benchmark results to compare... \n\n', outputStream);
-            compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectNames, storageProvider);
-        } else {
-            storageProvider = require(STORAGE_FS);
-            preRunMessager.print(`\n Running best for commit ${baseCommit} \n\n`, outputStream);
-            await gitCLI.checkout(baseCommit);
-            await runBest({ ...globalConfig, gitCommit: baseCommit }, configs, outputStream);
-
-            preRunMessager.print(`\n Running best for commit ${compareCommit} \n\n`, outputStream);
-            await gitCLI.checkout(compareCommit);
-            await runBest({ ...globalConfig, gitCommit: compareCommit }, configs, outputStream);
-
-            compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectNames, storageProvider);
         }
+
+        const compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectNames, storageProvider);
 
         if (gitIntegration) {
             await pushBenchmarkComparison(baseCommit, compareCommit, compareResults, globalConfig);
