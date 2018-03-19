@@ -59,7 +59,7 @@ export async function runCompare(globalConfig, configs, outputStream) {
             preRunMessager.print('\n Fetching benchmark results to compare... \n\n', outputStream);
             compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectNames, storageProvider);
         } else {
-            await git.checkout(baseCommit);
+            await gitCLI.checkout(baseCommit);
             await runBest({ ...globalConfig, gitCommit: baseCommit }, configs, outputStream);
 
             console.log('WIP');
