@@ -1,5 +1,22 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.3.2...v) (2018-03-15)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.4.0...v) (2018-03-19)
+
+
+
+<a name="0.4.0"></a>
+# [0.4.0](https://git.soma.salesforce.com/lwc/best/compare/v0.3.2...v0.4.0) (2018-03-19)
+
+
+### Bug Fixes
+
+* Simplify github config ([#95](https://git.soma.salesforce.com/lwc/best/issues/95)) ([9a502c6](https://git.soma.salesforce.com/lwc/best/commits/9a502c6))
+
+
+### Features
+
+* **commit:** add commit validation ([#94](https://git.soma.salesforce.com/lwc/best/issues/94)) ([e1bdbb7](https://git.soma.salesforce.com/lwc/best/commits/e1bdbb7))
+* Allow local (fs) comparison ([#96](https://git.soma.salesforce.com/lwc/best/issues/96)) ([5781d55](https://git.soma.salesforce.com/lwc/best/commits/5781d55))
+* Refactor git and cli table display ([#97](https://git.soma.salesforce.com/lwc/best/issues/97)) ([0fc095f](https://git.soma.salesforce.com/lwc/best/commits/0fc095f))
 
 
 
