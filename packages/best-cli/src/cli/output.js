@@ -120,7 +120,7 @@ export function generateComparisonTables(comparisonStats, stream) {
     const tables = generateTables(baseCommit, targetCommit, comparisonStats);
 
     const projectNames = Array.from(tables.reduce((list, tableObj) => {
-        list.add(tableObj.table._projectName);
+        list.add(tableObj._projectName);
         return list;
     }, new Set()));
 
