@@ -34,8 +34,8 @@ function proxifyRunner(benchmarkEntryBundle, runnerConfig, projectConfig, global
                 });
             });
 
-            socket.on('running_benchmark_start', benchName => {
-                messager.onBenchmarkStart(benchName, {
+            socket.on('running_benchmark_start', (benchName, projectName) => {
+                messager.onBenchmarkStart(benchName, projectName, {
                     displayPath: `${host}/${benchName}`,
                 });
             });
@@ -43,8 +43,8 @@ function proxifyRunner(benchmarkEntryBundle, runnerConfig, projectConfig, global
             socket.on('running_benchmark_update', ({ state, opts }) => {
                 messager.updateBenchmarkProgress(state, opts);
             });
-            socket.on('running_benchmark_end', benchName => {
-                messager.onBenchmarkEnd(benchName);
+            socket.on('running_benchmark_end', (benchName, projectName) => {
+                messager.onBenchmarkEnd(benchName, projectName);
             });
 
             // socket.on('disconnect', (s) => {

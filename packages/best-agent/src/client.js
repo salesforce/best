@@ -24,16 +24,16 @@ const LOADER_CONFIG = {
 
 function initializeForwarder(config, socket, logger) {
     return {
-        onBenchmarkStart(benchmarkName) {
-            logger(`STATUS: running_benchmark (${benchmarkName})`);
-            socket.emit('running_benchmark_start', benchmarkName);
+        onBenchmarkStart(benchmarkName, projectName) {
+            logger(`STATUS: running_benchmark ${benchmarkName} (${projectName})`);
+            socket.emit('running_benchmark_start', benchmarkName, projectName);
         },
         updateBenchmarkProgress(state, opts) {
             socket.emit('running_benchmark_update', { state, opts });
         },
-        onBenchmarkEnd(benchmarkName) {
-            logger(`STATUS: finished_benchmark (${benchmarkName})`);
-            socket.emit('running_benchmark_end', benchmarkName);
+        onBenchmarkEnd(benchmarkName, projectName) {
+            logger(`STATUS: finished_benchmark ${benchmarkName} (${projectName})`);
+            socket.emit('running_benchmark_end', benchmarkName, projectName);
         },
     };
 }
