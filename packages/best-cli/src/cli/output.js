@@ -110,7 +110,7 @@ function generateTable(baseCommit, targetCommit, stats) {
         colWidths: [50, 20, 20, 10],
     });
 
-    table._projectName = stats;
+    table._projectName = stats.projectName;
     generateComparisonRows(table, stats);
     return table;
 }
@@ -125,7 +125,7 @@ export function generateComparisonTables(comparisonStats, stream) {
     }, new Set()));
 
     const groupTables = projectNames.reduce((group, projectName) => {
-        const filterTables = tables.filter(t => t.table.projectName === projectName).map(t => t.toString() + '\n');
+        const filterTables = tables.filter(t => t._projectName === projectName).map(t => t.toString() + '\n');
         group.push(projectName + '\n');
         group.push(...filterTables);
         return group;
