@@ -1,12 +1,24 @@
 import json2md from 'json2md';
 
 function template({ targetCommit, baseCommit, tables }) {
+    const projectNames = Array.from(tables.reduce((list, tableObj) => {
+        list.add(tableObj.table.projectName);
+        return list;
+    }, new Set()));
+
+    const groupTables = projectNames.reduce((projectName, group) => {
+        const filterTables = tables.filter(t => t.table.projectName === projectName);
+        group.push({ 'h2': `*${projectName}*` });
+        group.push(...filterTables);
+        return group;
+    }, []);
+
     return json2md([
-        { h2: 'Benchmark comparison ' },
+        { h1: 'Benchmark results ' },
         {
             p: `Base commit: \`${baseCommit}\` | Target commit: \`${targetCommit}\``,
         },
-        ...tables
+        ...groupTables
     ]);
 }
 
