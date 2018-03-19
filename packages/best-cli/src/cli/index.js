@@ -1,5 +1,5 @@
 import * as args from './args';
-import { generateReportTables, generateComparisonTable } from './output';
+import { generateReportTables, generateComparisonTables } from './output';
 import yargs from 'yargs';
 import rimraf from 'rimraf';
 import { getConfigs } from '@best/config';
@@ -71,7 +71,7 @@ export async function runCLI(argsCLI, projects) {
     if (argsCLI.compareStats) {
         results = await runCompare(globalConfig, configs, outputStream);
         if (results) {
-            generateComparisonTable(results, outputStream);
+            generateComparisonTables(results, outputStream);
         }
     } else {
         if (argsCLI.clearResults) {

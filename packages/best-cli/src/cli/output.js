@@ -90,6 +90,7 @@ function generateComparisonRows(table, stats, name = '') {
 
         table.push([
             name + node.name,
+            'duration',
             `${baseStats.median.toFixed(2)} (± ${baseStats.medianAbsoluteDeviation.toFixed(2)}ms)`,
             `${targetStats.median.toFixed(2)} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)}ms)`,
             samplesComparison === 0 ? 'SAME' : samplesComparison === 1 ? 'SLOWER' : 'FASTER',
@@ -99,13 +100,36 @@ function generateComparisonRows(table, stats, name = '') {
     });
 }
 
-export function generateComparisonTable(comparisonStats, stream) {
-    const { baseCommit, targetCommit } = comparisonStats;
+function generateTables(baseCommit, targetCommit, stats) {
+    return stats.comparison.map(comparison => generateTable(baseCommit, targetCommit, comparison));
+}
+
+function generateTable(baseCommit, targetCommit, stats) {
     const table = new Table({
-        head: ['Benchmark name', `base(${baseCommit})`, `target(${targetCommit})`, 'Trend'],
+        head: ['Benchmark name', 'metric', `base(${baseCommit})`, `target(${targetCommit})`, 'Trend'],
         colWidths: [50, 20, 20, 10],
     });
 
-    generateComparisonRows(table, comparisonStats);
-    stream.write(table.toString() + '\n');
+    table._projectName = stats;
+    generateComparisonRows(table, stats);
+    return table;
+}
+
+export function generateComparisonTables(comparisonStats, stream) {
+    const { baseCommit, targetCommit } = comparisonStats;
+    const tables = generateTables(baseCommit, targetCommit, comparisonStats);
+
+    const projectNames = Array.from(tables.reduce((list, tableObj) => {
+        list.add(tableObj.table._projectName);
+        return list;
+    }, new Set()));
+
+    const groupTables = projectNames.reduce((group, projectName) => {
+        const filterTables = tables.filter(t => t.table.projectName === projectName).map(t => t.toString() + '\n');
+        group.push(projectName + '\n');
+        group.push(...filterTables);
+        return group;
+    }, []);
+
+    stream.write(groupTables.join(''));
 }
