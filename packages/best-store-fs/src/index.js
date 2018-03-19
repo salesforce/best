@@ -21,7 +21,7 @@ export async function storeBenchmarkResults(
 }
 
 export async function getAllBenchmarkStatsPerCommit(projectName, commit) {
-    const pattern = `'**/${projectName}/*.benchmark_${commit}/stats.json'`;
+    const pattern = `**/${projectName}/*.benchmark_${commit}/stats.json`;
     const results = await globby([pattern], { cwd: ROOT_DIR, ignore: IGNORE_PATHS });
     const statsResults = results.map(statsPath => {
         const stats = JSON.parse(fs.readFileSync(statsPath, 'utf8'));
