@@ -17,7 +17,6 @@ const MOCK_MESSAGER = {
     updateBenchmarkProgress() {},
     onBenchmarkEnd() {},
     onBenchmarkError() {}
-
 };
 
 describe('run', () => {

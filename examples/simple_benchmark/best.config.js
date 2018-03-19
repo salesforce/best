@@ -3,6 +3,7 @@ module.exports = {
     benchmarkOnClient: true,
     useMacroTaskAfterBenchmark: false,
     benchmarkRunner: '@best/runner-headless',
+    // benchmarkRunner: '@best/runner-remote',
 
     // This is for running @best/runner-remote
     // "benchmarkRunnerConfig": {

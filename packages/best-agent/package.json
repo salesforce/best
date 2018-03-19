@@ -6,7 +6,7 @@
     "Best",
     "LWC"
   ],
-  "main": "build/index.js",
+  "main": "build/cli/index.js",
   "module": "src/index.js",
   "dependencies": {
     "@best/runner": "0.4.0",
