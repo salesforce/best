@@ -53,12 +53,12 @@ export async function runCompare(globalConfig, configs, outputStream) {
         if (!externalStorage) {
             storageProvider = require(STORAGE_FS);
             // Run base commit
-            preRunMessager.print(`\n Running best for commit ${baseCommit} \n\n`, outputStream);
+            preRunMessager.print(`\n Running best for commit ${baseCommit} \n`, outputStream);
             await gitCLI.checkout(baseCommit);
             await runBest({ ...globalConfig, gitCommit: baseCommit }, configs, outputStream);
 
             // Run compare Commit
-            preRunMessager.print(`\n Running best for commit ${compareCommit} \n\n`, outputStream);
+            preRunMessager.print(`\n Running best for commit ${compareCommit} \n`, outputStream);
             await gitCLI.checkout(compareCommit);
             await runBest({ ...globalConfig, gitCommit: compareCommit }, configs, outputStream);
         } else {
