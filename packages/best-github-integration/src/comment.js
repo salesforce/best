@@ -1,12 +1,24 @@
 import json2md from 'json2md';
 
 function template({ targetCommit, baseCommit, tables }) {
+    const projectNames = Array.from(tables.reduce((list, tableObj) => {
+        list.add(tableObj.table.projectName);
+        return list;
+    }, new Set()));
+
+    const groupTables = projectNames.reduce((group, projectName) => {
+        const filterTables = tables.filter(t => t.table.projectName === projectName);
+        group.push({ 'h2': `*${projectName}*` });
+        group.push(...filterTables);
+        return group;
+    }, []);
+
     return json2md([
-        { h2: 'Benchmark comparison ' },
+        { h1: 'Benchmark results ' },
         {
             p: `Base commit: \`${baseCommit}\` | Target commit: \`${targetCommit}\``,
         },
-        ...tables
+        ...groupTables
     ]);
 }
 
@@ -24,6 +36,7 @@ function generateRows(stats, name = '', rows = []) {
 
             allRows.push([
                 name + node.name,
+                'duration',
                 `${baseMed.toFixed(2)} (± ${baseStats.medianAbsoluteDeviation.toFixed(2)} ms)`,
                 `${targetMed.toFixed(2)} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)} ms)`,
                 percentage.toFixed(2) + '% ' + (samplesComparison === 0 ? '👌' : samplesComparison === 1 ? '👎' : '👍'),
@@ -38,8 +51,9 @@ function generateTable(baseCommit, targetCommit, stats) {
     const mdName = benchmarkName.replace('.benchmark', '');
     return {
         table: {
-            headers: [`${mdName} (${projectName})`, `base(\`${baseCommit}\`)`, `target(\`${targetCommit}\`)`, 'trend'],
+            headers: [`${mdName}`, 'metric', `base(\`${baseCommit}\`)`, `target(\`${targetCommit}\`)`, 'trend'],
             rows: generateRows(stats),
+            projectName
         },
     };
 }

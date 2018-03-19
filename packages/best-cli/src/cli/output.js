@@ -90,6 +90,7 @@ function generateComparisonRows(table, stats, name = '') {
 
         table.push([
             name + node.name,
+            'duration',
             `${baseStats.median.toFixed(2)} (± ${baseStats.medianAbsoluteDeviation.toFixed(2)}ms)`,
             `${targetStats.median.toFixed(2)} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)}ms)`,
             samplesComparison === 0 ? 'SAME' : samplesComparison === 1 ? 'SLOWER' : 'FASTER',
@@ -99,13 +100,38 @@ function generateComparisonRows(table, stats, name = '') {
     });
 }
 
-export function generateComparisonTable(comparisonStats, stream) {
-    const { baseCommit, targetCommit } = comparisonStats;
+function generateTables(baseCommit, targetCommit, stats) {
+    return stats.comparison.map(comparison => generateTable(baseCommit, targetCommit, comparison));
+}
+
+function generateTable(baseCommit, targetCommit, stats) {
+    const benchmark = stats.benchmarkName.replace('.benchmark', '');
     const table = new Table({
-        head: ['Benchmark name', `base(${baseCommit})`, `target(${targetCommit})`, 'Trend'],
-        colWidths: [50, 20, 20, 10],
+        head: [`Benchmark: ${benchmark}`, 'metric', `base(${baseCommit})`, `target(${targetCommit})`, 'Trend'],
+        colWidths: [48, 14, 20, 20, 8],
     });
 
-    generateComparisonRows(table, comparisonStats);
-    stream.write(table.toString() + '\n');
+    table._projectName = stats.projectName;
+    generateComparisonRows(table, stats);
+    return table;
+}
+
+export function generateComparisonTables(comparisonStats, stream) {
+    const { baseCommit, targetCommit } = comparisonStats;
+    const tables = generateTables(baseCommit, targetCommit, comparisonStats);
+
+    const projectNames = Array.from(tables.reduce((list, tableObj) => {
+        list.add(tableObj._projectName);
+        return list;
+    }, new Set()));
+
+    const groupTables = projectNames.reduce((group, projectName) => {
+        const filterTables = tables.filter(t => t._projectName === projectName).map(t => t.toString() + '\n');
+        const colorProjectName = chalk.bold.dim(projectName);
+        group.push(`\nProject: ${colorProjectName} \n`);
+        group.push(...filterTables);
+        return group;
+    }, []);
+
+    stream.write(groupTables.join(''));
 }

@@ -17,7 +17,7 @@ export async function storeBenchmarkResults(
     { benchmarkName, benchmarkSignature, projectConfig },
     globalConfig,
 ) {
-    console.log("WIP");
+    throw new Error('Method not implemented yet...');
 }
 
 export async function getAllBenchmarkStatsPerCommit(projectName, commit) {
@@ -31,9 +31,9 @@ export async function getAllBenchmarkStatsPerCommit(projectName, commit) {
 }
 
 export function getProjects() {
-    console.log('WIP');
+    throw new Error('Method not implemented yet...');
 }
 
 export function getCommits(projectName, branch) {
-    console.log('WIP');
+    throw new Error('Method not implemented yet...');
 }
