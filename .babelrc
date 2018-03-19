@@ -4,5 +4,8 @@
             "allowTopLevelThis": true
         }]
     ],
-    "retainLines": true
+    "retainLines": true,
+    "parserOpts": {
+        "plugins": ["objectRestSpread"]
+    }
 }
