@@ -107,7 +107,7 @@ function generateTables(baseCommit, targetCommit, stats) {
 function generateTable(baseCommit, targetCommit, stats) {
     const table = new Table({
         head: ['Benchmark name', 'metric', `base(${baseCommit})`, `target(${targetCommit})`, 'Trend'],
-        colWidths: [50, 10, 20, 20, 10],
+        colWidths: [50, 14, 20, 20, 6],
     });
 
     table._projectName = stats.projectName;
