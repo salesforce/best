@@ -35,6 +35,9 @@ function initializeForwarder(config, socket, logger) {
             logger(`STATUS: finished_benchmark ${benchmarkName} (${projectName})`);
             socket.emit('running_benchmark_end', benchmarkName, projectName);
         },
+        onBenchmarkError(benchmarkName, projectName) {
+            socket.emit('running_benchmark_error', benchmarkName, projectName);
+        },
     };
 }
 
