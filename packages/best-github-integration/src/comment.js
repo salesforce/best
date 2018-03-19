@@ -38,8 +38,9 @@ function generateTable(baseCommit, targetCommit, stats) {
     const mdName = benchmarkName.replace('.benchmark', '');
     return {
         table: {
-            headers: [`${mdName} (${projectName})`, `base(\`${baseCommit}\`)`, `target(\`${targetCommit}\`)`, 'trend'],
+            headers: [`${mdName}`, `base(\`${baseCommit}\`)`, `target(\`${targetCommit}\`)`, 'trend'],
             rows: generateRows(stats),
+            projectName
         },
     };
 }
