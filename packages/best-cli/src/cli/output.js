@@ -107,7 +107,7 @@ function generateTables(baseCommit, targetCommit, stats) {
 function generateTable(baseCommit, targetCommit, stats) {
     const table = new Table({
         head: ['Benchmark name', 'metric', `base(${baseCommit})`, `target(${targetCommit})`, 'Trend'],
-        colWidths: [50, 20, 20, 10],
+        colWidths: [50, 10, 20, 20, 10],
     });
 
     table._projectName = stats.projectName;
@@ -126,7 +126,8 @@ export function generateComparisonTables(comparisonStats, stream) {
 
     const groupTables = projectNames.reduce((group, projectName) => {
         const filterTables = tables.filter(t => t._projectName === projectName).map(t => t.toString() + '\n');
-        group.push(projectName + '\n');
+        const colorProjectName = chalk.bold.dim(projectName);
+        group.push(`\nProject: ${colorProjectName} \n`);
         group.push(...filterTables);
         return group;
     }, []);
