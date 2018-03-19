@@ -4,6 +4,7 @@ import { pushBenchmarkComparison } from '@best/github-integration';
 import { runBest } from "./run_best";
 import git from "simple-git/promise";
 
+const STORAGE_FS = '@best/store-fs';
 const isHex = x => /^[0-9a-fA-F]+$/.test(x);
 const normalizeCommit = async (commit, gitCLI) => {
     if (commit === 'current') {
@@ -59,7 +60,7 @@ export async function runCompare(globalConfig, configs, outputStream) {
             preRunMessager.print('\n Fetching benchmark results to compare... \n\n', outputStream);
             compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectNames, storageProvider);
         } else {
-
+            storageProvider = require(STORAGE_FS);
             preRunMessager.print(`\n Running best for commit ${baseCommit} \n\n`, outputStream);
             await gitCLI.checkout(baseCommit);
             await runBest({ ...globalConfig, gitCommit: baseCommit }, configs, outputStream);
@@ -68,7 +69,7 @@ export async function runCompare(globalConfig, configs, outputStream) {
             await gitCLI.checkout(compareCommit);
             await runBest({ ...globalConfig, gitCommit: compareCommit }, configs, outputStream);
 
-            console.log('WIP');
+            compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectNames, storageProvider);
         }
 
         if (gitIntegration) {

@@ -18,6 +18,7 @@
     "@best/messager": "0.3.2",
     "@best/runner": "0.3.2",
     "@best/store": "0.3.2",
+    "@best/store-fs": "0.3.2",
     "chalk": "~2.3.0",
     "cli-table": "~0.3.1",
     "globby": "~7.1.1",
