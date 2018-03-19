@@ -6,11 +6,16 @@ import { storeBenchmarkResults } from '@best/store';
 import { analyzeBenchmarks } from '@best/analyzer';
 import path from 'path';
 
+const IGNORE_PATHS = [
+    '**/node_modules/**',
+    '**/__tests__/**'
+];
+
 async function getBenchmarkPaths({ nonFlagArgs, rootDir }, config) {
     const { testMatch, rootDir: projectRoot } = config;
     const rootPath = projectRoot || rootDir;
     const paths = nonFlagArgs && nonFlagArgs.length ? nonFlagArgs : testMatch;
-    const results = await globby(paths, { cwd: rootPath });
+    const results = await globby(paths, { cwd: rootPath, ignore: IGNORE_PATHS });
     return results.map(p => path.resolve(rootPath, p));
 }
 
