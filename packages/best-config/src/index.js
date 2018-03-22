@@ -155,6 +155,21 @@ function normalizePlugins(plugins, { rootDir }) {
     });
 }
 
+function normalizeRunnerConfig(runnerConfig, { runner }) {
+    if (!Array.isArray(runnerConfig)) {
+        runnerConfig = [runnerConfig];
+    }
+
+    const defaultRunners = runnerConfig.filter(c => c.name === undefined || c.name === 'default');
+    if (defaultRunners > 1) {
+        throw new Error('Wrong configuration: More than one default configuration declared');
+    }
+
+    const match = runnerConfig.find(c => c.name === runner) || defaultRunners[0] || {};
+
+    return match;
+}
+
 function normalizeCommits([base, target]) {
     base = base + '' || BASE_COMMIT || '';
     target = target + '' || TARGET_COMMIT || '';
@@ -172,6 +187,9 @@ function normalize(options, argsCLI) {
                 break;
             case 'plugins':
                 value = normalizePlugins(options[key], options);
+                break;
+            case 'runnerConfig':
+                value = normalizeRunnerConfig(options[key], options);
                 break;
             case 'compareStats':
                 value = options[key].length ? normalizeCommits(options[key], options) : undefined;
@@ -227,8 +245,8 @@ function _getConfigs(options) {
             roots: options.roots,
 
             projectName: options.projectName,
-            benchmarkRunner: options.benchmarkRunner,
-            benchmarkRunnerConfig: options.benchmarkRunnerConfig,
+            benchmarkRunner: options.runnerConfig.runner || options.runner,
+            benchmarkRunnerConfig: options.runnerConfig.config || options.runnerConfig,
             benchmarkEnvironment: options.benchmarkEnvironment,
             benchmarkEnvironmentOptions: options.benchmarkEnvironmentOptions,
             benchmarkMaxDuration: options.benchmarkMaxDuration,

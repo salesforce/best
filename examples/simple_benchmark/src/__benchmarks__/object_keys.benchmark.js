@@ -4,7 +4,6 @@ import merge from './deep_merge';
 describe('deep_clone', () => {
     benchmark('stringify_parse', () => {
         run(() => {
-            throw new Error('!!');
             JSON.parse(JSON.stringify(MOCK_DATA_SMALL));
         });
     });

@@ -9,7 +9,7 @@ module.exports = {
         },
         {
             "runner": '@best/runner-remote',
-            "name": "remote",
+            "name": "local",
             "config": {
                 "host": "http://localhost:5000",
                 "options": { path: '/best' },
