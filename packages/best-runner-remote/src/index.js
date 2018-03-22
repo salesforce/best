@@ -32,9 +32,14 @@ function proxifyRunner(benchmarkEntryBundle, runnerConfig, projectConfig, global
                 uploader.on('ready', () => {
                     uploader.upload(tarBundle);
                 });
+
+                uploader.on('error', (err) => {
+                    reject(err);
+                });
             });
 
             socket.on('running_benchmark_start', (benchName, projectName) => {
+                messager.logState(`Running benchmarks remotely...`);
                 messager.onBenchmarkStart(benchName, projectName, {
                     displayPath: `${host}/${benchName}`,
                 });
@@ -47,17 +52,28 @@ function proxifyRunner(benchmarkEntryBundle, runnerConfig, projectConfig, global
                 messager.onBenchmarkEnd(benchName, projectName);
             });
 
-            // socket.on('disconnect', (s) => {
-            //     console.log('Disconnected??');
-            // });
+            socket.on('benchmark_enqueued', ({ pending }) => {
+                messager.logState(`Queued in agent. Pending tasks: ${pending}`);
+            });
+
+            socket.on('disconnect', (reason) => {
+                if (reason === 'io server disconnect') {
+                    reject(new Error('Connection terminated'));
+                }
+            });
 
             // socket.on('state_change', (s) => {
             //     console.log('>> State change', s);
             // });
 
-            socket.on('benchmark_error', err => {
-                socket.disconnect();
+            socket.on('error', (err) => {
+                console.log('> ', err);
                 reject(err);
+            });
+
+            socket.on('benchmark_error', err => {
+                console.log(err);
+                reject(new Error('Benchmark couldn\'t finish running. '));
             });
 
             socket.on('benchmark_results', ({ results, environment }) => {

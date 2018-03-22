@@ -1,7 +1,7 @@
 import SocketIOFile from 'socket.io-file';
 import EventEmitter from 'events';
 import path from 'path';
-import { BENCHMARK_TASK, DISCONNECT, LOAD_BENCHMARK } from './operations';
+import { ERROR, BENCHMARK_TASK, DISCONNECT, LOAD_BENCHMARK } from './operations';
 import { cacheDirectory } from '@best/utils';
 import { x as extractTar } from 'tar';
 
@@ -16,8 +16,8 @@ const STATE_COMPLETED = 'done';
 const LOADER_CONFIG = {
     uploadDir: path.join(cacheDirectory('best_agent'), 'uploads'),
     accepts: [],
-    maxFileSize: 4194304,
-    chunkSize: 10240, // 1kb
+    maxFileSize: 52428800, // 50 mb
+    chunkSize: 10240, // 10kb
     transmissionDelay: 0,
     overwrite: true,
 };
@@ -76,8 +76,8 @@ class SocketClient extends EventEmitter {
                 clearTimeout(this._timeout);
                 this.socket.disconnect(true);
             }
-            this.emit(DISCONNECT);
             this._log(`STATUS: disconnected (${forcedError || 'socket disconnected'})`);
+            this.emit(DISCONNECT);
         }
     }
 
@@ -106,17 +106,23 @@ class SocketClient extends EventEmitter {
         });
     }
 
+    onUploaderError(data) {
+        this.emit(ERROR, data);
+    }
+
     loadBenchmarks() {
         const uploader = new SocketIOFile(this.socket, LOADER_CONFIG);
         uploader.on('start', () => clearTimeout(this._timeout));
         uploader.on('stream', ({ wrote, size }) => this._log(`downloading ${wrote} / ${size}`));
         uploader.on('complete', info => this.onLoadedBenchmarks(info));
+        uploader.on('error', (err) => this.onUploaderError(err));
         this.setState(STATE_LOADING_FILES);
         this.socket.emit(LOAD_BENCHMARK);
         this.setTimeout(5000);
     }
 
-    setEnqueued() {
+    setEnqueued(status) {
+        this.socket.emit('benchmark_enqueued', status);
         this.setState(STATE_QUEUED);
     }
 
@@ -127,7 +133,7 @@ class SocketClient extends EventEmitter {
     sendBenchmarkResults(err, benchmarkResults) {
         if (err) {
             this._log(`Sending error`);
-            this.socket.emit('benchmark_error', err);
+            this.socket.emit('benchmark_error', err.toString());
         } else {
             this._log(`Sending results`);
             this.socket.emit('benchmark_results', benchmarkResults);
