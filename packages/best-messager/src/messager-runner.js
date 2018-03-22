@@ -170,6 +170,11 @@ export default class RunnerMessager {
         bench.state = BUILD_STATE.ERROR;
     }
 
+    logState(state) {
+        this._currentState = state;
+        this._update();
+    }
+
     finishRun() {
         this._update(true);
     }
@@ -229,6 +234,8 @@ export default class RunnerMessager {
 
             buffer += renderTime(progress.runtime, progress.estimated, 40);
         }
+
+        buffer += this._currentState ? `\n Status: ${this._currentState} \n` : '\n';
 
         if (errors) {
             buffer += '\n' + errors;

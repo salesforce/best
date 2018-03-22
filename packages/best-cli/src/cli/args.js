@@ -58,4 +58,17 @@ export const options = {
         description: 'Integrates with Git, posting the results of the benchmark or comparison',
         type: 'boolean',
     },
+    runner: {
+        default: 'default',
+        description:
+            'Select the runner to execute the benchmarks.' +
+            'Make sure you have defined `runnerConfig` options in your Best config file' +
+            'By default it will use @best/runner-headless',
+        type: 'string',
+    },
+    runnerConfig: {
+        default: undefined,
+        description: 'JSON representation of the configuration to use for the give runner',
+        type: 'string',
+    },
 };

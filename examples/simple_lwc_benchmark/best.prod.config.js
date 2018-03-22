@@ -8,12 +8,19 @@ module.exports = {
         }]
     ],
     benchmarkOnClient: false,
-    benchmarkRunner: '@best/runner-headless',
-
-    // This is for running @best/runner-remote
-    // "benchmarkRunnerConfig": {
-    //     "host": "http://localhost:5000",
-    //     "options": { path: '/best' },
-    //     "remoteRunner": "@best/runner-headless"
-    // },
+    "runnerConfig": [
+        {
+            "runner": "@best/runner-headless",
+            "name": "default"
+        },
+        {
+            "runner": '@best/runner-remote',
+            "name": "remote",
+            "config": {
+                "host": "http://localhost:5000",
+                "options": { path: '/best' },
+                "remoteRunner": "@best/runner-headless"
+            }
+        }
+    ],
 };
