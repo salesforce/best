@@ -1,5 +1,5 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.5.0...v) (2018-03-22)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.5.0...v) (2018-04-13)
 
 
 
