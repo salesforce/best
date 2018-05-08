@@ -18,5 +18,9 @@ export function generateParametrizedHTML(html, options) {
 }
 
 export function generateDefaultHTML(options) {
-    return generateParametrizedHTML(DEFAULT_HTML, options);
+    let template = DEFAULT_HTML;
+    if (Object.keys(options).indexOf("customTemplate") > -1) {
+        template = options.customTemplate;
+    }
+    return generateParametrizedHTML(template, options);
 }

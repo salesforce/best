@@ -2,6 +2,7 @@ import { rollup } from 'rollup';
 import path from 'path';
 import benchmarkRollup from './rollup-plugin-benchmark-import';
 import { generateDefaultHTML } from './html-templating';
+import { ncp } from 'ncp';
 import fs from 'fs';
 import crypto from 'crypto';
 
@@ -33,12 +34,33 @@ function addResolverPlugins({ plugins }) {
     });
 }
 
+function copyPublicFolder(source, destination) {
+    return new Promise((resolve, reject) => {
+        ncp(source, destination, err => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
+function overwriteDefaultTemplate(templatePath, rootDir, publicFolder) {
+    const template = fs.readFileSync(templatePath, 'utf8');
+    let templateOptions = {};
+    templateOptions["customTemplate"] = template;
+    templateOptions["publicFolder"] = publicFolder;
+    return templateOptions;
+}
+
 export async function buildBenchmark(entry, projectConfig, globalConfig, messager) {
     const { projectName, cacheDirectory } = projectConfig;
     messager.onBenchmarkBuildStart(entry, projectName);
 
     const ext = path.extname(entry);
     const benchmarkName = path.basename(entry, ext);
+    const publicFolder = path.join(cacheDirectory, projectName, "public");
     const benchmarkFolder = path.join(cacheDirectory, projectName, benchmarkName);
     const benchmarkJSFileName = benchmarkName + ext;
     const inputOptions = Object.assign({}, BASE_ROLLUP_INPUT, {
@@ -59,10 +81,22 @@ export async function buildBenchmark(entry, projectConfig, globalConfig, message
     await bundle.write(outputOptions);
 
     const htmlPath = path.resolve(path.join(benchmarkFolder, benchmarkName + '.html'));
-    const html = generateDefaultHTML({
+    const projectTemplatePath = path.resolve(path.join(projectConfig.rootDir, 'src', 'template.benchmark.html'));
+    const benchmarkTemplatePath = path.resolve(path.join(entry, '..', 'template.benchmark.html'));
+    const generateHTMLOptions = {
         benchmarkJS: `./${benchmarkJSFileName}`,
-        benchmarkName,
-    });
+        benchmarkName
+    };
+
+    if (fs.existsSync(benchmarkTemplatePath)) {
+        Object.assign(generateHTMLOptions, overwriteDefaultTemplate(benchmarkTemplatePath, projectConfig.rootDir, publicFolder));
+        await copyPublicFolder(path.resolve(path.join(projectConfig.rootDir, "public")), publicFolder);
+    } else if (fs.existsSync(projectTemplatePath)) {
+        Object.assign(generateHTMLOptions, overwriteDefaultTemplate(projectTemplatePath, projectConfig.rootDir, publicFolder));
+        await copyPublicFolder(path.resolve(path.join(projectConfig.rootDir, "public")), publicFolder);
+    }
+
+    const html = generateDefaultHTML(generateHTMLOptions);
 
     messager.logState('Saving artifacts...');
 
