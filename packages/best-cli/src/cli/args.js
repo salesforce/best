@@ -18,7 +18,8 @@ export const options = {
     },
     projects: {
         description:
-            'A list of projects that use Best to run all tests of all ' + 'projects in a single instance of Best.',
+            'A list of projects that use Best to run all tests of all ' +
+            'projects in a single instance of Best.',
         type: 'array',
     },
     iterations: {
@@ -41,7 +42,7 @@ export const options = {
         default: undefined,
         description:
             'This option allows to save the results in an arbitrary storage system.' +
-            'This strage must be a node module that exports a function ' +
+            'This storage must be a node module that exports a function ' +
             'called `storeResults`, expecting benchmarkResults as the first argument ' +
             'and a globalConfig as the second argument',
         type: 'string',

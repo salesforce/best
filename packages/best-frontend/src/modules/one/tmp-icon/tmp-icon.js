@@ -35,8 +35,7 @@ export default class LightningIcon extends Element {
 
         if (this.state.category !== 'utility') {
             if (variant) {
-                // eslint-disable-next-line eslint-comments/no-unused-disable
-                window.console.warn(`${this} The "${variant}" variant may not be used with the icon category "${this.state.category}". Variants are meant to be used with "utility" icons.`); // eslint-disable-line no-console
+                window.console.warn(`${this} The "${variant}" variant may not be used with the icon category "${this.state.category}". Variants are meant to be used with "utility" icons.`);
             }
             // If a non-utility icon, use the 'bare' variant
             variant = 'bare';
@@ -54,7 +53,6 @@ export default class LightningIcon extends Element {
                 [iconUtil.computeSldsClass(oldValue)]: false,
             });
         } else {
-            // eslint-disable-next-line no-console
             console.error(`${this} Invalid icon name ${newValue}`);
         }
     }
@@ -65,5 +63,4 @@ export default class LightningIcon extends Element {
             this.handleIconNameChange(oldValue, newValue);
         }
     }
-
 }

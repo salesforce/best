@@ -414,10 +414,10 @@ class ReactiveProxyHandler {
         return true;
     }
     apply(target /*, thisArg: any, argArray?: any*/) {
-        
+
     }
     construct(target, argArray, newTarget) {
-        
+
     }
     has(shadowTarget, key) {
         const { originalTarget } = this;
@@ -444,7 +444,7 @@ class ReactiveProxyHandler {
         return targetIsExtensible;
     }
     setPrototypeOf(shadowTarget, prototype) {
-        
+
     }
     getPrototypeOf(shadowTarget) {
         const { originalTarget } = this;
@@ -572,7 +572,7 @@ function createPublicPropertyDescriptor(proto, key, descriptor) {
                 vmBeingUpdated = vm;
                 const observable = isObservable(newValue);
                 newValue = observable ? getReactiveProxy(newValue) : newValue;
-                
+
             }
             if (vmBeingUpdated === vm) {
                 // not need to wrap or check the value since that is happening somewhere else
@@ -602,7 +602,7 @@ function createPublicAccessorDescriptor(proto, key, descriptor) {
                 vmBeingUpdated = vm;
                 const observable = isObservable(newValue);
                 newValue = observable ? getReactiveProxy(newValue) : newValue;
-                
+
             }
             if (vmBeingUpdated === vm) {
                 // not need to wrap or check the value since that is happening somewhere else
@@ -1115,10 +1115,10 @@ const slotsetProxyHandler = {
         return false;
     },
     apply() {
-        
+
     },
     construct() {
-        
+
     }
 };
 function applyTokenToHost(vm, html) {
@@ -1146,7 +1146,7 @@ function evaluateTemplate(vm, html) {
         vm.cmpTemplate = html;
         context.tplCache = create(null);
         context.tplToken = html.token;
-        
+
     }
     const { proxy: slotset, revoke: slotsetRevoke } = Proxy.revocable(cmpSlots, slotsetProxyHandler);
     let vnodes = html.call(undefined, api, component, slotset, context.tplCache);
@@ -1209,7 +1209,7 @@ function invokeComponentRenderMethod(vm) {
         if (isFunction(html)) {
             result = evaluateTemplate(vm, html);
         } else if (!isUndefined(html)) {
-            
+
         }
     } catch (e) {
         error = e;
@@ -1266,7 +1266,7 @@ function createComponent(vm, Ctor) {
     vmBeingConstructed = vm;
     const component = invokeComponentConstructor(vm, Ctor);
     vmBeingConstructed = vmBeingConstructedInception;
-    
+
 }
 function linkComponent(vm) {
     const { def: { wire } } = vm;
@@ -1327,7 +1327,7 @@ function removeComponentEventListener(vm, eventName, oldHandler) {
             return;
         }
     }
-    
+
 }
 function dispatchComponentEvent(vm, event) {
     const { cmpEvents, component } = vm;
@@ -1935,7 +1935,7 @@ function initializeComponent(oldVnode, vnode) {
     } else {
         createVM(vnode);
     }
-    
+
 }
 var componentInit = {
     create: initializeComponent,
@@ -2403,7 +2403,7 @@ class SimpleBench$1 extends ComponentElement {
     constructor(...args) {
         var _temp;
 
-        return _temp = super(...args), this.test = 'benchnark', this.items = ITEMS, _temp;
+        return _temp = super(...args), this.test = 'benchmark', this.items = ITEMS, _temp;
     }
 
     render() {

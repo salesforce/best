@@ -28,7 +28,6 @@ function validateBenchmarkNames(matches) {
         visited[filename] = true;
         return visited;
     }, {});
-
 }
 
 async function getBenchmarkTests(configs, globalConfig) {
@@ -43,7 +42,7 @@ async function getBenchmarkTests(configs, globalConfig) {
 
 async function buildBundleBenchmarks(benchmarksTests, globalConfig, messager) {
     const bundle = [];
-    // @dval: We don't paralelize here for now since this wouldn't give us much,
+    // @dval: We don't parallelize here for now since this wouldn't give us much,
     // Unless we do proper spawning on threads
     for (const benchmarkTest of benchmarksTests) {
         const { matches, config } = benchmarkTest;

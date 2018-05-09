@@ -63,7 +63,7 @@ export function compare(sample1, sample2) {
     }
 
     function getZ(n) {
-        return (n - size1 * size2 / 2) / Math.sqrt(size1 * size2 * (size1 + size2 + 1) / 12);
+        return (n - (size1 * size2 / 2)) / Math.sqrt(size1 * size2 * (size1 + size2 + 1) / 12);
     }
 
     if (size1 + size2 < 30) {

@@ -40,11 +40,10 @@ module.exports = function (options = {}) {
         // -- [HTML] Projects
         parent.get('/projects/:projectName/:branch', async (req, res) => {
             const { projectName, branch } = req.params;
-            const { raw } = req.query;
 
             // Parallelize promises, un-comment stats to push it to the client
             const projectsFuture = storeInstance.getProjects();
-            // const statsFuture = ApiV1.getLastCommitStats(storeInstance, projectName, branch, raw);
+            // const statsFuture = ApiV1.getLastCommitStats(storeInstance, projectName, branch, req.query.raw);
             const projects = await projectsFuture;
             // const stats = await statsFuture;
 
