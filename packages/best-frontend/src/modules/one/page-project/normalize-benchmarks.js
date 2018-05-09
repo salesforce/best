@@ -45,38 +45,40 @@ function collectBenchmarkNames(benchmarkTreeNode, list = {}, name = '') {
 }
 
 export function normalizeForTrending(commitsBenchmarks, stat = 'median') {
-    if (commitsBenchmarks) {
-        // Get all benchmarks and metrics
-        const allBenchmarks = commitsBenchmarks.reduce((r, c) => collectBenchmarkNames(c, r), {});
-
-        const benchmarkTrend = Object.keys(allBenchmarks).reduce((benchCollector, benchmark) => {
-            const metrics = Object.keys(allBenchmarks[benchmark]).reduce((metricCollector, k) => {
-                metricCollector[k] = { metric: k, stat, commits: [], values: [] };
-                return metricCollector;
-            }, {});
-            benchCollector[benchmark] = metrics;
-            return benchCollector;
-        }, {});
-
-        return commitsBenchmarks.reduce((benchTrend, cb) => {
-            const commitBenchmarks = collectBenchmarkData(cb, cb.commit, stat);
-            return Object.keys(allBenchmarks).reduce((bTrend, benchmarkName) => {
-                if (!commitBenchmarks[benchmarkName]) {
-                    commitBenchmarks[benchmarkName] = Object.keys(bTrend[benchmarkName]).reduce((collector, metric) => {
-                        collector[metric] = { commit: cb.commit, value: null };
-                        return collector;
-                    }, {});
-                }
-
-                return Object.keys(bTrend[benchmarkName]).reduce((trend, metric) => {
-                    const metricObj = trend[benchmarkName][metric];
-                    metricObj.commits.push(commitBenchmarks[benchmarkName][metric].commit);
-                    metricObj.values.push(commitBenchmarks[benchmarkName][metric].value);
-                    return trend;
-                }, bTrend);
-            }, benchTrend);
-        }, benchmarkTrend);
+    if (!commitsBenchmarks) {
+        return {};
     }
+
+    // Get all benchmarks and metrics
+    const allBenchmarks = commitsBenchmarks.reduce((r, c) => collectBenchmarkNames(c, r), {});
+
+    const benchmarkTrend = Object.keys(allBenchmarks).reduce((benchCollector, benchmark) => {
+        const metrics = Object.keys(allBenchmarks[benchmark]).reduce((metricCollector, k) => {
+            metricCollector[k] = { metric: k, stat, commits: [], values: [] };
+            return metricCollector;
+        }, {});
+        benchCollector[benchmark] = metrics;
+        return benchCollector;
+    }, {});
+
+    return commitsBenchmarks.reduce((benchTrend, cb) => {
+        const commitBenchmarks = collectBenchmarkData(cb, cb.commit, stat);
+        return Object.keys(allBenchmarks).reduce((bTrend, benchmarkName) => {
+            if (!commitBenchmarks[benchmarkName]) {
+                commitBenchmarks[benchmarkName] = Object.keys(bTrend[benchmarkName]).reduce((collector, metric) => {
+                    collector[metric] = { commit: cb.commit, value: null };
+                    return collector;
+                }, {});
+            }
+
+            return Object.keys(bTrend[benchmarkName]).reduce((trend, metric) => {
+                const metricObj = trend[benchmarkName][metric];
+                metricObj.commits.push(commitBenchmarks[benchmarkName][metric].commit);
+                metricObj.values.push(commitBenchmarks[benchmarkName][metric].value);
+                return trend;
+            }, bTrend);
+        }, benchTrend);
+    }, benchmarkTrend);
 }
 
 export function normalizeForComparison(benchmarks, finalBenchmarkName) {

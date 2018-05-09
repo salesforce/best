@@ -1,7 +1,6 @@
 /* eslint-env node */
 const apicache = require('apicache');
 const memoize = require('memoizee');
-const crypto = require('crypto');
 const gitIntegration = require("@best/github-integration");
 
 const cache = apicache.middleware;
@@ -123,7 +122,7 @@ async function getLatestsCommits(gitRepo, size, retried = false) {
     const [owner, repo] = gitRepo.split('/');
     try {
         console.log('[GIT] getCommits() >> FETCH');
-        const { data } = await GIT_ORG_API.repos.getCommits({ owner, repo, per_page: size });
+        const { data } = await GIT_ORG_API.repos.getCommits({ owner, repo, "per_page": size });
         return data;
     } catch (err) {
         console.log('[GIT] getCommits() >> RETRY');
@@ -145,10 +144,10 @@ async function getLastCommitStats(store, projectName, branch, size = 30) {
     }
 
     const commits = await store.getCommits(projectName, branch);
-    const lastCommits = gitLastCommits.length ? gitLastCommits.reverse().filter((i) => commits.indexOf(i) !== -1 ) : commits.slice(0, size);
+    const lastCommits = gitLastCommits.length ? gitLastCommits.reverse().filter((i) => commits.indexOf(i) !== -1) : commits.slice(0, size);
 
     const lastCommitBenchmarks = await Promise.all(lastCommits.map(async (commit) => {
-        let benchmarks = await memoizedGetBenchPerCommit(projectName, commit);
+        const benchmarks = await memoizedGetBenchPerCommit(projectName, commit);
         return { commit, benchmarks };
     }));
 

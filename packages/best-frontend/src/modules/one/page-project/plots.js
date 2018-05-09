@@ -28,7 +28,7 @@ function buildPlottyLayout({ title }) {
     };
 }
 
-function buildPlottyTrace({ commits, values, metric }, opts) {
+function buildPlottyTrace({ commits, values, metric }) {
     return {
         // Using a zero-width char (https://en.wikipedia.org/wiki/Zero-width_space) to force plotty to render labels
         x: commits.map(c => '#\u200B' + c),
@@ -67,7 +67,7 @@ export function cleanupPlots() {
 }
 
 let debounceResize = false;
-window.onresize = function() {
+window.onresize = function () {
     if (!debounceResize) {
         debounceResize = true;
         setTimeout(() => {
@@ -80,5 +80,4 @@ window.onresize = function() {
             });
         }, 100);
     }
-
 };
