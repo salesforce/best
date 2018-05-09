@@ -1,5 +1,4 @@
 import fs from 'fs';
-import chalk from 'chalk';
 import globby from 'globby';
 
 let ROOT_DIR = process.cwd();
@@ -13,9 +12,9 @@ export function initialize({ rootDir }) {
 }
 
 export async function storeBenchmarkResults(
-    fileMap,
-    { benchmarkName, benchmarkSignature, projectConfig },
-    globalConfig,
+    // fileMap,
+    // { benchmarkName, benchmarkSignature, projectConfig },
+    // globalConfig,
 ) {
     throw new Error('Method not implemented yet...');
 }
@@ -34,6 +33,6 @@ export function getProjects() {
     throw new Error('Method not implemented yet...');
 }
 
-export function getCommits(projectName, branch) {
+export function getCommits(/* projectName, branch */) {
     throw new Error('Method not implemented yet...');
 }

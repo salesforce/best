@@ -32,14 +32,14 @@ export default class App extends Element {
                 this.state.selectedPage = page;
                 this.state.pageType = 'project';
                 updateURL(unwrap(action), `/projects/${page}/${branch}`);
-                this.setProjectLastestStats(page, branch);
+                this.setProjectLatestStats(page, branch);
                 break;
 
             default: break;
         }
     }
 
-    async setProjectLastestStats(project, branch = "master") {
+    async setProjectLatestStats(project, branch = "master") {
         const projectBranch = `${project}:${branch}`;
         if (!this.state.lastCommits[projectBranch]) {
             this.state.pageState = {};
@@ -81,7 +81,6 @@ export default class App extends Element {
             } else {
                 window.console.log('>> [Item selected] - callback: entityApiName not found');
             }
-
         }
     }
 }

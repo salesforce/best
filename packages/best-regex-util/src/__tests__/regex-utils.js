@@ -1,5 +1,3 @@
-/* eslint-disable no-useless-escape */
-
 import { replacePathSepForRegex, escapeStrForRegex, escapePathForRegex } from '../index';
 
 jest.mock('path');

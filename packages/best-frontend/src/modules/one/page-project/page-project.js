@@ -18,7 +18,7 @@ export default class HomePage extends Element {
         this._projectState = newState;
         this.benchmarksTrend = normalizeForTrending(commitBenchmarks);
 
-        // TODO: remove me one we have the logc for clicking correct
+        // TODO: remove me one we have the logic for clicking correct
         // if (commitBenchmarks && commitBenchmarks.length && this.benchmarksTrend && !this.selectedCommits.length) {
         //     this.selectedCommits.push({
         //         commit: newState.commits[newState.commits.length - 1],
@@ -40,15 +40,15 @@ export default class HomePage extends Element {
 
     get selectedCommitsBenchmarks() {
         const commitBenchmarks = this._projectState.commitBenchmarks;
-        if (commitBenchmarks.length) {
-            return this.selectedCommits.map(({ commit, benchmarkName }) => {
+        return commitBenchmarks.length
+            ? this.selectedCommits.map(({ commit, benchmarkName }) => {
                 const { benchmarks } = commitBenchmarks.filter((commitBench) => commitBench.commit === commit)[0];
                 return {
                     commit,
                     benchmark: normalizeForComparison(benchmarks, benchmarkName)
                 };
-            });
-        }
+            })
+            : {};
     }
 
     renderedCallback() {
