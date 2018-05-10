@@ -25,11 +25,11 @@ export async function runCompare(globalConfig, configs, outputStream) {
     let [baseCommit, compareCommit] = compareStats;
 
     if (gitLocalChanges) {
-        throw new Error(`Can't compare benchmmarks due to uncommited local changes in this branch.`);
+        throw new Error(`Can't compare benchmarks due to uncommitted local changes in this branch.`);
     }
 
     if (compareStats.length === 0 || compareStats.length > 2) {
-        throw new Error('Wrong number of commmits to compare we are expectine one or two');
+        throw new Error('Wrong number of commits to compare we are expecting one or two');
     }
 
     if (baseCommit === compareCommit) {

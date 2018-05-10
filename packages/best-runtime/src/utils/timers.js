@@ -75,7 +75,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
 export function withMacroTask(fn) {
     return (
         fn._withTask ||
-        (fn._withTask = function() {
+        (fn._withTask = function () {
             useMacroTask = true;
             const res = fn.apply(null, arguments);
             useMacroTask = false;
@@ -108,11 +108,9 @@ export function nextTick(cb, ctx) {
         }
     }
 
-    if (!cb) {
-        return new Promise(resolve => {
-            _resolve = resolve;
-        });
-    }
+    return cb ? null : new Promise(resolve => {
+        _resolve = resolve;
+    });
 }
 
 export const time = window.performance.now.bind(window.performance);

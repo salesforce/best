@@ -29,9 +29,8 @@ export function reifyBranches(branches) {
     return items;
 }
 
-export function emulateFetch(entityApiName) {
-    return new Promise((resolve, reject) => {
-        // eslint-disable-next-line lwc/no-set-timeout
+export function emulateFetch() {
+    return new Promise((resolve) => {
         setTimeout(() => {
             resolve(['master', '214/patch']);
         }, 300);
@@ -63,7 +62,7 @@ export function normalizeStats(state, stats, project, branch) {
 }
 
 export function initializeState(state, serverState) {
-    const { action, stats, projects, branches, selectedProject, selectedBranch, title } = serverState;
+    const { action, stats, projects, selectedProject, selectedBranch, title } = serverState;
     const navItems = projects.map(p => buildNavItem(p));
     state.title = title;
     state.projects = projects;
