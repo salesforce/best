@@ -5,15 +5,21 @@ import * as path from 'path';
 import { buildBenchmark } from '../index';
 
 const TEMP_DIR_PREFIX = 'best-test-';
+const ROOT_DIR_PREFIX = 'best-root-test-';
 const MOCK_MESSAGER = {
     onBenchmarkBuildStart() {},
     onBenchmarkBuildEnd() {},
     logState() {}
 };
 const projectName = 'test';
+const rootDir = roorDir();
 
 function tempDir() {
     return fs.mkdtempSync(path.join(os.tmpdir(), TEMP_DIR_PREFIX));
+}
+
+function roorDir() {
+    return fs.mkdtempSync(path.join(os.tmpdir(), ROOT_DIR_PREFIX));
 }
 
 describe('buildBenchmark', () => {
@@ -23,7 +29,8 @@ describe('buildBenchmark', () => {
             path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
             {
                 cacheDirectory,
-                projectName
+                projectName,
+                rootDir
             },
             {},
             MOCK_MESSAGER,
@@ -39,7 +46,8 @@ describe('buildBenchmark', () => {
             path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
             {
                 cacheDirectory: tempDir(),
-                projectName
+                projectName,
+                rootDir
             },
             {},
             MOCK_MESSAGER,
@@ -62,8 +70,8 @@ describe('buildBenchmark', () => {
             path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
             {
                 cacheDirectory: tempDir(),
-                projectName
-
+                projectName,
+                rootDir
             },
             {},
             messager,
@@ -99,6 +107,7 @@ describe('buildBenchmark', () => {
                 cacheDirectory: tempDir(),
                 projectName,
                 plugins: [['build-plugin-opts', PLUGIN_OPTIONS]],
+                rootDir
             },
             {},
             MOCK_MESSAGER,
@@ -135,6 +144,7 @@ describe('buildBenchmark', () => {
                 cacheDirectory: tempDir(),
                 projectName,
                 plugins: ['build-plugin-hooks'],
+                rootDir
             },
             {},
             MOCK_MESSAGER,
