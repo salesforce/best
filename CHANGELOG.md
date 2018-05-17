@@ -1,5 +1,15 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.5.0...v) (2018-04-13)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.5.1...v) (2018-05-17)
+
+
+
+<a name="0.5.1"></a>
+## [0.5.1](https://git.soma.salesforce.com/lwc/best/compare/v0.5.0...v0.5.1) (2018-05-17)
+
+
+### Features
+
+* **best:** very simple customizable test template ([9bab3a4](https://git.soma.salesforce.com/lwc/best/commits/9bab3a4))
 
 
 
