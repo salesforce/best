@@ -1,6 +1,6 @@
 {
   "name": "best-cli",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Best CLI",
   "keywords": [
     "Best",
@@ -10,15 +10,15 @@
     "best": "./bin/best.js"
   },
   "dependencies": {
-    "@best/analyzer": "0.5.0",
-    "@best/build": "0.5.0",
-    "@best/compare": "0.5.0",
-    "@best/config": "0.5.0",
-    "@best/github-integration": "0.5.0",
-    "@best/messager": "0.5.0",
-    "@best/runner": "0.5.0",
-    "@best/store": "0.5.0",
-    "@best/store-fs": "0.5.0",
+    "@best/analyzer": "0.5.1",
+    "@best/build": "0.5.1",
+    "@best/compare": "0.5.1",
+    "@best/config": "0.5.1",
+    "@best/github-integration": "0.5.1",
+    "@best/messager": "0.5.1",
+    "@best/runner": "0.5.1",
+    "@best/store": "0.5.1",
+    "@best/store-fs": "0.5.1",
     "chalk": "~2.3.0",
     "cli-table": "~0.3.1",
     "globby": "~7.1.1",
