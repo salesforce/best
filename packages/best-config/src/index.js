@@ -176,6 +176,20 @@ function normalizeCommits([base, target]) {
     return [base.slice(0, 7), target.slice(0, 7)];
 }
 
+function normalizePattern(names) {
+    if (typeof names === 'string') {
+        names = names.split(',');
+    }
+    if (names instanceof Array) {
+        names = names.map(name => name.replace(/\*/g, '.*'));
+        names = new RegExp(`^(${names.join('|')})$`);
+    }
+    if (!(names instanceof RegExp)) {
+        throw new Error(`  Names must be provided as a string, array or regular expression.`);
+    }
+    return typeof names === 'string' ? new RegExp(names) : names;
+}
+
 function normalize(options, argsCLI) {
     options = normalizeRootDir(setFromArgs(options, argsCLI));
     const newOptions = Object.assign({}, DEFAULT_CONFIG);
@@ -207,12 +221,6 @@ function normalize(options, argsCLI) {
 }
 
 function _getConfigs(options) {
-    if (typeof options.outputMetricPattern === 'string') {
-        options.outputMetricPattern = new RegExp(options.outputMetricPattern);
-    }
-    if (typeof options.outputHistogramPattern === 'string') {
-        options.outputHistogramPattern = new RegExp(options.outputHistogramPattern);
-    }
     return {
         globalConfig: Object.freeze({
             gitIntegration: options.gitIntegration,
@@ -232,10 +240,10 @@ function _getConfigs(options) {
             gitBranch: options.gitBranch,
             gitRepository: options.gitRepository,
             normalize: options.normalize,
-            outputMetricPattern: options.outputMetricPattern,
+            outputMetricPattern: normalizePattern(options.outputMetricNames),
             outputTotals: options.outputTotals,
             outputHistograms: options.outputHistograms,
-            outputHistogramPattern: options.outputHistogramPattern,
+            outputHistogramPattern: normalizePattern(options.outputHistogramNames),
             histogramQuantileRange: options.histogramQuantileRange,
             histogramMaxWidth: options.histogramMaxWidth,
         }),

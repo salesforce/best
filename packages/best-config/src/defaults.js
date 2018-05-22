@@ -25,7 +25,7 @@ export default {
     normalize: false,
 
     // Show every metric (e.g. "duration" and "runDuration") in CLI output.
-    outputMetricPattern: /./,
+    outputMetricNames: '*',
 
     // Don't show totals for each metric in a benchmark table.
     outputTotals: false,
@@ -34,7 +34,7 @@ export default {
     outputHistograms: false,
 
     // If showing histograms, show every one.
-    outputHistogramPattern: /./,
+    outputHistogramNames: '*',
 
     // If histograms are shown, hide long tails by omitting the top and bottom 5%.
     histogramQuantileRange: [0.05, 0.95],
