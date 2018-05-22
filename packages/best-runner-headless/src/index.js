@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer';
-import { getSystemInfo } from './system-info';
+import { getSystemInfo } from '@best/utils';
 import { clearInterval } from 'timers';
 
 const BROWSER_ARGS = [
