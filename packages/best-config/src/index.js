@@ -207,6 +207,12 @@ function normalize(options, argsCLI) {
 }
 
 function _getConfigs(options) {
+    if (typeof options.outputMetricPattern === 'string') {
+        options.outputMetricPattern = new RegExp(options.outputMetricPattern);
+    }
+    if (typeof options.outputHistogramPattern === 'string') {
+        options.outputHistogramPattern = new RegExp(options.outputHistogramPattern);
+    }
     return {
         globalConfig: Object.freeze({
             gitIntegration: options.gitIntegration,
@@ -225,6 +231,13 @@ function _getConfigs(options) {
             gitLocalChanges: options.gitLocalChanges,
             gitBranch: options.gitBranch,
             gitRepository: options.gitRepository,
+            normalize: options.normalize,
+            outputMetricPattern: options.outputMetricPattern,
+            outputTotals: options.outputTotals,
+            outputHistograms: options.outputHistograms,
+            outputHistogramPattern: options.outputHistogramPattern,
+            histogramQuantileRange: options.histogramQuantileRange,
+            histogramMaxWidth: options.histogramMaxWidth,
         }),
         projectConfig: Object.freeze({
             cache: options.cache,
@@ -261,6 +274,8 @@ function _getConfigs(options) {
             testURL: options.testURL,
             transform: options.transform,
             transformIgnorePatterns: options.transformIgnorePatterns,
+
+            samplesQuantileThreshold: options.samplesQuantileThreshold,
         }),
     };
 }

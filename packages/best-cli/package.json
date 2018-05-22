@@ -19,12 +19,14 @@
     "@best/runner": "0.5.1",
     "@best/store": "0.5.1",
     "@best/store-fs": "0.5.1",
+    "asciichart": "1.5.7",
     "chalk": "~2.3.0",
     "cli-table": "~0.3.1",
     "globby": "~7.1.1",
     "micromatch": "~3.1.4",
     "rimraf": "~2.6.2",
     "simple-git": "~1.92.0",
+    "simple-statistics": "^6.0.1",
     "yargs": "~11.0.0"
   }
 }
