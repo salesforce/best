@@ -1,0 +1,18 @@
+{
+    "name": "@best/runner-ie11",
+    "version": "0.5.1",
+    "description": "Best Runner for IE 11",
+    "keywords": [
+      "Best",
+      "Runner",
+      "IE11",
+      "Internet Explorer 11",
+      "LWC"
+    ],
+    "main": "build/index.js",
+    "module": "src/index.js",
+    "dependencies": {
+      "webdriverio": "4.12.0",
+      "@best/utils": "0.5.1"
+    }
+  }
