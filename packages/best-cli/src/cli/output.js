@@ -171,8 +171,9 @@ export default class Output {
      * Show a comparison for a pair of commits.
      */
     compare(stats) {
+        const { baseCommit, targetCommit } = stats;
         const tables = stats.comparison.map(child => {
-            return this.generateComparisonTable(child);
+            return this.generateComparisonTable(baseCommit, targetCommit, child);
         });
 
         const projectNames = Array.from(tables.reduce((list, tableObj) => {
@@ -194,8 +195,7 @@ export default class Output {
     /*
      * Get a comparison table for two different commits.
      */
-    generateComparisonTable(stats) {
-        const { baseCommit, targetCommit } = stats;
+    generateComparisonTable(baseCommit, targetCommit, stats) {
         const benchmark = stats.benchmarkName.replace('.benchmark', '');
         const table = new Table({
             head: [`Benchmark: ${benchmark}`, 'metric', `base(${baseCommit})`, `target(${targetCommit})`, 'Trend'],

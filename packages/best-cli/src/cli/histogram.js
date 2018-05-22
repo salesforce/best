@@ -10,7 +10,7 @@ export default class Histogram {
      * Assign sample values to buckets.
      */
     constructor(samples, config) {
-        // Normalize an approximately log-normal distribution by taking an adjusted logarithm of each sample.
+        // Optionally normalize log-normal distributions by taking an adjusted logarithm of each sample.
         if (config.normalize === 'log-normal') {
             const offset = min(samples) - 0.1;
             samples = samples.map(x => Math.log(x - offset));
