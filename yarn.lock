@@ -707,7 +707,7 @@ arrify@^1.0.0, arrify@^1.0.1:
 
 asciichart@1.5.7:
   version "1.5.7"
-  resolved "https://nexus.soma.salesforce.com/nexus/content/groups/npm-all/asciichart/-/asciichart-1.5.7.tgz#04f6a0d33da82ea09771de468aeea8d83cbd4906"
+  resolved "http://npm.lwcjs.org/asciichart/-/asciichart-1.5.7/04f6a0d33da82ea09771de468aeea8d83cbd4906.tgz#04f6a0d33da82ea09771de468aeea8d83cbd4906"
 
 asn1@~0.2.3:
   version "0.2.3"
@@ -6504,7 +6504,7 @@ simple-git@~1.92.0:
 
 simple-statistics@^6.0.1:
   version "6.0.1"
-  resolved "https://nexus.soma.salesforce.com/nexus/content/groups/npm-all/simple-statistics/-/simple-statistics-6.0.1.tgz#4c8cbd646522b2401a246b1cc90ee83995b1e58b"
+  resolved "http://npm.lwcjs.org/simple-statistics/-/simple-statistics-6.0.1/4c8cbd646522b2401a246b1cc90ee83995b1e58b.tgz#4c8cbd646522b2401a246b1cc90ee83995b1e58b"
 
 slash@^1.0.0:
   version "1.0.0"
