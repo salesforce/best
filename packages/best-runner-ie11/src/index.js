@@ -9,7 +9,8 @@ const BROWSER_OPTIONS = {
         version: '11',
         ignoreZoomSetting: true,
         initialBrowserUrl: 'about:blank',
-        nativeEvents: false
+        nativeEvents: false,
+        timeouts: {"implicit": 0, "pageLoad": 300000, "script": 60000},
     },
     host: 'localhost',
     port: 4444
@@ -79,7 +80,7 @@ function runIteration(page, state, opts) {
                 done(data);
             })
             .catch(function(e) {
-                done(e);
+                throw e;
             });
     }, opts);
 }
@@ -114,11 +115,10 @@ export async function run({ benchmarkName, benchmarkEntry }, projectConfig, glob
     const opts = normalizeRuntimeOptions(projectConfig);
     const state = initializeBenchmarkState(opts);
     const { projectName } = projectConfig;
-    const browserOptions = Object.assign({}, BROWSER_OPTIONS, projectConfig.benchmarkRunnerConfig);
 
     let browser;
     try {
-        browser = webdriverio.remote(browserOptions);
+        browser = webdriverio.remote(BROWSER_OPTIONS);
         const environment = await normalizeEnvironment(browser, projectConfig, globalConfig);
 
         messager.onBenchmarkStart(benchmarkName, projectName);
