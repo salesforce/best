@@ -14,7 +14,7 @@ const BROWSER_OPTIONS = {
     },
     host: 'localhost',
     port: 4444
-}
+};
 
 function normalizeRuntimeOptions(projectConfig) {
     const { benchmarkIterations, benchmarkOnClient } = projectConfig;
@@ -73,13 +73,15 @@ async function normalizeEnvironment(browser, projectConfig, globalConfig) {
 }
 
 function runIteration(page, state, opts) {
-    // eslint-disable-next-line no-undef
-    return page.executeAsync(function(o, done) {
+    return page.executeAsync((o, done) => {
+        // eslint-disable-next-line no-undef
         BEST.runBenchmark(o)
-            .then(function(data) {
+            // eslint-disable-next-line prefer-arrow-callback
+            .then(function (data) {
                 done(data);
             })
-            .catch(function(e) {
+            // eslint-disable-next-line prefer-arrow-callback
+            .catch(function (e) {
                 throw e;
             });
     }, opts);

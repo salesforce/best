@@ -20,7 +20,7 @@ function md5(data) {
 
 // Handles default exports for both ES5 and ES6 syntax
 function req(id) {
-    let r = require(id);
+    const r = require(id);
     return r.default || r;
 }
 
