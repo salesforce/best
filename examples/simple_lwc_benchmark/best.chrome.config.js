@@ -1,5 +1,5 @@
 module.exports = {
-    projectName: 'lwc-examples-ie11',
+    projectName: 'lwc-examples-chrome',
     plugins: [
         '<rootDir>/custom-rollup-transformer/empty-example.js',
         ['rollup-plugin-lwc-compiler', {
@@ -15,12 +15,7 @@ module.exports = {
             "config": {
                 "webdriverOptions": {
                     "desiredCapabilities": {
-                        "platform": "WINDOWS",
-                        "browserName": "internet explorer",
-                        "version": "11",
-                        "ignoreZoomSetting": true,
-                        "initialBrowserUrl": "about:blank",
-                        "nativeEvents": false,
+                        "browserName": "chrome",
                     },
                 }
             }
@@ -34,13 +29,8 @@ module.exports = {
                 "remoteRunner": "@best/runner-webdriver",
                 "webdriverOptions": {
                     "desiredCapabilities": {
-                        "platform": "WINDOWS",
-                        "browserName": "internet explorer",
-                        "version": "11",
-                        "ignoreZoomSetting": true,
-                        "initialBrowserUrl": "about:blank",
-                        "nativeEvents": false,
-                    }
+                        "browserName": "chrome",
+                    },
                 }
             }
         }

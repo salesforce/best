@@ -1,19 +1,14 @@
 import { getSystemInfo } from '@best/utils';
 import { remote as webdriverio } from 'webdriverio';
+import merge from 'deepmerge';
 
 const UPDATE_INTERVAL = 500;
-const BROWSER_OPTIONS = {
+const WEBDRIVERIO_OPTIONS = {
     desiredCapabilities: {
-        platform: 'WINDOWS',
-        browserName: 'internet explorer',
-        version: '11',
-        ignoreZoomSetting: true,
-        initialBrowserUrl: 'about:blank',
-        nativeEvents: false,
-        timeouts: {"implicit": 0, "pageLoad": 300000, "script": 60000},
+        timeouts: { "implicit": 0, "pageLoad": 300000, "script": 120000 },
     },
-    host: 'localhost',
-    port: 4444
+    host: "localhost",
+    port: "4444",
 };
 
 function normalizeRuntimeOptions(projectConfig) {
@@ -40,7 +35,7 @@ function initializeBenchmarkState(opts) {
     };
 }
 
-async function normalizeEnvironment(browser, projectConfig, globalConfig) {
+async function normalizeEnvironment(browser, projectConfig, globalConfig, webdriverOptions) {
     const {
         benchmarkOnClient,
         benchmarkRunner,
@@ -53,7 +48,7 @@ async function normalizeEnvironment(browser, projectConfig, globalConfig) {
     return {
         hardware: { system, cpu, os },
         runtime: { load },
-        browser: { version, options: BROWSER_OPTIONS },
+        browser: { version, options: webdriverOptions },
         configuration: {
             project: {
                 projectName,
@@ -117,12 +112,13 @@ async function runIterations(page, state, opts, messager) {
 export async function run({ benchmarkName, benchmarkEntry }, projectConfig, globalConfig, messager) {
     const opts = normalizeRuntimeOptions(projectConfig);
     const state = initializeBenchmarkState(opts);
-    const { projectName } = projectConfig;
+    const { projectName, benchmarkRunnerConfig } = projectConfig;
+    const webdriverOptions = merge(WEBDRIVERIO_OPTIONS, benchmarkRunnerConfig.webdriverOptions);
 
     let browser;
     try {
-        browser = webdriverio(BROWSER_OPTIONS);
-        const environment = await normalizeEnvironment(browser, projectConfig, globalConfig);
+        browser = webdriverio(webdriverOptions);
+        const environment = await normalizeEnvironment(browser, projectConfig, globalConfig, webdriverOptions);
 
         messager.onBenchmarkStart(benchmarkName, projectName);
 

@@ -1,6 +1,5 @@
 module.exports = {
-    projectName: 'simple-benchmark-ie11',
-    plugins: ['rollup-plugin-compat'],
+    projectName: 'simple-benchmark-firefox',
     benchmarkOnClient: true,
     "runnerConfig": [
         {
@@ -9,12 +8,7 @@ module.exports = {
             "config": {
                 "webdriverOptions": {
                     "desiredCapabilities": {
-                        "platform": "WINDOWS",
-                        "browserName": "internet explorer",
-                        "version": "11",
-                        "ignoreZoomSetting": true,
-                        "initialBrowserUrl": "about:blank",
-                        "nativeEvents": false,
+                        "browserName": "firefox",
                     },
                 }
             }
@@ -28,13 +22,8 @@ module.exports = {
                 "remoteRunner": "@best/runner-webdriver",
                 "webdriverOptions": {
                     "desiredCapabilities": {
-                        "platform": "WINDOWS",
-                        "browserName": "internet explorer",
-                        "version": "11",
-                        "ignoreZoomSetting": true,
-                        "initialBrowserUrl": "about:blank",
-                        "nativeEvents": false,
-                    }
+                        "browserName": "firefox",
+                    },
                 }
             }
         }
