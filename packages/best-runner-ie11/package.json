@@ -10,7 +10,6 @@
       "LWC"
     ],
     "main": "build/index.js",
-    "module": "src/index.js",
     "dependencies": {
       "webdriverio": "4.12.0",
       "@best/utils": "0.5.1"

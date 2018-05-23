@@ -7,6 +7,7 @@ module.exports = {
             mode: 'compat', // We don't really need prod here since this is for test best itself
         }]
     ],
+    benchmarkOnClient: true,
     "runnerConfig": [
         {
             "runner": "@best/runner-ie11",

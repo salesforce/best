@@ -1,6 +1,7 @@
 module.exports = {
     projectName: 'simple-benchmark-ie11',
     plugins: ['rollup-plugin-compat'],
+    benchmarkOnClient: true,
     "runnerConfig": [
         {
         "runner": "@best/runner-ie11",

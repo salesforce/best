@@ -1,5 +1,5 @@
 import { getSystemInfo } from '@best/utils';
-const webdriverio = require('webdriverio');
+import { remote as webdriverio } from 'webdriverio';
 
 const UPDATE_INTERVAL = 500;
 const BROWSER_OPTIONS = {
@@ -73,7 +73,8 @@ async function normalizeEnvironment(browser, projectConfig, globalConfig) {
 }
 
 function runIteration(page, state, opts) {
-    return page.executeAsync((o, done) => {
+    // eslint-disable-next-line prefer-arrow-callback
+    return page.executeAsync(function (o, done) {
         // eslint-disable-next-line no-undef
         BEST.runBenchmark(o)
             // eslint-disable-next-line prefer-arrow-callback
@@ -120,7 +121,7 @@ export async function run({ benchmarkName, benchmarkEntry }, projectConfig, glob
 
     let browser;
     try {
-        browser = webdriverio.remote(BROWSER_OPTIONS);
+        browser = webdriverio(BROWSER_OPTIONS);
         const environment = await normalizeEnvironment(browser, projectConfig, globalConfig);
 
         messager.onBenchmarkStart(benchmarkName, projectName);
