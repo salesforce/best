@@ -3,7 +3,6 @@ import { compareBenchmarkStats } from '@best/compare';
 import { pushBenchmarkComparison } from '@best/github-integration';
 import { runBest } from "./run_best";
 import git from "simple-git/promise";
-import { spawn } from 'child_process';
 
 const STORAGE_FS = '@best/store-fs';
 const isHex = x => /^[0-9a-fA-F]+$/.test(x);
@@ -45,23 +44,6 @@ export async function runCompare(globalConfig, configs, outputStream) {
         return false;
     }
 
-    // Stash or pop local changes, but don't pop twice in a row.
-    function stash(arg) {
-        return gitLocalChanges && !stash.popped ? new Promise((resolve, reject) => {
-            stash.popped = arg === 'pop';
-            spawn('git', ['stash', arg || '--include-untracked'], {cwd: rootDir})
-                .on('error', reject)
-                .on('exit', code => {
-                    if (code === 0) {
-                        resolve();
-                    } else {
-                        reject(new Error(`Git stash exited with ${code}.`));
-                    }
-                })
-                .stderr.on('data', data => outputStream.write(data));
-        }) : null;
-    }
-
     try {
         const projects = configs.map(cfg => cfg.projectName);
         const projectNames = projects.length ? projects : [globalConfig.rootProjectName];
@@ -72,18 +54,22 @@ export async function runCompare(globalConfig, configs, outputStream) {
         if (!externalStorage) {
             storageProvider = require(STORAGE_FS);
             storageProvider.initialize({ rootDir });
-            await stash();
+            if (gitLocalChanges) {
+                await gitCLI.stash({ '--include-untracked': true });
+            }
 
             // Run base commit.
             preRunMessager.print(`\n Running best for commit ${baseCommit} \n`, outputStream);
             await gitCLI.checkout(baseCommit);
             await runBest({ ...runConfig, gitCommit: baseCommit }, configs, outputStream);
 
-            // Run local changes or compare normalizeCommit.
+            // Run local changes or compare commit.
             if (compareCommit === 'local') {
                 preRunMessager.print(`\n Running best for local changes \n`, outputStream);
                 await gitCLI.checkout(initialBranch);
-                await stash('pop');
+                if (gitLocalChanges) {
+                    await gitCLI.stash({ pop: true });
+                }
             } else {
                 preRunMessager.print(`\n Running best for commit ${compareCommit} \n`, outputStream);
                 await gitCLI.checkout(compareCommit);
@@ -108,6 +94,8 @@ export async function runCompare(globalConfig, configs, outputStream) {
     } finally {
         // Return local files to their initial state no matter what happens.
         await gitCLI.checkout(initialBranch);
-        await stash('pop');
+        if (gitLocalChanges && (compareCommit !== 'local')) {
+            await gitCLI.stash({ pop: true });
+        }
     }
 }
