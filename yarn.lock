@@ -2802,6 +2802,10 @@ deep-is@~0.1.3:
   version "0.1.3"
   resolved "http://npm.lwcjs.org/deep-is/-/deep-is-0.1.3/b369d6fb5dbc13eecf524f91b070feedc357cf34.tgz#b369d6fb5dbc13eecf524f91b070feedc357cf34"
 
+deepmerge@2.1.0:
+  version "2.1.0"
+  resolved "http://npm.lwcjs.org/deepmerge/-/deepmerge-2.1.0/511a54fff405fc346f0240bb270a3e9533a31102.tgz#511a54fff405fc346f0240bb270a3e9533a31102"
+
 deepmerge@~2.0.1:
   version "2.0.1"
   resolved "http://npm.lwcjs.org/deepmerge/-/deepmerge-2.0.1/25c1c24f110fb914f80001b925264dd77f3f4312.tgz#25c1c24f110fb914f80001b925264dd77f3f4312"
