@@ -182,6 +182,9 @@ function normalize(options, argsCLI) {
     Object.keys(options).reduce((newOpts, key) => {
         let value = newOpts[key];
         switch (key) {
+            case 'staticFiles':
+                value = normalizeObjectPathPatterns(options[key], options.rootDir);
+                break;
             case 'projects':
                 value = normalizeUnmockedModulePathPatterns(options, key);
                 break;
@@ -225,10 +228,12 @@ function _getConfigs(options) {
             gitLocalChanges: options.gitLocalChanges,
             gitBranch: options.gitBranch,
             gitRepository: options.gitRepository,
+            openBenchmarks: options.openBenchmarks,
         }),
         projectConfig: Object.freeze({
             cache: options.cache,
             cacheDirectory: options.cacheDirectory,
+            staticFiles: options.staticFiles,
             cwd: options.cwd,
             detectLeaks: options.detectLeaks,
             displayName: options.displayName,
