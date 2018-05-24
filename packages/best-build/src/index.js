@@ -34,7 +34,7 @@ function addResolverPlugins({ plugins }) {
     });
 }
 
-function copyPublicFolder(source, destination) {
+function copyFolder(source, destination) {
     return new Promise((resolve, reject) => {
         ncp(source, destination, err => {
             if (err) {
@@ -47,15 +47,13 @@ function copyPublicFolder(source, destination) {
 }
 
 function overwriteDefaultTemplate(templatePath, rootDir, publicFolder) {
-    const template = fs.readFileSync(templatePath, 'utf8');
-    let templateOptions = {};
-    templateOptions["customTemplate"] = template;
-    templateOptions["publicFolder"] = publicFolder;
+    const customTemplate = fs.readFileSync(templatePath, 'utf8');
+    const templateOptions = { customTemplate, publicFolder };
     return templateOptions;
 }
 
 export async function buildBenchmark(entry, projectConfig, globalConfig, messager) {
-    const { projectName, cacheDirectory } = projectConfig;
+    const { projectName, cacheDirectory, staticFiles } = projectConfig;
     messager.onBenchmarkBuildStart(entry, projectName);
 
     const ext = path.extname(entry);
@@ -90,10 +88,10 @@ export async function buildBenchmark(entry, projectConfig, globalConfig, message
 
     if (fs.existsSync(benchmarkTemplatePath)) {
         Object.assign(generateHTMLOptions, overwriteDefaultTemplate(benchmarkTemplatePath, projectConfig.rootDir, publicFolder));
-        await copyPublicFolder(path.resolve(path.join(projectConfig.rootDir, "public")), publicFolder);
+        await copyFolder(path.resolve(path.join(projectConfig.rootDir, "public")), publicFolder);
     } else if (fs.existsSync(projectTemplatePath)) {
         Object.assign(generateHTMLOptions, overwriteDefaultTemplate(projectTemplatePath, projectConfig.rootDir, publicFolder));
-        await copyPublicFolder(path.resolve(path.join(projectConfig.rootDir, "public")), publicFolder);
+        await copyFolder(path.resolve(path.join(projectConfig.rootDir, "public")), publicFolder);
     }
 
     const html = generateDefaultHTML(generateHTMLOptions);
@@ -101,6 +99,12 @@ export async function buildBenchmark(entry, projectConfig, globalConfig, message
     messager.logState('Saving artifacts...');
 
     fs.writeFileSync(htmlPath, html, 'utf8');
+
+    Object.keys(staticFiles).forEach(async (key) => {
+        const dest = path.join(benchmarkFolder, key);
+        const source = staticFiles[key];
+        await copyFolder(source, dest);
+    });
 
     messager.onBenchmarkBuildEnd(entry, projectName);
 
