@@ -124,7 +124,7 @@ async function normalizeEnvironment(browser, projectConfig, globalConfig) {
     };
 }
 
-export async function run({ benchmarkName, benchmarkEntry }, projectConfig, globalConfig, messager) {
+export async function run({ benchmarkName, benchmarkUrl }, projectConfig, globalConfig, messager) {
     const opts = normalizeRuntimeOptions(projectConfig);
     const state = initializeBenchmarkState(opts);
     const { projectName } = projectConfig;
@@ -137,7 +137,7 @@ export async function run({ benchmarkName, benchmarkEntry }, projectConfig, glob
         messager.onBenchmarkStart(benchmarkName, projectName);
 
         const page = await browser.newPage();
-        await page.goto('file:///' + benchmarkEntry);
+        await page.goto(benchmarkUrl);
 
         const { results } = await runIterations(page, state, opts, messager);
         return { results, environment };

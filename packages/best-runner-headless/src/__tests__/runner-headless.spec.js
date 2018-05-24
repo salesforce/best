@@ -1,9 +1,11 @@
 import * as path from 'path';
 import { run } from '../index';
 
+const fixture = file => `file:///${path.resolve(__dirname, 'fixtures', file)}`;
+
 const BENCHMARK_CONFIG = {
     benchmarkName: 'test',
-    benchmarkEntry: path.resolve(__dirname, 'fixtures', 'test.html'),
+    benchmarkUrl: fixture('test.html'),
 };
 
 const PROJECT_CONFIG = {
@@ -75,7 +77,7 @@ describe('errors', () => {
     test('syntax error', async () => {
         const benchmarkConfig = {
             benchmarkName: 'test',
-            benchmarkEntry: path.resolve(__dirname, 'fixtures', 'syntax-error.html'),
+            benchmarkUrl: fixture('syntax-error.html'),
         };
 
         return expect(run(benchmarkConfig, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER)).rejects.toThrow(
@@ -86,7 +88,7 @@ describe('errors', () => {
     test('runtime error', async () => {
         const benchmarkConfig = {
             benchmarkName: 'test',
-            benchmarkEntry: path.resolve(__dirname, 'fixtures', 'runtime-error.html'),
+            benchmarkUrl: fixture('runtime-error.html'),
         };
 
         return expect(run(benchmarkConfig, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER)).rejects.toThrow(
