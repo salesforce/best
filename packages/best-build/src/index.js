@@ -100,7 +100,7 @@ export async function buildBenchmark(entry, projectConfig, globalConfig, message
 
     fs.writeFileSync(htmlPath, html, 'utf8');
 
-    Object.keys(staticFiles).forEach(async (key) => {
+    Object.keys(staticFiles || {}).forEach(async (key) => {
         const dest = path.join(benchmarkFolder, key);
         const source = staticFiles[key];
         await copyFolder(source, dest);

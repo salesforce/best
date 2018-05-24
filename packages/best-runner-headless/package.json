@@ -10,6 +10,7 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
+    "express": "~4.16.2",
     "puppeteer": "1.1.0",
     "systeminformation": "3.33.12"
   }

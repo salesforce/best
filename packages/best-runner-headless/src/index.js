@@ -1,6 +1,9 @@
 import puppeteer from 'puppeteer';
 import { getSystemInfo } from './system-info';
 import { clearInterval } from 'timers';
+import express from 'express';
+import { dirname, basename } from 'path';
+import { spawn } from 'child_process';
 
 const BROWSER_ARGS = [
     '--no-sandbox',
@@ -129,6 +132,11 @@ export async function run({ benchmarkName, benchmarkEntry }, projectConfig, glob
     const state = initializeBenchmarkState(opts);
     const { projectName } = projectConfig;
 
+    const dir = dirname(benchmarkEntry);
+    const app = await createExpressApp(dir);
+    const file = basename(benchmarkEntry);
+    const url = `${app.url}/${file}`;
+
     let browser;
     try {
         browser = await puppeteer.launch(PUPPETEER_OPTIONS);
@@ -137,7 +145,7 @@ export async function run({ benchmarkName, benchmarkEntry }, projectConfig, glob
         messager.onBenchmarkStart(benchmarkName, projectName);
 
         const page = await browser.newPage();
-        await page.goto('file:///' + benchmarkEntry);
+        await page.goto(url);
 
         const { results } = await runIterations(page, state, opts, messager);
         return { results, environment };
@@ -150,5 +158,44 @@ export async function run({ benchmarkName, benchmarkEntry }, projectConfig, glob
         if (browser) {
             await browser.close();
         }
+
+        // Allow OSX users to optionally open benchmark URLs in their default browser for debugging.
+        if (globalConfig.openBenchmarks) {
+            spawn('open', [url]);
+        } else {
+            app.stop();
+        }
     }
+}
+
+// Create a new express app on a random port.
+export async function createExpressApp(staticRoot) {
+    return new Promise(resolve => {
+        const app = express();
+        const server = app.listen(() => {
+            app.url = `http://localhost:${server.address().port}`;
+            resolve(app);
+        });
+
+        // Serve static assets.
+        app.use(express.static(staticRoot));
+
+        // Keep track of open sockets.
+        const sockets = {};
+        let socketId = 0;
+        server.on('connection', socket => {
+            const id = `s${++socketId}`;
+            sockets[id] = socket;
+            socket.on('close', () => delete sockets[id]);
+        });
+
+        // Stop the server by ending open sockets.
+        app.stop = () => {
+            server.close();
+            Object.values(sockets).forEach(socket => {
+                socket.end();
+                socket.unref();
+            });
+        };
+    });
 }
