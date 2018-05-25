@@ -131,11 +131,17 @@ export async function run({ benchmarkName, benchmarkEntry }, projectConfig, glob
     const opts = normalizeRuntimeOptions(projectConfig);
     const state = initializeBenchmarkState(opts);
     const { projectName } = projectConfig;
+    const { openBenchmarks } = globalConfig;
 
     const dir = dirname(benchmarkEntry);
     const app = await createExpressApp(dir);
     const file = basename(benchmarkEntry);
     const url = `${app.url}/${file}`;
+
+    // Open benchmarks in a browser for debugging.
+    if (openBenchmarks) {
+        spawn('open', [url]);
+    }
 
     let browser;
     try {
@@ -159,10 +165,8 @@ export async function run({ benchmarkName, benchmarkEntry }, projectConfig, glob
             await browser.close();
         }
 
-        // Allow OSX users to optionally open benchmark URLs in their default browser for debugging.
-        if (globalConfig.openBenchmarks) {
-            spawn('open', [url]);
-        } else {
+        // Stop the express app, unless we're opening benchmarks in a browser for debugging.
+        if (!openBenchmarks) {
             app.stop();
         }
     }
