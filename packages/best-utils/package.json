@@ -10,6 +10,7 @@
   "module": "src/index.js",
   "dependencies": {
     "chalk": "~2.3.0",
-    "is-ci": "^1.0.10"
+    "is-ci": "^1.0.10",
+    "systeminformation": "3.33.12"
   }
 }

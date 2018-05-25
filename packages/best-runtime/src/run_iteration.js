@@ -15,6 +15,12 @@ const _initHooks = hooks =>
 
 const _forceGC = () => window.gc && window.gc();
 
+// Temporary fix
+// TODO (dbajric): Use https://www.npmjs.com/package/console-polyfill
+if (!console.timeStamp) {
+    console.timeStamp = function () { };
+}
+
 const executeBenchmark = async (benchmarkNode, { useMacroTaskAfterBenchmark }) => {
     // Force garbage collection before executing an iteration (--js-flags=--expose-gc)
     _forceGC();
