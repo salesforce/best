@@ -1,5 +1,5 @@
 module.exports = {
-    projectName: 'simple-benchmarks',
+    projectName: 'simple-benchmark-prod',
     benchmarkOnClient: true,
     useMacroTaskAfterBenchmark: false,
     "runnerConfig": [

@@ -12,6 +12,6 @@
   "dependencies": {
     "express": "~4.16.2",
     "puppeteer": "1.1.0",
-    "systeminformation": "3.33.12"
+    "@best/utils": "0.5.1"
   }
 }
