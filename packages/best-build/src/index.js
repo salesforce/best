@@ -18,6 +18,12 @@ function md5(data) {
         .digest('hex');
 }
 
+// Handles default exports for both ES5 and ES6 syntax
+function req(id) {
+    const r = require(id);
+    return r.default || r;
+}
+
 function addResolverPlugins({ plugins }) {
     if (!plugins) {
         return [];
@@ -25,9 +31,9 @@ function addResolverPlugins({ plugins }) {
 
     return plugins.map((plugin) => {
         if (typeof plugin === 'string') {
-            return require(plugin)();
+            return req(plugin)();
         } else if (Array.isArray(plugin)) {
-            return require(plugin[0])(plugin[1]);
+            return req(plugin[0])(plugin[1]);
         }
 
         return [];
