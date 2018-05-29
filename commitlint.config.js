@@ -4,23 +4,23 @@ module.exports = {
     ],
     rules: {
         'type-enum': [
-			2,
-			'always',
-			[
-				'build',
-				'chore',
-				'ci',
-				'docs',
-				'feat',
-				'fix',
+            2,
+            'always',
+            [
+                'build',
+                'chore',
+                'ci',
+                'docs',
+                'feat',
+                'fix',
                 'perf',
                 'proposal',
-				'refactor',
-				'revert',
-				'style',
+                'refactor',
+                'revert',
+                'style',
                 'test',
-                'wip'
-			]
-		]
+                'wip',
+            ],
+        ],
     },
-}
+};
