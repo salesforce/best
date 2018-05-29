@@ -7,6 +7,7 @@
     "perf": "best"
   },
   "devDependencies": {
-    "best": "0.5.1"
+    "best": "0.5.1",
+    "rollup-plugin-compat": "0.18.2"
   }
 }
