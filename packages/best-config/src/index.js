@@ -171,8 +171,8 @@ function normalizeRunnerConfig(runnerConfig, { runner }) {
 }
 
 function normalizeCommits([base, target]) {
-    base = base + '' || BASE_COMMIT || '';
-    target = target + '' || TARGET_COMMIT || '';
+    base = (base || BASE_COMMIT || '');
+    target = (target || TARGET_COMMIT || '');
     return [base.slice(0, 7), target.slice(0, 7)];
 }
 
