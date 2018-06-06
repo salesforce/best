@@ -1,13 +1,13 @@
 {
   "name": "@best/simple_lwc_benchmark",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "private": true,
   "scripts": {
     "build": "cross-env rollup -c ./scripts/rollup.config.js",
     "perf": "best"
   },
   "devDependencies": {
-    "best": "0.5.1",
+    "best": "0.5.2",
     "cross-env": "^5.1.3",
     "lwc-compiler": "0.17.19",
     "lwc-engine": "0.17.19",

@@ -1,6 +1,6 @@
 {
   "name": "@best/runner-remote",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Best Runner (Headless)",
   "keywords": [
     "Best",
@@ -10,7 +10,7 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
-    "@best/messager": "0.5.1",
+    "@best/messager": "0.5.2",
     "socket.io-client": "~2.0.4",
     "tar": "~4.2.0"
   }

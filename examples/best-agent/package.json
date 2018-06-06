@@ -1,6 +1,6 @@
 {
   "name": "best-agent-example",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "private": true,
   "description": "Best agent example",
   "scripts": {
@@ -20,6 +20,6 @@
     "url": "https://github.com/salesforce/best"
   },
   "dependencies": {
-    "best-agent": "0.5.1"
+    "best-agent": "0.5.2"
   }
 }
