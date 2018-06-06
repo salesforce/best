@@ -1,5 +1,5 @@
 import * as args from './args';
-import { generateReportTables, generateComparisonTables } from './output';
+import Output from './output';
 import yargs from 'yargs';
 import rimraf from 'rimraf';
 import { getConfigs } from '@best/config';
@@ -68,10 +68,11 @@ export async function runCLI(argsCLI, projects) {
         return process.exit(0);
     }
 
+    const output = new Output(globalConfig, outputStream);
     if (argsCLI.compareStats) {
         results = await runCompare(globalConfig, configs, outputStream);
         if (results) {
-            generateComparisonTables(results, outputStream);
+            output.compare(results);
         }
     } else {
         if (argsCLI.clearResults) {
@@ -88,7 +89,7 @@ export async function runCLI(argsCLI, projects) {
             throw new Error('AggregatedResult must be present after test run is complete');
         }
 
-        generateReportTables(results, outputStream);
+        output.report(results);
     }
 
     return true;

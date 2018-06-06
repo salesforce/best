@@ -1289,6 +1289,10 @@ arrify@^1.0.0, arrify@^1.0.1:
   version "1.0.1"
   resolved "http://npm.lwcjs.org/arrify/-/arrify-1.0.1/898508da2226f380df904728456849c1501a4b0d.tgz#898508da2226f380df904728456849c1501a4b0d"
 
+asciichart@1.5.7:
+  version "1.5.7"
+  resolved "http://npm.lwcjs.org/asciichart/-/asciichart-1.5.7/04f6a0d33da82ea09771de468aeea8d83cbd4906.tgz#04f6a0d33da82ea09771de468aeea8d83cbd4906"
+
 asn1@~0.2.3:
   version "0.2.3"
   resolved "http://npm.lwcjs.org/asn1/-/asn1-0.2.3/dac8787713c9966849fc8180777ebe9c1ddf3b86.tgz#dac8787713c9966849fc8180777ebe9c1ddf3b86"
@@ -7487,6 +7491,10 @@ simple-git@~1.92.0:
   resolved "http://npm.lwcjs.org/simple-git/-/simple-git-1.92.0/6061468eb7d19f0141078fc742e62457e910f547.tgz#6061468eb7d19f0141078fc742e62457e910f547"
   dependencies:
     debug "^3.1.0"
+
+simple-statistics@^6.0.1:
+  version "6.0.1"
+  resolved "http://npm.lwcjs.org/simple-statistics/-/simple-statistics-6.0.1/4c8cbd646522b2401a246b1cc90ee83995b1e58b.tgz#4c8cbd646522b2401a246b1cc90ee83995b1e58b"
 
 slash@^1.0.0:
   version "1.0.0"
