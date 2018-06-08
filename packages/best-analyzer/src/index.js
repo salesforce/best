@@ -1,18 +1,20 @@
-import { SAMPLES_THREESHOLD, VERSION } from './constants';
-import { mean, median, variance, medianAbsoluteDeviation, quantile, compare as compareSamples } from './stats';
+import { VERSION } from './constants';
+import { quantile, mean, median, variance, medianAbsoluteDeviation, compare as compareSamples } from './stats';
 
-function computeSampleStats(arr) {
-    const q = quantile(arr, SAMPLES_THREESHOLD);
-    const cleaned = arr.filter(v => v <= q);
-
+function computeSampleStats(arr, config) {
+    const { samplesQuantileThreshold } = config;
+    if (samplesQuantileThreshold < 1) {
+        const q = quantile(arr, samplesQuantileThreshold);
+        arr = arr.filter(v => v <= q);
+    }
     return {
-        samples: cleaned,
-        sampleSize: cleaned.length,
-        samplesQuantileThreshold: SAMPLES_THREESHOLD,
-        mean: mean(cleaned),
-        median: median(cleaned),
-        variance: variance(cleaned),
-        medianAbsoluteDeviation: medianAbsoluteDeviation(cleaned),
+        samples: arr,
+        sampleSize: arr.length,
+        samplesQuantileThreshold,
+        mean: mean(arr),
+        median: median(arr),
+        variance: variance(arr),
+        medianAbsoluteDeviation: medianAbsoluteDeviation(arr),
     };
 }
 
@@ -30,15 +32,6 @@ function collectResults({ name, duration, runDuration, benchmarks }, collector) 
     return collector;
 }
 
-/*
-app: {
- name: 'app-benchmark.js',
-    benchmarks: {
-        "benchmarking app": {
-            "create and render": {
-}
-*/
-
 function createStructure({ benchmarks, name, runDuration }, collector) {
     if (runDuration !== undefined) {
         const newNode = collector[name];
@@ -55,7 +48,7 @@ function createStructure({ benchmarks, name, runDuration }, collector) {
 export async function analyzeBenchmarks(benchmarkResults) {
     return Promise.all(
         benchmarkResults.map(async benchmarkResult => {
-            const { results, environment, benchmarkName } = benchmarkResult;
+            const { results, environment, benchmarkName, projectConfig } = benchmarkResult;
             const structure = results[0];
             const collector = results.reduce((c, result) => collectResults(result, c), {});
 
@@ -65,7 +58,7 @@ export async function analyzeBenchmarks(benchmarkResults) {
                     const list = benchmarkMetrics[metric];
                     if (Array.isArray(list)) {
                         if (list.length) {
-                            mc[metric] = computeSampleStats(benchmarkMetrics[metric]);
+                            mc[metric] = computeSampleStats(benchmarkMetrics[metric], projectConfig);
                         }
                     } else {
                         mc[metric] = benchmarkMetrics[metric];
@@ -87,4 +80,4 @@ export async function analyzeBenchmarks(benchmarkResults) {
     );
 }
 
-export { compareSamples };
+export { compareSamples, computeSampleStats };

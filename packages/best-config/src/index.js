@@ -176,6 +176,20 @@ function normalizeCommits([base, target]) {
     return [base.slice(0, 7), target.slice(0, 7)];
 }
 
+function normalizePattern(names) {
+    if (typeof names === 'string') {
+        names = names.split(',');
+    }
+    if (names instanceof Array) {
+        names = names.map(name => name.replace(/\*/g, '.*'));
+        names = new RegExp(`^(${names.join('|')})$`);
+    }
+    if (!(names instanceof RegExp)) {
+        throw new Error(`  Names must be provided as a string, array or regular expression.`);
+    }
+    return typeof names === 'string' ? new RegExp(names) : names;
+}
+
 function normalize(options, argsCLI) {
     options = normalizeRootDir(setFromArgs(options, argsCLI));
     const newOptions = Object.assign({}, DEFAULT_CONFIG);
@@ -229,6 +243,13 @@ function _getConfigs(options) {
             gitLocalChanges: options.gitLocalChanges,
             gitBranch: options.gitBranch,
             gitRepository: options.gitRepository,
+            normalize: options.normalize,
+            outputMetricPattern: normalizePattern(options.outputMetricNames),
+            outputTotals: options.outputTotals,
+            outputHistograms: options.outputHistograms,
+            outputHistogramPattern: normalizePattern(options.outputHistogramNames),
+            histogramQuantileRange: options.histogramQuantileRange,
+            histogramMaxWidth: options.histogramMaxWidth,
         }),
         projectConfig: Object.freeze({
             cache: options.cache,
@@ -266,6 +287,8 @@ function _getConfigs(options) {
             testURL: options.testURL,
             transform: options.transform,
             transformIgnorePatterns: options.transformIgnorePatterns,
+
+            samplesQuantileThreshold: options.samplesQuantileThreshold,
         }),
     };
 }

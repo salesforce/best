@@ -1,5 +1,28 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.5.1...v) (2018-05-17)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.5.2...v) (2018-06-01)
+
+
+
+<a name="0.5.2"></a>
+## [0.5.2](https://git.soma.salesforce.com/lwc/best/compare/v0.5.1...v0.5.2) (2018-06-01)
+
+
+### Bug Fixes
+
+* **best:** Fix building on windows machine ([bea8ed1](https://git.soma.salesforce.com/lwc/best/commits/bea8ed1))
+* **best:** fix timeout and config ([cb0f011](https://git.soma.salesforce.com/lwc/best/commits/cb0f011))
+* **best:** Temporary fix for IE11 ([6fab658](https://git.soma.salesforce.com/lwc/best/commits/6fab658))
+* **best:** Updated yarn.lock ([63d97c6](https://git.soma.salesforce.com/lwc/best/commits/63d97c6))
+* **best:** Use simple-git/promise instead of child_process.spawn ([3d01709](https://git.soma.salesforce.com/lwc/best/commits/3d01709))
+
+
+### Features
+
+* Split config for sample benchmark into prod and compat config ([0d7d022](https://git.soma.salesforce.com/lwc/best/commits/0d7d022))
+* **best:** Add IE11 runner and configuration ([7d6f124](https://git.soma.salesforce.com/lwc/best/commits/7d6f124))
+* **best:** Compare against local changes ([b45a014](https://git.soma.salesforce.com/lwc/best/commits/b45a014))
+* **best:** Converted IE runner into general webdriver runner ([6061f7d](https://git.soma.salesforce.com/lwc/best/commits/6061f7d))
+* **git:** update husky with commitlint ([#110](https://git.soma.salesforce.com/lwc/best/issues/110)) ([8c7f1f0](https://git.soma.salesforce.com/lwc/best/commits/8c7f1f0))
 
 
 
