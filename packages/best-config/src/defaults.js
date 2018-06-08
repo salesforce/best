@@ -3,6 +3,8 @@ import { cacheDirectory } from '@best/utils';
 export default {
     cache: true,
     cacheDirectory: cacheDirectory(),
+    staticFiles: {},
+    openBenchmarks: false,
     moduleDirectories: ['node_modules'],
     moduleFileExtensions: ['js'],
     moduleNameMapper: {},

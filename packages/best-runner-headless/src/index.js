@@ -1,6 +1,9 @@
 import puppeteer from 'puppeteer';
 import { getSystemInfo } from '@best/utils';
 import { clearInterval } from 'timers';
+import express from 'express';
+import { dirname, basename } from 'path';
+import { spawn } from 'child_process';
 
 const BROWSER_ARGS = [
     '--no-sandbox',
@@ -128,6 +131,17 @@ export async function run({ benchmarkName, benchmarkEntry }, projectConfig, glob
     const opts = normalizeRuntimeOptions(projectConfig);
     const state = initializeBenchmarkState(opts);
     const { projectName } = projectConfig;
+    const { openBenchmarks } = globalConfig;
+
+    const dir = dirname(benchmarkEntry);
+    const app = await createExpressApp(dir);
+    const file = basename(benchmarkEntry);
+    const url = `${app.url}/${file}`;
+
+    // Open benchmarks in a browser for debugging.
+    if (openBenchmarks) {
+        spawn('open', [url]);
+    }
 
     let browser;
     try {
@@ -137,7 +151,7 @@ export async function run({ benchmarkName, benchmarkEntry }, projectConfig, glob
         messager.onBenchmarkStart(benchmarkName, projectName);
 
         const page = await browser.newPage();
-        await page.goto('file:///' + benchmarkEntry);
+        await page.goto(url);
 
         const { results } = await runIterations(page, state, opts, messager);
         return { results, environment };
@@ -150,5 +164,42 @@ export async function run({ benchmarkName, benchmarkEntry }, projectConfig, glob
         if (browser) {
             await browser.close();
         }
+
+        // Stop the express app, unless we're opening benchmarks in a browser for debugging.
+        if (!openBenchmarks) {
+            app.stop();
+        }
     }
+}
+
+// Create a new express app on a random port.
+export async function createExpressApp(staticRoot) {
+    return new Promise(resolve => {
+        const app = express();
+        const server = app.listen(() => {
+            app.url = `http://localhost:${server.address().port}`;
+            resolve(app);
+        });
+
+        // Serve static assets.
+        app.use(express.static(staticRoot));
+
+        // Keep track of open sockets.
+        const sockets = {};
+        let socketId = 0;
+        server.on('connection', socket => {
+            const id = `s${++socketId}`;
+            sockets[id] = socket;
+            socket.on('close', () => delete sockets[id]);
+        });
+
+        // Stop the server by ending open sockets.
+        app.stop = () => {
+            server.close();
+            Object.values(sockets).forEach(socket => {
+                socket.end();
+                socket.unref();
+            });
+        };
+    });
 }
