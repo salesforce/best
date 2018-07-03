@@ -147,7 +147,7 @@ export default class RunnerMessager {
             Object.assign(bench.opts, overrideOpts);
         }
         bench.state = BUILD_STATE.RUNNING;
-        this._update();
+        this._update(true);
     }
 
     updateBenchmarkProgress(state, opts) {
@@ -162,7 +162,7 @@ export default class RunnerMessager {
             bench.state = BUILD_STATE.DONE;
         }
 
-        this._update();
+        this._update(true);
     }
 
     onBenchmarkError(benchmarkName, projectName) {
@@ -172,7 +172,7 @@ export default class RunnerMessager {
 
     logState(state) {
         this._currentState = state;
-        this._update();
+        this._update(true);
     }
 
     finishRun() {
