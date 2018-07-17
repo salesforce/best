@@ -362,7 +362,7 @@ export async function getConfigs(projectsFromCLIArgs, argv) {
         }
     }
 
-    if (projects.length > 1) {
+    if (projects.length > 0) {
         const parsedConfigs = await Promise.all(projects.map(root => readConfig(argv, root, configPath)));
         ensureNoDuplicateConfigs(parsedConfigs, projects);
         configs = parsedConfigs.map(({ projectConfig }) => projectConfig);
