@@ -5,7 +5,7 @@
         </p>
         <ul>
             <template for:each={items} for:item="item">
-                <li><span>{item}</span></li>
+                <li key={item}><span>{item}</span></li>
             </template>
         </ul>
     </div>
