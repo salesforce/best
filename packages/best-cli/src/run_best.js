@@ -26,6 +26,8 @@ function filterBenchmarks(matches, { nonFlagArgs, rootDir }) {
     }
 
     const patterns = nonFlagArgs.map(p => {
+        // To provide a good test matching we need to disambiguate between
+        // glob patterns vs. full path diretory vs a specific file.
         if (p.includes('*')) {
             return p;
         }
