@@ -64,7 +64,7 @@ export default class BuildStateMessager {
             matches.forEach(benchmarkPath => {
                 map[`${projectName}:${benchmarkPath}`] = {
                     state: BUILD_STATE.QUEUED,
-                    displayPath: path.relative(config.rootDir, benchmarkPath),
+                    displayPath: path.relative(globalConfig.rootDir, benchmarkPath),
                     projectName: config.projectName
                 };
             });
@@ -96,14 +96,14 @@ export default class BuildStateMessager {
     onBenchmarkBuildStart(benchmarkPath, projectName) {
         const bench = this._state.benchmarks[`${projectName}:${benchmarkPath}`];
         bench.state = BUILD_STATE.BUILDING;
-        this._update();
+        this._update(true);
     }
 
     onBenchmarkBuildEnd(benchmarkPath, projectName) {
         const bench = this._state.benchmarks[`${projectName}:${benchmarkPath}`];
         bench.state = BUILD_STATE.DONE;
         this._currentState = '';
-        this._update();
+        this._update(true);
     }
 
     logState(state) {
