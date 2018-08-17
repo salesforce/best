@@ -5,18 +5,41 @@ import { BuildStateMessager, RunnerMessager } from '@best/messager';
 import { storeBenchmarkResults } from '@best/store';
 import { analyzeBenchmarks } from '@best/analyzer';
 import path from 'path';
+import micromatch from 'micromatch';
 
 const IGNORE_PATHS = [
+    '**/__benchmarks_results__/**',
     '**/node_modules/**',
     '**/__tests__/**'
 ];
 
-async function getBenchmarkPaths({ nonFlagArgs, rootDir }, config) {
+async function getBenchmarkPaths({ rootDir }, config) {
     const { testMatch, rootDir: projectRoot } = config;
-    const rootPath = projectRoot || rootDir;
-    const paths = nonFlagArgs && nonFlagArgs.length ? nonFlagArgs : testMatch;
-    const results = await globby(paths, { cwd: rootPath, ignore: IGNORE_PATHS });
-    return results.map(p => path.resolve(rootPath, p));
+    const cwd = projectRoot || rootDir;
+    const results = await globby(testMatch, { cwd, ignore: IGNORE_PATHS });
+    return results.map(p => path.resolve(cwd, p));
+}
+
+function filterBenchmarks(matches, { nonFlagArgs, rootDir }) {
+    if (!nonFlagArgs || !nonFlagArgs.length) {
+        return matches;
+    }
+
+    const patterns = nonFlagArgs.map(p => {
+        // To provide a good test matching we need to disambiguate between
+        // glob patterns vs. full path diretory vs a specific file.
+        if (p.includes('*')) {
+            return p;
+        }
+
+        if (path.extname(p)) {
+            return path.resolve(rootDir, p);
+        }
+
+        return path.join(path.resolve(rootDir, p), '**');
+    });
+
+    return micromatch(matches, patterns);
 }
 
 function validateBenchmarkNames(matches) {
@@ -33,7 +56,8 @@ function validateBenchmarkNames(matches) {
 async function getBenchmarkTests(configs, globalConfig) {
     return Promise.all(
         configs.map(async config => {
-            const matches = await getBenchmarkPaths(globalConfig, config);
+            let matches = await getBenchmarkPaths(globalConfig, config);
+            matches = filterBenchmarks(matches, globalConfig);
             validateBenchmarkNames(matches);
             return { config, matches };
         })
@@ -61,8 +85,17 @@ async function runBundleBenchmarks(benchmarksBuilds, globalConfig, messager) {
     return runBenchmarks(benchmarksBuilds, globalConfig, messager);
 }
 
+function hasMatches(benchmarksTests) {
+    return benchmarksTests.some(({ matches }) => matches.length);
+}
+
 export async function runBest(globalConfig, configs, outputStream) {
     const benchmarksTests = await getBenchmarkTests(configs, globalConfig);
+
+    if (!hasMatches(benchmarksTests)) {
+        outputStream.write('No benchmark matches found. \n');
+        return [];
+    }
 
     const buildMessager = new BuildStateMessager(benchmarksTests, globalConfig, outputStream);
     const benchmarksBuilds = await buildBundleBenchmarks(benchmarksTests, globalConfig, buildMessager);
