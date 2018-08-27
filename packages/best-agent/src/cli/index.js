@@ -1,19 +1,17 @@
 import express from 'express';
 import { runAgent } from '../agent-service';
-import path from 'path';
+import { readFileSync } from 'fs';
 const PORT = process.env.PORT || 5000;
-const SSL_ENABLED = process.env.SSL_ENABLED || false;
-const SSL_PFX_FILE = process.env.SSL_PFX_FILE || path.resolve(__dirname, '../../certs/test_cert.pfx');
-const SSL_PFX_PASSPHRASE = process.env.SSL_PFX_PASSPHRASE || 'p@ssw0rd';
-const fs = require('fs');
+const SSL_PFX_FILE = process.env.SSL_PFX_FILE;
+const SSL_PFX_PASSPHRASE = process.env.SSL_PFX_PASSPHRASE;
 
 export function run() {
     const app = express();
     let server;
 
-    if (SSL_ENABLED) {
+    if (SSL_PFX_FILE && SSL_PFX_PASSPHRASE) {
         const options = {
-            pfx: fs.readFileSync(SSL_PFX_FILE),
+            pfx: readFileSync(SSL_PFX_FILE),
             passphrase: SSL_PFX_PASSPHRASE
         };
         server = require('https').createServer(options, app);
