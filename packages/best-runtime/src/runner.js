@@ -1,6 +1,7 @@
 import { getBenchmarkRootNode } from './state';
 import { runBenchmarkIteration } from './run_iteration';
 import { normalizeResults } from './results';
+import { validateState } from "./utils/validate";
 
 function collectResults(node) {
     const { name, duration, startedAt, run } = node;
@@ -38,6 +39,7 @@ async function runIterations(config) {
 }
 
 export async function runBenchmark(benchmarkState) {
+    validateState(benchmarkState);
     if (benchmarkState.benchmarkDefinitionError) {
         throw benchmarkState.benchmarkDefinitionError;
     }
