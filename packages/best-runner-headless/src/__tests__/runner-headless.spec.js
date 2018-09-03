@@ -79,7 +79,7 @@ describe('errors', () => {
         };
 
         return expect(run(benchmarkConfig, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER)).rejects.toThrow(
-            /BEST is not defined/,
+            /Benchmark parse error/,
         );
     });
 
