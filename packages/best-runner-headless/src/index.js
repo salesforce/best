@@ -62,7 +62,8 @@ async function runServerIterations(page, state, opts, messager) {
 }
 
 async function runIterations(page, state, opts, messager) {
-    // TODO: Throw on timeouts, current logic is all broken
+    // TODO: Throw on timeouts, current logic is
+    // currently non-existant for clientside iteration mode
     // if (state.executedTime > opts.maxDuration) {
     //     throw new Error('Benchmark timmed out');
     // }
