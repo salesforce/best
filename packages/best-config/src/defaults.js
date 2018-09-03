@@ -10,7 +10,7 @@ export default {
     runner: "default",
     runnerConfig: [{ runner: '@best/runner-headless', config: {} }],
     benchmarkEnvironment: 'production',
-    benchmarkMaxDuration: 1000 * 10, // 10s
+    benchmarkMaxDuration: 1000 * 15, // 15s
     benchmarkMinIterations: 30,
     benchmarkOnClient: false,
     benchmarkIterations: undefined,

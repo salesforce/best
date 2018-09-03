@@ -15,6 +15,15 @@ module.exports = {
                 "options": { path: '/best' },
                 "remoteRunner": "@best/runner-headless"
             }
+        },
+        {
+            "runner": '@best/runner-remote',
+            "name": "remote",
+            "config": {
+                "host": "http://best-agent-pool.lwcjs.org/",
+                "options": { path: '/best' },
+                "remoteRunner": "@best/runner-headless"
+            }
         }
     ],
 };

@@ -62,6 +62,12 @@ async function runServerIterations(page, state, opts, messager) {
 }
 
 async function runIterations(page, state, opts, messager) {
+    // TODO: Throw on timeouts, current logic is
+    // currently non-existant for clientside iteration mode
+    // if (state.executedTime > opts.maxDuration) {
+    //     throw new Error('Benchmark timmed out');
+    // }
+
     if (state.iterateOnClient) {
         return runClientIterations(page, state, opts, messager);
     }
@@ -130,6 +136,7 @@ export async function run({ benchmarkName, benchmarkEntry }, projectConfig, glob
     const { projectName } = projectConfig;
 
     let browser;
+    let parseError;
     try {
         browser = await puppeteer.launch(PUPPETEER_OPTIONS);
         const environment = await normalizeEnvironment(browser, projectConfig, globalConfig);
@@ -137,7 +144,16 @@ export async function run({ benchmarkName, benchmarkEntry }, projectConfig, glob
         messager.onBenchmarkStart(benchmarkName, projectName);
 
         const page = await browser.newPage();
+        page.on('pageerror', (err) => (parseError = err));
         await page.goto('file:///' + benchmarkEntry);
+
+        // page.goto() will wait for the onload
+        // if we caught something that throws there is a parsing error in the benchmark code
+        if (parseError) {
+            messager.onBenchmarkError(benchmarkName, projectName);
+            parseError.message = 'Benchmark parse error.\n' + parseError.message;
+            throw parseError;
+        }
 
         const { results } = await runIterations(page, state, opts, messager);
         return { results, environment };
