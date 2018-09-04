@@ -32,14 +32,16 @@ function generateRows(stats, name = '', rows = []) {
             const baseMed = baseStats.median;
             const targetMed = targetStats.median;
 
-            const percentage = (baseMed - targetMed) / baseMed * 100;
+            const percentage = Math.abs((baseMed - targetMed) / baseMed * 100);
+            const relativeTrend = targetMed - baseMed;
+            const sign = Math.sign(relativeTrend) === 1 ? '+' : '';
 
             allRows.push([
                 name + node.name,
                 'duration',
-                `${baseMed.toFixed(2)} (± ${baseStats.medianAbsoluteDeviation.toFixed(2)} ms)`,
-                `${targetMed.toFixed(2)} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)} ms)`,
-                percentage.toFixed(2) + '% ' + (samplesComparison === 0 ? '👌' : samplesComparison === 1 ? '👎' : '👍'),
+                `${baseMed.toFixed(2)} (±${baseStats.medianAbsoluteDeviation.toFixed(2)} ms)`,
+                `${targetMed.toFixed(2)} (±${targetStats.medianAbsoluteDeviation.toFixed(2)} ms)`,
+                sign + relativeTrend.toFixed(1) + 'ms (' + percentage.toFixed(1) + '%) ' + (samplesComparison === 0 ? '👌' : samplesComparison === 1 ? '👎' : '👍'),
             ]);
         }
         return allRows;
