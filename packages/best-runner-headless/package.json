@@ -11,6 +11,6 @@
   "module": "src/index.js",
   "dependencies": {
     "@best/utils": "0.5.2",
-    "puppeteer": "1.1.0"
+    "puppeteer": "1.7.0"
   }
 }
