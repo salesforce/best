@@ -16,7 +16,8 @@ const IGNORE_PATHS = [
 async function getBenchmarkPaths({ rootDir }, config) {
     const { testMatch, rootDir: projectRoot } = config;
     const cwd = projectRoot || rootDir;
-    const results = await globby(testMatch, { cwd, ignore: IGNORE_PATHS });
+    const ignorePaths = IGNORE_PATHS.concat(config.testPathIgnorePatterns || []);
+    const results = await globby(testMatch, { cwd, ignore: ignorePaths });
     return results.map(p => path.resolve(cwd, p));
 }
 
