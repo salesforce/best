@@ -1,5 +1,15 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.6.0...v) (2018-09-04)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.6.1...v) (2018-09-18)
+
+
+
+<a name="0.6.1"></a>
+## [0.6.1](https://git.soma.salesforce.com/lwc/best/compare/v0.6.0...v0.6.1) (2018-09-18)
+
+
+### Features
+
+* added option to ignore test paths via config ([#123](https://git.soma.salesforce.com/lwc/best/issues/123)) ([d9d61a9](https://git.soma.salesforce.com/lwc/best/commits/d9d61a9))
 
 
 
