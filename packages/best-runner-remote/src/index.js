@@ -93,7 +93,9 @@ function proxifyRunner(benchmarkEntryBundle, runnerConfig, projectConfig, global
     });
 }
 
-export function run(benchmarkEntryBundle, projectConfig, globalConfig, messager) {
-    const { benchmarkRunnerConfig } = projectConfig;
-    return proxifyRunner(benchmarkEntryBundle, benchmarkRunnerConfig, projectConfig, globalConfig, messager);
+export class Runner {
+    run(benchmarkEntryBundle, projectConfig, globalConfig, messager) {
+        const { benchmarkRunnerConfig } = projectConfig;
+        return proxifyRunner(benchmarkEntryBundle, benchmarkRunnerConfig, projectConfig, globalConfig, messager);
+    }
 }
