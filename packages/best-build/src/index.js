@@ -11,6 +11,8 @@ const BASE_ROLLUP_OUTPUT = {
     format: 'iife',
 };
 
+const ROLLUP_CACHE = new Map();
+
 function md5(data) {
     return crypto
         .createHash('md5')
@@ -72,11 +74,13 @@ export async function buildBenchmark(entry, projectConfig, globalConfig, message
     const inputOptions = Object.assign({}, BASE_ROLLUP_INPUT, {
         input: entry,
         plugins: [benchmarkRollup(), ...addResolverPlugins(projectConfig)],
+        cache: ROLLUP_CACHE.get(projectName)
     });
 
     messager.logState('Bundling benchmark files...');
 
     const bundle = await rollup(inputOptions);
+    ROLLUP_CACHE.set(projectName, bundle);
     const outputOptions = Object.assign({}, BASE_ROLLUP_OUTPUT, {
         file: path.join(benchmarkFolder, benchmarkJSFileName),
     });
