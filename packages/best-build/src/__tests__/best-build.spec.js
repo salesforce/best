@@ -128,10 +128,10 @@ describe('buildBenchmark', () => {
                             loaded.push(id);
                             return '/* empty */';
                         },
-                        transform: (src, id) => {
+                        transform(src, id) {
                             transformed.push(id);
                             return src;
-                        },
+                        }
                     };
                 };
             },
