@@ -18,8 +18,8 @@ export const options = {
     },
     projects: {
         description:
-            'A list of projects that use Best to run all tests of all ' +
-            'projects in a single instance of Best.',
+            'A list of projects to run. ' +
+            'The arguments must be paths to best config files or a local repo with best configured',
         type: 'array',
     },
     iterations: {
