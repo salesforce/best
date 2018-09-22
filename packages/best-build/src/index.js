@@ -87,16 +87,13 @@ export async function buildBenchmark(entry, projectConfig, globalConfig, message
         benchmarkName
     };
 
-    let copyPublic = false;
-    if (fs.existsSync(benchmarkTemplatePath)) {
-        Object.assign(generateHTMLOptions, overwriteDefaultTemplate(benchmarkTemplatePath, publicFolder));
-        copyPublic = true;
-    } else if (fs.existsSync(projectTemplatePath)) {
-        Object.assign(generateHTMLOptions, overwriteDefaultTemplate(projectTemplatePath, publicFolder));
-        copyPublic = true;
-    }
+    const templatePath =
+        fs.existsSync(benchmarkTemplatePath) ? benchmarkTemplatePath :
+            fs.existsSync(projectTemplatePath) ? projectTemplatePath :
+                undefined;
 
-    if (copyPublic) {
+    if (templatePath) {
+        Object.assign(generateHTMLOptions, overwriteDefaultTemplate(templatePath, publicFolder));
         const source = path.resolve(path.join(projectConfig.rootDir, "public"));
         await deepDelete(publicFolder);
         await deepCopy(source, publicFolder);
