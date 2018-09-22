@@ -10,7 +10,7 @@ function proxifyRunner(benchmarkEntryBundle, runnerConfig, projectConfig, global
         const { benchmarkName, benchmarkEntry, benchmarkSignature } = benchmarkEntryBundle;
         const { host, options, remoteRunner } = runnerConfig;
         const bundleDirname = path.dirname(benchmarkEntry);
-        const remoteprojectConfig = Object.assign({}, projectConfig, {
+        const remoteProjectConfig = Object.assign({}, projectConfig, {
             benchmarkRunner: remoteRunner,
         });
         const tarBundle = path.resolve(bundleDirname, `${benchmarkName}.tgz`);
@@ -84,7 +84,7 @@ function proxifyRunner(benchmarkEntryBundle, runnerConfig, projectConfig, global
             socket.emit('benchmark_task', {
                 benchmarkName,
                 benchmarkSignature,
-                projectConfig: remoteprojectConfig,
+                projectConfig: remoteProjectConfig,
                 globalConfig,
             });
         });

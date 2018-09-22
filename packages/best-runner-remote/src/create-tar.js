@@ -8,10 +8,7 @@ export async function createTarBundle(artifactsFolder, benchmarkName) {
             gzip: true,
             cwd: artifactsFolder,
             noDirRecurse: true,
-            filter: p => {
-                const ext = path.extname(p);
-                return ext === '.js' || ext === '.html' || ext === '.css';
-            },
+            filter: p => !/\.tgz$/.test(p),
             file: path.resolve(artifactsFolder, `${benchmarkName}.tgz`),
         },
         fs.readdirSync(artifactsFolder),

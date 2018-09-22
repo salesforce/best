@@ -246,10 +246,12 @@ function _getConfigs(options) {
             outputHistogramPattern: normalizePattern(options.outputHistogramNames),
             histogramQuantileRange: options.histogramQuantileRange,
             histogramMaxWidth: options.histogramMaxWidth,
+            openPages: options.openPages,
         }),
         projectConfig: Object.freeze({
             cache: options.cache,
             cacheDirectory: options.cacheDirectory,
+            useHttp: options.useHttp,
             cwd: options.cwd,
             detectLeaks: options.detectLeaks,
             displayName: options.displayName,
