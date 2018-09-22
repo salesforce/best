@@ -124,12 +124,14 @@ describe('buildBenchmark', () => {
             () => {
                 return () => {
                     return {
-                        load: id => {
+                        load(id) {
                             loaded.push(id);
+                            return '/* empty */';
                         },
-                        transform: (src, id) => {
+                        transform(src, id) {
                             transformed.push(id);
-                        },
+                            return src;
+                        }
                     };
                 };
             },
