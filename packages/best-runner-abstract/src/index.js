@@ -6,50 +6,12 @@ import { spawn } from 'child_process';
 const UPDATE_INTERVAL = 300;
 
 export default class Runner {
-    async getUrl(benchmarkEntry, { useHttp }) {
-        if (!useHttp) {
-            return `file://${benchmarkEntry}`;
-        }
-        return new Promise(resolve => {
-            const dir = dirname(benchmarkEntry);
-            const file = basename(benchmarkEntry);
-            const publicDir = join(dir, '../public');
-            const app = this.app = express();
-            const server = app.listen(() => {
-                const { port } = server.address();
-                resolve(`http://127.0.0.1:${port}/${file}`);
-            });
-
-            // Serve static assets.
-            app.use(express.static(dir));
-            app.use('/', express.static(publicDir));
-
-            // Keep track of open sockets.
-            const sockets = {};
-            let socketId = 0;
-            server.on('connection', socket => {
-                const id = `s${++socketId}`;
-                sockets[id] = socket;
-                socket.on('close', () => delete sockets[id]);
-            });
-
-            // Stop the server by ending open sockets.
-            app.stop = () => {
-                server.close();
-                Object.values(sockets).forEach(socket => {
-                    socket.end();
-                    socket.unref();
-                });
-            };
-        });
-    }
-
     async run({ benchmarkName, benchmarkEntry }, projectConfig, globalConfig, messager) {
         const opts = this.normalizeRuntimeOptions(projectConfig);
         const state = this.initializeBenchmarkState(opts);
         const { projectName } = projectConfig;
         const { openPages } = globalConfig;
-        const url = await this.getUrl(benchmarkEntry, projectConfig);
+        const url = await this.runSetupAndGetUrl(benchmarkEntry, projectConfig);
 
         // Optionally open benchmarks in a browser for debugging.
         const debugPages = openPages && /^de/i.test(process.env.NODE_ENV);
@@ -97,6 +59,44 @@ export default class Runner {
             results: [],
             iterateOnClient: opts.iterateOnClient,
         };
+    }
+
+    runSetupAndGetUrl(benchmarkEntry, { useHttp }) {
+        if (!useHttp) {
+            return `file://${benchmarkEntry}`;
+        }
+        return new Promise(resolve => {
+            const dir = dirname(benchmarkEntry);
+            const file = basename(benchmarkEntry);
+            const publicDir = join(dir, '../public');
+            const app = this.app = express();
+            const server = app.listen(() => {
+                const { port } = server.address();
+                resolve(`http://127.0.0.1:${port}/${file}`);
+            });
+
+            // Serve static assets.
+            app.use(express.static(dir));
+            app.use('/', express.static(publicDir));
+
+            // Keep track of open sockets.
+            const sockets = {};
+            let socketId = 0;
+            server.on('connection', socket => {
+                const id = `s${++socketId}`;
+                sockets[id] = socket;
+                socket.on('close', () => delete sockets[id]);
+            });
+
+            // Stop the server by ending open sockets.
+            app.stop = () => {
+                server.close();
+                Object.values(sockets).forEach(socket => {
+                    socket.end();
+                    socket.unref();
+                });
+            };
+        });
     }
 
     async normalizeEnvironment(browser, projectConfig, globalConfig) {
