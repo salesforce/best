@@ -1,6 +1,6 @@
 {
   "name": "@best/runner-abstract",
-  "version": "0.6.1",
+  "version": "0.6.3",
   "description": "Best Runner (Abstract)",
   "keywords": [
     "Best",
@@ -10,7 +10,7 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
-    "@best/utils": "0.6.1",
+    "@best/utils": "0.6.3",
     "express": "~4.16.2"
   }
 }
