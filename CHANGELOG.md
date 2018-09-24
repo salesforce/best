@@ -1,5 +1,15 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.6.2...v) (2018-09-21)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.6.3...v) (2018-09-24)
+
+
+
+<a name="0.6.3"></a>
+## [0.6.3](https://git.soma.salesforce.com/lwc/best/compare/v0.6.2...v0.6.3) (2018-09-24)
+
+
+### Bug Fixes
+
+* upgrade rollup to fix wrong mangling ([#126](https://git.soma.salesforce.com/lwc/best/issues/126)) ([bdca3f6](https://git.soma.salesforce.com/lwc/best/commits/bdca3f6))
 
 
 
