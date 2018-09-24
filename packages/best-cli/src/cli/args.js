@@ -72,4 +72,9 @@ export const options = {
         description: 'JSON representation of the configuration to use for the give runner',
         type: 'string',
     },
+    useHttp: {
+        default: true,
+        description: 'Runs benchmarks against a temporary HTTP server (instead of using the "file:" protocol).',
+        type: 'boolean',
+    }
 };
