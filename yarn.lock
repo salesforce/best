@@ -1011,6 +1011,10 @@
     lodash "^4.17.4"
     url-template "^2.0.8"
 
+"@types/estree@0.0.39":
+  version "0.0.39"
+  resolved "https://registry.npmjs.org/@types/estree/-/estree-0.0.39.tgz#e177e699ee1b8c22d23174caaa7422644389509f"
+
 "@types/node@*":
   version "9.3.0"
   resolved "http://npm.lwcjs.org/@types/node/-/node-9.3.0/3a129cda7c4e5df2409702626892cb4b96546dd5.tgz#3a129cda7c4e5df2409702626892cb4b96546dd5"
@@ -7399,13 +7403,16 @@ rollup-watch@^4.3.1:
     require-relative "0.8.7"
     rollup-pluginutils "^2.0.1"
 
-rollup@~0.53.0:
-  version "0.53.3"
-  resolved "http://npm.lwcjs.org/rollup/-/rollup-0.53.3/e7b6777623df912bd0ca30dc24be791d6ebc8e5a.tgz#e7b6777623df912bd0ca30dc24be791d6ebc8e5a"
-
 rollup@~0.56.2:
   version "0.56.4"
   resolved "http://npm.lwcjs.org/rollup/-/rollup-0.56.4/84c3d08b37bd63189c4517d2faad405412ebb8fc.tgz#84c3d08b37bd63189c4517d2faad405412ebb8fc"
+
+rollup@~0.66.2:
+  version "0.66.2"
+  resolved "http://npm.lwcjs.org/rollup/-/rollup-0.66.2/77acdb9f4093f5f035ce75480577c40a81ea7999.tgz#77acdb9f4093f5f035ce75480577c40a81ea7999"
+  dependencies:
+    "@types/estree" "0.0.39"
+    "@types/node" "*"
 
 run-async@^2.2.0:
   version "2.3.0"
