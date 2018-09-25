@@ -1,5 +1,15 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.6.3...v) (2018-09-24)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.6.4...v) (2018-09-25)
+
+
+
+<a name="0.6.4"></a>
+## [0.6.4](https://git.soma.salesforce.com/lwc/best/compare/v0.6.3...v0.6.4) (2018-09-25)
+
+
+### Bug Fixes
+
+* correctly use rollup cache ([324cde7](https://git.soma.salesforce.com/lwc/best/commits/324cde7))
 
 
 
