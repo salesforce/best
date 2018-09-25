@@ -1,6 +1,6 @@
 {
   "name": "@best/runner-headless",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "Best Runner (Headless)",
   "keywords": [
     "Best",
@@ -10,7 +10,7 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
-    "@best/utils": "0.6.3",
+    "@best/utils": "0.6.4",
     "puppeteer": "1.7.0"
   }
 }
