@@ -1,7 +1,7 @@
 {
-  "name": "@best/runner-headless",
+  "name": "@best/runner-abstract",
   "version": "0.6.4",
-  "description": "Best Runner (Headless)",
+  "description": "Best Runner (Abstract)",
   "keywords": [
     "Best",
     "Runner",
@@ -10,7 +10,7 @@
   "main": "build/index.js",
   "module": "src/index.js",
   "dependencies": {
-    "@best/runner-abstract": "0.6.4",
-    "puppeteer": "1.7.0"
+    "@best/utils": "0.6.4",
+    "express": "~4.16.2"
   }
 }

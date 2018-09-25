@@ -3,8 +3,13 @@ import path from 'path';
 import benchmarkRollup from './rollup-plugin-benchmark-import';
 import { generateDefaultHTML } from './html-templating';
 import { ncp } from 'ncp';
+import rimraf from 'rimraf';
 import fs from 'fs';
 import crypto from 'crypto';
+import { promisify } from 'util';
+
+const deepDelete = promisify(rimraf);
+const deepCopy = promisify(ncp);
 
 const BASE_ROLLUP_INPUT = {};
 const BASE_ROLLUP_OUTPUT = {
@@ -42,23 +47,11 @@ function addResolverPlugins({ plugins }) {
     });
 }
 
-function copyPublicFolder(source, destination) {
-    return new Promise((resolve, reject) => {
-        ncp(source, destination, err => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve();
-            }
-        });
-    });
-}
-
-function overwriteDefaultTemplate(templatePath, rootDir, publicFolder) {
+function overwriteDefaultTemplate(templatePath, publicFolder) {
     const template = fs.readFileSync(templatePath, 'utf8');
-    let templateOptions = {};
-    templateOptions["customTemplate"] = template;
-    templateOptions["publicFolder"] = publicFolder;
+    const templateOptions = {};
+    templateOptions.customTemplate = template;
+    templateOptions.publicFolder = publicFolder;
     return templateOptions;
 }
 
@@ -98,12 +91,16 @@ export async function buildBenchmark(entry, projectConfig, globalConfig, message
         benchmarkName
     };
 
-    if (fs.existsSync(benchmarkTemplatePath)) {
-        Object.assign(generateHTMLOptions, overwriteDefaultTemplate(benchmarkTemplatePath, projectConfig.rootDir, publicFolder));
-        await copyPublicFolder(path.resolve(path.join(projectConfig.rootDir, "public")), publicFolder);
-    } else if (fs.existsSync(projectTemplatePath)) {
-        Object.assign(generateHTMLOptions, overwriteDefaultTemplate(projectTemplatePath, projectConfig.rootDir, publicFolder));
-        await copyPublicFolder(path.resolve(path.join(projectConfig.rootDir, "public")), publicFolder);
+    const templatePath =
+        fs.existsSync(benchmarkTemplatePath) ? benchmarkTemplatePath :
+            fs.existsSync(projectTemplatePath) ? projectTemplatePath :
+                undefined;
+
+    if (templatePath) {
+        Object.assign(generateHTMLOptions, overwriteDefaultTemplate(templatePath, publicFolder));
+        const source = path.resolve(path.join(projectConfig.rootDir, "public"));
+        await deepDelete(publicFolder);
+        await deepCopy(source, publicFolder);
     }
 
     const html = generateDefaultHTML(generateHTMLOptions);

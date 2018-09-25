@@ -14,7 +14,22 @@ export async function runBenchmark(
     messager,
 ) {
     const { benchmarkRunner } = projectConfig;
-    const runner = require(benchmarkRunner);
+
+    // Allow runners with various module signatures to be plugged in.
+    let Runner;
+    try {
+        Runner = require(benchmarkRunner);
+        Runner = Runner.Runner || Runner.default || Runner;
+    } catch (e) {
+        throw new Error(`Runner "${benchmarkRunner}" not found.`);
+    }
+    // Construct a runner.
+    let runner;
+    try {
+        runner = new Runner();
+    } catch (e) {
+        throw new Error(`Runner "${benchmarkRunner}" does not expose a constructor.`);
+    }
 
     const benchmarkBundleName = {
         benchmarkName,

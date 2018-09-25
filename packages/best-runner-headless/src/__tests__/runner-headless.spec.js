@@ -1,5 +1,7 @@
 import * as path from 'path';
-import { run } from '../index';
+import Runner from '../index';
+
+const runner = new Runner();
 
 const BENCHMARK_CONFIG = {
     benchmarkName: 'test',
@@ -21,7 +23,7 @@ const MOCK_MESSAGER = {
 
 describe('run', () => {
     test('result', async () => {
-        const results = await run(BENCHMARK_CONFIG, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER);
+        const results = await runner.run(BENCHMARK_CONFIG, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER);
         expect(results).toMatchObject({
             environment: {
                 browser: expect.any(Object),
@@ -34,7 +36,7 @@ describe('run', () => {
 
     test('benchmarkIterations config', async () => {
         const iterations = 3;
-        const { results } = await run(
+        const { results } = await runner.run(
             BENCHMARK_CONFIG,
             {
                 benchmarkIterations: iterations,
@@ -48,7 +50,7 @@ describe('run', () => {
 
     // TODO: Find a proper way to test maxDuration without make the unit tests too slow
     // test.skip('maxDuration', async () => {
-    //     const results = await run(BENCHMARK_CONFIG, {
+    //     const results = await runner.run(BENCHMARK_CONFIG, {
     //         benchmarkMaxDuration: 20,
     //     }, GLOBAL_CONFIG, MOCK_MESSAGER);
 
@@ -57,7 +59,7 @@ describe('run', () => {
 
     test('benchmarkMinIterations config', async () => {
         const minIterations = 3;
-        const { results } = await run(
+        const { results } = await runner.run(
             BENCHMARK_CONFIG,
             {
                 benchmarkMaxDuration: -1,
@@ -78,7 +80,7 @@ describe('errors', () => {
             benchmarkEntry: path.resolve(__dirname, 'fixtures', 'syntax-error.html'),
         };
 
-        return expect(run(benchmarkConfig, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER)).rejects.toThrow(
+        return expect(runner.run(benchmarkConfig, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER)).rejects.toThrow(
             /Benchmark parse error/,
         );
     });
@@ -89,7 +91,7 @@ describe('errors', () => {
             benchmarkEntry: path.resolve(__dirname, 'fixtures', 'runtime-error.html'),
         };
 
-        return expect(run(benchmarkConfig, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER)).rejects.toThrow(
+        return expect(runner.run(benchmarkConfig, PROJECT_CONFIG, GLOBAL_CONFIG, MOCK_MESSAGER)).rejects.toThrow(
             /I fail at runtime/,
         );
     });
@@ -110,7 +112,7 @@ describe('messager', () => {
             },
         };
 
-        await run(BENCHMARK_CONFIG, PROJECT_CONFIG, GLOBAL_CONFIG, messager);
+        await runner.run(BENCHMARK_CONFIG, PROJECT_CONFIG, GLOBAL_CONFIG, messager);
 
         expect(calls).toEqual([
             ['start', BENCHMARK_CONFIG.benchmarkName],
