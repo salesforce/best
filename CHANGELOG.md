@@ -1,5 +1,10 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.6.4...v) (2018-09-25)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.7.0...v) (2018-09-25)
+
+
+
+<a name="0.7.0"></a>
+# [0.7.0](https://git.soma.salesforce.com/lwc/best/compare/v0.6.4...v0.7.0) (2018-09-25)
 
 
 
@@ -22,9 +27,20 @@
 * upgrade rollup to fix wrong mangling ([#126](https://git.soma.salesforce.com/lwc/best/issues/126)) ([bdca3f6](https://git.soma.salesforce.com/lwc/best/commits/bdca3f6))
 
 
+### Features
+
+* **best:** abstract runner ([4efe52c](https://git.soma.salesforce.com/lwc/best/commits/4efe52c))
+* **best:** http support ([b4c3e3e](https://git.soma.salesforce.com/lwc/best/commits/b4c3e3e))
+
+
 
 <a name="0.6.2"></a>
 ## [0.6.2](https://git.soma.salesforce.com/lwc/best/compare/v0.6.1...v0.6.2) (2018-09-21)
+
+
+### Features
+
+* **best:** class-ify runners ([212a168](https://git.soma.salesforce.com/lwc/best/commits/212a168))
 
 
 ### Performance Improvements
