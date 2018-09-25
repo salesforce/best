@@ -1,6 +1,6 @@
 {
   "name": "best-frontend-example",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "private": true,
   "description": "Best frontend Example",
   "scripts": {
@@ -20,8 +20,8 @@
     "url": "https://github.com/salesforce/best"
   },
   "dependencies": {
-    "@best/frontend": "0.6.4",
-    "@best/store-aws": "0.6.4",
+    "@best/frontend": "0.7.0",
+    "@best/store-aws": "0.7.0",
     "express": "~4.16.2"
   }
 }
