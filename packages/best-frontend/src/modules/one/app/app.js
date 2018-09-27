@@ -1,10 +1,10 @@
-import { Element, unwrap, track } from 'engine';
+import { LightningElement, unwrap, track } from 'lwc';
 import INITIAL_STATE from './state';
 import { reifyBranches, emulateFetch, initializeState, normalizeStats, updateURL} from './utils';
 
 const { state: initState, action: initAction }  = initializeState(INITIAL_STATE, window.BEST);
 
-export default class App extends Element {
+export default class App extends LightningElement {
     @track state = initState;
     constructor() {
         super();

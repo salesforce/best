@@ -1,7 +1,7 @@
-import { api, Element } from 'engine';
+import { api, LightningElement } from 'lwc';
 import HomePage from "./page-home.html";
 import ProjectPage from "./page-project.html";
-export default class AppRouter extends Element {
+export default class AppRouter extends LightningElement {
     @api pageType;
     @api pageId;
     @api pageState; // TODO: We don't need to pass this down once we have @wire

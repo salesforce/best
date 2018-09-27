@@ -1,7 +1,7 @@
-import { Element, api } from "engine";
+import { LightningElement, api } from 'engine';
 import { joinClassNames } from "one-tmp-utils";
 
-export default class LightningSpinner extends Element {
+export default class LightningSpinner extends LightningElement {
     @api size = 'medium';
     @api alternativeText = '';
     @api containerClasses;

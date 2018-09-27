@@ -1,8 +1,8 @@
-import { Element } from 'engine';
+import { LightningElement } from 'lwc';
 
 const ITEMS = Array.apply(null, Array(1000)).map((k, i) => i);
 
-export default class SimpleBench extends Element {
+export default class SimpleBench extends LightningElement {
     @track test = 'benchmark';
     items = ITEMS;
 }

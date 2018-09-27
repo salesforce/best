@@ -1,8 +1,8 @@
-import { api, track, Element } from 'engine';
+import { api, track, LightningElement } from 'lwc';
 import { normalizeForTrending, normalizeForComparison } from "./normalize-benchmarks";
 import { generatePlot, cleanupPlots } from "./plots";
 
-export default class HomePage extends Element {
+export default class HomePage extends LightningElement {
     @api projectId;
     @track benchmarksTrend;
     @track selectedCommits = [];

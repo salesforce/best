@@ -1,4 +1,4 @@
-import { createElement } from 'engine';
+import { createElement } from 'lwc';
 import App from 'simple-benchmark';
 
 const container = document.getElementById('main');

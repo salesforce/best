@@ -1,4 +1,4 @@
-import { Element } from 'engine';
+import { LightningElement } from 'lwc';
 
-export default class AppNavMenu extends Element {
+export default class AppNavMenu extends LightningElement {
 }

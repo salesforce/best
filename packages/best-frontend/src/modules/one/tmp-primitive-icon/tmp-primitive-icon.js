@@ -1,4 +1,4 @@
-import { Element, api, track } from 'engine';
+import { LightningElement, api, track } from 'lwc';
 import { classSet, icon as iconUtil } from 'one-tmp-utils';
 
 const tokenMap = Object.assign(Object.create(null), {
@@ -16,7 +16,7 @@ const defaultTokenValue = Object.assign(Object.create(null), {
     'lightning.utilitySprite': '/assets/icons/utility-sprite/svg/symbols.svg',
 });
 
-export default class PrimitiveIcon extends Element {
+export default class PrimitiveIcon extends LightningElement {
     @track state = {
         category : '',
         name : ''

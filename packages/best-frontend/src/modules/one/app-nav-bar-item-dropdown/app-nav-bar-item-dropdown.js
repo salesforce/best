@@ -1,4 +1,4 @@
-import { Element, unwrap, api, track } from 'engine';
+import { LightningElement, unwrap, api, track } from 'lwc';
 
 const Labels = {
     'empty'        : 'No recent Items',
@@ -18,7 +18,7 @@ function createEvent(eventName, action, contextAction) {
     return event;
 }
 
-export default class AppNavBarItemDropdown extends Element {
+export default class AppNavBarItemDropdown extends LightningElement {
     @track state = {
         loading      : false,
         loadedItems  : false,

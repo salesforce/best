@@ -1,7 +1,7 @@
-import { api, Element } from "engine";
+import { api, LightningElement } from 'engine';
 import { joinClassNames, isPureLeftClick } from "one-tmp-utils";
 
-export default class LightningMenuItem extends Element {
+export default class LightningMenuItem extends LightningElement {
     // eslint-disable-next-line no-script-url
     @api url = "javascript:void(0)";
     @api value;

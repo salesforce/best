@@ -1,4 +1,4 @@
-import { api, Element } from 'engine';
+import { api, LightningElement } from 'lwc';
 import { classListMutation, icon as iconUtil } from 'one-tmp-utils';
 
 const validVariants = new Set([
@@ -7,7 +7,7 @@ const validVariants = new Set([
     'warning',
 ]);
 
-export default class LightningIcon extends Element {
+export default class LightningIcon extends LightningElement {
     @api alternativeText;
     @api iconName;
     @api size;

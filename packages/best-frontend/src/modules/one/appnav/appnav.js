@@ -1,11 +1,11 @@
-import { api, Element } from 'engine';
+import { api, LightningElement } from 'lwc';
 import { isPureLeftClick } from 'one-tmp-utils';
 const NAV_TYPE_HORIZONTAL = 'horizontal';
 const NAV_TYPE_DROPDOWN = 'dropdown';
 
 const DEFAULT_APP_NAME = 'Best';
 
-export default class AppNav extends Element {
+export default class AppNav extends LightningElement {
     @api showAppLauncher;
     @api appName = DEFAULT_APP_NAME;
     @api appNavType = NAV_TYPE_HORIZONTAL;

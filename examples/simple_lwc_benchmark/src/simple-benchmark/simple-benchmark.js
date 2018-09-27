@@ -1,3 +1,3 @@
-import { Element } from 'engine';
+import { LightningElement } from 'lwc';
 
-export default class SimpleBench extends Element {}
+export default class SimpleBench extends LightningElement {}

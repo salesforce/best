@@ -1,6 +1,6 @@
-import { api, Element } from 'engine';
+import { api, LightningElement } from 'lwc';
 
-export default class ComparePanel extends Element {
+export default class ComparePanel extends LightningElement {
     @api selectedCommitBenchmarks;
 
     renderedCallback() {}

@@ -1,4 +1,4 @@
-import { api, Element } from 'engine';
+import { api, LightingElement } from 'lwc';
 import { isPureLeftClick } from 'one-tmp-utils';
 
 const Labels = {
@@ -6,7 +6,7 @@ const Labels = {
     'unsaved':  'TabNotSaved'
 };
 
-export default class AppNavBarItemRoot extends Element {
+export default class AppNavBarItemRoot extends LightingElement {
     @api customId;
     @api action;
     @api label;

@@ -1,5 +1,5 @@
-import { Element } from 'engine';
+import { LightningElement } from 'lwc';
 
-export default class HomePage extends Element {
+export default class HomePage extends LightningElement {
     @api pageId;
 }

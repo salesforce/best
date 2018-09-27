@@ -1,11 +1,11 @@
-import { Element, unwrap, api, track } from "engine";
+import { LightningElement, unwrap, api, track } from 'lwc';
 import { joinClassNames } from "one-tmp-utils";
 import { handleKeyDownOnMenuItem, handleKeyDownOnMenuTrigger } from "./keyboard.js";
 
 // XXX: HACK, component name hard coded, will break on renames
 const menuItemTagName = "one-app-nav-bar-menu-item";
 
-export default class LightningButtonMenu extends Element {
+export default class LightningButtonMenu extends LightningElement {
     @track state = {
         dropdownVisible: false,
         dropdownOpened : false

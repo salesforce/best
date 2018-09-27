@@ -42,7 +42,7 @@ You can find an example benchmark under `examples/simple_benchmark/src/simple-it
 
 ```javascript
 import Ctor from 'simple-item';
-import { createElement } from 'engine';
+import { createElement } from 'lwc';
 
 benchmark('create_and_render', () => {
     let element;

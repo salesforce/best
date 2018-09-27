@@ -1,6 +1,6 @@
-import { Element } from "engine";
+import { LightningElement } from 'lwc';
 
-export default class AppLauncherHeader extends Element {
+export default class AppLauncherHeader extends LightningElement {
     constructor() {
         super();
         this.addEventListener('click', this.handleClick);

@@ -1,4 +1,4 @@
-import { Element, unwrap, api, track } from 'engine';
+import { LightningElement, unwrap, api, track } from 'lwc';
 import { debounce } from './utils.js';
 import { classSet } from 'one-tmp-utils';
 
@@ -17,7 +17,7 @@ const RESIZE_DEBOUNCE = 300;
 /**
  * The horizontal app navigation bar used in the Global Nav.
  */
-export default class AppNavBar extends Element {
+export default class AppNavBar extends LightningElement {
     @track state = {
         /* The visible horizonal width of the nav bar */
         availableWidth : 0,
