@@ -13,4 +13,5 @@ coverage
 
 # Project artifacts
 __benchmarks_results__
+examples/simple_lwc_benchmark/public/js/main.js
 

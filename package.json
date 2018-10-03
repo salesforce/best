@@ -12,6 +12,7 @@
     "lint": "eslint packages/",
     "prettier": "prettier --write '**/*.{js,md}'",
     "prepare": "yarn build && yarn build:frontend",
+    "build:examples": "lerna run build --scope @best/simple_lwc_benchmark",
     "build:frontend": "lerna exec --scope @best/frontend \"yarn build:prod\"",
     "build": "node scripts/build.js",
     "watch": "yarn build && node ./scripts/watch.js",
