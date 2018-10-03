@@ -7133,7 +7133,7 @@ object.pick@^1.3.0:
 
 observable-membrane@0.18.0:
   version "0.18.0"
-  resolved "http://npm.lwcjs.org/observable-membrane/-/observable-membrane-0.18.0/f6f0242964253c975821ac88b094a944d0a1af06.tgz#f6f0242964253c975821ac88b094a944d0a1af06"
+  resolved "http://npm.lwcjs.org/observable-membrane/-/observable-membrane-0.18.0/95baaaa9dc16cc5ed1539c7f9c5ae28bd49f9099.tgz#95baaaa9dc16cc5ed1539c7f9c5ae28bd49f9099"
   integrity sha512-WESuqGINHWevozlPgu3Ekl8NHDPQuoL421yOJui6eh9hQyqVzVRyUwenysgsFOhQjeMe2WgG1C1+jfk1/Aik1Q==
 
 on-finished@~2.3.0:
