@@ -1,5 +1,16 @@
 <a name=""></a>
-# [](https://git.soma.salesforce.com/lwc/best/compare/v0.7.0...v) (2018-09-25)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v0.7.1...v) (2018-11-02)
+
+
+
+<a name="0.7.1"></a>
+## [0.7.1](https://git.soma.salesforce.com/lwc/best/compare/v0.7.0...v0.7.1) (2018-11-02)
+
+
+### Bug Fixes
+
+* integrity ([2fbd68d](https://git.soma.salesforce.com/lwc/best/commits/2fbd68d))
+* prevent local changes from breaking compare ([#129](https://git.soma.salesforce.com/lwc/best/issues/129)) ([1879ef3](https://git.soma.salesforce.com/lwc/best/commits/1879ef3))
 
 
 
