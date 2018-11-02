@@ -1,9 +1,9 @@
 {
   "name": "@best/simple_benchmark",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "private": true,
   "devDependencies": {
-    "best": "0.7.0",
+    "best": "0.7.1",
     "rollup-plugin-compat": "0.18.2"
   }
 }
