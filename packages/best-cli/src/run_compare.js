@@ -28,6 +28,7 @@ export async function runCompare(globalConfig, configs, outputStream) {
 
     let baseCommit = compareStats[0] || 'master';
     let compareCommit = compareStats[1] || (gitLocalChanges ? 'local' : 'current');
+    let stashedLocalChanges = false;
 
     if (compareStats.length > 2) {
         throw new Error('Cannot compare more than 2 commits.');
@@ -56,6 +57,7 @@ export async function runCompare(globalConfig, configs, outputStream) {
             storageProvider.initialize({ rootDir });
             if (gitLocalChanges) {
                 await gitCLI.stash({ '--include-untracked': true });
+                stashedLocalChanges = true;
             }
 
             // Run base commit.
@@ -67,7 +69,7 @@ export async function runCompare(globalConfig, configs, outputStream) {
             if (compareCommit === 'local') {
                 preRunMessager.print(`\n Running best for local changes \n`, outputStream);
                 await gitCLI.checkout(initialBranch);
-                if (gitLocalChanges) {
+                if (stashedLocalChanges) {
                     await gitCLI.stash({ pop: true });
                 }
             } else {
@@ -94,7 +96,7 @@ export async function runCompare(globalConfig, configs, outputStream) {
     } finally {
         // Return local files to their initial state no matter what happens.
         await gitCLI.checkout(initialBranch);
-        if (gitLocalChanges && (compareCommit !== 'local')) {
+        if (stashedLocalChanges) {
             await gitCLI.stash({ pop: true });
         }
     }
