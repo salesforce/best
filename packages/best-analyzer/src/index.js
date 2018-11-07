@@ -19,7 +19,11 @@ function computeSampleStats(arr, config) {
 }
 
 function collectResults({ name, duration, runDuration, benchmarks }, collector) {
-    const cNode = collector[name] || (collector[name] = { duration: [], runDuration: [] });
+    let cNode = collector[name];
+    if (typeof cNode !== 'object') {
+        cNode = collector[name] = { duration: [], runDuration: [] };
+    }
+
     if (duration > 0) {
         cNode.duration.push(duration);
     }
