@@ -19,7 +19,7 @@ export default {
                                     median: 4000,
                                     medianAbsoluteDeviation: 2.9999
                                 },
-                                samplesComparison: 20
+                                samplesComparison: 1
                             }
                         }
                     },
@@ -35,7 +35,7 @@ export default {
                                     median: 5000,
                                     medianAbsoluteDeviation: 7.3
                                 },
-                                samplesComparison: 20
+                                samplesComparison: -1
                             }
                         }
                     }
@@ -57,7 +57,7 @@ export default {
                                     median: 2000,
                                     medianAbsoluteDeviation: -2.7777
                                 },
-                                samplesComparison: 20
+                                samplesComparison: 1
                             }
                         }
                     }
