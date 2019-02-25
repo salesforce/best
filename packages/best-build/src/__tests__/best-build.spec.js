@@ -2,7 +2,7 @@ import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { buildBenchmark } from '../index';
+import { buildBenchmark } from '../build-benchmark';
 
 const TEMP_DIR_PREFIX = 'best-test-';
 const ROOT_DIR_PREFIX = 'best-root-test-';
