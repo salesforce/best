@@ -15,14 +15,20 @@ const _initHooks = hooks =>
 
 const _forceGC = () => window.gc && window.gc();
 
+const hasUserTimingApi = typeof performance !== 'undefined' && performance.mark && performance.measure;
+
 function startMeasure(markName) {
-    performance.mark(markName);
+    if (hasUserTimingApi) {
+        performance.mark(markName);
+    }
 }
 
 function endMeasure(markName) {
-    performance.measure(markName, markName);
-    performance.clearMarks(markName);
-    performance.clearMeasures(markName);
+    if (hasUserTimingApi) {
+        performance.measure(markName, markName);
+        performance.clearMarks(markName);
+        performance.clearMeasures(markName);
+    }
 }
 
 const executeBenchmark = async (benchmarkNode, markName, { useMacroTaskAfterBenchmark }) => {
