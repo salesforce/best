@@ -15,13 +15,17 @@ const _initHooks = hooks =>
 
 const _forceGC = () => window.gc && window.gc();
 
-// Temporary fix
-// TODO (dbajric): Use https://www.npmjs.com/package/console-polyfill
-if (!console.timeStamp) {
-    console.timeStamp = function () { };
+function startMeasure(markName) {
+    performance.mark(markName);
 }
 
-const executeBenchmark = async (benchmarkNode, { useMacroTaskAfterBenchmark }) => {
+function endMeasure(markName) {
+    performance.measure(markName, markName);
+    performance.clearMarks(markName);
+    performance.clearMeasures(markName);
+}
+
+const executeBenchmark = async (benchmarkNode, markName, { useMacroTaskAfterBenchmark }) => {
     // Force garbage collection before executing an iteration (--js-flags=--expose-gc)
     _forceGC();
     return new Promise((resolve, reject) => {
@@ -29,7 +33,7 @@ const executeBenchmark = async (benchmarkNode, { useMacroTaskAfterBenchmark }) =
             benchmarkNode.startedAt = formatTime(time());
 
             if (process.env.NODE_ENV !== 'production') {
-                console.timeStamp('iteration_start');
+                startMeasure(markName);
             }
 
             try {
@@ -41,21 +45,21 @@ const executeBenchmark = async (benchmarkNode, { useMacroTaskAfterBenchmark }) =
                         await nextTick();
                         benchmarkNode.duration = formatTime(time() - benchmarkNode.startedAt);
                         if (process.env.NODE_ENV !== 'production') {
-                            console.timeStamp('iteration_end');
+                            endMeasure(markName);
                         }
                         resolve();
                     })();
                 } else {
                     benchmarkNode.duration = formatTime(time() - benchmarkNode.startedAt);
                     if (process.env.NODE_ENV !== 'production') {
-                        console.timeStamp('iteration_end');
+                        endMeasure(markName);
                     }
                     resolve();
                 }
             } catch (e) {
                 benchmarkNode.duration = -1;
                 if (process.env.NODE_ENV !== 'production') {
-                    console.timeStamp('iteration_end');
+                    endMeasure(markName);
                 }
                 reject();
             }
@@ -92,34 +96,31 @@ export const runBenchmarkIteration = async (node, opts) => {
 
     if (run) {
         // -- Before ----
+        const markName = run.parent.name;
         if (process.env.NODE_ENV !== 'production') {
-            console.timeStamp('before_hooks_start');
+            startMeasure(`before_${markName}`);
         }
         for (const hook of hookHandlers[HOOKS.BEFORE]) {
             await hook();
         }
         if (process.env.NODE_ENV !== 'production') {
-            console.timeStamp('before_hooks_end');
-        }
-
-        if (process.env.NODE_ENV !== 'production') {
-            console.timeStamp('iteration_start');
+            endMeasure(`before_${markName}`);
         }
 
         // -- Run ----
         node.startedAt = formatTime(time());
-        await executeBenchmark(run, opts);
+        await executeBenchmark(run, markName, opts);
         node.duration = formatTime(time() - node.startedAt);
 
         // -- After ----
         if (process.env.NODE_ENV !== 'production') {
-            console.timeStamp('after_hooks_start');
+            startMeasure(`after_${markName}`);
         }
         for (const hook of hookHandlers[HOOKS.AFTER]) {
             await hook();
         }
         if (process.env.NODE_ENV !== 'production') {
-            console.timeStamp('after_hooks_end');
+            endMeasure(`after_${markName}`);
         }
     }
 
