@@ -2,10 +2,7 @@
   "name": "best-monorepo",
   "private": true,
   "description": "Benchmark & Performance tool",
-  "repository": {
-    "type": "git",
-    "url": "https://git.soma.salesforce.com/lwc/best.git"
-  },
+  "repository": "salesforce/best",
   "license": "MIT",
   "scripts": {
     "clean": "lerna run clean && lerna clean --yes && rimraf node_modules",
