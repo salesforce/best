@@ -22,16 +22,16 @@ Watch/build projects for development:
 yarn watch
 ```
 
-Go to the example repo:
+Run example benchmarks:
 
 ```bash
-cd examples/simple_benchmark/
+yarn best
 ```
 
-Run the benchmark
+Run a specific example benchmark
 
 ```bash
-yarn perf --interactions 3
+yarn best --config examples/simple_benchmark/best.prod.config.js
 ```
 
 Be delighted!
