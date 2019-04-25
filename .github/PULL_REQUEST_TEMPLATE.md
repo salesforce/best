@@ -1,4 +1,3 @@
-
 ## Details
 
 
@@ -15,11 +14,13 @@ Please check if your PR fulfills the following requirements:
 -------------------------------------------------------------
 
 ### The PR fulfills these requirements:
+
 * Tests for the changes have been added (for bug fixes / features)
 * Docs have been added / updated (for bug fixes / features)
 
 ### PR Title
-LWC PR title follows [conventional commit](../CONTRIBUTING.md#create-a-pull-request) format and is automatically validated by our CI.
+
+LWC PR title follows [conventional commit](CONTRIBUTING.md#create-a-pull-request) format and is automatically validated by our CI.
 ```shell
 ex:
 commit-type(optional scope): commit description. ( NOTE: space between column and the message )

@@ -7,7 +7,7 @@ code review process delightful!
 
 ### eslint
 
-[Configure your editor][eslint-integrations] to use our eslint configurations.
+[Configure your editor][eslint-integrations] to use our `ESLint` configurations.
 
 ### editorconfig
 
@@ -107,3 +107,9 @@ git push origin ${feature_branch} --force
 ```
 
 _note: If more changes are needed as part of the pull request, just keep committing and pushing your feature branch as described above and the pull request will automatically update._
+
+<!-- Link labels: -->
+
+[creating-a-pull-request]: https://help.github.com/en/articles/creating-a-pull-request
+[editorconfig-plugins]: https://editorconfig.org/#download
+[eslint-integrations]: https://eslint.org/docs/user-guide/integrations

@@ -113,6 +113,16 @@ export function nextTick(cb, ctx) {
     });
 }
 
-export const time = window.performance.now.bind(window.performance);
+// Polyfill performance.now for Node.js, e.g. when running Jest tests
+export const time = (typeof process === 'undefined' || process.browser) ? performance.now.bind(performance) : (() => {
+    // This code is based on https://github.com/nolanlawson/marky/blob/9e43c8e/src/now.js
+    const hrtime = process.hrtime;
+    const getNanoSeconds = () => {
+        const hr = hrtime();
+        return (hr[0] * 1e9) + hr[1];
+    };
+    const loadTime = getNanoSeconds();
+    return () => ((getNanoSeconds() - loadTime) / 1e6);
+})();
 export const formatTime = t => parseFloat(Math.round(t * 1000) / 1000);
 export const raf = window && window.requestAnimationFrame ? window.requestAnimationFrame : nextTick;

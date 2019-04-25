@@ -4,17 +4,17 @@ const REGEX_BRACKETS = /{{([\w]+)}}/g;
 // Full details are here: https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/compatibility/ms537628(v=vs.85)
 // Also, note that the line endings have to be <CR><LF> for Internet Explorer to correctly recognize the mark.
 // Default line endings on mac and linux have just <LF>
-const DEFAULT_HTML = `<!DOCTYPE html>
+const DEFAULT_HTML = `<!doctype html>
 <!-- saved from url=(0016)http://localhost -->
 <html>
   <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>{{benchmarkName}}</title>
   </head>
   <body>
     <script>window.BEST_CONFIG = { benchmarkName: "{{benchmarkName}}" }</script>
-    <script src="{{benchmarkJS}}" type="text/javascript"></script>
+    <script src="{{benchmarkJS}}"></script>
   </body>
 </html>
 `.replace(/(\r\n|\r|\n)/g, '\r\n');
