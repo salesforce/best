@@ -68,7 +68,6 @@ export async function buildBenchmark(entry, projectConfig, globalConfig, message
         input: entry,
         plugins: [benchmarkRollup(), ...addResolverPlugins(projectConfig)],
         cache: ROLLUP_CACHE.get(projectName),
-        ...(globalConfig.verbose ? {} : { onwarn: () => {} })
     });
 
     messager.logState('Bundling benchmark files...');
