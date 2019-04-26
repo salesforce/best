@@ -43,4 +43,7 @@ export default {
 
     // If histograms are shown, make them a limited number of characters wide.
     histogramMaxWidth: 50,
+
+    // Invoke simultaneous runs, intended for a load-balanced remote cluster.
+    concurrentRuns: 1,
 };

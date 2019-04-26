@@ -103,8 +103,17 @@ export async function runBest(globalConfig, configs, outputStream) {
     buildMessager.finishBuild();
 
     const runnerMessager = new RunnerMessager(benchmarksBuilds, globalConfig, outputStream);
-    const benchmarkBundleResults = await runBundleBenchmarks(benchmarksBuilds, globalConfig, runnerMessager);
+    const list = new Array(globalConfig.concurrentRuns).fill();
+    const runs = list.map(() => runBundleBenchmarks(benchmarksBuilds, globalConfig, runnerMessager));
+    const all = await Promise.all(runs);
     runnerMessager.finishRun();
+
+    const benchmarkBundleResults = all.reduce((to, from) => {
+        to.forEach(({ results }, index) => {
+            results.push.apply(results, from[index].results);
+        });
+        return to;
+    });
 
     await analyzeBenchmarks(benchmarkBundleResults, globalConfig);
     await storeBenchmarkResults(benchmarkBundleResults, globalConfig);

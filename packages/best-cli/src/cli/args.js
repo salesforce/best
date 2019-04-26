@@ -72,6 +72,11 @@ export const options = {
         description: 'JSON representation of the configuration to use for the give runner',
         type: 'string',
     },
+    concurrentRuns: {
+        default: 1,
+        description: 'Number of runs to invoke simultaneously (intended for load-balanced remote clusters).',
+        type: 'number',
+    },
     useHttp: {
         default: true,
         description: 'Runs benchmarks against a temporary HTTP server (instead of using the "file:" protocol).',

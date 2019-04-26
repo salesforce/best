@@ -247,6 +247,7 @@ function _getConfigs(options) {
             histogramQuantileRange: options.histogramQuantileRange,
             histogramMaxWidth: options.histogramMaxWidth,
             openPages: options.openPages,
+            concurrentRuns: options.concurrentRuns,
         }),
         projectConfig: Object.freeze({
             cache: options.cache,
