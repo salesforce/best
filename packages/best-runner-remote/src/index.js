@@ -1,101 +1,79 @@
 import path from 'path';
 import fs from 'fs';
-import socketIO from 'socket.io-client';
-import SocketIOFile from './file-uploader';
 import { createTarBundle } from './create-tar';
 import { preRunMessager } from '@best/messager';
-
-function proxifyRunner(benchmarkEntryBundle, runnerConfig, projectConfig, globalConfig, messager) {
-    return new Promise(async (resolve, reject) => {
-        const { benchmarkName, benchmarkEntry, benchmarkSignature } = benchmarkEntryBundle;
-        const { host, options, remoteRunner } = runnerConfig;
-        const bundleDirname = path.dirname(benchmarkEntry);
-        const remoteProjectConfig = Object.assign({}, projectConfig, {
-            benchmarkRunner: remoteRunner,
-        });
-        const tarBundle = path.resolve(bundleDirname, `${benchmarkName}.tgz`);
-
-        await createTarBundle(bundleDirname, benchmarkName);
-
-        if (!fs.existsSync(tarBundle)) {
-            return reject(new Error('Benchmark artifact not found (${tarBundle})'));
-        }
-
-        preRunMessager.print(`Attempting connection with agent at ${host} ...`, process.stdout);
-        const socket = socketIO(host, options);
-
-        socket.on('connect', () => {
-            preRunMessager.clear(process.stdout);
-
-            socket.on('load_benchmark', () => {
-                const uploader = new SocketIOFile(socket);
-                uploader.on('ready', () => {
-                    uploader.upload(tarBundle);
-                });
-
-                uploader.on('error', (err) => {
-                    reject(err);
-                });
-            });
-
-            socket.on('running_benchmark_start', (benchName, projectName) => {
-                messager.logState(`Running benchmarks remotely...`);
-                messager.onBenchmarkStart(benchName, projectName, {
-                    displayPath: `${host}/${benchName}`,
-                });
-            });
-
-            socket.on('running_benchmark_update', ({ state, opts }) => {
-                messager.updateBenchmarkProgress(state, opts);
-            });
-            socket.on('running_benchmark_end', (benchName, projectName) => {
-                messager.onBenchmarkEnd(benchName, projectName);
-            });
-
-            socket.on('benchmark_enqueued', ({ pending }) => {
-                messager.logState(`Queued in agent. Pending tasks: ${pending}`);
-            });
-
-            socket.on('disconnect', (reason) => {
-                if (reason === 'io server disconnect') {
-                    reject(new Error('Connection terminated'));
-                }
-            });
-
-            // socket.on('state_change', (s) => {
-            //     console.log('>> State change', s);
-            // });
-
-            socket.on('error', (err) => {
-                console.log('> ', err);
-                reject(err);
-            });
-
-            socket.on('benchmark_error', err => {
-                console.log(err);
-                reject(new Error('Benchmark couldn\'t finish running. '));
-            });
-
-            socket.on('benchmark_results', ({ results, environment }) => {
-                socket.disconnect();
-                resolve({ results, environment });
-            });
-
-            socket.emit('benchmark_task', {
-                benchmarkName,
-                benchmarkSignature,
-                projectConfig: remoteProjectConfig,
-                globalConfig,
-            });
-        });
-
-        return true;
-    });
-}
+import { post } from 'request';
 
 export class Runner {
     run(benchmarkEntryBundle, projectConfig, globalConfig, messager) {
-        const { benchmarkRunnerConfig } = projectConfig;
-        return proxifyRunner(benchmarkEntryBundle, benchmarkRunnerConfig, projectConfig, globalConfig, messager);
+        const { projectName, benchmarkRunnerConfig } = projectConfig;
+        return new Promise(async (resolve, reject) => {
+            const { benchmarkName, benchmarkEntry, benchmarkSignature } = benchmarkEntryBundle;
+            const { host, remoteRunner } = benchmarkRunnerConfig;
+            const dir = path.dirname(benchmarkEntry);
+            const file = path.resolve(dir, `${benchmarkName}.tgz`);
+            const config = {
+                benchmarkName,
+                benchmarkSignature,
+                projectConfig: { ...projectConfig, benchmarkRunner: remoteRunner },
+                globalConfig
+            };
+
+            await createTarBundle(dir, benchmarkName);
+
+            if (!fs.existsSync(file)) {
+                return reject(new Error(`Benchmark artifact not found (${file})`));
+            }
+
+            preRunMessager.print(`Connecting to ${host}`, process.stdout);
+
+            const req = post(`${host}/job/${encodeURIComponent(JSON.stringify(config))}`)
+                .on('error', reject)
+                .on('response', res => {
+                    // preRunMessager.clear(process.stdout);
+
+                    let buffer = '';
+                    res.on('data', chunk => {
+                        buffer += chunk;
+                        const lines = buffer.split('\n');
+                        buffer = lines.pop();
+                        for (const line of lines) {
+                            const [event, json] = line.split('\t');
+                            try {
+                                const data = JSON.parse(json);
+                                res.emit(event, data);
+                            } catch (e) {
+                                res.emit('error', e.stack);
+                            }
+                        }
+                    });
+
+                    res.on('error', reject);
+
+                    res.on('job:queued', ({ pending }) => {
+                        messager.logState(`Queued behind ${pending} pending tasks.`);
+                    });
+
+                    res.on('benchmark:start', () => {
+                        messager.logState(`Running benchmarks remotely...`);
+                        messager.onBenchmarkStart(benchmarkName, projectName, {
+                            displayPath: `${host}/${benchmarkName}`,
+                        });
+                    });
+
+                    res.on('benchmark:update', ({ state, opts }) => {
+                        messager.updateBenchmarkProgress(state, opts);
+                    });
+
+                    res.on('benchmark:end', () => {
+                        messager.onBenchmarkEnd(benchmarkName, projectName);
+                    });
+
+                    res.on('benchmark:results', ({ results, environment }) => {
+                        resolve({ results, environment });
+                    });
+                });
+            fs.createReadStream(file).pipe(req);
+        });
     }
 }

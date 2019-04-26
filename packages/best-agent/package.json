@@ -13,8 +13,6 @@
     "@best/utils": "0.7.1",
     "chalk": "~2.3.0",
     "express": "~4.16.2",
-    "socket.io": "~2.0.4",
-    "socket.io-file": "~2.0.2",
     "tar": "~4.2.0"
   }
 }
