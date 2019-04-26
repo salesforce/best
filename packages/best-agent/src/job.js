@@ -1,11 +1,10 @@
 import EventEmitter from 'events';
-import path from 'path';
 import fs from 'fs';
 import { cacheDirectory } from '@best/utils';
 import { runBenchmark } from '@best/runner';
 import tar from 'tar';
 
-const uploadDir = path.join(cacheDirectory('best_agent'), 'uploads');
+const cacheDir = cacheDirectory('best_agent');
 
 let counter = 0;
 
@@ -17,20 +16,14 @@ class Job extends EventEmitter {
         let { config } = req.params;
         try {
             config = this.config = JSON.parse(config);
+            config.benchmarkEntry = `${cacheDir}/${config.benchmarkName}.html`;
         } catch (e) {
             return console.error(`ERROR: Malformed config ${config}`);
         }
         this.id = ++counter;
-        this.status = 'QUEUED';
 
-        const cwd = uploadDir;
-        const file = `${uploadDir}/${this.id}.tgz`;
-        req.pipe(fs.createWriteStream(file))
-            .on('close', async () => {
-                await tar.x({ cwd, file });
-                config.benchmarkEntry = `${cwd}/${config.benchmarkName}.html`;
-                this.emit('job:bundle');
-            });
+        req.pipe(fs.createWriteStream(`${cacheDir}/${this.id}.tgz`))
+            .on('close', () => this.emit('job:bundle'));
     }
 
     send(event, data) {
@@ -38,6 +31,7 @@ class Job extends EventEmitter {
     }
 
     async run() {
+        await tar.x({ cwd: cacheDir, file: `${this.id}.tgz` });
         const send = this.send.bind(this);
         const results = await runBenchmark(this.config, {
             onBenchmarkStart() {
