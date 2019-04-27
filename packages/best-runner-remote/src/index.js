@@ -25,7 +25,7 @@ export class Runner {
                 return reject(new Error(`Benchmark artifact not found (${file})`));
             }
 
-            preRunMessager.print(`Connecting to ${host}`, process.stdout);
+            preRunMessager.print(`Connecting to ${host}\n`, process.stdout);
 
             const req = post(`${host}/job/${encodeURIComponent(JSON.stringify(config))}`)
                 .on('error', reject)

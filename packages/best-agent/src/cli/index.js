@@ -34,7 +34,7 @@ export function run() {
     app.post('/job/:config', (req, res) => {
         const job = new Job(req, res);
         console.log(`Receiving job ${job.id}`);
-        job.on('job:bundle', () => {
+        job.on('job:uploaded', () => {
             console.log(`Received job ${job.id}`);
             queue.push(job);
             if (runNextJob() !== job) {

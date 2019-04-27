@@ -5,6 +5,7 @@ import { runBenchmark } from '@best/runner';
 import tar from 'tar';
 
 const cacheDir = cacheDirectory('best_agent');
+fs.mkdirSync(cacheDir);
 
 let counter = 0;
 
@@ -23,7 +24,7 @@ class Job extends EventEmitter {
         this.id = ++counter;
 
         req.pipe(fs.createWriteStream(`${cacheDir}/${this.id}.tgz`))
-            .on('close', () => this.emit('job:bundle'));
+            .on('end', () => this.emit('job:uploaded'));
     }
 
     send(event, data) {
