@@ -1,0 +1,26 @@
+{
+  "files": [/* only process references */],
+  "references": [
+    { "path": "./packages/@best/agent" },
+    { "path": "./packages/@best/analyzer" },
+    { "path": "./packages/@best/builder" },
+    { "path": "./packages/@best/cli" },
+    { "path": "./packages/@best/compare" },
+    { "path": "./packages/@best/config" },
+    { "path": "./packages/@best/github-integration" },
+    { "path": "./packages/@best/messager" },
+    { "path": "./packages/@best/regex-util" },
+    { "path": "./packages/@best/runner" },
+    { "path": "./packages/@best/runner-abstract" },
+    { "path": "./packages/@best/runner-headless" },
+    { "path": "./packages/@best/runner-remote" },
+    { "path": "./packages/@best/runner-webdriver" },
+    { "path": "./packages/@best/runtime" },
+    { "path": "./packages/@best/store" },
+    { "path": "./packages/@best/store-aws" },
+    { "path": "./packages/@best/store-fs" }
+],
+  "exclude": [
+    "node_modules/**"
+  ]
+}

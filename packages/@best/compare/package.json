@@ -1,0 +1,15 @@
+{
+  "name": "@best/compare",
+  "version": "0.7.1",
+  "description": "Best Comparer",
+  "keywords": [
+    "Best",
+    "performance"
+  ],
+  "main": "build/index.js",
+  "dependencies": {
+    "@best/analyzer": "0.7.1",
+    "@best/messager": "0.7.1",
+    "chalk": "~2.4.2"
+  }
+}

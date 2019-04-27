@@ -1,0 +1,23 @@
+{
+  "extends": "../../../tsconfig.settings.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build",
+  },
+  "references": [
+    { "path": "../analyzer" },
+    { "path": "../builder" },
+    { "path": "../compare" },
+    { "path": "../config" },
+    { "path": "../github-integration" },
+    { "path": "../messager" },
+    { "path": "../runner" },
+    { "path": "../store" },
+    { "path": "../store-fs" }
+  ],
+  "include": [
+    "../package.json",
+    "src/",
+    "typings/"
+  ]
+}

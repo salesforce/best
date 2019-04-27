@@ -3,19 +3,16 @@
   "version": "0.7.1",
   "private": true,
   "description": "Best",
-  "scripts": {
-    "test": "jest"
-  },
   "keywords": [
     "Best",
-    "LWC"
+    "performance"
   ],
   "bin": {
     "best": "./bin/best.js",
     "best-agent": "./bin/best-agent.js"
   },
   "dependencies": {
-    "best-agent": "0.7.1",
-    "best-cli": "0.7.1"
+    "@best/agent": "0.7.1",
+    "@best/cli": "0.7.1"
   }
 }

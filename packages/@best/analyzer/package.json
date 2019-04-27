@@ -1,0 +1,10 @@
+{
+  "name": "@best/analyzer",
+  "version": "0.7.1",
+  "description": "Best Analyzer",
+  "keywords": [
+    "Best",
+    "performance"
+  ],
+  "main": "build/index.js"
+}

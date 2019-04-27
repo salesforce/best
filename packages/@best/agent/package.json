@@ -1,0 +1,19 @@
+{
+  "name": "@best/agent",
+  "version": "0.7.1",
+  "description": "Best Agent",
+  "keywords": [
+    "Best",
+    "performance"
+  ],
+  "main": "build/cli/index.js",
+  "dependencies": {
+    "@best/runner": "0.7.1",
+    "@best/utils": "0.7.1",
+    "chalk": "~2.4.2",
+    "express": "~4.16.2",
+    "socket.io": "~2.0.4",
+    "socket.io-file": "~2.0.2",
+    "tar": "~4.2.0"
+  }
+}

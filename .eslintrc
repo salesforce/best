@@ -1,18 +1,99 @@
 {
-    "extends": "plugin:lwc/recommended",
-    "plugins": [
-        "lwc"
-    ],
+    "plugins": ["@typescript-eslint"],
+    "parser": "@typescript-eslint/parser",
+    "extends": "eslint:recommended",
     "env": {
-        "node": true
+        "node": true,
+        "es6": true
+    },
+    "parserOptions": {
+        "sourceType": "module",
+        "ecmaVersion": 9
     },
     "rules": {
-        "no-console": ["warn", { "allow": ["timeStamp", "time", "timeEnd", "log", "warn", "error"] }],
-        "no-await-in-loop": 0,
-        "no-confusing-arrow": ["error", { "allowParens": true }],
-        "eslint-comments/no-use": false,
-        "lwc/no-inline-disable" : 0,
-        "lwc/no-set-timeout": 0,
-        "compat/compat": 0
-    }
+        "block-scoped-var": "error",
+        "no-alert": "warn",
+        "no-buffer-constructor": "error",
+        "no-eval": "error",
+        "no-extend-native": "error",
+        "no-extra-bind": "error",
+        "no-extra-label": "error",
+        "no-iterator": "error",
+        "no-console": "off",
+        "no-lone-blocks": "error",
+        "no-proto": "error",
+        "no-new-require": "error",
+        "no-restricted-properties": ["error", {
+            "object": "arguments",
+            "property": "callee",
+            "message": "arguments.callee is deprecated"
+        }, {
+            "object": "global",
+            "property": "isFinite",
+            "message": "Please use Number.isFinite instead"
+        }, {
+            "object": "self",
+            "property": "isFinite",
+            "message": "Please use Number.isFinite instead"
+        }, {
+            "object": "window",
+            "property": "isFinite",
+            "message": "Please use Number.isFinite instead"
+        }, {
+            "object": "global",
+            "property": "isNaN",
+            "message": "Please use Number.isNaN instead"
+        }, {
+            "object": "self",
+            "property": "isNaN",
+            "message": "Please use Number.isNaN instead"
+        }, {
+            "object": "window",
+            "property": "isNaN",
+            "message": "Please use Number.isNaN instead"
+        }, {
+            "property": "__defineGetter__",
+            "message": "Please use Object.defineProperty instead."
+        }, {
+            "property": "__defineSetter__",
+            "message": "Please use Object.defineProperty instead."
+        }, {
+            "object": "Math",
+            "property": "pow",
+            "message": "Use the exponentiation operator (**) instead."
+        }],
+        "no-self-compare": "error",
+        "no-undef-init": "error",
+        "no-unused-vars": "off",
+        "no-useless-catch": "off",
+        "no-useless-computed-key": "error",
+        "no-useless-return": "error",
+        "no-with": "error",
+        "prefer-const": ["error", {
+            "destructuring": "any",
+            "ignoreReadBeforeAssign": true
+            }],
+        "template-curly-spacing": "error"
+    },
+    "overrides": [
+        {
+            "files": [
+                "**/__tests__/**",
+                "**/__mocks__/**"
+            ],
+
+            "env": {
+                "jest": true
+            }
+        },
+        {
+            "files": [
+                "**/@best/runtime/**"
+            ],
+
+            "env": {
+                "browser": true
+            }
+        }
+    ]
 }

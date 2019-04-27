@@ -1,0 +1,17 @@
+{
+  "name": "@best/utils",
+  "version": "1.0.0",
+  "description": "Best Utils",
+  "keywords": [
+    "Best"
+  ],
+  "main": "build/index.js",
+  "dependencies": {
+    "chalk": "~2.4.2",
+    "is-ci": "~2.0.0",
+    "systeminformation": "4.1.6"
+  },
+  "devDependencies": {
+    "@types/systeminformation": "^3.23.1"
+  }
+}

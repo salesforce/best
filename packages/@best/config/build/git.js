@@ -1,0 +1,82 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const child_process_1 = __importDefault(require("child_process"));
+async function getCurrentHash(cwd) {
+    return new Promise((resolve, reject) => {
+        const args = ['log', '--pretty=format:%h', '-n', '1'];
+        const child = child_process_1.default.spawn('git', args, { cwd });
+        let stdout = '';
+        let stderr = '';
+        child.stdout.on('data', data => (stdout += data));
+        child.stderr.on('data', data => (stderr += data));
+        child.on('error', e => reject(e));
+        child.on('close', code => {
+            if (code === 0) {
+                resolve(stdout.trim());
+            }
+            else {
+                reject(code + ': ' + stderr);
+            }
+        });
+    });
+}
+function hasLocalChanges(cwd) {
+    return new Promise((resolve, reject) => {
+        const args = ['diff', '--no-ext-diff', '--quiet'];
+        const child = child_process_1.default.spawn('git', args, { cwd });
+        child.on('error', e => reject(e));
+        child.on('close', code => resolve(code === 1));
+    });
+}
+function getBranch(cwd) {
+    return new Promise((resolve, reject) => {
+        const args = ['rev-parse', '--abbrev-ref', 'HEAD'];
+        const child = child_process_1.default.spawn('git', args, { cwd });
+        let stdout = '';
+        child.stdout.on('data', data => (stdout += data));
+        child.on('error', e => reject(e));
+        child.on('close', () => resolve(stdout.trim()));
+    });
+}
+function getRepository(cwd) {
+    return new Promise((resolve, reject) => {
+        const args = ['ls-remote', '--get-url'];
+        const child = child_process_1.default.spawn('git', args, { cwd });
+        let stdout = '';
+        let stderr = '';
+        child.stdout.on('data', data => (stdout += data));
+        child.stderr.on('data', data => (stderr += data));
+        child.on('error', e => reject(e));
+        child.on('close', code => {
+            if (code === 0) {
+                const rawValue = stdout.trim();
+                const [owner, repo] = rawValue
+                    .split(':')
+                    .pop()
+                    .split('.git')[0]
+                    .split('/');
+                resolve({ owner, repo });
+            }
+            else {
+                reject(code + ': ' + stderr);
+            }
+        });
+    });
+}
+async function addGitInformation(options) {
+    const cwd = options.rootDir;
+    if (cwd) {
+        const [gitCommit, gitLocalChanges, gitBranch, gitRepository] = await Promise.all([
+            getCurrentHash(cwd),
+            hasLocalChanges(cwd),
+            getBranch(cwd),
+            getRepository(cwd),
+        ]);
+        return Object.assign(options, { gitCommit, gitLocalChanges, gitBranch, gitRepository });
+    }
+}
+exports.addGitInformation = addGitInformation;
+//# sourceMappingURL=git.js.map

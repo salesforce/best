@@ -1,0 +1,13 @@
+{
+  "name": "@best/runner",
+  "version": "0.7.1",
+  "description": "Best Runner",
+  "keywords": [
+    "Best",
+    "performance"
+  ],
+  "main": "build/index.js",
+  "dependencies": {
+    "chalk": "~2.4.2"
+  }
+}

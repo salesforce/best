@@ -2,16 +2,17 @@
 .DS_STORE
 
 # Tools artifacts
-playground.js
 node_modules
-build
 coverage
 .eslintcache
 .vscode
 *.log
 *.pem
+tsconfig.tsbuildinfo
 
 # Project artifacts
 __benchmarks_results__
-examples/simple_lwc_benchmark/public/js/main.js
 
+# Builds
+packages/*/build/
+packages/*/dist/

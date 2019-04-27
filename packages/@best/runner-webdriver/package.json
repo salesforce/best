@@ -1,0 +1,17 @@
+{
+  "name": "@best/runner-webdriver",
+  "version": "0.7.1",
+  "description": "Best Runner using WebDriver",
+  "keywords": [
+    "Best",
+    "Runner",
+    "webdriver",
+    "performance"
+  ],
+  "main": "build/index.js",
+  "dependencies": {
+    "@best/runner-abstract": "0.7.1",
+    "deepmerge": "~3.2.0",
+    "webdriverio": "~5.10.0"
+  }
+}

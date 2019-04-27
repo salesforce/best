@@ -1,0 +1,13 @@
+{
+  "name": "@best/messager",
+  "version": "0.7.1",
+  "description": "Best messager utils",
+  "keywords": [
+    "Best",
+    "performance"
+  ],
+  "main": "build/index.js",
+  "dependencies": {
+    "@best/utils": "0.7.1"
+  }
+}

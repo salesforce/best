@@ -1,5 +1,6 @@
-/packages/*/build/
-/packages/*/coverage/
-/packages/*/node_modules/
-/packages/best-frontend/public/
-/packages/best-frontend/server/store-mocks
+node_modules/
+dist/
+lib/
+coverage/
+fixtures/
+build/

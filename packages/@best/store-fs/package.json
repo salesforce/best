@@ -1,0 +1,14 @@
+{
+  "name": "@best/store-fs",
+  "version": "0.7.1",
+  "description": "Best Store - File System",
+  "keywords": [
+    "Best",
+    "performance"
+  ],
+  "main": "build/index.js",
+  "dependencies": {
+    "chalk": "~2.4.2",
+    "globby": "~9.2.0"
+  }
+}

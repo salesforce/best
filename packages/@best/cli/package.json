@@ -1,0 +1,30 @@
+{
+  "name": "@best/cli",
+  "version": "0.7.1",
+  "description": "Best CLI",
+  "keywords": ["Best", "performance"],
+  "bin": {
+    "best": "./bin/best.js"
+  },
+  "main": "build/index.js",
+  "dependencies": {
+    "@best/analyzer": "0.7.1",
+    "@best/build": "0.7.1",
+    "@best/compare": "0.7.1",
+    "@best/config": "0.7.1",
+    "@best/github-integration": "0.7.1",
+    "@best/messager": "0.7.1",
+    "@best/runner": "0.7.1",
+    "@best/store": "0.7.1",
+    "@best/store-fs": "0.7.1",
+    "asciichart": "1.5.7",
+    "chalk": "~2.4.2",
+    "cli-table": "~0.3.1",
+    "globby": "~9.2.0",
+    "micromatch": "~3.1.10",
+    "rimraf": "~2.6.2",
+    "simple-git": "~1.92.0",
+    "simple-statistics": "^6.0.1",
+    "yargs": "~11.0.0"
+  }
+}
