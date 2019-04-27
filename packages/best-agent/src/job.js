@@ -5,7 +5,7 @@ import { runBenchmark } from '@best/runner';
 import tar from 'tar';
 
 const cacheDir = cacheDirectory('best_agent');
-fs.mkdirSync(cacheDir);
+fs.mkdir(cacheDir, () => {});
 
 let counter = 0;
 
