@@ -30,7 +30,7 @@ export class Runner {
             const req = post(`${host}/job/${encodeURIComponent(JSON.stringify(config))}`)
                 .on('error', reject)
                 .on('response', res => {
-                    // preRunMessager.clear(process.stdout);
+                    preRunMessager.clear(process.stdout);
 
                     let buffer = '';
                     res.on('data', chunk => {

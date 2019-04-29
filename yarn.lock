@@ -8227,7 +8227,7 @@ request@^2.83.0, request@~2.83.0:
     tunnel-agent "^0.6.0"
     uuid "^3.1.0"
 
-request@^2.88.0:
+request@~2.88.0:
   version "2.88.0"
   resolved "http://npm.lwcjs.org/request/-/request-2.88.0/9c2fca4f7d35b592efe57c7f0a55e81052124fef.tgz#9c2fca4f7d35b592efe57c7f0a55e81052124fef"
   integrity sha512-NAqBSrijGLZdM0WZNsInLJpkJokL72XYjUpnB0iwsRgxh7dB6COrHnTBNwN0E+lHDAJzu7kLAkDeY08z2/A0hg==

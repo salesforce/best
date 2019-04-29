@@ -11,7 +11,7 @@
   "module": "src/index.js",
   "dependencies": {
     "@best/messager": "0.7.1",
-    "request": "^2.88.0",
+    "request": "~2.88.0",
     "tar": "~4.2.0"
   }
 }

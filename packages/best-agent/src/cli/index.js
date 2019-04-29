@@ -6,12 +6,19 @@ const { env } = process;
 const PORT = env.PORT || 5000;
 const SSL_PFX_FILE = env.SSL_PFX_FILE;
 const SSL_PFX_PASSPHRASE = env.SSL_PFX_PASSPHRASE;
-const CONCURRENCY = parseInt(env.CONCURRENCY, 10) || 1;
 
+// Allow developers to simulate a load-balanced cluster locally.
+let CONCURRENCY = parseInt(env.CONCURRENCY, 10) || 1;
 if (CONCURRENCY > 1) {
-    console.warn(`WARNING: Running ${CONCURRENCY} concurrent agents affects browser performance and is intended for development environments only.`);
+    if (/^d/i.test(env.NODE_ENV)) {
+        console.warn(`WARNING: Concurrency affects browser performance.`);
+    } else {
+        console.error(`ERROR: Concurrency is only allowed in dev environments.`);
+        CONCURRENCY = 1;
+    }
 }
 
+// Run a best-agent server.
 export function run() {
     const app = express();
     const ssl = SSL_PFX_FILE && SSL_PFX_PASSPHRASE;
@@ -26,10 +33,13 @@ export function run() {
 
     server.listen(PORT);
 
+    // Let each Job control its timeout logic.
+    server.setTimeout(0);
+
     const queue = [];
     let runningCount = 0;
 
-    app.get('/', (req, res) => res.send('BEST agent running!'));
+    app.get('/', (req, res) => res.send('BEST agent'));
 
     app.post('/job/:config', (req, res) => {
         const job = new Job(req, res);
@@ -41,7 +51,7 @@ export function run() {
                 job.send('job:queued', { pending: queue.length - 1 });
             }
         });
-        job.on('job:end', () => {
+        job.on('job:finished', () => {
             console.log(`Finished job ${job.id}`);
             runningCount--;
             runNextJob();
@@ -49,14 +59,14 @@ export function run() {
     });
 
     function runNextJob() {
-        const job = runningCount < CONCURRENCY ? queue.shift() : null;
+        const job = (runningCount < CONCURRENCY) ? queue.shift() : null;
         if (job) {
-            console.log(`Running job ${job.id}`);
+            console.log(`Running job ${job.id}...`);
             job.run();
             runningCount++;
         }
-        return !!job;
+        return job;
     }
 
-    console.log(`BEST agent listening at ${protocol}://localhost:${PORT}/`);
+    console.log(`Listening at ${protocol}://localhost:${PORT}/`);
 }
