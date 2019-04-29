@@ -51,7 +51,7 @@ export class Runner {
                     res.on('error', reject);
 
                     res.on('job:queued', ({ pending }) => {
-                        messager.logState(`Queued behind ${pending} pending tasks.`);
+                        messager.logState(`Queued behind ${pending} job(s).`);
                     });
 
                     res.on('benchmark:start', () => {

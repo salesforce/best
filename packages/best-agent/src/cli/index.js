@@ -1,5 +1,5 @@
 import express from 'express';
-import { readFileSync } from 'fs';
+import fs from 'fs';
 import Job from '../job';
 
 const { env } = process;
@@ -21,20 +21,20 @@ if (CONCURRENCY > 1) {
 // Run a best-agent server.
 export function run() {
     const app = express();
-    const ssl = SSL_PFX_FILE && SSL_PFX_PASSPHRASE;
-    const protocol = ssl ? 'https' : 'http';
-    const lib = require(protocol);
-    const server = ssl
-        ? lib.createServer({
-            pfx: readFileSync(SSL_PFX_FILE),
+    const isSsl = SSL_PFX_FILE && SSL_PFX_PASSPHRASE;
+    const server = isSsl
+        ? require('https').createServer({
+            pfx: fs.readFileSync(SSL_PFX_FILE),
             passphrase: SSL_PFX_PASSPHRASE
         }, app)
-        : lib.createServer(app);
-
-    server.listen(PORT);
+        : require('http').createServer(app);
 
     // Let each Job control its timeout logic.
     server.setTimeout(0);
+
+    server.listen(PORT);
+
+    console.log(`Listening at ${isSsl ? 'https' : 'http'}://localhost:${PORT}/`);
 
     const queue = [];
     let runningCount = 0;
@@ -48,7 +48,7 @@ export function run() {
             console.log(`Received job ${job.id}`);
             queue.push(job);
             if (runNextJob() !== job) {
-                job.send('job:queued', { pending: queue.length - 1 });
+                job.send('job:queued', { pending: (runningCount + queue.length - 1) });
             }
         });
         job.on('job:finished', () => {
@@ -67,6 +67,4 @@ export function run() {
         }
         return job;
     }
-
-    console.log(`Listening at ${protocol}://localhost:${PORT}/`);
 }
