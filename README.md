@@ -55,3 +55,7 @@ benchmark('create_and_render', () => {
     });
 });
 ```
+
+### Example on how to set up `best`
+
+See: [`examples/how_to_set_up_best`](examples/how_to_set_up_best#readme).

@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "best-cli": "0.7.1",
+    "@best/frontend": "^0.7.1",
+    "@best/runner-headless": "^0.7.1"
+  },
+  "private": true,
+  "scripts": {
+    "perf": "best"
+  }
+}
