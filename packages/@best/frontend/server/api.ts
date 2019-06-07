@@ -1,6 +1,5 @@
 import { Router } from 'express'
-
-import { PostgresDB } from '@best/api-db';
+import { PostgresDB } from '@best/api-db'
 
 const db = new PostgresDB()
 
