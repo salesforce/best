@@ -14,5 +14,5 @@ tsconfig.tsbuildinfo
 __benchmarks_results__
 
 # Builds
-packages/*/build/
-packages/*/dist/
+packages/**/build/
+packages/**/dist/

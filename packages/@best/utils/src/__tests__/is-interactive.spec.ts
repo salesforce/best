@@ -1,7 +1,6 @@
 import { isCI, isInteractive } from '../index';
 
 test('isCI', () => {
-    debugger;
     expect(typeof isCI).toBe('boolean');
 });
 
