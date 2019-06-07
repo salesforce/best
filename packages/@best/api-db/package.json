@@ -1,0 +1,55 @@
+{
+    "name": "@best/api-db",
+    "version": "1.0.0",
+    "author": "Jason Silberman",
+    "dependencies": {
+        "node-pg-migrate": "^3.21.1",
+        "pg": "^7.11.0"
+    },
+    "devDependencies": {
+        "@types/pg": "^7.4.14",
+        "@typescript-eslint/eslint-plugin": "^1.9.0",
+        "@typescript-eslint/parser": "^1.9.0",
+        "husky": "^2.4.0",
+        "lint-staged": "^8.2.0",
+        "ts-node": "^8.2.0",
+        "typescript": "^3.5.1"
+    },
+    "main": "build/index.js",
+    "engines": {
+        "node": ">=10.0.0"
+    },
+    "prettier": {
+        "printWidth": 120,
+        "tabWidth": 4,
+        "trailingComma": "all",
+        "singleQuote": true,
+        "overrides": [
+            {
+                "files": "**/*.html",
+                "options": {
+                    "parser": "lwc"
+                }
+            }
+        ]
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "**/*.{css,html,js,json,md,yaml,yml}": [
+            "prettier --write"
+        ],
+        "**/modules/**": [
+            "eslint --fix"
+        ],
+        "*": [
+            "git add"
+        ]
+    },
+    "scripts": {
+        "migrate": "node-pg-migrate -m src/migrations"
+    }
+}

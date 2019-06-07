@@ -1,0 +1,49 @@
+import { LightningElement, api, track } from 'lwc';
+
+export default class ComponentDropdown extends LightningElement {
+    @api name;
+    @api options;
+
+    @track stateClass = 'closed';
+
+    @track selectedItems = [];
+
+    get controlClasses() {
+        return `control ${this.stateClass}`;
+    }
+
+    get hasSelectedItems() {
+        return !!this.selectedItems.length;
+    }
+
+    get hasItems() {
+        return (!!this.options && !!this.options.items.length);
+    }
+
+    itemSelected(event) {
+        const itemIndex = parseInt(event.target.dataset.index, 10);
+        const item = this.options.items[itemIndex];
+
+        // this event gets passed to parent (menubar) and then it will update options
+        // then in renderedCallback the new selectedItems will get set
+        this.dispatchEvent(new CustomEvent('selection', {
+            detail: {
+                selectedItems: [item]
+            }
+        }));
+
+        this.toggleItems();
+    }
+
+    toggleItems() {
+        if (this.stateClass === 'closed') {
+            this.stateClass = 'open';
+        } else {
+            this.stateClass = 'closed';
+        }
+    }
+
+    renderedCallback() {
+        this.selectedItems = this.options.selectedItems;
+    }
+}
