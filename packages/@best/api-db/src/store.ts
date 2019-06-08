@@ -1,0 +1,63 @@
+import crypto from 'crypto';
+import PostgresDB from './postgres';
+import { TemporarySnapshot } from './types';
+
+function md5(data: string) {
+    return crypto
+        .createHash('md5')
+        .update(data)
+        .digest('hex');
+}
+
+export default (benchmarkResults: any, globalConfig: any) => {
+    const db = new PostgresDB();
+    return Promise.all(
+        benchmarkResults.map(async (benchmarkResult: any) => {
+            const { benchmarkSignature, projectConfig, environment, stats } = benchmarkResult;
+            const { projectName } = projectConfig;
+            const { gitCommit, gitLocalChanges } = globalConfig;
+
+            const snapshotEnvironment = {
+                hardware: environment.hardware,
+                browser: environment.browser
+            }
+
+            const environmentHash = md5(JSON.stringify(snapshotEnvironment));
+            
+            const runSettings = {
+                similarityHash: benchmarkSignature,
+                commit: gitCommit,
+                // TODO: get commit date from github API
+                commitDate: (new Date()).toISOString(),
+                environmentHash,
+                // TODO: not sure if this is exactly what we want to determine here 
+                temporary: !gitLocalChanges
+            }
+
+            const snapshotsToSave: TemporarySnapshot[] = [];
+
+            stats.benchmarks.forEach((element: any) => {
+                element.benchmarks.forEach((bench: any) => {
+                    const metricKeys = Object.keys(bench).filter(key => key !== 'name')
+                    const metrics = metricKeys.map(name => ({
+                        name,
+                        duration: bench[name].median,
+                        stdDeviation: bench[name].medianAbsoluteDeviation,
+                    }))
+
+                    const snapshot = {
+                        ...runSettings,
+                        name: `${element.name}/${bench.name}`,
+                        metrics: metrics
+                    }
+                    snapshotsToSave.push(snapshot);
+                    
+                });
+            });
+
+            const snapshots = await db.saveSnapshots(snapshotsToSave, projectName);
+            console.log(snapshots);
+
+        }),
+    );
+}

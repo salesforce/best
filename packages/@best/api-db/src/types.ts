@@ -11,9 +11,7 @@ export interface Metric {
     stdDeviation: number;
 }
 
-export interface Snapshot {
-    id: number;
-    projectId: number;
+export interface TemporarySnapshot {
     name: string;
     metrics: Metric[];
     environmentHash: string;
@@ -21,6 +19,11 @@ export interface Snapshot {
     commit: string;
     commitDate: string;
     temporary: boolean;
+}
+
+export interface Snapshot extends TemporarySnapshot {
+    id: number;
+    projectId: number;
     createdAt: string;
     updatedAt: string;
 }
@@ -28,4 +31,5 @@ export interface Snapshot {
 export abstract class ApiDB {
     abstract fetchProjects(): Promise<Project[]>;
     abstract fetchSnapshots(projectId: number, since: string): Promise<Snapshot[]>;
+    abstract saveSnapshots(snapshots: TemporarySnapshot[], projectName: string): Promise<Snapshot[]>;
 }

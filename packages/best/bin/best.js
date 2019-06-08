@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require('best-cli/bin/best');
+require('@best/cli/bin/best');
