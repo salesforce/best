@@ -31,7 +31,7 @@ export default (benchmarkResults: any, globalConfig: any) => {
                 commitDate: (new Date()).toISOString(),
                 environmentHash,
                 // TODO: not sure if this is exactly what we want to determine here 
-                temporary: !gitLocalChanges
+                temporary: gitLocalChanges
             }
 
             const snapshotsToSave: TemporarySnapshot[] = [];
