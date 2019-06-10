@@ -29,17 +29,6 @@ function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConf
 
             const remoteAgent: RemoteAgent = new RemoteAgent(socket);
 
-            // socket.on('load_benchmark', () => {
-            //     const uploader = new SocketIOFile(socket);
-            //     uploader.on('ready', () => {
-            //         uploader.upload(tarBundle);
-            //     });
-            //
-            //     uploader.on('error', (err) => {
-            //         reject(err);
-            //     });
-            // });
-
             remoteAgent.on('running_benchmark_start', (benchName: string, projectName: string) => {
                 messager.logState(`Running benchmarks remotely...`);
                 messager.onBenchmarkStart(benchName, projectName, {
@@ -64,10 +53,6 @@ function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConf
                 }
             });
 
-            // socket.on('state_change', (s) => {
-            //     console.log('>> State change', s);
-            // });
-
             remoteAgent.on('error', (err: any) => {
                 console.log('> ', err);
                 reject(err);
@@ -90,12 +75,6 @@ function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConf
                 projectConfig: remoteProjectConfig,
                 globalConfig,
             });
-            // socket.emit('benchmark_task', {
-            //     benchmarkName,
-            //     benchmarkSignature,
-            //     projectConfig: remoteProjectConfig,
-            //     globalConfig,
-            // });
         });
 
         return true;

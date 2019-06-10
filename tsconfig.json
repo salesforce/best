@@ -15,7 +15,6 @@
     { "path": "./packages/@best/runner-abstract" },
     { "path": "./packages/@best/runner-headless" },
     { "path": "./packages/@best/runner-remote" },
-    { "path": "./packages/@best/runner-hub" },
     { "path": "./packages/@best/runner-webdriver" },
     { "path": "./packages/@best/runtime" },
     { "path": "./packages/@best/store" },

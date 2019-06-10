@@ -1,4 +1,4 @@
-import {EventEmitter} from "events";
+import { EventEmitter } from "events";
 
 export default class ObservableQueue<T> extends EventEmitter implements Iterable<T | null>{
     _store: T[] = [];
@@ -20,8 +20,13 @@ export default class ObservableQueue<T> extends EventEmitter implements Iterable
         for(let i = 0, n = this._store.length; i < n; i++){
             if (this._store[i] === val) {
                 this._store.splice(i, 1);
+                this.emit('item-removed', val);
             }
         }
+    }
+
+    get size() {
+        return this._store.length;
     }
 
     [Symbol.iterator]() {

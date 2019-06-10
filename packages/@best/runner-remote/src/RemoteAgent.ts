@@ -30,7 +30,6 @@ export default class RemoteAgent extends EventEmitter {
 
     initializeHubProxy() {
         this.agentSocket.on('load_benchmark', (jobId: string) => {
-            console.log('starting upload.');
             const uploader = new SocketIOFile(this.agentSocket);
             uploader.on('ready', () => {
                 uploader.upload(this.tarBundle, { data: { jobId }});
@@ -46,7 +45,7 @@ export default class RemoteAgent extends EventEmitter {
         });
 
         this.agentSocket.on('running_benchmark_update', ({ state, opts }: any) => {
-            this.emit('running_benchmark_update', state, opts);
+            this.emit('running_benchmark_update', { state, opts });
         });
 
         this.agentSocket.on('running_benchmark_end', (benchName: string, projectName: string) => {
@@ -54,7 +53,7 @@ export default class RemoteAgent extends EventEmitter {
         });
 
         this.agentSocket.on('benchmark_enqueued', ({ pending }: any) => {
-            this.emit('benchmark_enqueued', pending);
+            this.emit('benchmark_enqueued', { pending });
         });
 
         this.agentSocket.on('disconnect', (reason: any) => {

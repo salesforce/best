@@ -14,7 +14,8 @@ export interface AgentConfig {
 
 export enum AgentStatus {
     Idle = 1,
-    RunningJob
+    RunningJob,
+    Offline
 }
 export class Agent extends EventEmitter {
     private _status: AgentStatus = AgentStatus.Idle;
@@ -48,17 +49,13 @@ export class Agent extends EventEmitter {
 
         // eventually this can become a runner...
         this.proxifyJob(job)
-            .then(() => {
-                this.status = AgentStatus.Idle;
-                // this agent needs to go and pick up the next job.
-            })
-            .catch(() => {
-                // this agent needs to go and pick up the next job.
+            .finally(() => {
                 this.status = AgentStatus.Idle;
             });
     }
 
     canRunJob(job: BenchmarkJob): boolean {
+        // @todo: implement this: this should return true if the job can run in this agent, based on the job.config and this agent configuration.
         return true;
     }
 
@@ -67,7 +64,6 @@ export class Agent extends EventEmitter {
     }
 
     private async proxifyJob(job: BenchmarkJob) {
-        const agent = this;
         return new Promise(async (resolve, reject) => {
             const socket: SocketIOClient.Socket = socketIO(this._config.host, this._config.options);
 
@@ -75,49 +71,41 @@ export class Agent extends EventEmitter {
                 const remoteAgent: RemoteAgent = new RemoteAgent(socket);
 
                 remoteAgent.on('running_benchmark_start', (benchName: string, projectName: string) => {
-                    job.socketConnection.emit('running_benchmark_start', job.jobId, benchName, projectName);
+                    job.socketConnection.emit('running_benchmark_start', benchName, projectName);
                 });
 
                 remoteAgent.on('running_benchmark_update', ({ state, opts }: any) => {
-                    job.socketConnection.emit('running_benchmark_update', job.jobId, { state, opts });
+                    job.socketConnection.emit('running_benchmark_update', { state, opts });
                 });
                 remoteAgent.on('running_benchmark_end', (benchName: string, projectName: string) => {
-                    job.socketConnection.emit('running_benchmark_end', job.jobId, benchName, projectName);
+                    job.socketConnection.emit('running_benchmark_end', benchName, projectName);
 
                 });
 
-                // this should not happen at this level, this should be handled at the job queue level.
-                // remoteAgent.on('benchmark_enqueued', ({ pending }: any) => {
-                //     messager.logState(`Queued in agent. Pending tasks: ${pending}`);
-                // });
-
+                // @todo: this should put the runner in a weird state and dont allow any new job until we can confirm the connection is valid.
                 socket.on('disconnect', (reason: string) => {
                     if (reason === 'io server disconnect') {
-                        agent.status = AgentStatus.Idle;
-                        job.socketConnection.emit('error', job.jobId, new Error('Connection terminated'));
+                        job.socketConnection.emit('error', new Error('Connection terminated'));
                         reject(new Error('Connection terminated'));
                     }
                 });
 
 
                 remoteAgent.on('error', (err: any) => {
-                    agent.status = AgentStatus.Idle;
-                    job.socketConnection.emit('error', job.jobId, err);
+                    job.socketConnection.emit('error', err);
                     socket.disconnect();
                     reject(err);
                 });
 
                 remoteAgent.on('benchmark_error', (err: any) => {
-                    job.socketConnection.emit('benchmark_error', job.jobId, err);
-                    agent.status = AgentStatus.Idle;
+                    job.socketConnection.emit('benchmark_error', err);
                     socket.disconnect();
                     reject(new Error('Benchmark couldn\'t finish running. '));
                 });
 
                 remoteAgent.on('benchmark_results', ({ results, environment }: any) => {
-                    agent.status = AgentStatus.Idle;
                     socket.disconnect();
-                    job.socketConnection.emit('benchmark_results', job.jobId, { results, environment });
+                    job.socketConnection.emit('benchmark_results', { results, environment });
                     resolve({ results, environment });
                 });
 

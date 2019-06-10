@@ -1,7 +1,6 @@
 import * as SocketIO from "socket.io";
 
 export default class BenchmarkJob {
-    public jobId: string;
     public benchmarkName: string;
     public benchmarkSignature: string;
     public projectConfig: any;
@@ -9,8 +8,7 @@ export default class BenchmarkJob {
     public socketConnection: SocketIO.Socket;
     private _tarBundleInfo: string = '';
 
-    constructor({ jobId, benchmarkName, benchmarkSignature, projectConfig, globalConfig, socket }: { jobId: string, benchmarkName: string, benchmarkSignature: string, projectConfig: any, globalConfig: any, socket: SocketIO.Socket }) {
-        this.jobId = jobId;
+    constructor({ benchmarkName, benchmarkSignature, projectConfig, globalConfig, socket }: { benchmarkName: string, benchmarkSignature: string, projectConfig: any, globalConfig: any, socket: SocketIO.Socket }) {
         this.benchmarkName = benchmarkName;
         this.benchmarkSignature = benchmarkSignature;
         this.projectConfig = projectConfig;
