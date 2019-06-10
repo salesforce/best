@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import PostgresDB from './postgres';
+import { loadDbFromConfig } from './utils';
 import { TemporarySnapshot } from './types';
 
 function md5(data: string) {
@@ -9,8 +9,9 @@ function md5(data: string) {
         .digest('hex');
 }
 
-export default (benchmarkResults: any, globalConfig: any) => {
-    const db = new PostgresDB();
+export const saveBenchmarkSummaryInDB = (benchmarkResults: any, globalConfig: any) => {
+    const db = loadDbFromConfig(globalConfig);
+
     return Promise.all(
         benchmarkResults.map(async (benchmarkResult: any) => {
             const { benchmarkSignature, projectConfig, environment, stats } = benchmarkResult;

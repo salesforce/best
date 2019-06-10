@@ -227,6 +227,7 @@ function _getConfigs(options: any) {
             compareStats: options.compareStats,
             outputFile: options.outputFile,
             externalStorage: options.externalStorage,
+            apiDatabase: options.apiDatabase,
             projects: options.projects,
             rootDir: options.rootDir,
             rootProjectName: options.projectName,

@@ -1,4 +1,3 @@
-import PostgresDB from './postgres';
-import saveBenchmarkSummaryInDB from './store';
+export { saveBenchmarkSummaryInDB } from './store';
 
-export { PostgresDB, saveBenchmarkSummaryInDB }
+export { loadDbFromConfig } from './utils';

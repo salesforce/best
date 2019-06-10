@@ -1,5 +1,5 @@
 import { QueryResult } from 'pg';
-import { Project, Snapshot, Metric } from './types';
+import { Project, Snapshot, Metric } from '../types';
 
 const normalizeMetrics = (metrics: any): Metric[] => {
     return Object.keys(metrics).map((key): Metric => ({

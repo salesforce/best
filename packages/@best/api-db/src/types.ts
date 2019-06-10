@@ -28,8 +28,18 @@ export interface Snapshot extends TemporarySnapshot {
     updatedAt: string;
 }
 
-export abstract class ApiDB {
-    abstract fetchProjects(): Promise<Project[]>;
-    abstract fetchSnapshots(projectId: number, since: string): Promise<Snapshot[]>;
-    abstract saveSnapshots(snapshots: TemporarySnapshot[], projectName: string): Promise<boolean>;
+export class ApiDB {
+    constructor(config: any) {}
+
+    fetchProjects(): Promise<Project[]> {
+        throw new Error('ApiDB.fetchProjects() not implemented')
+    }
+
+    fetchSnapshots(projectId: number, since: string): Promise<Snapshot[]> {
+        throw new Error('ApiDB.fetchSnapshots() not implemented')
+    }
+    
+    saveSnapshots(snapshots: TemporarySnapshot[], projectName: string): Promise<boolean> {
+        throw new Error('ApiDB.saveSnapshots() not implemented')
+    }
 }

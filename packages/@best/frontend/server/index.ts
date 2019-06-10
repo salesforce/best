@@ -4,6 +4,7 @@ import compression from 'compression'
 import * as path from 'path'
 
 import api from './api'
+import config from './best-fe.config'
 
 // CONFIG
 
@@ -19,7 +20,7 @@ app.use(compression())
 
 // API
 
-app.use('/api/v1', api)
+app.use('/api/v1', api(config))
 
 // FRONTEND
 
