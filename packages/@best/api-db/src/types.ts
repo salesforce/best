@@ -31,5 +31,5 @@ export interface Snapshot extends TemporarySnapshot {
 export abstract class ApiDB {
     abstract fetchProjects(): Promise<Project[]>;
     abstract fetchSnapshots(projectId: number, since: string): Promise<Snapshot[]>;
-    abstract saveSnapshots(snapshots: TemporarySnapshot[], projectName: string): Promise<Snapshot[]>;
+    abstract saveSnapshots(snapshots: TemporarySnapshot[], projectName: string): Promise<boolean>;
 }

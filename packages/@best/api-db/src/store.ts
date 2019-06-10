@@ -55,9 +55,7 @@ export default (benchmarkResults: any, globalConfig: any) => {
                 });
             });
 
-            const snapshots = await db.saveSnapshots(snapshotsToSave, projectName);
-            console.log(snapshots);
-
+            return db.saveSnapshots(snapshotsToSave, projectName);
         }),
     );
 }
