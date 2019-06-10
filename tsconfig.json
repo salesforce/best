@@ -2,6 +2,7 @@
   "files": [/* only process references */],
   "references": [
     { "path": "./packages/@best/agent" },
+    { "path": "./packages/@best/agent-hub" },
     { "path": "./packages/@best/analyzer" },
     { "path": "./packages/@best/builder" },
     { "path": "./packages/@best/cli" },
@@ -14,6 +15,7 @@
     { "path": "./packages/@best/runner-abstract" },
     { "path": "./packages/@best/runner-headless" },
     { "path": "./packages/@best/runner-remote" },
+    { "path": "./packages/@best/runner-hub" },
     { "path": "./packages/@best/runner-webdriver" },
     { "path": "./packages/@best/runtime" },
     { "path": "./packages/@best/store" },

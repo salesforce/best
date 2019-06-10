@@ -1,9 +1,9 @@
 import path from 'path';
 import fs from 'fs';
-import socketIO from 'socket.io-client';
+import SocketIOFile from './file-uploader';
 import { createTarBundle } from './create-tar';
 import { preRunMessager } from '@best/messager';
-import RemoteAgent from "./RemoteAgent";
+import {createHubSocket} from "./HubSocket";
 
 function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConfig: any, globalConfig: any, messager: any) {
     return new Promise(async (resolve, reject) => {
@@ -22,42 +22,45 @@ function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConf
         }
 
         preRunMessager.print(`Attempting connection with agent at ${host} ...`, process.stdout);
-        const socket = socketIO(host, options);
 
-        socket.on('connect', () => {
+        const socket = await createHubSocket(host, options);
+        // const socket = socketIO(host, options);
+
+        // socket.on('connect', () => {
             preRunMessager.clear(process.stdout);
 
-            const remoteAgent: RemoteAgent = new RemoteAgent(socket);
+            socket.on('load_benchmark', () => {
+                const uploader = new SocketIOFile(socket);
+                uploader.on('ready', () => {
+                    uploader.upload(tarBundle);
+                });
 
-            // socket.on('load_benchmark', () => {
-            //     const uploader = new SocketIOFile(socket);
-            //     uploader.on('ready', () => {
-            //         uploader.upload(tarBundle);
-            //     });
-            //
-            //     uploader.on('error', (err) => {
-            //         reject(err);
-            //     });
-            // });
+                uploader.on('error', (err) => {
+                    reject(err);
+                });
+            });
 
-            remoteAgent.on('running_benchmark_start', (benchName: string, projectName: string) => {
+            socket.on('running_benchmark_start', (benchName: string, projectName: string) => {
                 messager.logState(`Running benchmarks remotely...`);
                 messager.onBenchmarkStart(benchName, projectName, {
                     displayPath: `${host}/${benchName}`,
                 });
             });
 
-            remoteAgent.on('running_benchmark_update', ({ state, opts }: any) => {
-                messager.updateBenchmarkProgress(state, opts);
+            socket.on('running_benchmark_update', ({ state, opts }: any) => {
+                console.log(state);
+                console.log(opts);
+                // messager.updateBenchmarkProgress(state, opts);
             });
-            remoteAgent.on('running_benchmark_end', (benchName: string, projectName: string) => {
+            socket.on('running_benchmark_end', (benchName: string, projectName: string) => {
                 messager.onBenchmarkEnd(benchName, projectName);
             });
 
-            remoteAgent.on('benchmark_enqueued', ({ pending }: any) => {
+            socket.on('benchmark_enqueued', ({ pending }: any) => {
                 messager.logState(`Queued in agent. Pending tasks: ${pending}`);
             });
 
+            // is never going to be thrown from inside.
             socket.on('disconnect', (reason: string) => {
                 if (reason === 'io server disconnect') {
                     reject(new Error('Connection terminated'));
@@ -68,22 +71,26 @@ function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConf
             //     console.log('>> State change', s);
             // });
 
-            remoteAgent.on('error', (err: any) => {
+            socket.on('error', (err: any) => {
                 console.log('> ', err);
+                socket.disconnect();
                 reject(err);
             });
 
-            remoteAgent.on('benchmark_error', (err: any) => {
+            socket.on('benchmark_error', (err: any) => {
                 console.log(err);
+                socket.disconnect();
                 reject(new Error('Benchmark couldn\'t finish running. '));
             });
 
-            remoteAgent.on('benchmark_results', ({ results, environment }: any) => {
+            socket.on('benchmark_results', ({ results, environment }: any) => {
+                // socket.disconnect();
+                console.log('heree!!!!');
                 socket.disconnect();
                 resolve({ results, environment });
             });
 
-            remoteAgent.runBenchmark({
+            socket.runBenchmark({
                 tarBundle,
                 benchmarkName,
                 benchmarkSignature,
@@ -96,13 +103,11 @@ function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConf
             //     projectConfig: remoteProjectConfig,
             //     globalConfig,
             // });
-        });
+        // });
 
         return true;
     });
 }
-
-export { default as RemoteAgent } from './RemoteAgent';
 
 export class Runner {
     run(benchmarkEntryBundle: any, projectConfig: any, globalConfig: any, messager: any) {

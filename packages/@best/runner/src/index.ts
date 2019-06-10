@@ -1,12 +1,21 @@
 export async function runBenchmarks(benchmarksBuilds: any, globalConfig: any, messager: any) {
-    const results = [];
-    for (const benchmarkBuild of benchmarksBuilds) {
+    // const results = [];
+    const allPromises = benchmarksBuilds.map((benchmarkBuild: any) => {
         benchmarkBuild.globalConfig = globalConfig;
-        const benchmarkResults = await runBenchmark(benchmarkBuild, messager);
-        results.push(benchmarkResults);
-    }
+        return runBenchmark(benchmarkBuild, messager);
+    });
 
-    return results;
+    return Promise.all(allPromises).then((values) => {
+        // console.log(values);
+        return values;
+    });
+    // for (const benchmarkBuild of benchmarksBuilds) {
+    //     benchmarkBuild.globalConfig = globalConfig;
+    //     const benchmarkResults = await runBenchmark(benchmarkBuild, messager);
+    //     results.push(benchmarkResults);
+    // }
+    //
+    // return results;
 }
 
 export async function runBenchmark(

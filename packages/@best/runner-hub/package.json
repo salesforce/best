@@ -1,0 +1,16 @@
+{
+  "name": "@best/runner-hub",
+  "version": "0.7.1",
+  "description": "Best Agent Hub",
+  "keywords": [
+    "Best",
+    "performance",
+    "Hub"
+  ],
+  "main": "build/index.js",
+  "dependencies": {
+    "@best/messager": "0.7.1",
+    "socket.io-client": "~2.0.4",
+    "tar": "~4.2.0"
+  }
+}
