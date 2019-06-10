@@ -76,7 +76,7 @@ async function buildBundleBenchmarks(benchmarksTests: any, globalConfig: any, me
     }
 
     // Flatten the per-project benchmarks tests
-    return bundle.reduce((benchmarks, benchBundle) => {
+    return bundle.reduce((benchmarks: any, benchBundle: any) => {
         benchmarks.push(...benchBundle);
         return benchmarks;
     }, []);
