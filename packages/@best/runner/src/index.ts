@@ -1,21 +1,24 @@
 export async function runBenchmarks(benchmarksBuilds: any, globalConfig: any, messager: any) {
-    // const results = [];
-    const allPromises = benchmarksBuilds.map((benchmarkBuild: any) => {
-        benchmarkBuild.globalConfig = globalConfig;
-        return runBenchmark(benchmarkBuild, messager);
-    });
+    const canRunInBulk = !benchmarksBuilds.some((benchmark: any) => !benchmark.projectConfig.benchmarkRunnerConfig.bulkRun);
 
-    return Promise.all(allPromises).then((values) => {
-        // console.log(values);
-        return values;
-    });
-    // for (const benchmarkBuild of benchmarksBuilds) {
-    //     benchmarkBuild.globalConfig = globalConfig;
-    //     const benchmarkResults = await runBenchmark(benchmarkBuild, messager);
-    //     results.push(benchmarkResults);
-    // }
-    //
-    // return results;
+    if (canRunInBulk) {
+        const allPromises = benchmarksBuilds.map((benchmarkBuild: any) => {
+            benchmarkBuild.globalConfig = globalConfig;
+            return runBenchmark(benchmarkBuild, messager);
+        });
+
+        return Promise.all(allPromises);
+    } else {
+        const results = [];
+
+        for (const benchmarkBuild of benchmarksBuilds) {
+            benchmarkBuild.globalConfig = globalConfig;
+            const benchmarkResults = await runBenchmark(benchmarkBuild, messager);
+            results.push(benchmarkResults);
+        }
+
+        return results;
+    }
 }
 
 export async function runBenchmark(

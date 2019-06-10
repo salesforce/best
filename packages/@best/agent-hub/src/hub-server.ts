@@ -55,6 +55,8 @@ function setupConnection(socket: SocketIO.Server) {
             socket
         });
 
+        // @todo: see if this job can run on any of the existing remotes.
+
         incomingQueue.push(job);
     });
 }
