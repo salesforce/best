@@ -1,6 +1,17 @@
 import { Pool, QueryResult } from 'pg'
 import { TemporarySnapshot } from '../types'
 
+const normalizeMetrics = (metrics: any) => {
+    const standardizedMetrics = metrics.reduce((acc: any, metric: any) => {
+        return {
+            ...acc,
+            [metric.name]: [metric.duration, metric.stdDeviation]
+        }
+    }, {})
+
+    return JSON.stringify(standardizedMetrics);
+}
+
 export default class DB {
     pool: Pool
     constructor(config: any) {
@@ -35,7 +46,7 @@ export default class DB {
     }
 
     createSnapshot(snapshot: TemporarySnapshot, projectId: number): Promise<QueryResult> {
-        const values = [snapshot.name, JSON.stringify(snapshot.metrics), snapshot.environmentHash, snapshot.similarityHash, snapshot.commit, snapshot.commitDate, snapshot.temporary, projectId];
+        const values = [snapshot.name, normalizeMetrics(snapshot.metrics), snapshot.environmentHash, snapshot.similarityHash, snapshot.commit, snapshot.commitDate, snapshot.temporary, projectId];
         return this.pool.query('INSERT INTO snapshots(name, metrics, environment_hash, similarity_hash, commit, commit_date, temporary, project_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *', values)
     }
 }
