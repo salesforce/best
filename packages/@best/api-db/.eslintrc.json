@@ -1,6 +1,0 @@
-{
-    "extends": "../../../.eslintrc",
-    "rules": {
-        "@typescript-eslint/camelcase": "off"
-    }
-}
