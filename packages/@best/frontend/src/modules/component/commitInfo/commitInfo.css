@@ -7,19 +7,6 @@
     position: relative;
 }
 
-/* .commit-info::after {
-    content: '▲';
-    font-size: 40px;
-    color: white;
-    position: absolute;
-    text-align: center;
-    left: calc(50% - 20px);
-    bottom: calc(100% - 9px);
-    text-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-    z-index: -1;
-    transform: scale(1.5, 1);
-} */
-
 .loading p {
     margin: 0;
 }

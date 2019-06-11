@@ -24,8 +24,6 @@ export default class ComponentDropdown extends LightningElement {
         const itemIndex = parseInt(event.target.dataset.index, 10);
         const item = this.options.items[itemIndex];
 
-        // this event gets passed to parent (menubar) and then it will update options
-        // then in renderedCallback the new selectedItems will get set
         this.dispatchEvent(new CustomEvent('selection', {
             detail: {
                 selectedItems: [item]

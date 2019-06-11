@@ -3,14 +3,9 @@ import { loadDbFromConfig } from '@best/api-db'
 
 export default (config: any): Router => {
     const db = loadDbFromConfig(config);
-
     const router = Router()
 
-    // ROUTES
-
     router.get('/projects', async (req, res): Promise<void> => {
-        // mock.bulkCreateSnapshot([1, 2], ['append/10k', 'clear/10k'], 80)
-
         try {
             const projects = await db.fetchProjects()
 

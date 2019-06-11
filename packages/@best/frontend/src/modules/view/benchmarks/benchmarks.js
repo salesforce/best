@@ -24,13 +24,6 @@ export default class ViewBenchmarks extends LightningElement {
 
     @wire(connectStore, { store })
     storeChange({ benchmarks, view }) {
-        // explanation:
-        // every time we "set" this.visibleBenchmarks it triggers a re-render
-        // even if there is no different in the values
-        // this is bad bc it messes up with zooming, etc
-        // so we must only "set" this.visibleBenchmarks when there is an actual difference
-        // and these are all the possible reasons that benchmarks would change
-
         if (
             this.allBenchmarks.length !== benchmarks.items.length ||
             this.viewBenchmark !== view.benchmark ||
@@ -64,7 +57,6 @@ export default class ViewBenchmarks extends LightningElement {
             this.timeout = setTimeout(() => {
                 const grandParent = event.target.parentElement.parentElement;
                 if (grandParent !== element && this.recentHoverData.length > 0) {
-                    // TODO: we need to debounce this so that we don't interfere with double clicks to reset zoom
                     this.addAnnotation(element, this.recentHoverData[0]);
                 }
                 this.timeout = null;
@@ -129,7 +121,7 @@ export default class ViewBenchmarks extends LightningElement {
 
         if (shouldUpdate) {
             updateZoom(update, false);
-        store.dispatch(zoomChanged(update));
+            store.dispatch(zoomChanged(update));
         }
     }
 
@@ -145,7 +137,6 @@ export default class ViewBenchmarks extends LightningElement {
                 generatePlot(element, benchmark, this.viewMetric, isFirst);
 
                 if (isFirst) {
-                    // TODO: make sure this is NOT going to be a memory leak
                     element.addEventListener('click', event => this.handleRawClick(event, element))
                     element.on('plotly_relayout', update => this.handleZoom(update));
                     element.on('plotly_hover', data => this.handleHover(data));
@@ -155,7 +146,6 @@ export default class ViewBenchmarks extends LightningElement {
             if (!this.hasSetInitialZoom && this.viewZoom) {
                 this.hasSetInitialZoom = true;
 
-                // we need to call rAF because otherwise the graphs are created yet
                 // eslint-disable-next-line lwc/no-raf, @lwc/lwc/no-async-operation
                 window.requestAnimationFrame(() => {
                     updateZoom(this.viewZoom, true);
