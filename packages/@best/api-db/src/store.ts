@@ -16,7 +16,7 @@ export const saveBenchmarkSummaryInDB = (benchmarkResults: any, globalConfig: an
         benchmarkResults.map(async (benchmarkResult: any) => {
             const { benchmarkSignature, projectConfig, environment, stats } = benchmarkResult;
             const { projectName } = projectConfig;
-            const { gitCommit, gitLocalChanges } = globalConfig;
+            const { gitCommit, gitCommitDate, gitLocalChanges } = globalConfig;
 
             const snapshotEnvironment = {
                 hardware: environment.hardware,
@@ -28,8 +28,7 @@ export const saveBenchmarkSummaryInDB = (benchmarkResults: any, globalConfig: an
             const runSettings = {
                 similarityHash: benchmarkSignature,
                 commit: gitCommit,
-                // TODO: get commit date from github API
-                commitDate: (new Date()).toISOString(),
+                commitDate: gitCommitDate,
                 environmentHash,
                 // TODO: not sure if this is exactly what we want to determine here 
                 temporary: gitLocalChanges

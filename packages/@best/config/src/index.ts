@@ -236,6 +236,7 @@ function _getConfigs(options: any) {
             testPathPattern: options.testPathPattern,
             verbose: options.verbose,
             gitCommit: options.gitCommit,
+            gitCommitDate: options.gitCommitDate,
             gitLocalChanges: options.gitLocalChanges,
             gitBranch: options.gitBranch,
             gitRepository: options.gitRepository,

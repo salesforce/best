@@ -8,7 +8,6 @@ function buildPlottyLayout(title, isFirst) {
         title,
         xaxis: {
             title: 'Commits',
-            type: 'date',
             fixedrange: isFirst ? false : true,
             rangeslider: isFirst ? {thickness: 0.15, bgcolor: '#eee'} : {visible: false}
         },
@@ -23,11 +22,11 @@ function buildPlottyLayout(title, isFirst) {
     };
 }
 
-function buildLineTrend({ keys, values, name, commits }, showsVariation) {
+function buildLineTrend({ dates, values, name, commits }, showsVariation) {
     return {
-        x: keys,
         y: values,
-        text: commits.map(commit => commit.slice(0, 7)),
+        x: commits.map(commit => commit.slice(0, 7)),
+        text: dates,
         mode: 'lines',
         name,
         line: {
@@ -41,11 +40,11 @@ function buildLineTrend({ keys, values, name, commits }, showsVariation) {
     };
 }
 
-function buildVarianceTrend({ keys, values, name, commits }) {
+function buildVarianceTrend({ dates, values, name, commits }) {
     return {
-        x: keys,
         y: values,
-        text: commits.map(commit => commit.slice(0, 7)),
+        x: commits.map(commit => commit.slice(0, 7)),
+        text: dates,
         mode: 'lines',
         name: name,
         line: {
@@ -77,21 +76,21 @@ function buildCombinedValues(metrics, benchmark) {
     return metrics.map(metric => ([
         {
             commits: benchmark.commits,
-            keys: benchmark.commitDates,
+            dates: benchmark.commitDates,
             values: metric.durations,
             name: metric.name,
             type: 'line'
         },
         {
             commits: benchmark.commits,
-            keys: benchmark.commitDates,
+            dates: benchmark.commitDates,
             values: sumArrays(metric.durations, metric.stdDeviations, -1),
             name: metric.name + '-low',
             type: 'filled'
         },
         {
             commits: benchmark.commits,
-            keys: benchmark.commitDates,
+            dates: benchmark.commitDates,
             values: sumArrays(metric.durations, metric.stdDeviations),
             name: metric.name + '-high',
             type: 'filled'
@@ -107,7 +106,7 @@ export function normalizeTitle(benchmarkName) {
 
 export async function generatePlot(element, benchmark, viewMetric, isFirst = false, showsVariation = true) {
     // const layout = buildPlottyLayout(normalizeTitle(benchmark.name), isFirst);
-    const layout = buildPlottyLayout(benchmark.name, isFirst);
+    const layout = buildPlottyLayout(benchmark.name, isFirst);  
 
     const metrics = viewMetric === 'all' ? benchmark.metrics : benchmark.metrics.filter(metric => metric.name === viewMetric);
     
