@@ -3,13 +3,13 @@
     <section class="benchmarks" data-metric={viewMetric}>
         <template if:true={hasPoints}>
             <template for:each={currentPoints} for:item="point">
-                <div key={point.name}>
-                    <strong>{point.name}</strong>: <span>{point.text} ({point.x}, {point.y})</span>
-                </div>
+                <component-commit-info key={point.commit} commit={point.commit}></component-commit-info>
             </template>
         </template>
         <template for:each={visibleBenchmarks} for:item="benchmark" for:index="index">
-            <div key={benchmark.name} data-index={index} class="graph" lwc:dom="manual"></div>
+            <div key={benchmark.name} data-index={index} class="graph-wrapper">
+                <div class="graph" data-index={index} lwc:dom="manual"></div>
+            </div>
         </template>
     </section>
 </template>

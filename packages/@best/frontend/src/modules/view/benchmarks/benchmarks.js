@@ -55,12 +55,19 @@ export default class ViewBenchmarks extends LightningElement {
         return !!this.currentPoints.length;
     }
 
-    handleRawClick(event, name, element) {
-        this.addAnnotation(element, this.recentHoverData[0])
+    handleRawClick(event, element) {
+        const grandParent = event.target.parentElement.parentElement;
+        if (grandParent !== element && this.recentHoverData.length > 0) {
+            // TODO: we need to debounce this so that we don't interfere with double clicks to reset zoom
+            this.addAnnotation(element, this.recentHoverData[0]);
+        }
     }
 
     addAnnotation(element, point) {
-        const newIndex = (element.layout.annotations || []).length
+        const newIndex = (element.layout.annotations || []).length;
+
+        const date = new Date(point.text);
+        const text = `#${point.x} (${date.toDateString()})<br>${point.y} ms`;
 
         const annotation = {
             x: point.x,
@@ -68,7 +75,7 @@ export default class ViewBenchmarks extends LightningElement {
             xref: 'x',
             yref: 'y',
             showarrow: true,
-            text: `COMMIT: ${point.x}, <br>ON: ${point.text}`,
+            text: text,
             bgcolor: 'rgba(255, 255, 255, 0.9)',
             borderwidth: 2,
             arrowhead: 6,
@@ -84,6 +91,7 @@ export default class ViewBenchmarks extends LightningElement {
             element.layout.annotations.forEach((ann, idx) => {
                 if (ann.text === annotation.text) {
                     window.Plotly.relayout(element, 'annotations[' + idx + ']', 'remove');
+                    this.currentPoints.splice(idx, 1);
                     foundCopy = true;
                 }
             })
@@ -94,6 +102,8 @@ export default class ViewBenchmarks extends LightningElement {
         }
 
         window.Plotly.relayout(element, `annotations[${newIndex}]`, annotation);
+        const { x: commit } = point;
+        this.currentPoints.push({ commit });
     }
 
     handleHover(data) {
@@ -127,7 +137,7 @@ export default class ViewBenchmarks extends LightningElement {
 
                 if (isFirst) {
                     // TODO: make sure this is NOT going to be a memory leak
-                    element.addEventListener('click', event => this.handleRawClick(event, benchmark.name, element))
+                    element.addEventListener('click', event => this.handleRawClick(event, element))
                     element.on('plotly_relayout', update => this.handleZoom(update));
                     element.on('plotly_hover', data => this.handleHover(data));
                 }

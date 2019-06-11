@@ -1,0 +1,20 @@
+<template>
+    <div class="commit-info">
+        <template if:true={hasCommitInfo}>
+            <section class="links">
+                <a>Share Graph</a> | <a>Share commit</a>
+            </section>
+            <section class="info">
+                <p class="commit">{fullCommit}</p>
+                <p class="user">@{username} <img class="profile-image" src={profileImage} /></p>
+                <h2 class="title">{title}</h2>
+                <p class="body">{body}</p>
+            </section>
+        </template>
+        <template if:false={hasCommitInfo}>
+            <div class="loading">
+                <p>Loading commit ({commit}) info&hellip;</p>
+            </div>
+        </template>
+    </div>
+</template>
