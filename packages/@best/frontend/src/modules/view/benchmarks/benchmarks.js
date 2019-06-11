@@ -9,6 +9,7 @@ export default class ViewBenchmarks extends LightningElement {
     allBenchmarks = [];
 
     @track visibleBenchmarks = [];
+    needsRelayoutOfBenchmarks = false;
 
     viewTiming;
     @track viewBenchmark;
@@ -18,6 +19,8 @@ export default class ViewBenchmarks extends LightningElement {
     hasSetInitialZoom = false;
 
     @track currentPoints = [];
+
+    recentHoverData = [];
 
     @wire(connectStore, { store })
     storeChange({ benchmarks, view }) {
@@ -33,6 +36,7 @@ export default class ViewBenchmarks extends LightningElement {
             this.viewBenchmark !== view.benchmark ||
             this.viewTiming !== view.timing
         ) {
+            this.needsRelayoutOfBenchmarks = true;
             if (view.benchmark === 'all') {
                 this.visibleBenchmarks = benchmarks.items;
             } else {
@@ -51,22 +55,68 @@ export default class ViewBenchmarks extends LightningElement {
         return !!this.currentPoints.length;
     }
 
-    handleClick(data, name) {
-        // TODO: fix this implementation
-        // console.log(data.points.length)
-        // const { x, y, text } = data.points[0];
-        // console.log(data.points)
-        // this.currentPoints = this.currentPoints.filter(point => point.name !== name);
-        // this.currentPoints.push({ x, y, text, name })
+    handleRawClick(event, name, element) {
+        this.addAnnotation(element, this.recentHoverData[0])
+    }
+
+    addAnnotation(element, point) {
+        const newIndex = (element.layout.annotations || []).length
+
+        const annotation = {
+            x: point.x,
+            y: point.y,
+            xref: 'x',
+            yref: 'y',
+            showarrow: true,
+            text: `COMMIT: ${point.x}, <br>ON: ${point.text}`,
+            bgcolor: 'rgba(255, 255, 255, 0.9)',
+            borderwidth: 2,
+            arrowhead: 6,
+            ax: 0,
+            ay: -80,
+            ayref: 'y',
+            borderpad: 4,
+            bordercolor: point.fullData.line.color
+        }
+
+        if (newIndex) {
+            let foundCopy = false;
+            element.layout.annotations.forEach((ann, idx) => {
+                if (ann.text === annotation.text) {
+                    window.Plotly.relayout(element, 'annotations[' + idx + ']', 'remove');
+                    foundCopy = true;
+                }
+            })
+
+            if (foundCopy) {
+                return;
+            }
+        }
+
+        window.Plotly.relayout(element, `annotations[${newIndex}]`, annotation);
+    }
+
+    handleHover(data) {
+        this.recentHoverData = data.points;
     }
 
     handleZoom(update) {
-        updateZoom(update, false);
+        let shouldUpdate = true;
+        for (const key of Object.keys(update)) {
+            if (key.includes('annotations')) {
+                shouldUpdate = false;
+            }
+        }
+
+        if (shouldUpdate) {
+            updateZoom(update, false);
         store.dispatch(zoomChanged(update));
+        }
     }
 
     renderedCallback() {
-        if (this.visibleBenchmarks.length) {
+        if (this.visibleBenchmarks.length && this.needsRelayoutOfBenchmarks) {
+            this.needsRelayoutOfBenchmarks = false;
             cleanupPlots();
             const graphs = this.template.querySelectorAll('.graph');
             graphs.forEach((element, idx) => {
@@ -77,10 +127,10 @@ export default class ViewBenchmarks extends LightningElement {
 
                 if (isFirst) {
                     // TODO: make sure this is NOT going to be a memory leak
+                    element.addEventListener('click', event => this.handleRawClick(event, benchmark.name, element))
                     element.on('plotly_relayout', update => this.handleZoom(update));
+                    element.on('plotly_hover', data => this.handleHover(data));
                 }
-
-                element.on('plotly_click', data => this.handleClick(data, benchmark.name));
             });
 
             if (!this.hasSetInitialZoom && this.viewZoom) {

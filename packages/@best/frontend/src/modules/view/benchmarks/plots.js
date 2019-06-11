@@ -17,7 +17,6 @@ function buildPlottyLayout(title, isFirst) {
         },
         showlegend: false,
         side: 'bottom',
-        autotick: false,
         colorway: ['#e7a4b6', '#17BECF']
     };
 }
@@ -126,12 +125,16 @@ export async function generatePlot(element, benchmark, viewMetric, isFirst = fal
         displayModeBar: false,
         scrollZoom: false,
         showTips: false,
-        clickmode: 'event',
-        hovermode: 'y',
+        // clickmode: 'select+event',
+        // hovermode: 'y',
         hoverdistance: 0
     });
 
-    PLOTS.push(plot);
+    if (isFirst) {
+        PLOTS.unshift(plot);
+    } else {
+        PLOTS.push(plot);
+    }
 }
 
 export function updateZoom(update, includeFirst) {
