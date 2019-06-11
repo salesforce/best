@@ -67,7 +67,7 @@ export default class RemoteAgent extends EventEmitter {
         });
 
         this.agentSocket.on('benchmark_error', (err: any) => {
-            this.emit('error', err);
+            this.emit('benchmark_error', err);
         });
 
         this.agentSocket.on('benchmark_results', ({ results, environment }: any) => {

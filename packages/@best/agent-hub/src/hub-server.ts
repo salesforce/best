@@ -55,6 +55,11 @@ function setupConnection(socket: SocketIO.Server) {
             socket
         });
 
+        socket.on('disconnect', () => {
+            incomingQueue.remove(job);
+            readyQueue.remove(job);
+        });
+
         // @todo: see if this job can run on any of the existing remotes.
 
         incomingQueue.push(job);

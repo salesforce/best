@@ -49,7 +49,12 @@ export class Agent extends EventEmitter {
 
         // eventually this can become a runner...
         this.proxifyJob(job)
-            .finally(() => {
+            .then(() => {
+                // @todo: move to success queue
+                this.status = AgentStatus.Idle;
+            })
+            .catch(() => {
+                // @todo: move to failures queue
                 this.status = AgentStatus.Idle;
             });
     }
@@ -66,6 +71,14 @@ export class Agent extends EventEmitter {
     private async proxifyJob(job: BenchmarkJob) {
         return new Promise(async (resolve, reject) => {
             const socket: SocketIOClient.Socket = socketIO(this._config.host, this._config.options);
+            let resolved: boolean = false;
+
+
+            job.socketConnection.on('disconnect', () => {
+                resolved = true;
+                socket.disconnect();
+                reject(new Error('Connection terminated'));
+            });
 
             socket.on('connect', () => {
                 const remoteAgent: RemoteAgent = new RemoteAgent(socket);
@@ -84,26 +97,30 @@ export class Agent extends EventEmitter {
 
                 // @todo: this should put the runner in a weird state and dont allow any new job until we can confirm the connection is valid.
                 socket.on('disconnect', (reason: string) => {
-                    if (reason === 'io server disconnect') {
-                        job.socketConnection.emit('error', new Error('Connection terminated'));
-                        reject(new Error('Connection terminated'));
+                    if (!resolved) {
+                        resolved = true;
+                        const err = new Error(reason);
+                        job.socketConnection.emit('benchmark_error', reason);
+                        reject(err);
                     }
                 });
 
 
                 remoteAgent.on('error', (err: any) => {
-                    job.socketConnection.emit('error', err);
+                    job.socketConnection.emit('benchmark_error', err instanceof Error ? err.message : err);
                     socket.disconnect();
                     reject(err);
                 });
 
                 remoteAgent.on('benchmark_error', (err: any) => {
-                    job.socketConnection.emit('benchmark_error', err);
+                    resolved = true;
+                    job.socketConnection.emit('benchmark_error', err instanceof Error ? err.message : err);
                     socket.disconnect();
                     reject(new Error('Benchmark couldn\'t finish running. '));
                 });
 
                 remoteAgent.on('benchmark_results', ({ results, environment }: any) => {
+                    resolved = true;
                     socket.disconnect();
                     job.socketConnection.emit('benchmark_results', { results, environment });
                     resolve({ results, environment });
