@@ -55,11 +55,20 @@ export default class ViewBenchmarks extends LightningElement {
         return !!this.currentPoints.length;
     }
 
+    timeout;
     handleRawClick(event, element) {
-        const grandParent = event.target.parentElement.parentElement;
-        if (grandParent !== element && this.recentHoverData.length > 0) {
-            // TODO: we need to debounce this so that we don't interfere with double clicks to reset zoom
-            this.addAnnotation(element, this.recentHoverData[0]);
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+            this.timeout = null;
+        } else {
+            this.timeout = setTimeout(() => {
+                const grandParent = event.target.parentElement.parentElement;
+                if (grandParent !== element && this.recentHoverData.length > 0) {
+                    // TODO: we need to debounce this so that we don't interfere with double clicks to reset zoom
+                    this.addAnnotation(element, this.recentHoverData[0]);
+                }
+                this.timeout = null;
+            }, 200);
         }
     }
 
