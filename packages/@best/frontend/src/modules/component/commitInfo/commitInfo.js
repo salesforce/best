@@ -2,11 +2,19 @@ import { LightningElement, api, track, wire } from 'lwc';
 
 export default class ComponentCommitInfo extends LightningElement {
     @api commit;
+    @api top;
+    @api left;
 
     @track commitInfo = {};
 
     get hasCommitInfo() {
         return Object.keys(this.commitInfo).length > 0;
+    }
+
+    get styleTag() {
+        const style = `transform: translate(${this.left}px, ${this.top}px)`;
+        console.log(style)
+        return style;
     }
 
     connectedCallback() {

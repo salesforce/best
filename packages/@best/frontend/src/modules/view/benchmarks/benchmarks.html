@@ -1,13 +1,11 @@
 <template>
     <component-menubar></component-menubar>
     <section class="benchmarks" data-metric={viewMetric}>
-        <template if:true={hasPoints}>
-            <template for:each={currentPoints} for:item="point">
-                <component-commit-info key={point.commit} commit={point.commit}></component-commit-info>
-            </template>
-        </template>
         <template for:each={visibleBenchmarks} for:item="benchmark" for:index="index">
             <div key={benchmark.name} data-index={index} class="graph-wrapper">
+                <template for:each={benchmark.selectedPoints} for:item="point">
+                    <component-commit-info key={point.commit} commit={point.commit} left={point.left} top={point.top}></component-commit-info>
+                </template>
                 <div class="graph" data-index={index} lwc:dom="manual"></div>
             </div>
         </template>

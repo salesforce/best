@@ -18,7 +18,7 @@ export default class ViewBenchmarks extends LightningElement {
     viewZoom;
     hasSetInitialZoom = false;
 
-    @track currentPoints = [];
+    @track currentPoints = {};
 
     recentHoverData = [];
 
@@ -35,6 +35,10 @@ export default class ViewBenchmarks extends LightningElement {
             } else {
                 this.visibleBenchmarks = benchmarks.items.filter(bench => bench.name === view.benchmark);
             }
+            this.visibleBenchmarks = this.visibleBenchmarks.map(bench => ({
+                ...bench,
+                selectedPoints: []
+            }))
             this.allBenchmarks = benchmarks.items;
         }
 
@@ -48,55 +52,51 @@ export default class ViewBenchmarks extends LightningElement {
         this.viewZoom = view.zoom;
     }
 
-    get hasPoints() {
-        return !!this.currentPoints.length;
-    }
-
     timeout;
-    handleRawClick(event, element) {
+    handleRawClick(event, element, benchmarkIndex) {
         if (this.timeout) {
             clearTimeout(this.timeout);
             this.timeout = null;
         } else {
             const grandParent = event.target.parentElement.parentElement;
             this.timeout = setTimeout(() => {
-                if (grandParent !== element && this.recentHoverData.length > 0) {
-                    this.addAnnotation(element, this.recentHoverData[0]);
+                if (grandParent !== element && this.recentHoverData) {
+                    this.addAnnotation(element, this.recentHoverData, benchmarkIndex);
                 }
                 this.timeout = null;
             }, 200);
         }
     }
 
-    addAnnotation(element, point) {
+    addAnnotation(element, data, benchmarkIndex) {
+        const point = data.points[0];
         const newIndex = (element.layout.annotations || []).length;
 
-        const date = new Date(point.text);
-        const text = `#${point.x} (${date.toDateString()})<br>${point.y} ms`;
+        const { x: commit } = point;
+        const top = benchmarkIndex === "0" ? 400 * 1.15 : 400;
+        const left = point.xaxis.l2p(point.xaxis.d2c(point.x)) + point.xaxis._offset;
+        const commitPoint = { commit, top, left }
 
         const annotation = {
             x: point.x,
-            y: point.y,
+            y: point.yaxis.range[0],
             xref: 'x',
             yref: 'y',
             showarrow: true,
-            text: text,
-            bgcolor: 'rgba(255, 255, 255, 0.9)',
-            borderwidth: 2,
-            arrowhead: 6,
+            arrowcolor: '#aaa',
+            text: '',
+            arrowhead: 0,
             ax: 0,
-            ay: -80,
+            ay: point.yaxis.range[1],
             ayref: 'y',
-            borderpad: 4,
-            bordercolor: point.fullData.line.color
         }
 
         if (newIndex) {
             let foundCopy = false;
-            element.layout.annotations.forEach((ann, idx) => {
-                if (ann.text === annotation.text) {
+            this.visibleBenchmarks[benchmarkIndex].selectedPoints.forEach((pastPoint, idx) => {
+                if (pastPoint.commit === commitPoint.commit) {
                     window.Plotly.relayout(element, 'annotations[' + idx + ']', 'remove');
-                    this.currentPoints.splice(idx, 1);
+                    this.visibleBenchmarks[benchmarkIndex].selectedPoints.splice(idx, 1);
                     foundCopy = true;
                 }
             })
@@ -106,13 +106,18 @@ export default class ViewBenchmarks extends LightningElement {
             }
         }
 
-        window.Plotly.relayout(element, `annotations[${newIndex}]`, annotation);
-        const { x: commit } = point;
-        this.currentPoints.push({ commit });
+        const update = {
+            [`annotations[${newIndex}]`]: annotation,
+            'yaxis.range': point.yaxis.range // we don't want Plotly to change the yaxis bc of the annotation
+        }
+
+        window.Plotly.relayout(element, update);
+
+        this.visibleBenchmarks[benchmarkIndex].selectedPoints.push(commitPoint);
     }
 
     handleHover(data) {
-        this.recentHoverData = data.points;
+        this.recentHoverData = data;
     }
 
     handleZoom(update) {
@@ -141,7 +146,7 @@ export default class ViewBenchmarks extends LightningElement {
                 generatePlot(element, benchmark, this.viewMetric, isFirst);
 
                 if (isFirst) {
-                    element.addEventListener('click', event => this.handleRawClick(event, element))
+                    element.addEventListener('click', event => this.handleRawClick(event, element, benchmarkIndex))
                     element.on('plotly_relayout', update => this.handleZoom(update));
                     element.on('plotly_hover', data => this.handleHover(data));
                 }

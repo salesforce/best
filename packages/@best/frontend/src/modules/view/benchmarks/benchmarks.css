@@ -1,3 +1,7 @@
+.graph-wrapper {
+    position: relative;
+}
+
 /*
  * We need to have this css here from the Plotly library because otherwise the shadow dom
  * restricts this css from applying to our graphs.
