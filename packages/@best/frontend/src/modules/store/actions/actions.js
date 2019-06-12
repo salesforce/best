@@ -86,6 +86,7 @@ function findSelectedProject({ projects }) {
 
 export function timingChanged(timing) {
     return (dispatch, getState) => {
+        dispatch(zoomChanged({}));
         dispatch({ type: VIEW_TIMING_CHANGED, timing });
 
         const selectedProject = findSelectedProject(getState());

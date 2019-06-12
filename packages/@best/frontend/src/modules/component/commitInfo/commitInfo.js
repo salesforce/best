@@ -4,7 +4,6 @@ export default class ComponentCommitInfo extends LightningElement {
     @api commit;
     @api top;
     @api left;
-    @api benchmark;
 
     @track commitInfo = {};
 
@@ -19,11 +18,9 @@ export default class ComponentCommitInfo extends LightningElement {
     }
 
     close() {
-        const benchmarkIndex = parseInt(this.benchmark, 10);
         this.dispatchEvent(new CustomEvent('close', {
             detail: {
-                commit: this.commit,
-                benchmarkIndex
+                commit: this.commit
             }
         }))
     }

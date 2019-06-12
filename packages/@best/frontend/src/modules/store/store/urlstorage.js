@@ -58,7 +58,9 @@ function updateViewQueryIfNeeded(view) {
 
 function loadFriendlyZoom(zoomQuery) {
     if (typeof zoomQuery === 'string' && zoomQuery === 'auto') {
-        return 'auto';
+        return {
+            'xaxis.autorange': true
+        };
     } else if (zoomQuery.length > 1) {
         return {
             'xaxis.range': zoomQuery

@@ -3,8 +3,6 @@ import { LightningElement, track, wire } from 'lwc';
 import { connectStore, store } from 'store/store';
 import { zoomChanged } from 'store/actions';
 
-import { generatePlot, cleanupPlots, updateZoom } from './plots';
-
 export default class ViewBenchmarks extends LightningElement {
     allBenchmarks = [];
 
@@ -15,7 +13,7 @@ export default class ViewBenchmarks extends LightningElement {
     @track viewBenchmark;
     @track viewMetric;
 
-    viewZoom;
+    @track viewZoom;
     hasSetInitialZoom = false;
 
     @track currentPoints = {};
@@ -36,9 +34,10 @@ export default class ViewBenchmarks extends LightningElement {
             } else {
                 this.visibleBenchmarks = benchmarks.items.filter(bench => bench.name === view.benchmark);
             }
-            this.visibleBenchmarks = this.visibleBenchmarks.map(bench => ({
+            this.visibleBenchmarks = this.visibleBenchmarks.map((bench, idx) => ({
                 ...bench,
-                selectedPoints: []
+                selectedPoints: [],
+                isFirst: idx === 0
             }))
             this.allBenchmarks = benchmarks.items;
         }
@@ -53,155 +52,7 @@ export default class ViewBenchmarks extends LightningElement {
         this.viewZoom = view.zoom;
     }
 
-    closeCommitInfo(event) {
-        const { benchmarkIndex, commit } = event.detail;
-        const element = this.cacheQuerySelectorGraph[benchmarkIndex];
-
-        this.visibleBenchmarks[benchmarkIndex].selectedPoints.every((point, idx) => {
-            if (point.commit === commit) {
-                window.Plotly.relayout(element, 'annotations[' + idx + ']', 'remove');
-                this.visibleBenchmarks[benchmarkIndex].selectedPoints.splice(idx, 1);
-                return false;
-            }
-
-            return true;
-        })
-    }
-
-    handleDirectClick(event) {
-        console.log(5, event.target.parentElement.parentElement.parentElement)
-    }
-
-    timeout = null;
-    handleRawClick(event, element, benchmarkIndex) {
-        console.log('click', this.timeout)
-        if (this.timeout) {
-            clearTimeout(this.timeout);
-            this.timeout = null;
-        } else {
-            const grandParent = event.target.parentElement.parentElement;
-            this.timeout = setTimeout(() => {
-                if (grandParent !== element && this.recentHoverData[benchmarkIndex]) {
-                    this.addAnnotation(element, this.recentHoverData[benchmarkIndex], benchmarkIndex);
-                }
-                this.timeout = null;
-            }, 200);
-        }
-    }
-
-    addAnnotation(element, data, benchmarkIndex) {
-        console.log('add annotation')
-        const point = data.points[0];
-        const newIndex = (element.layout.annotations || []).length;
-
-        const { x: commit } = point;
-        const top = benchmarkIndex === "0" ? 400 * 1.15 : 400;
-        const left = point.xaxis.l2p(point.xaxis.d2c(point.x)) + point.xaxis._offset;
-        const commitPoint = { commit, top, left }
-
-        const annotation = {
-            x: point.x,
-            y: point.yaxis.range[0],
-            xref: 'x',
-            yref: 'y',
-            showarrow: true,
-            arrowcolor: '#aaa',
-            text: '',
-            arrowhead: 0,
-            ax: 0,
-            ay: point.yaxis.range[1],
-            ayref: 'y',
-        }
-
-        if (newIndex) {
-            let foundCopy = false;
-            this.visibleBenchmarks[benchmarkIndex].selectedPoints.every((pastPoint, idx) => {
-                if (pastPoint.commit === commitPoint.commit) {
-                    window.Plotly.relayout(element, 'annotations[' + idx + ']', 'remove');
-                    this.visibleBenchmarks[benchmarkIndex].selectedPoints.splice(idx, 1);
-                    foundCopy = true;
-                    return false;
-                }
-
-                return true;
-            })
-
-            if (foundCopy) {
-                return;
-            }
-        }
-
-        const update = {
-            [`annotations[${newIndex}]`]: annotation,
-            'yaxis.range': point.yaxis.range // we don't want Plotly to change the yaxis bc of the annotation
-        }
-
-        window.Plotly.relayout(element, update);
-
-        this.visibleBenchmarks[benchmarkIndex].selectedPoints.push(commitPoint);
-    }
-
-    handleHover(data, benchmarkIndex) {
-        this.recentHoverData[benchmarkIndex] = data;
-    }
-
-    handleZoom(update) {
-        let shouldUpdate = true;
-        for (const key of Object.keys(update)) {
-            if (key.includes('annotations')) {
-                shouldUpdate = false;
-            }
-        }
-
-        if (shouldUpdate) {
-            updateZoom(update, false);
-            store.dispatch(zoomChanged(update));
-        }
-    }
-
-    renderedCallback() {
-        if (this.visibleBenchmarks.length && this.needsRelayoutOfBenchmarks) {
-            this.needsRelayoutOfBenchmarks = false;
-            this.cacheQuerySelectorGraph = this.template.querySelectorAll('.graph');
-            
-            cleanupPlots();
-            
-            this.cacheQuerySelectorGraph.forEach((element, idx) => {
-                const benchmarkIndex = element.dataset.index;
-                const benchmark = this.visibleBenchmarks[benchmarkIndex];
-                const isFirst = idx === 0;
-                generatePlot(element, benchmark, this.viewMetric, isFirst);
-
-                if (isFirst) {
-                    element.on('plotly_relayout', update => this.handleZoom(update));
-                }
-
-                element.addEventListener('click', event => this.handleRawClick(event, element, benchmarkIndex));
-                // element.on('plotly_click', data => this.addAnnotation(element, data, benchmarkIndex));
-                element.on('plotly_hover', data => this.handleHover(data, benchmarkIndex));
-
-                // // eslint-disable-next-line lwc/no-raf, @lwc/lwc/no-async-operation
-                // window.requestAnimationFrame(() => {
-                //     element.on('plotly_click', data => this.addAnnotation(element, data, benchmarkIndex));
-                // })
-
-                // element.on('plotly_click', function () {
-                //     console.log('what')
-                // })
-            });
-
-            if (!this.hasSetInitialZoom && this.viewZoom) {
-                this.hasSetInitialZoom = true;
-
-                // eslint-disable-next-line lwc/no-raf, @lwc/lwc/no-async-operation
-                window.requestAnimationFrame(() => {
-                    updateZoom(this.viewZoom, true);
-                });
-            }
-        }
-    }
-
-    disconnectedCallback() {
-        cleanupPlots();
+    handleZoom(event) {
+        store.dispatch(zoomChanged(event.detail.update));
     }
 }

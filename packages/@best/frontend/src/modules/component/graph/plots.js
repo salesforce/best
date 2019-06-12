@@ -1,8 +1,8 @@
 /* global Plotly */
 
-let PLOTS = [];
+let PLOT;
 
-function buildPlottyLayout(title, isFirst) {
+export function buildLayout(title, isFirst) {
     return {
         height: isFirst ? 400 * 1.15 : 400,
         title,
@@ -106,16 +106,11 @@ export function normalizeTitle(benchmarkName) {
     return parts.join(':');
 }
 
-export async function generatePlot(element, benchmark, viewMetric, isFirst = false, showsVariation = true) {
-    // const layout = buildPlottyLayout(normalizeTitle(benchmark.name), isFirst);
-    const layout = buildPlottyLayout(benchmark.name, isFirst);  
-
-    const metrics = viewMetric === 'all' ? benchmark.metrics : benchmark.metrics.filter(metric => metric.name === viewMetric);
-    
+export function buildTrends(benchmark, showsVariation = true) {
     let trends;
     if (showsVariation) {
         // create a combined dataset for graphing that has the low, high, and median values
-        const combinedDatasets = buildCombinedValues(metrics, benchmark);
+        const combinedDatasets = buildCombinedValues(benchmark.metrics, benchmark);
         
         // for each metric and then for each of (median, low, high) create the trend layout
         trends = combinedDatasets.flatMap(combined => combined.map(set => buildTrend(set, showsVariation)));
@@ -123,48 +118,70 @@ export async function generatePlot(element, benchmark, viewMetric, isFirst = fal
         trends = metrics.map(metric => buildLineTrend({ commits: benchmark.commits, keys: benchmark.commitDates, values: metric.durations, name: metric.name }, showsVariation));
     }
 
-    const plot = await window.Plotly.react(element, trends, layout, {
+    return trends;
+}
+
+export async function drawPlot(element, trends, layout) {
+    await window.Plotly.react(element, trends, layout, {
         displaylogo: false,
         displayModeBar: false,
         scrollZoom: false,
         showTips: false,
-        // clickmode: 'select+event',
-        // hovermode: 'y',
     });
 
-    if (isFirst) {
-        PLOTS.unshift(plot);
-    } else {
-        PLOTS.push(plot);
-    }
+    PLOT = element;
+
+    return element.layout;
 }
 
-export function updateZoom(update, includeFirst) {
-    if (includeFirst) {
-        PLOTS.forEach(p => window.Plotly.relayout(p, update));
-    } else {
-        const allButFirst = PLOTS.slice(1)
-        allButFirst.forEach(p => window.Plotly.relayout(p, update));
+export function createAnnotation(element, point) {
+    const annotation = {
+        x: point.x,
+        y: point.yaxis.range[0],
+        xref: 'x',
+        yref: 'y',
+        showarrow: true,
+        arrowcolor: '#aaa',
+        text: '',
+        arrowhead: 0,
+        ax: 0,
+        ay: point.yaxis.range[1],
+        ayref: 'y',
     }
+
+    const newIndex = (element.layout.annotations || []).length;
+
+    const update = {
+        [`annotations[${newIndex}]`]: annotation,
+        'yaxis.range': point.yaxis.range // we don't want Plotly to change the yaxis bc of the annotation
+    }
+
+    return relayout(element, update);
 }
 
-export function cleanupPlots() {
-    PLOTS = [];
+export function removeAnnotation(element, idx) {
+    window.Plotly.relayout(element, `annotations[${idx}]`, 'remove');
+
+    return element.layout;
 }
 
-let debounceResize = false;
-window.onresize = function () {
-    if (!debounceResize) {
-        debounceResize = true;
-        // eslint-disable-next-line @lwc/lwc/no-async-operation
-        setTimeout(() => {
-            // eslint-disable-next-line lwc/no-raf, @lwc/lwc/no-async-operation
-            window.requestAnimationFrame(() => {
-                PLOTS.forEach((plot) => {
-                    Plotly.Plots.resize(plot);
-                });
-                debounceResize = false;
-            });
-        }, 100);
-    }
-};
+export function relayout(element, update) {
+    window.Plotly.relayout(element, update);
+
+    return element.layout;
+}
+
+// let debounceResize = false;
+// window.onresize = function () {
+//     if (!debounceResize) {
+//         debounceResize = true;
+//         // eslint-disable-next-line @lwc/lwc/no-async-operation
+//         setTimeout(() => {
+//             // eslint-disable-next-line lwc/no-raf, @lwc/lwc/no-async-operation
+//             window.requestAnimationFrame(() => {
+//                 Plotly.Plots.resize(PLOT);
+//                 debounceResize = false;
+//             });
+//         }, 100);
+//     }
+// };
