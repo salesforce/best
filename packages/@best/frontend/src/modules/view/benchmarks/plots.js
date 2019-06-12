@@ -123,14 +123,13 @@ export async function generatePlot(element, benchmark, viewMetric, isFirst = fal
         trends = metrics.map(metric => buildLineTrend({ commits: benchmark.commits, keys: benchmark.commitDates, values: metric.durations, name: metric.name }, showsVariation));
     }
 
-    const plot = await window.Plotly.newPlot(element, trends, layout, {
+    const plot = await window.Plotly.react(element, trends, layout, {
         displaylogo: false,
         displayModeBar: false,
         scrollZoom: false,
         showTips: false,
         // clickmode: 'select+event',
         // hovermode: 'y',
-        hoverdistance: 0
     });
 
     if (isFirst) {

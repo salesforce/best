@@ -4,6 +4,7 @@ export default class ComponentCommitInfo extends LightningElement {
     @api commit;
     @api top;
     @api left;
+    @api benchmark;
 
     @track commitInfo = {};
 
@@ -15,6 +16,16 @@ export default class ComponentCommitInfo extends LightningElement {
         const style = `transform: translate(${this.left}px, ${this.top}px)`;
         console.log(style)
         return style;
+    }
+
+    close() {
+        const benchmarkIndex = parseInt(this.benchmark, 10);
+        this.dispatchEvent(new CustomEvent('close', {
+            detail: {
+                commit: this.commit,
+                benchmarkIndex
+            }
+        }))
     }
 
     connectedCallback() {
