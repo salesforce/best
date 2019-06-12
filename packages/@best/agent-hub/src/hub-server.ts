@@ -9,7 +9,7 @@ import { createAgentManager } from "./AgentManager";
 const incomingQueue = new ObservableQueue<BenchmarkJob>();
 const readyQueue = new ObservableQueue<BenchmarkJob>();
 
-const agentsManager = createAgentManager(config.agents);
+const agentsManager = createAgentManager(config);
 
 agentsManager.on('idleagent', (agent: Agent) => {
     for (const job of readyQueue) {
@@ -47,7 +47,7 @@ readyQueue.on('item-added', (job: BenchmarkJob) => {
     }
 });
 
-function setupConnection(socket: SocketIO.Server) {
+function setupConnection(socket: SocketIO.Socket) {
     // @todo: define the types for the data.
     socket.on('benchmark_task', (data: any) => {
         const job = new BenchmarkJob({
@@ -55,14 +55,18 @@ function setupConnection(socket: SocketIO.Server) {
             socket
         });
 
-        socket.on('disconnect', () => {
-            incomingQueue.remove(job);
-            readyQueue.remove(job);
-        });
+        if (agentsManager.existAgentForJob(job)) {
+            socket.on('disconnect', () => {
+                incomingQueue.remove(job);
+                readyQueue.remove(job);
+            });
 
-        // @todo: see if this job can run on any of the existing remotes.
-
-        incomingQueue.push(job);
+            incomingQueue.push(job);
+        } else {
+            // there is no agent to run this job
+            socket.emit('benchmark_error', 'There is no agent in the hub to run this job.');
+            socket.disconnect(true);
+        }
     });
 }
 

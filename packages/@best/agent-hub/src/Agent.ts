@@ -4,12 +4,13 @@ import BenchmarkJob from "./BenchmarkJob";
 import {EventEmitter} from "events";
 
 export interface AgentConfig {
+    category: string,
     host: string,
     options: {
         path: string
     },
     remoteRunner: string,
-    supportedBrowsers: string[]
+    remoteRunnerConfig?: object
 }
 
 export enum AgentStatus {
@@ -60,8 +61,8 @@ export class Agent extends EventEmitter {
     }
 
     canRunJob(job: BenchmarkJob): boolean {
-        // @todo: implement this: this should return true if the job can run in this agent, based on the job.config and this agent configuration.
-        return true;
+        return job.projectConfig.benchmarkRunner === this._config.category &&
+            this.status !== AgentStatus.Offline;
     }
 
     isIdle(): boolean {
@@ -69,6 +70,22 @@ export class Agent extends EventEmitter {
     }
 
     private async proxifyJob(job: BenchmarkJob) {
+        const self = this;
+        const remoteAgentRunnerConfig = Object.assign(
+            {},
+            this._config.remoteRunnerConfig,
+            { host: this._config.host, options: this._config.options }
+        );
+
+        const overriddenProjectConfig = Object.assign(
+            {},
+            job.projectConfig,
+            {
+                benchmarkRunner: this._config.remoteRunner,
+                benchmarkRunnerConfig: remoteAgentRunnerConfig,
+            }
+        );
+
         return new Promise(async (resolve, reject) => {
             const socket: SocketIOClient.Socket = socketIO(this._config.host, this._config.options);
             let resolved: boolean = false;
@@ -78,6 +95,15 @@ export class Agent extends EventEmitter {
                 resolved = true;
                 socket.disconnect();
                 reject(new Error('Connection terminated'));
+            });
+
+            socket.on('connect_error', function() {
+                console.log("Connection error with hub: ", [self._config.host, self._config.options]);
+                self.status = AgentStatus.Offline;
+                // this is a special case that we need to handle with care, right now the job is scheduled to run in this hub
+                // which is offline, but, is not the job fault, it can run in another agent. Note: can be solved if we add a new queue, and retry in another queue.
+                reject(new Error('Agent running job became offline.'));
+                // @todo: add a retry logic?
             });
 
             socket.on('connect', () => {
@@ -130,7 +156,7 @@ export class Agent extends EventEmitter {
                     tarBundle: job.tarBundle,
                     benchmarkName: job.benchmarkName,
                     benchmarkSignature: job.benchmarkSignature,
-                    projectConfig: job.projectConfig,
+                    projectConfig: overriddenProjectConfig,
                     globalConfig: job.globalConfig,
                 });
             });
