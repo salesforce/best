@@ -9,11 +9,13 @@ function buildPlottyLayout(title, isFirst) {
         xaxis: {
             title: 'Commits',
             fixedrange: isFirst ? false : true,
+            nticks: 15,
             rangeslider: isFirst ? {thickness: 0.15, bgcolor: '#eee'} : {visible: false}
         },
         yaxis: {
             fixedrange: true,
-            title: 'ms'
+            title: 'ms',
+            zeroline: false
         },
         showlegend: false,
         side: 'bottom',
@@ -51,7 +53,8 @@ function buildVarianceTrend({ dates, values, name, commits }) {
             color: 'transparent'
         },
         fill: 'tonexty',
-        fillcolor: 'rgba(0, 0, 50, 0.1)',
+        fillcolor: name.includes('high') ? 'rgba(0, 0, 50, 0.1)' : 'transparent',
+        // fillcolor: 'rgba(0, 0, 50, 0.1)',
         showlegend: false,
         hoverinfo: 'skip'
     };

@@ -54,8 +54,8 @@ export default class ViewBenchmarks extends LightningElement {
             clearTimeout(this.timeout);
             this.timeout = null;
         } else {
+            const grandParent = event.target.parentElement.parentElement;
             this.timeout = setTimeout(() => {
-                const grandParent = event.target.parentElement.parentElement;
                 if (grandParent !== element && this.recentHoverData.length > 0) {
                     this.addAnnotation(element, this.recentHoverData[0]);
                 }
