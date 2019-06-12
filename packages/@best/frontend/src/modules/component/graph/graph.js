@@ -155,11 +155,9 @@ export default class ComponentGraph extends LightningElement {
             this.hasRegisteredHandlers = true;
             this.element.addEventListener('click', event => this.rawClickHandler(event));
 
-            if (this.first) {
-                this.element.on('plotly_relayout', update => this.handleRelayout(update));
-            }
-
             this.element.on('plotly_hover', data => this.hoverHandler(data));
+
+            this.element.on('plotly_relayout', update => this.handleRelayout(update));
         }
 
         if (!this.hasSetInitialZoom) {
