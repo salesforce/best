@@ -27,6 +27,16 @@ function updateProjectsPathIfNeeded(projectId) {
     }
 }
 
+function friendlyZoom(zoom) {
+    if (zoom.hasOwnProperty('xaxis.range')) {
+        return zoom['xaxis.range'];
+    } else if (zoom.hasOwnProperty('xaxis.range[0]')) {
+        return [zoom['xaxis.range[0]'], zoom['xaxis.range[1]']];
+    }
+
+    return 'auto';
+}
+
 function loadProjectFromPath() {
     const path = window.location.pathname;
     const projectId = path.replace(/\D/g, '');
@@ -36,7 +46,7 @@ function loadProjectFromPath() {
 function updateViewQueryIfNeeded(view) {
     const friendlyView = {
         ...view,
-        zoom: JSON.stringify(view.zoom)
+        zoom: friendlyZoom(view.zoom)
     }
     
     const newQuery = queryString.stringify(friendlyView);
@@ -44,6 +54,18 @@ function updateViewQueryIfNeeded(view) {
     if (window.location.hash !== `#${newQuery}`) {
         window.location.hash = queryString.stringify(friendlyView);
     }
+}
+
+function loadFriendlyZoom(zoomQuery) {
+    if (typeof zoomQuery === 'string' && zoomQuery === 'auto') {
+        return 'auto';
+    } else if (zoomQuery.length > 1) {
+        return {
+            'xaxis.range': zoomQuery
+        }
+    }
+
+    return {};
 }
 
 function loadViewFromQuery() {
@@ -57,7 +79,7 @@ function loadViewFromQuery() {
             benchmark: parsedQuery.benchmark,
             timing: parsedQuery.timing,
             metric: parsedQuery.metric,
-            zoom: JSON.parse(parsedQuery.zoom)
+            zoom: loadFriendlyZoom(parsedQuery.zoom)
         }
 
         return view;
