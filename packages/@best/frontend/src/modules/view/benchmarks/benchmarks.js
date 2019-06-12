@@ -38,9 +38,13 @@ export default class ViewBenchmarks extends LightningElement {
             this.allBenchmarks = benchmarks.items;
         }
 
+        if (this.viewMetric !== view.metric) {
+            this.viewMetric = view.metric;
+            this.needsRelayoutOfBenchmarks = true;
+        }
+
         this.viewTiming = view.timing;
         this.viewBenchmark = view.benchmark;
-        this.viewMetric = view.metric;
         this.viewZoom = view.zoom;
     }
 
