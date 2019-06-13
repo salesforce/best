@@ -1,24 +1,56 @@
-export async function runBenchmarks(benchmarksBuilds: any, globalConfig: any, messager: any) {
-    const canRunInBulk = !benchmarksBuilds.some((benchmark: any) => !benchmark.projectConfig.benchmarkRunnerConfig.bulkRun);
-
-    if (canRunInBulk) {
-        const allPromises = benchmarksBuilds.map((benchmarkBuild: any) => {
-            benchmarkBuild.globalConfig = globalConfig;
-            return runBenchmark(benchmarkBuild, messager);
-        });
-
-        return Promise.all(allPromises);
+function getBatchSize(benchmarkSize: number): number {
+    if (benchmarkSize < 10) {
+        return 1;
+    } else if (benchmarkSize < 50) {
+        return 2;
     } else {
-        const results = [];
+        return 3;
+    }
+}
 
+async function runBenchmarksInBatch(batchSize: number, benchmarksBuilds: any, globalConfig: any, messager: any) {
+    const results : any[] = [];
+    let batch = [];
+
+    for (const benchmarkBuild of benchmarksBuilds) {
+        benchmarkBuild.globalConfig = globalConfig;
+        batch.push(runBenchmark(benchmarkBuild, messager));
+
+        if (batch.length === batchSize) {
+            const batchResults = await Promise.all(batch);
+            Array.prototype.push.apply(results, batchResults);
+            batch = [];
+        }
+    }
+
+    if (batch.length) {
+        const batchResults = await Promise.all(batch);
+        Array.prototype.push.apply(results, batchResults);
+    }
+
+    return results;
+}
+
+export async function runBenchmarks(benchmarksBuilds: any, globalConfig: any, messager: any) {
+    const results : any[] = [];
+    const canRunInBatch = !benchmarksBuilds.some((benchmark: any) => !benchmark.projectConfig.benchmarkRunnerConfig.runInBatch);
+
+    if (canRunInBatch) {
+        return runBenchmarksInBatch(
+            getBatchSize(benchmarksBuilds.length),
+            benchmarksBuilds,
+            globalConfig,
+            messager
+        );
+    } else {
         for (const benchmarkBuild of benchmarksBuilds) {
             benchmarkBuild.globalConfig = globalConfig;
             const benchmarkResults = await runBenchmark(benchmarkBuild, messager);
             results.push(benchmarkResults);
         }
-
-        return results;
     }
+
+    return results;
 }
 
 export async function runBenchmark(
