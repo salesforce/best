@@ -6,6 +6,7 @@
   },
   "references": [
     { "path": "../analyzer" },
+    { "path": "../api-db" },
     { "path": "../builder" },
     { "path": "../compare" },
     { "path": "../config" },

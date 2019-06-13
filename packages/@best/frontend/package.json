@@ -1,0 +1,71 @@
+{
+    "name": "@best/frontend",
+    "version": "0.7.1",
+    "author": "Jason Silberman",
+    "dependencies": {
+        "@best/api-db": "0.7.1",
+        "compression": "^1.7.4",
+        "express": "^4.17.1",
+        "helmet": "^3.18.0",
+        "lwc-services": "^1",
+        "query-string": "^6.6.0",
+        "redux": "^4.0.1",
+        "redux-thunk": "^2.3.0"
+    },
+    "devDependencies": {
+        "@types/compression": "^0.0.36",
+        "@types/express": "^4.16.1",
+        "@types/helmet": "^0.0.43",
+        "concurrently": "^4.1.0",
+        "nodemon": "^1.19.1",
+        "ts-node": "^8.2.0"
+    },
+    "engines": {
+        "node": ">=10.0.0"
+    },
+    "prettier": {
+        "printWidth": 120,
+        "tabWidth": 4,
+        "trailingComma": "all",
+        "singleQuote": true,
+        "overrides": [
+            {
+                "files": "**/*.html",
+                "options": {
+                    "parser": "lwc"
+                }
+            }
+        ]
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "**/*.{css,html,js,json,md,yaml,yml}": [
+            "prettier --write"
+        ],
+        "**/modules/**": [
+            "eslint --fix"
+        ],
+        "*": [
+            "git add"
+        ]
+    },
+    "scripts": {
+        "test:unit": "lwc-services test",
+        "test:unit:coverage": "lwc-services test --coverage",
+        "test:unit:debug": "lwc-services test --debug",
+        "test:unit:watch": "lwc-services test --watch",
+        "lint": "eslint src/ server/ --ext .js,.ts",
+        "prettier": "prettier --write '**/*.{css,html,js,ts,json,md,yaml,yml}'",
+        "prettier:verify": "prettier --list-different '**/*.{css,html,js,ts,json,md,yaml,yml}'",
+        "lwc:build": "lwc-services build",
+        "lwc:serve": "lwc-services build && lwc-services serve",
+        "lwc:watch": "lwc-services watch --webpack=webpack.config.js",
+        "api:migrate": "node-pg-migrate -m server/migrations",
+        "api:watch": "nodemon --watch server -e js,ts --exec 'NODE_ENV=development ts-node server/index.ts'",
+        "watch": "concurrently 'yarn lwc:watch' 'yarn api:watch'"
+    }
+}

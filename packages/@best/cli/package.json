@@ -9,6 +9,7 @@
   "main": "build/index.js",
   "dependencies": {
     "@best/analyzer": "0.7.1",
+    "@best/api-db": "0.7.1",
     "@best/build": "0.7.1",
     "@best/compare": "0.7.1",
     "@best/config": "0.7.1",

@@ -1,0 +1,10 @@
+{
+  "extends": "../../../tsconfig.settings.json",
+  "compilerOptions": {
+    "rootDir": "server",
+    "outDir": "build",
+  },
+  "references": [
+    { "path": "../api-db" }
+  ]
+}

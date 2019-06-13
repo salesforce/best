@@ -1,0 +1,13 @@
+<template>
+    <header class="brand">
+        <h1>Best</h1>
+    </header>
+    <section class="projects">
+        <h3>Projects</h3>
+        <template for:each={projects} for:item="project">
+            <div onclick={selectProject} key={project.id} data-id={project.id} class={project.classes}>
+                <span>{project.name}</span>
+            </div>
+        </template>
+    </section>
+</template>
