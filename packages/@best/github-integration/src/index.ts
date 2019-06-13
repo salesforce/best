@@ -1,5 +1,5 @@
 import { isCI } from '@best/utils';
-import { createGithubApp } from './git-app';
+import GithubApplicationFactory from './git-app';
 import { generateComparisonComment } from './comment';
 
 const PULL_REQUEST_URL = process.env.PULL_REQUEST;
@@ -16,14 +16,12 @@ export async function pushBenchmarkComparison(baseCommit: any, targetCommit: any
         throw new Error('PULL_REQUEST_URL and REPO_NAME enviroment variable is needed');
     }
 
-    const repoOwner = gitRepository.owner;
-    const APP = createGithubApp();
-    const gitAppAuth = await APP.authAsApp();
-    const installations = await gitAppAuth.apps.getInstallations({});
-    const repoInstallation = installations.data.find((i: any) => i.account.login === repoOwner);
-    const installationId = repoInstallation.id;
-    const owner = repoInstallation.account.login;
-    const gitHubInstallation = await APP.authAsInstallation(installationId);
+    const APP = GithubApplicationFactory();
+    const gitAppAuth = await APP.authenticateAsApplication();
+    const repoInstallation = await gitAppAuth.apps.getRepoInstallation();
+    const installationId = repoInstallation.data.id;
+    const owner = repoInstallation.data.account.login;
+    const gitHubInstallation = await APP.authenticateAsInstallation(installationId);
     const prId: any = PULL_REQUEST_URL.split('/').pop();
     const pullRequestId = parseInt(prId, 10);
     const body = generateComparisonComment(baseCommit, targetCommit, compareStats);
@@ -36,4 +34,4 @@ export async function pushBenchmarkComparison(baseCommit: any, targetCommit: any
     });
 }
 
-export { createGithubApp };
+export { GithubApplicationFactory };
