@@ -30,10 +30,10 @@ export default class DB {
 
     fetchSnapshots(projectId: number, since: string): Promise<QueryResult> {
         if (since) {
-            return this.pool.query('SELECT * FROM snapshots WHERE "project_id" = $1 and "commit_date" > $2 ORDER BY commit_date, name', [projectId, since])
+            return this.pool.query(`SELECT * FROM snapshots WHERE "project_id" = $1 AND "temporary" = 'f' AND "commit_date" > $2 ORDER BY commit_date, name`, [projectId, since])
         }
 
-        return this.pool.query('SELECT * FROM snapshots WHERE "project_id" = $1 ORDER BY commit_date, name', [projectId])
+        return this.pool.query(`SELECT * FROM snapshots WHERE "project_id" = $1 AND "temporary" = 'f' ORDER BY commit_date, name`, [projectId])
     }
 
     fetchProject(name: string): Promise<QueryResult> {
@@ -41,7 +41,6 @@ export default class DB {
     }
 
     createProject(name: string): Promise<QueryResult> {
-        // TODO: get lastReleaseDate from somewhere...
         return this.pool.query('INSERT INTO projects(name) VALUES ($1) RETURNING *', [name]);
     }
 

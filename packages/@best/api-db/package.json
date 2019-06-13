@@ -11,6 +11,6 @@
     },
     "main": "build/index.js",
     "scripts": {
-        "migrate": "node-pg-migrate -m src/migrations"
+        "migrate:postgres": "node-pg-migrate -m src/postgres/migrations"
     }
 }

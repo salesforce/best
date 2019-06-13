@@ -9,5 +9,5 @@ There is an associated Postgres db which is the only type of database currently 
 In order to run the migrations required for the database you can run the following command:
 
 ```
-yarn migrate up
+yarn migrate:postgres up
 ```
