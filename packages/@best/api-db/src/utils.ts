@@ -1,7 +1,7 @@
 import { ApiDBAdapter } from './types';
 import path from 'path';
 
-const LOCAL_ADAPTERS = ['sql/postgres'];
+const LOCAL_ADAPTERS = ['sql/postgres', 'sql/sqlite'];
 
 // Handles default exports for both ES5 and ES6 syntax
 function req(id: string) {
