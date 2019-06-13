@@ -24,10 +24,10 @@ export abstract class SQLDatabase {
 
     fetchSnapshots(projectId: number, since: string): Promise<SQLQueryResult> {
         if (since) {
-            return this.query(`SELECT * FROM snapshots WHERE "project_id" = $1 AND "temporary" = 'f' AND "commit_date" > $2 ORDER BY commit_date, name`, [projectId, since])
+            return this.query(`SELECT * FROM snapshots WHERE "project_id" = $1 AND "temporary" = '0' AND "commit_date" > $2 ORDER BY commit_date, name`, [projectId, since])
         }
 
-        return this.query(`SELECT * FROM snapshots WHERE "project_id" = $1 AND "temporary" = 'f' ORDER BY commit_date, name`, [projectId])
+        return this.query(`SELECT * FROM snapshots WHERE "project_id" = $1 AND "temporary" = '0' ORDER BY commit_date, name`, [projectId])
     }
 
     fetchProject(name: string): Promise<SQLQueryResult> {
