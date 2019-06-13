@@ -17,45 +17,47 @@ or via a node project (see examples/best-agent-hub)
 The configuration of the hub is an array of hubs categories. Each category represents a set of one or more agents that have the same configuration and hardware characteristics, this must be ensured given that a job to be run in the category, can run in any of the agents, and they should return same results.
 
 ```javascript
-[
-    {
-        category: 'chrome-73-headless', // Required and unique. Is the remote runner in the client best config.
-        remoteRunner: "@best/runner-headless", // Required. The runner that any of the agents should use when running the job. 
-        remoteRunnerConfig: {}, // Required (may be an empty object). The Runner config for the remote runner in the agents.
-        agents: [ // Required. An array of best agent machines were jobs can run interchangeably obtaining the same results. 
-            {
-                host: "http://localhost:5000", // Required. Url used to connect to the agent.
-                options: { path: "/best" }, // Optional. Connection options to the agent.
-            },
-            {
-                host: "http://localhost:5001",
-                options: { path: "/best" },
-            },
-        ]
-    },
-    {
-        category: "selenium-ie11",
-        remoteRunner: "@best/runner-webdriver",
-        remoteRunnerConfig: {
-            "webdriverOptions": {
-                "desiredCapabilities": {
-                    "platform": "WINDOWS",
-                    "browserName": "internet explorer",
-                    "version": "11",
-                    "ignoreZoomSetting": true,
-                    "initialBrowserUrl": "about:blank",
-                    "nativeEvents": false,
-                }
-            }
+{
+    categories: [
+        {
+            category: 'chrome-73-headless', // Required and unique. Is the remote runner in the client best config.
+            remoteRunner: "@best/runner-headless", // Required. The runner that any of the agents should use when running the job. 
+            remoteRunnerConfig: {}, // Required (may be an empty object). The Runner config for the remote runner in the agents.
+            agents: [ // Required. An array of best agent machines were jobs can run interchangeably obtaining the same results. 
+                {
+                    host: "http://localhost:5000", // Required. Url used to connect to the agent.
+                    options: { path: "/best" }, // Optional. Connection options to the agent.
+                },
+                {
+                    host: "http://localhost:5001",
+                    options: { path: "/best" },
+                },
+            ]
         },
-        agents: [ // Required. An array of best agent machines were jobs can run interchangeably obtaining the same results. 
-            {
-                host: "http://127.0.0.1:5002",
-                options: { path: "/best" },
-            }
-        ]
-    }
-];
+        {
+            category: "selenium-ie11",
+            remoteRunner: "@best/runner-webdriver",
+            remoteRunnerConfig: {
+                "webdriverOptions": {
+                    "desiredCapabilities": {
+                        "platform": "WINDOWS",
+                        "browserName": "internet explorer",
+                        "version": "11",
+                        "ignoreZoomSetting": true,
+                        "initialBrowserUrl": "about:blank",
+                        "nativeEvents": false,
+                    }
+                }
+            },
+            agents: [ // Required. An array of best agent machines were jobs can run interchangeably obtaining the same results. 
+                {
+                    host: "http://127.0.0.1:5002",
+                    options: { path: "/best" },
+                }
+            ]
+        }
+    ]
+}
 ```
 
 ## How to use the hub your project

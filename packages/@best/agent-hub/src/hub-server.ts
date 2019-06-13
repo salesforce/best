@@ -1,79 +1,28 @@
 import socketIO, * as SocketIO from 'socket.io';
 import BenchmarkJob from "./BenchmarkJob";
 import ObservableQueue from "./utils/ObservableQueue";
-import { config } from "./hub-config";
-import { Agent } from "./Agent";
-import { loadBenchmarkJob } from "./benchmark-loader";
-import { createAgentManager } from "./AgentManager";
+import { AgentCategory, createAgentManager } from "./AgentManager";
+import { HubApplication } from "./HubApplication";
 
-const incomingQueue = new ObservableQueue<BenchmarkJob>();
-const readyQueue = new ObservableQueue<BenchmarkJob>();
-
-const agentsManager = createAgentManager(config);
-
-agentsManager.on('idleagent', (agent: Agent) => {
-    for (const job of readyQueue) {
-        if (agent.canRunJob(job!)) {
-            readyQueue.remove(job!);
-            agent.runJob(job!);
-            break;
-        }
-    }
-});
-
-incomingQueue.on('item-added', (job: BenchmarkJob) => {
-    loadBenchmarkJob(job)
-        .then((resolvedJob: BenchmarkJob) => {
-            incomingQueue.remove(resolvedJob);
-            readyQueue.push(resolvedJob);
-        })
-        .catch((err: any) => {
-            incomingQueue.remove(job);
-            // @todo: move to the error queue for accounting process.
-            console.log(`Error while processing job with signature: "${job.benchmarkSignature}"` , err);
-        });
-});
-
-readyQueue.on('item-added', (job: BenchmarkJob) => {
-    console.log("Job is ready to be processed", job.benchmarkSignature);
-
-    const agent: Agent | null = agentsManager.getIdleAgentForJob(job);
-
-    if (agent !== null) {
-        readyQueue.remove(job);
-        agent.runJob(job);
-    } else {
-        job.socketConnection.emit('benchmark_enqueued', { pending: readyQueue.size - 1 });
-    }
-});
-
-function setupConnection(socket: SocketIO.Socket) {
-    // @todo: define the types for the data.
-    socket.on('benchmark_task', (data: any) => {
-        const job = new BenchmarkJob({
-            ...data,
-            socket
-        });
-
-        if (agentsManager.existAgentForJob(job)) {
-            socket.on('disconnect', () => {
-                incomingQueue.remove(job);
-                readyQueue.remove(job);
-            });
-
-            incomingQueue.push(job);
-        } else {
-            // there is no agent to run this job
-            socket.emit('benchmark_error', 'There is no agent in the hub to run this job.');
-            socket.disconnect(true);
-        }
-    });
+export interface HubConfig {
+    categories: AgentCategory[],
 }
 
-export async function runHub(server: Express.Application) {
-    const socketServer: SocketIO.Server = socketIO(server, { path: '/hub' });
+function createHubApplication(config: HubConfig): HubApplication {
+    const incomingQueue = new ObservableQueue<BenchmarkJob>();
+    const readyQueue = new ObservableQueue<BenchmarkJob>();
 
-    socketServer.on('connect', setupConnection);
+    const agentsManager = createAgentManager(config.categories);
+
+    return new HubApplication(incomingQueue, readyQueue, agentsManager);
+}
+
+
+export function runHub(server: Express.Application, hubConfig: HubConfig) {
+    const socketServer: SocketIO.Server = socketIO(server, { path: '/hub' });
+    const hub: HubApplication = createHubApplication(hubConfig);
+
+    socketServer.on('connect', hub.handleIncomingSocketConnection);
 }
 
 export default { runHub };

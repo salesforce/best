@@ -1,11 +1,23 @@
 import express from 'express';
-import { runHub } from '../hub-server';
+import { HubConfig, runHub } from '../hub-server';
 import { readFileSync } from 'fs';
 const PORT = process.env.PORT || 5000;
 const SSL_PFX_FILE = process.env.SSL_PFX_FILE;
 const SSL_PFX_PASSPHRASE = process.env.SSL_PFX_PASSPHRASE;
+const DEFAULT_CONFIG = getDefaultConfig(process.env.CONFIG);
 
-export function run() {
+function getDefaultConfig(configAsJSON?: string): HubConfig {
+    const minimumConfig = { categories: [] };
+    let resultConfig = {};
+
+    if (configAsJSON) {
+        resultConfig = JSON.parse(configAsJSON);
+    }
+
+    return Object.assign({}, minimumConfig, resultConfig);
+}
+
+export function run(config?: HubConfig) {
     const app = express();
     let server;
 
@@ -21,8 +33,8 @@ export function run() {
 
     server.listen(PORT);
 
-    app.get('/', (req, res) => res.send('BEST agent running!'));
-    process.stdout.write(`Best agent listening in port ${PORT}... \n\n`);
+    app.get('/', (req, res) => res.send('BEST agent hub running!'));
+    process.stdout.write(`Best agent hub listening in port ${PORT}... \n\n`);
 
-    runHub(server);
+    runHub(server, config ? config : DEFAULT_CONFIG);
 }

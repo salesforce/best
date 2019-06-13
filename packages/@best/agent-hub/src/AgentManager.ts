@@ -8,14 +8,15 @@ interface AgentConnection {
         path: string
     }
 }
-interface AgentCategory {
+
+export interface AgentCategory {
     category: string,
     remoteRunner: string,
     remoteRunnerConfig?: object,
     agents: AgentConnection[]
 }
 
-class AgentManager extends EventEmitter{
+export class AgentManager extends EventEmitter {
     private agents: Agent[] = [];
 
     constructor(agents: Agent[]) {
@@ -32,6 +33,7 @@ class AgentManager extends EventEmitter{
     }
 
     getIdleAgentForJob(job: BenchmarkJob): Agent | null {
+        // @todo: organize Agents by category.
         const idleAgentsForJob = this.agents.filter(agent => agent.isIdle() && agent.canRunJob(job));
 
         return idleAgentsForJob.length ? idleAgentsForJob[0] : null;
@@ -41,9 +43,10 @@ class AgentManager extends EventEmitter{
         return this.agents.some((agent: Agent) => agent.canRunJob(job));
     }
 }
-export function createAgentManager(hubConfig: AgentCategory[]) {
+
+export function createAgentManager(categoriesConfig: AgentCategory[]): AgentManager {
     const agents: Agent[] = [];
-    hubConfig.forEach((categoryConfig: AgentCategory) => {
+    categoriesConfig.forEach((categoryConfig: AgentCategory) => {
         const { category, remoteRunner, remoteRunnerConfig = {} } = categoryConfig;
 
         categoryConfig.agents.forEach((agentConnection: AgentConnection) => {
