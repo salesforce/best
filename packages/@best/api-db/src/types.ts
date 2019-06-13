@@ -28,7 +28,7 @@ export interface Snapshot extends TemporarySnapshot {
     updatedAt: string;
 }
 
-export class ApiDB {
+export class ApiDBAdapter {
     constructor(config: any) {}
 
     fetchProjects(): Promise<Project[]> {

@@ -1,6 +1,6 @@
 export default {
     apiDatabase: {
-        adapter: 'postgres',
+        adapter: 'sql/postgres',
         host: 'localhost',
         user: process.env.USER,
         password: '',
