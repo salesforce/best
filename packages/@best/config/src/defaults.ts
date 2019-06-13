@@ -1,7 +1,7 @@
 import { cacheDirectory } from '@best/utils';
-import { BestCliOptions } from "./types";
+import { BestBuildOptions } from "./types";
 
-const defaultOptions: BestCliOptions = {
+const defaultOptions: BestBuildOptions = {
     cache: true,
     cacheDirectory: cacheDirectory(),
     useHttp: true,

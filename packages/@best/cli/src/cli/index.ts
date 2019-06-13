@@ -1,25 +1,26 @@
-import * as args from './args';
+import { normalize, usage, options, docs, check } from './args';
 import Output from './output';
 import yargs from 'yargs';
 import rimraf from 'rimraf';
-import { getConfigs } from '@best/config';
+import { getConfigs, BestCliOptions } from '@best/config';
 import { preRunMessager, errorMessager } from '@best/messager';
 import { runBest } from '../run_best';
 import { runCompare } from '../run_compare';
 
-function buildArgs(maybeArgv: string[]) {
-    const argsv = yargs(maybeArgv || process.argv.slice(2))
-        .usage(args.usage)
+export function buildArgs(maybeArgv?: string[]): BestCliOptions {
+    const parsedArgs = yargs(maybeArgv || process.argv.slice(2))
+        .usage(usage)
         .alias('help', 'h')
-        .options(args.options)
-        .epilogue(args.docs)
-        .check(args.check)
+        .options(options)
+        .epilogue(docs)
+        .check(check)
         .version(false).argv;
-    return argsv;
+
+    return normalize(parsedArgs);
 }
 
-function getProjectListFromCLIArgs(argsCLI: any, project: string): string[] {
-    const projects = argsCLI.projects ? argsCLI.projects : [];
+function getProjectListFromCLIArgs(argsCLI: BestCliOptions, project?: string): string[] {
+    const projects = argsCLI.projects;
 
     if (project) {
         projects.push(project);
@@ -32,7 +33,7 @@ function getProjectListFromCLIArgs(argsCLI: any, project: string): string[] {
     return projects;
 }
 
-export async function run(maybeArgv: string[], project: string) {
+export async function run(maybeArgv?: string[], project?: string) {
     try {
         const argsCLI = buildArgs(maybeArgv);
         const projects = getProjectListFromCLIArgs(argsCLI, project);
@@ -46,7 +47,7 @@ export async function run(maybeArgv: string[], project: string) {
     }
 }
 
-export async function runCLI(argsCLI: any, projects: string[]) {
+export async function runCLI(argsCLI: BestCliOptions, projects: string[]) {
     const outputStream: any = process.stdout;
     let rawConfigs;
     let results;
@@ -94,3 +95,5 @@ export async function runCLI(argsCLI: any, projects: string[]) {
 
     return true;
 }
+
+export { BestCliOptions };

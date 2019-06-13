@@ -5,6 +5,9 @@ import { replacePathSepForRegex } from '@best/regex-util';
 import DEFAULT_CONFIG from './defaults';
 import { addGitInformation } from './git';
 import { PACKAGE_JSON, BEST_CONFIG } from './constants';
+import { BestCliOptions } from './types';
+
+export { BestCliOptions };
 
 const TARGET_COMMIT = process.env.TARGET_COMMIT;
 const BASE_COMMIT = process.env.BASE_COMMIT;
@@ -335,7 +338,7 @@ export async function readConfig(argsCLI: any, packageRoot: string, parentConfig
     return { configPath, globalConfig, projectConfig };
 }
 
-export async function getConfigs(projectsFromCLIArgs: string[], argv: string[]) {
+export async function getConfigs(projectsFromCLIArgs: string[], argv: BestCliOptions) {
     let globalConfig;
     let configs: any = [];
     let projects = projectsFromCLIArgs;

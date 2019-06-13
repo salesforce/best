@@ -1,4 +1,5 @@
 import { Options } from "yargs";
+import { BestCliOptions } from "@best/config";
 
 export const check = () => {
     // TODO: Implement checks
@@ -80,3 +81,22 @@ export const options: { [key: string]: Options } = {
         type: 'boolean',
     }
 };
+
+export function normalize(args: { [x: string]: any; _: string[]; $0: string }): BestCliOptions {
+    const { _, help, clearCache, clearResults, gitIntegration, useHttp, externalStorage, runner, runnerConfig, config, projects, iterations, compareStats } = args;
+    return {
+        _,
+        help: Boolean(help),
+        clearCache: Boolean(clearCache),
+        clearResults: Boolean(clearResults),
+        useHttp: Boolean(useHttp),
+        gitIntegration,
+        externalStorage,
+        runner,
+        runnerConfig: runnerConfig ? JSON.parse(runnerConfig): {},
+        config,
+        projects: projects || [],
+        iterations: parseInt(iterations, 10),
+        compareStats
+    };
+}

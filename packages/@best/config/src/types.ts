@@ -1,4 +1,4 @@
-export interface BestCliOptions {
+export interface BestBuildOptions {
     [key: string]: any,
     cache: boolean,
     cacheDirectory: string,
@@ -28,3 +28,19 @@ export interface BestCliOptions {
     histogramMaxWidth: number,
     rootDir?: string
 }
+
+export interface BestCliOptions {
+    _: string[],
+    help: boolean,
+    clearCache: boolean,
+    clearResults: boolean,
+    gitIntegration: string | undefined,
+    useHttp: boolean,
+    externalStorage: string | undefined,
+    runner: string,
+    runnerConfig: { [x:string]: any },
+    config: string | undefined,
+    projects: string[],
+    iterations: number,
+    compareStats: string[] | undefined
+};
