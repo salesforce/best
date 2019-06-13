@@ -35,11 +35,11 @@ export abstract class SQLDatabase {
     }
 
     createProject(name: string): Promise<SQLQueryResult> {
-        return this.query('INSERT INTO projects(name) VALUES ($1)', [name])
+        return this.query('INSERT INTO projects("name") VALUES ($1)', [name])
     }
 
     createSnapshot(snapshot: TemporarySnapshot, projectId: number): Promise<SQLQueryResult> {
         const values = [snapshot.name, normalizeMetrics(snapshot.metrics), snapshot.environmentHash, snapshot.similarityHash, snapshot.commit, snapshot.commitDate, snapshot.temporary, projectId]
-        return this.query('INSERT INTO snapshots(name, metrics, environment_hash, similarity_hash, commit, commit_date, temporary, project_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', values)
+        return this.query('INSERT INTO snapshots("name", "metrics", "environment_hash", "similarity_hash", "commit", "commit_date", "temporary", "project_id") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', values)
     }
 }

@@ -22,21 +22,21 @@ export class SQLAdapter extends ApiDBAdapter {
     }
 
     async saveSnapshots(snapshots: TemporarySnapshot[], projectName: string): Promise<boolean> {
-        let projectResult = await this.db.fetchProject(projectName)
-
-        if (projectResult.rows.length < 1) {
-            await this.db.createProject(projectName)
-            projectResult = await this.db.fetchProject(projectName)
-        }
-
-        const projectId = projectResult.rows[0].id
-
         try {
+            let projectResult = await this.db.fetchProject(projectName)
+
+            if (projectResult.rows.length < 1) {
+                await this.db.createProject(projectName)
+                projectResult = await this.db.fetchProject(projectName)
+            }
+
+            const projectId = projectResult.rows[0].id
+
             await Promise.all(snapshots.map(async (snapshot) => {
                 return this.db.createSnapshot(snapshot, projectId)
             }))
         } catch (err) {
-            console.error('[API-DB] Could not save results', err)
+            console.error('[API-DB] Could not save results', err, err.message)
             return false
         }
 
