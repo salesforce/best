@@ -1,7 +1,6 @@
 {
     "name": "@best/api-db",
     "version": "0.7.1",
-    "author": "Jason Silberman",
     "dependencies": {
         "node-pg-migrate": "^3.21.1",
         "pg": "^7.11.0"
