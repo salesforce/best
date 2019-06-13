@@ -1,7 +1,5 @@
 /* global Plotly */
 
-let PLOT;
-
 export function buildLayout(title, isFirst) {
     return {
         height: isFirst ? 400 * 1.15 : 400,
@@ -127,9 +125,8 @@ export async function drawPlot(element, trends, layout) {
         displayModeBar: false,
         scrollZoom: false,
         showTips: false,
+        responsive: true
     });
-
-    PLOT = element;
 
     return element.layout;
 }
@@ -170,18 +167,3 @@ export function relayout(element, update) {
 
     return element.layout;
 }
-
-// let debounceResize = false;
-// window.onresize = function () {
-//     if (!debounceResize) {
-//         debounceResize = true;
-//         // eslint-disable-next-line @lwc/lwc/no-async-operation
-//         setTimeout(() => {
-//             // eslint-disable-next-line lwc/no-raf, @lwc/lwc/no-async-operation
-//             window.requestAnimationFrame(() => {
-//                 Plotly.Plots.resize(PLOT);
-//                 debounceResize = false;
-//             });
-//         }, 100);
-//     }
-// };
