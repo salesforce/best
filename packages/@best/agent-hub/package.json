@@ -9,7 +9,7 @@
   ],
   "main": "build/cli/index.js",
   "dependencies": {
-    "@best/runner": "0.7.1",
+    "@best/runner-remote": "0.7.1",
     "@best/utils": "0.7.1",
     "chalk": "~2.4.2",
     "express": "~4.16.2",

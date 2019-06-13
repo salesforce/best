@@ -5,7 +5,7 @@
     "outDir": "build"
   },
   "references": [
-    { "path": "../runner" },
+    { "path": "../runner-remote" },
     { "path": "../utils" }
   ]
 }
