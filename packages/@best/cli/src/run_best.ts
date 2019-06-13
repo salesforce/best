@@ -3,6 +3,7 @@ import { buildBenchmarks } from '@best/builder';
 import { runBenchmarks } from '@best/runner';
 import { BuildStateMessager, RunnerMessager } from '@best/messager';
 import { storeBenchmarkResults } from '@best/store';
+import { saveBenchmarkSummaryInDB } from '@best/api-db';
 import { analyzeBenchmarks } from '@best/analyzer';
 import path from 'path';
 import micromatch from 'micromatch';
@@ -108,6 +109,7 @@ export async function runBest(globalConfig: any, configs: any, outputStream: any
 
     await analyzeBenchmarks(benchmarkBundleResults);
     await storeBenchmarkResults(benchmarkBundleResults, globalConfig);
+    await saveBenchmarkSummaryInDB(benchmarkBundleResults, globalConfig);
 
     return benchmarkBundleResults;
 }

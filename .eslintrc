@@ -94,6 +94,14 @@
             "env": {
                 "browser": true
             }
+        },
+        {
+            "files": [
+                "**/@best/api-db/**/migrations/**"
+            ],
+            "rules": {
+                "@typescript-eslint/camelcase": "off"
+            }
         }
     ]
 }

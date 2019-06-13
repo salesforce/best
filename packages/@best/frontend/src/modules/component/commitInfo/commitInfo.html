@@ -1,0 +1,26 @@
+<template>
+    <div class="commit-info" style={styleTag}>
+        <div class="container">
+            <template if:true={hasCommitInfo}>
+                <section class="actions">
+                    <button class="close" onclick={close}>Close</button>
+                    <button class="compare">Compare</button>
+                </section>
+                <section class="info">
+                    <p class="commit">{commitInfo.fullCommit}</p>
+                    <p class="user">@{commitInfo.username} <img class="profile-image" src={commitInfo.profileImage} /></p>
+                    <p class="title">{commitInfo.title}</p>
+                    <p class="body">{commitInfo.body}</p>
+                </section>
+                <section class="links">
+                    <a>View commit on GitHub</a>
+                </section>
+            </template>
+            <template if:false={hasCommitInfo}>
+                <div class="loading">
+                    <p>Loading commit ({commit}) info&hellip;</p>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

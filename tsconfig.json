@@ -18,7 +18,9 @@
     { "path": "./packages/@best/runtime" },
     { "path": "./packages/@best/store" },
     { "path": "./packages/@best/store-aws" },
-    { "path": "./packages/@best/store-fs" }
+    { "path": "./packages/@best/store-fs" },
+    { "path": "./packages/@best/frontend" },
+    { "path": "./packages/@best/api-db" }
 ],
   "exclude": [
     "node_modules/**"

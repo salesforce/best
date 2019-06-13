@@ -1,0 +1,60 @@
+:host {
+    position: absolute;
+}
+
+.commit-info {
+    position: absolute;
+    z-index: 1;
+    margin-top: -30px;
+    display: inline-block;
+    min-width: 400px;
+}
+
+.container {
+    /* position: relative; */
+    /* right: 0; */
+    /* margin-left: -50%; */
+    transform: translateX(-50%);
+    /* display: inline-block; */
+    /* margin-left: -50%; */
+    padding: 15px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    background: #fff;
+}
+
+.loading p {
+    margin: 0;
+}
+
+.actions .close {
+    float: right;
+}
+
+.info p {
+    margin: 8px 0;
+}
+
+.info .commit {
+    font-family: monospace;
+}
+
+.info .user {
+    font-weight: bold;
+    font-size: 15px;
+    position: relative;
+}
+
+.info .title {
+    font-weight: bold;
+    font-size: 18px;
+    line-height: normal;
+}
+
+.links {
+    text-align: right;
+}
+
+.links a {
+    color: #00a3ff;
+}

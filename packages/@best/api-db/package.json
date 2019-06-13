@@ -1,0 +1,16 @@
+{
+    "name": "@best/api-db",
+    "version": "0.7.1",
+    "author": "Jason Silberman",
+    "dependencies": {
+        "node-pg-migrate": "^3.21.1",
+        "pg": "^7.11.0"
+    },
+    "devDependencies": {
+        "@types/pg": "^7.4.14"
+    },
+    "main": "build/index.js",
+    "scripts": {
+        "migrate:postgres": "node-pg-migrate -m src/postgres/migrations"
+    }
+}
