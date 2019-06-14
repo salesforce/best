@@ -7,11 +7,13 @@ const REPO_NAME = process.env.REPO_NAME;
 
 export async function pushBenchmarkComparison(baseCommit: any, targetCommit: any, compareStats: any, { gitRepository }: any) {
     if (!isCI) {
-        // throw new Error('GitIntegration is only supposed to run on a CI environment');
         console.log('[NOT A CI] - The output will not be pushed.\n');
         console.log(generateComparisonComment(baseCommit, targetCommit, compareStats), '\n');
         return;
     }
+
+    console.log('beginning GH stuff...');
+
     if (PULL_REQUEST_URL === undefined || REPO_NAME === undefined) {
         throw new Error('PULL_REQUEST_URL and REPO_NAME enviroment variable is needed');
     }
