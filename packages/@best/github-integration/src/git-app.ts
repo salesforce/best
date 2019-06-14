@@ -24,8 +24,8 @@ export interface GithubFactoryConfig {
     certificate: string;
     userToken: string;
 }
-// -- Utils -----------------------------------------------------------------------------
 
+// -- Utils -----------------------------------------------------------------------------
 function stripQuotes(str = '') {
     const q = "'";
     return str[0] === q && str[str.length - 1] === q ? str.slice(1, -1) : str;
@@ -59,7 +59,6 @@ function generateJwt(id: string, cert: string) {
 }
 
 // -- Public API & exports --------------------------------------------------------------
-
 class GithubFactory {
     id?: string;
     cert?: string;
