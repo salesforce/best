@@ -12,8 +12,6 @@ export async function pushBenchmarkComparison(baseCommit: any, targetCommit: any
         return;
     }
 
-    console.log('beginning GH stuff...');
-
     if (PULL_REQUEST_URL === undefined || REPO_NAME === undefined) {
         throw new Error('PULL_REQUEST_URL and REPO_NAME enviroment variable is needed');
     }
