@@ -1837,22 +1837,29 @@
     once "^1.4.0"
     universal-user-agent "^2.1.0"
 
-"@octokit/rest@^14.0.9":
-  version "14.0.9"
-  resolved "http://npm.lwcjs.org/@octokit/rest/-/rest-14.0.9/d5e0a00dcb78901dd7b2ef852acfc0aea7c479ef.tgz#d5e0a00dcb78901dd7b2ef852acfc0aea7c479ef"
-  integrity sha512-irP9phKfTXEZIcW2R+VNCtGHZJrXMWmSYp6RRfFn4BtAqtDRXF5z9JxCEQlAhNBf6X1koNi5k49tIAAAEJNlVQ==
-  dependencies:
-    before-after-hook "^1.1.0"
-    debug "^3.1.0"
-    is-array-buffer "^1.0.0"
-    is-stream "^1.1.0"
-    lodash "^4.17.4"
-    url-template "^2.0.8"
-
 "@octokit/rest@^16.16.0":
   version "16.27.3"
   resolved "http://npm.lwcjs.org/@octokit/rest/-/rest-16.27.3/20ad5d0c7043364d1e1f72fa74f825c181771fc0.tgz#20ad5d0c7043364d1e1f72fa74f825c181771fc0"
   integrity sha512-WWH/SHF4kus6FG+EAfX7/JYH70EjgFYa4AAd2Lf1hgmgzodhrsoxpXPSZliZ5BdJruZPMP7ZYaPoTrYCCKYzmQ==
+  dependencies:
+    "@octokit/request" "^4.0.1"
+    "@octokit/request-error" "^1.0.2"
+    atob-lite "^2.0.0"
+    before-after-hook "^1.4.0"
+    btoa-lite "^1.0.0"
+    deprecation "^2.0.0"
+    lodash.get "^4.4.2"
+    lodash.set "^4.3.2"
+    lodash.uniq "^4.5.0"
+    octokit-pagination-methods "^1.1.0"
+    once "^1.4.0"
+    universal-user-agent "^2.0.0"
+    url-template "^2.0.8"
+
+"@octokit/rest@^16.28.1":
+  version "16.28.1"
+  resolved "https://registry.npmjs.org/@octokit/rest/-/rest-16.28.1.tgz#a10c3d4fe61e994878d66a4c12b9923b18548236"
+  integrity sha512-9H/5F0f2bSVhk78ypu/A9dkK5GCH/aI8CxRJ0L8JU/XEYNIYozxqD6HVC7shsofrCfR61YORfjTE+GxfZ/wasQ==
   dependencies:
     "@octokit/request" "^4.0.1"
     "@octokit/request-error" "^1.0.2"
@@ -3014,7 +3021,7 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-before-after-hook@^1.1.0, before-after-hook@^1.4.0:
+before-after-hook@^1.4.0:
   version "1.4.0"
   resolved "http://npm.lwcjs.org/before-after-hook/-/before-after-hook-1.4.0/2b6bf23dca4f32e628fd2747c10a37c74a4b484d.tgz#2b6bf23dca4f32e628fd2747c10a37c74a4b484d"
   integrity sha512-l5r9ir56nda3qu14nAXIlyq1MmUSs0meCIaFAh8HwkFwP1F8eToOuS3ah2VAHHcY04jaYD7FpJC5JTXHYRbkzg==
@@ -6834,11 +6841,6 @@ is-accessor-descriptor@^1.0.0:
   dependencies:
     kind-of "^6.0.0"
 
-is-array-buffer@^1.0.0:
-  version "1.0.1"
-  resolved "http://npm.lwcjs.org/is-array-buffer/-/is-array-buffer-1.0.1/a4fac0cf325c1fad3f713e2b109eb241a907cf27.tgz#a4fac0cf325c1fad3f713e2b109eb241a907cf27"
-  integrity sha512-lj035IqdAwsodoRGs9/8+Kn3HPoz9CTuZbcw63afugWonxigvUVeHY5d6Ve1O+s1N3RCk7txo2TIWQLbU0SuNA==
-
 is-arrayish@^0.2.1:
   version "0.2.1"
   resolved "http://npm.lwcjs.org/is-arrayish/-/is-arrayish-0.2.1/77c99840527aa8ecb1a8ba697b80645a7a926a9d.tgz#77c99840527aa8ecb1a8ba697b80645a7a926a9d"
@@ -8133,7 +8135,7 @@ lodash.zip@^4.2.0:
   resolved "http://npm.lwcjs.org/lodash.zip/-/lodash.zip-4.2.0/ec6662e4896408ed4ab6c542a3990b72cc080020.tgz#ec6662e4896408ed4ab6c542a3990b72cc080020"
   integrity sha1-7GZi5IlkCO1KtsVCo5kLcswIACA=
 
-lodash@4.17.11, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.1, lodash@~4.17.0:
+lodash@4.17.11, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.3, lodash@^4.17.5, lodash@^4.2.1, lodash@~4.17.0:
   version "4.17.11"
   resolved "http://npm.lwcjs.org/lodash/-/lodash-4.17.11/b39ea6229ef607ecd89e2c8df12536891cac9b8d.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
