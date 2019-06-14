@@ -22,10 +22,9 @@ function generateDetailsMarkdown({ targetCommit, baseCommit, tables }: any) {
 }
 
 function template({ targetCommit, baseCommit, tables }: any) {
-    const summary = json2md([{ h1: 'Benchmark results ' }]);
     const details = generateDetailsMarkdown({ targetCommit, baseCommit, tables });
 
-    return `${summary}\n<details><summary>Click for full results</summary>\n&nbsp;\n${details}</details>`;
+    return details;
 }
 
 function generateRows(stats: any, name = '', rows = []) {
