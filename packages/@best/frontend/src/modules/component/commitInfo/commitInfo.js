@@ -1,5 +1,8 @@
 import { LightningElement, api, track, wire } from 'lwc';
 
+import { connectStore, store } from 'store/store';
+import { fetchCommitInfoIfNeeded } from 'store/actions';
+
 export default class ComponentCommitInfo extends LightningElement {
     @api commit;
     @api top;
@@ -7,14 +10,21 @@ export default class ComponentCommitInfo extends LightningElement {
 
     @track commitInfo = {};
 
+    @wire(connectStore, { store })
+    storeChanged({ commitInfo }) {
+        this.commitInfo = commitInfo[this.commit];
+    }
+
+    get hasError() {
+        return this.commitInfo.hasOwnProperty('reason');
+    }
+
     get hasCommitInfo() {
-        return Object.keys(this.commitInfo).length > 0;
+        return (this.commitInfo && Object.keys(this.commitInfo).length > 0);
     }
 
     get styleTag() {
-        const style = `transform: translate(${this.left}px, ${this.top}px)`;
-        console.log(style)
-        return style;
+        return `transform: translate(${this.left}px, ${this.top}px)`;
     }
 
     close() {
@@ -25,17 +35,9 @@ export default class ComponentCommitInfo extends LightningElement {
         }))
     }
 
-    connectedCallback() {
-        console.log('find commit info for', this.commit);
-        // kick off action to request commit info from github
-
-        // mocking for now...
-        this.commitInfo = {
-            fullCommit: '05d493ec074192bf9507084debb68060b5ab982d',
-            username: 'pmdartus',
-            profileImage: '',
-            title: 'docs(style-compiler): update README (#1265)',
-            body: `* docs(style-compiler): update README to reflect latest API`
+    renderedCallback() {
+        if (!this.hasCommitInfo) {
+            store.dispatch(fetchCommitInfoIfNeeded(this.commit));
         }
     }
 }

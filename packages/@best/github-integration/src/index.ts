@@ -18,7 +18,7 @@ export async function pushBenchmarkComparison(baseCommit: any, targetCommit: any
 
     const APP = GithubApplicationFactory();
     const gitAppAuth = await APP.authenticateAsApplication();
-    const repoInstallation = await gitAppAuth.apps.getRepoInstallation();
+    const repoInstallation = await gitAppAuth.apps.getRepoInstallation(gitRepository);
     const installationId = repoInstallation.data.id;
     const owner = repoInstallation.data.account.login;
     const gitHubInstallation = await APP.authenticateAsInstallation(installationId);

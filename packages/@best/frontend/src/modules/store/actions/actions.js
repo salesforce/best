@@ -7,7 +7,8 @@ import {
     VIEW_BENCHMARKS_CHANGED,
     VIEW_METRICS_CHANGED,
     VIEW_ZOOM_CHANGED,
-    VIEW_RESET
+    VIEW_RESET,
+    COMMIT_INFO_RECEIVED
 } from 'store/shared';
 
 import * as api from 'store/api';
@@ -109,4 +110,35 @@ export function zoomChanged(zoom) {
 
 export function resetView() {
     return { type: VIEW_RESET };
+}
+
+/*
+ * COMMIT INFO
+*/
+
+function normalizeCommit(commit) {
+    return commit.slice(0, 7);
+}
+
+function shouldFetchCommitInfo(state, commit) {
+    return !state.commitInfo.hasOwnProperty(normalizeCommit(commit));
+}
+
+function commitInfoReceived(commit, commitInfo) {
+    return { type: COMMIT_INFO_RECEIVED, commit: normalizeCommit(commit), commitInfo };
+}
+
+function fetchCommitInfo(commit) {
+    return async (dispatch) => {
+        const commitInfo = await api.fetchCommitInfo(commit);
+        dispatch(commitInfoReceived(commit, commitInfo));
+    }
+}
+
+export function fetchCommitInfoIfNeeded(commit) {
+    return (dispatch, getState) => {
+        if (shouldFetchCommitInfo(getState(), commit)) {
+            dispatch(fetchCommitInfo(commit));
+        }
+    }
 }

@@ -1,24 +1,34 @@
 <template>
     <div class="commit-info" style={styleTag}>
         <div class="container">
+            <section class="actions">
+                <button class="close" onclick={close}>Close</button>
+                <button class="compare">Compare</button>
+            </section>
             <template if:true={hasCommitInfo}>
-                <section class="actions">
-                    <button class="close" onclick={close}>Close</button>
-                    <button class="compare">Compare</button>
-                </section>
-                <section class="info">
-                    <p class="commit">{commitInfo.fullCommit}</p>
-                    <p class="user">@{commitInfo.username} <img class="profile-image" src={commitInfo.profileImage} /></p>
-                    <p class="title">{commitInfo.title}</p>
-                    <p class="body">{commitInfo.body}</p>
-                </section>
-                <section class="links">
-                    <a>View commit on GitHub</a>
-                </section>
+                <template if:true={hasError}>
+                    <div class="error no-good">
+                        <p class="title">Error!</p>
+                        <p class="message">Could not find commit info for <span class="commit">{commit}</span>.</p>
+                        <p class="message">Either the GitHub integration is not enabled or the commit is not in GitHub yet.</p>
+                    </div>
+                </template>
+                <template if:false={hasError}>
+                    <section class="info">
+                        <p class="commit">{commitInfo.fullCommit}</p>
+                        <p class="user"><img class="profile-image" src={commitInfo.profileImage} /><span class="username">@{commitInfo.username}</span></p>
+                        <!-- <p class="title">{commitInfo.title}</p> -->
+                        <p class="body">{commitInfo.body}</p>
+                    </section>
+                    <section class="links">
+                        <a target="_blank" href={commitInfo.url}>View commit on GitHub</a>
+                    </section>
+                </template>
             </template>
             <template if:false={hasCommitInfo}>
-                <div class="loading">
-                    <p>Loading commit ({commit}) info&hellip;</p>
+                <div class="loading no-good">
+                    <p class="title">Loading&hellip;</p>
+                    <p class="message">Looking for info for <span class="commit">{commit}</span>.</p>
                 </div>
             </template>
         </div>

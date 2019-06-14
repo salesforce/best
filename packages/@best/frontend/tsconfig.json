@@ -6,6 +6,7 @@
   },
   "references": [
     { "path": "../api-db" },
-    { "path": "../config" }
+    { "path": "../config" },
+    { "path": "../github-integration" }
   ]
 }

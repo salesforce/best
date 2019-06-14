@@ -83,8 +83,11 @@ class GithubFactory {
             throw new Error('CERT and ID are required to authenticated as an App');
         }
 
-        const github = new GitHubApi(gitOpts);
-        github.authenticate({ type: 'app', token: generateJwt(id, cert) });
+        const token = generateJwt(id, cert);
+        const github = new GitHubApi({
+            ...gitOpts,
+            auth: `Bearer ${token}`
+        });
         return github;
     }
 
@@ -94,8 +97,10 @@ class GithubFactory {
         }
 
         const token = await this.createInstallationToken(installationId, gitOpts);
-        const github = new GitHubApi(gitOpts);
-        github.authenticate({ type: 'token', token });
+        const github = new GitHubApi({
+            ...gitOpts,
+            auth: `token ${token}`
+        });
         return github;
     }
 
@@ -130,8 +135,6 @@ export default function GithubApplicationFactory(
         const agent = new https.Agent({ rejectUnauthorized: false });
         githubClientOptions = { agent, baseUrl };
     }
-
-    console.log('creating git app', {applicationId, certificate, userToken})
 
     return new GithubFactory({ applicationId, certificate, userToken }, githubClientOptions);
 };
