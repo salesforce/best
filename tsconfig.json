@@ -7,6 +7,7 @@
     { "path": "./packages/@best/cli" },
     { "path": "./packages/@best/compare" },
     { "path": "./packages/@best/config" },
+    { "path": "./packages/@best/console-stream" },
     { "path": "./packages/@best/github-integration" },
     { "path": "./packages/@best/messager" },
     { "path": "./packages/@best/regex-util" },

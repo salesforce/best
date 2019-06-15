@@ -97,4 +97,4 @@ export function ensureNoDuplicateConfigs(parsedConfigs: any, projects: string[])
             configPathSet.add(configPath);
         }
     }
-};
+}

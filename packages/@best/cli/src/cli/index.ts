@@ -3,10 +3,10 @@ import Output from './output';
 import yargs from 'yargs';
 import rimraf from 'rimraf';
 import { getConfigs, BestCliOptions } from '@best/config';
-import { preRunMessager, errorMessager } from '@best/messager';
+import { OutputStream } from '@best/console-stream';
+import { logError } from "@best/utils";
 import { runBest } from '../run_best';
 import { runCompare } from '../run_compare';
-import { Stream } from 'stream';
 import { ProjectConfigs, ProjectConfig } from '@best/config/build/types';
 
 export function buildArgs(maybeArgv?: string[]): BestCliOptions {
@@ -42,7 +42,7 @@ export async function run(maybeArgv?: string[], project?: string) {
         await runCLI(argsCLI, projects);
     } catch (error) {
         const errParts: any = error.stack ? error.stack.split('\n') : ['unknown', 'unknown'];
-        errorMessager.print(errParts.shift());
+        logError(errParts.shift());
         console.warn(errParts.join('\n'));
         process.exit(1);
         throw error;
@@ -50,15 +50,15 @@ export async function run(maybeArgv?: string[], project?: string) {
 }
 
 export async function runCLI(argsCLI: BestCliOptions, projects: string[]) {
-    const outputStream: Stream = process.stdout;
+    const outputStream = new OutputStream(process.stdout);
     let projectConfigs: ProjectConfigs;
     let results;
 
     try {
-        preRunMessager.print('Looking for Best configurations...', outputStream);
+        outputStream.writeln('Looking for Best configurations...');
         projectConfigs = await getConfigs(projects, argsCLI);
     } finally {
-        preRunMessager.clear(outputStream);
+        // outputStream.clearAll();
     }
 
     const { globalConfig, configs } = projectConfigs;
@@ -66,7 +66,7 @@ export async function runCLI(argsCLI: BestCliOptions, projects: string[]) {
     if (argsCLI.clearCache) {
         configs.forEach((config : ProjectConfig) => {
             rimraf.sync(config.cacheDirectory);
-            process.stdout.write(`Cleared ${config.cacheDirectory}\n`);
+            outputStream.writeln(`Cleared ${config.cacheDirectory}`);
         });
         return process.exit(0);
     }
@@ -79,10 +79,10 @@ export async function runCLI(argsCLI: BestCliOptions, projects: string[]) {
         }
     } else {
         if (argsCLI.clearResults) {
-            preRunMessager.print('Clearing previous benchmark results...', outputStream);
+            outputStream.writeln('Clearing previous benchmark results...');
             configs.forEach((config: any) => {
                 rimraf.sync(config.benchmarkOutput);
-                process.stdout.write(`\n - Cleared: ${config.benchmarkOutput}\n`);
+                outputStream.writeln(`- Cleared: ${config.benchmarkOutput}`);
             });
         }
 

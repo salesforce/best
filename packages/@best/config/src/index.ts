@@ -61,7 +61,7 @@ function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean,
 }
 
 export async function readConfig(cliOptions: BestCliOptions, packageRoot: string, parentConfigPath?: string): Promise<{ configPath: string, globalConfig?: FrozenGlobalConfig, projectConfig: FrozenProjectConfig }> {
-    const configPath = resolveConfigPath(cliOptions.config ? cliOptions.config : packageRoot, process.cwd());
+    const configPath = resolveConfigPath(packageRoot, process.cwd());
     const rawOptions = readConfigAndSetRootDir(configPath);
     const options = normalizeConfig(rawOptions, cliOptions);
     let gitConfig;
@@ -88,7 +88,7 @@ export async function getConfigs(projectsFromCLIArgs: string[], cliOptions: Best
 
     // We first read the main config
     if (projectsFromCLIArgs.length === 1) {
-        const parsedConfigs = await readConfig(cliOptions, projects[0]);
+        const parsedConfigs = await readConfig(cliOptions, projectsFromCLIArgs[0]);
         configPath = parsedConfigs.configPath;
         const { globalConfig: parsedGlobalConfig } = parsedConfigs;
 

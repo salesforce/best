@@ -1,0 +1,13 @@
+{
+  "name": "@best/console-stream",
+  "version": "0.7.1",
+  "description": "Best stdout stream wrapper",
+  "keywords": [
+    "Best",
+    "performance"
+  ],
+  "main": "build/index.js",
+  "dependencies": {
+    "@best/utils": "0.7.1"
+  }
+}

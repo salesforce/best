@@ -11,10 +11,11 @@
     { "path": "../compare" },
     { "path": "../config" },
     { "path": "../github-integration" },
-    { "path": "../messager" },
+    { "path": "../console-stream" },
     { "path": "../runner" },
     { "path": "../store" },
-    { "path": "../store-fs" }
+    { "path": "../store-fs" },
+    { "path": "../utils" },
   ],
   "include": [
     "../package.json",
