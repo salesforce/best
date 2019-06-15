@@ -52,14 +52,18 @@ export interface BestCliOptions {
     projects: string[],
     iterations: number,
     compareStats: string[] | undefined
-};
+}
 
 
 export interface GlobalConfig {
     gitIntegration: boolean;
     projects: string[];
+    detectLeaks: boolean;
 }
 
 export interface ProjectConfig {
 
 }
+
+export type FrozenGlobalConfig = Readonly<GlobalConfig>;
+export type FrozenProjectConfig = Readonly<ProjectConfig>;

@@ -2,65 +2,47 @@
 import { resolveConfigPath, readConfigAndSetRootDir, ensureNoDuplicateConfigs } from './utils/resolve-config';
 import { getGitInfo, GitInfo } from './utils/git';
 import { normalizeConfig, normalizeRegexPattern, normalizeRootDirPattern } from './utils/normalize';
-import { BestCliOptions, DefaultProjectOptions, GlobalConfig, ProjectConfig } from './types';
+import { BestCliOptions, DefaultProjectOptions, GlobalConfig, ProjectConfig, FrozenProjectConfig, FrozenGlobalConfig } from './types';
 export { BestCliOptions };
 
-function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean, gitInfo?: GitInfo): { projectConfig: ProjectConfig, globalConfig: GlobalConfig | undefined } {
-    let globalConfig: GlobalConfig | undefined = undefined;
-    let projectConfig: ProjectConfig;
+function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean, gitInfo?: GitInfo): { projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig | undefined } {
+    let globalConfig: FrozenGlobalConfig | undefined;
 
     if (isRoot) {
         globalConfig = Object.freeze({
             gitIntegration: options.gitIntegration,
             detectLeaks: options.detectLeaks,
             compareStats: options.compareStats,
-            outputFile: options.outputFile,
             externalStorage: options.externalStorage,
             apiDatabase: options.apiDatabase,
             projects: options.projects,
             rootDir: options.rootDir,
             rootProjectName: options.projectName,
             nonFlagArgs: options.nonFlagArgs,
-            testNamePattern: options.testNamePattern,
-            testPathPattern: options.testPathPattern,
-            verbose: options.verbose,
             gitInfo: gitInfo,
-            gitCommit: options.gitCommit,
-            gitCommitDate: options.gitCommitDate,
-            gitLocalChanges: options.gitLocalChanges,
-            gitBranch: options.gitBranch,
-            gitRepository: options.gitRepository,
-            normalize: options.normalize,
-            outputMetricPattern: normalizeRegexPattern(options.outputMetricNames),
-            outputTotals: options.outputTotals,
-            outputHistograms: options.outputHistograms,
-            outputHistogramPattern: normalizeRegexPattern(options.outputHistogramNames),
-            histogramQuantileRange: options.histogramQuantileRange,
-            histogramMaxWidth: options.histogramMaxWidth,
-            openPages: options.openPages,
+            // outputMetricPattern: normalizeRegexPattern(options.outputMetricNames),
+            // outputTotals: options.outputTotals,
+            // outputHistograms: options.outputHistograms,
+            // outputHistogramPattern: normalizeRegexPattern(options.outputHistogramNames),
+            // histogramQuantileRange: options.histogramQuantileRange,
+            // histogramMaxWidth: options.histogramMaxWidth,
+            // normalize: options.normalize,
+            // openPages: options.openPages,
         });
     }
 
-    projectConfig = Object.freeze({
+    const projectConfig: ProjectConfig = Object.freeze({
         cache: options.cache,
         cacheDirectory: options.cacheDirectory,
         useHttp: options.useHttp,
-        cwd: options.cwd,
         detectLeaks: options.detectLeaks,
         displayName: options.displayName,
-        globals: options.globals,
         moduleDirectories: options.moduleDirectories,
         moduleFileExtensions: options.moduleFileExtensions,
-        moduleLoader: options.moduleLoader,
-        moduleNameMapper: options.moduleNameMapper,
-        modulePathIgnorePatterns: options.modulePathIgnorePatterns,
-        modulePaths: options.modulePaths,
-        name: options.name,
         plugins: options.plugins,
         rootDir: options.rootDir,
-        roots: options.roots,
-
         projectName: options.projectName,
+
         benchmarkRunner: options.runnerConfig.runner || options.runner,
         benchmarkRunnerConfig: options.runnerConfig.config || options.runnerConfig,
         benchmarkEnvironment: options.benchmarkEnvironment,
@@ -73,12 +55,6 @@ function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean,
 
         testMatch: options.testMatch,
         testPathIgnorePatterns: options.testPathIgnorePatterns,
-        testRegex: options.testRegex,
-        testURL: options.testURL,
-        transform: options.transform,
-        transformIgnorePatterns: options.transformIgnorePatterns,
-
-        samplesQuantileThreshold: options.samplesQuantileThreshold,
     });
 
     return { globalConfig, projectConfig };
@@ -104,9 +80,9 @@ export async function readConfig(cliOptions: BestCliOptions, packageRoot: string
     return { configPath, globalConfig, projectConfig };
 }
 
-export async function getConfigs(projectsFromCLIArgs: string[], cliOptions: BestCliOptions): Promise<{ globalConfig: GlobalConfig, configs: ProjectConfig[] }> {
-    let globalConfig: GlobalConfig | undefined;
-    let configs: ProjectConfig[] = [];
+export async function getConfigs(projectsFromCLIArgs: string[], cliOptions: BestCliOptions): Promise<{ globalConfig: FrozenGlobalConfig, configs: FrozenProjectConfig[] }> {
+    let globalConfig: FrozenGlobalConfig | undefined;
+    let configs: FrozenProjectConfig[] = [];
     let projects: string[] = [];
     let configPath: string;
 
