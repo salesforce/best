@@ -13,10 +13,7 @@ export default (config: any): Router => {
             try {
                 const { repo, owner } = config.githubConfig;
                 const app = GithubApplicationFactory();
-                const gitAppAuth = await app.authenticateAsApplication();
-                const repoInstallation = await gitAppAuth.apps.getRepoInstallation({ owner, repo });
-                const installationId = repoInstallation.data.id;
-                const gitHubInstallation = await app.authenticateAsInstallation(installationId);
+                const gitHubInstallation = await app.authenticateAsAppAndInstallation({ repo, owner });
 
                 const response = await gitHubInstallation.repos.getCommit({
                     owner,

@@ -88,6 +88,7 @@ class GithubFactory {
             ...gitOpts,
             auth: `Bearer ${token}`
         });
+
         return github;
     }
 
@@ -101,15 +102,7 @@ class GithubFactory {
             ...gitOpts,
             auth: `token ${token}`
         });
-        return github;
-    }
 
-    async authenticateAsToken(token = this.token, gitOpts = this.gitOpts) {
-        if (!token) {
-            throw new Error ('TOKEN is required to authenticate as user');
-        }
-        const github = new GitHubApi(gitOpts);
-        github.authenticate({ type: 'token', token });
         return github;
     }
 
@@ -122,7 +115,17 @@ class GithubFactory {
         const response = await github.apps.createInstallationToken({
             installation_id,
         });
+        
         return response.data.token;
+    }
+
+    async authenticateAsAppAndInstallation(git: { repo: string, owner: string }, gitOpts = this.gitOpts) {
+        const gitAppAuth = await this.authenticateAsApplication();
+        
+        const repoInstallation = await gitAppAuth.apps.getRepoInstallation(git);
+        const installationId = repoInstallation.data.id;
+        
+        return this.authenticateAsInstallation(installationId);
     }
 }
 

@@ -1,8 +1,8 @@
 import { preRunMessager } from '@best/messager';
 import { compareBenchmarkStats } from '@best/compare';
-import { pushBenchmarkComparison } from '@best/github-integration';
-import { runBest } from "./run_best";
-import git from "simple-git/promise";
+import { beginBenchmarkComparisonCheck, pushBenchmarkComparisonCheck } from '@best/github-integration';
+import { runBest } from './run_best';
+import git from 'simple-git/promise';
 
 const STORAGE_FS = '@best/store-fs';
 const isHex = (x:string) => /^[0-9a-fA-F]+$/.test(x);
@@ -43,6 +43,13 @@ export async function runCompare(globalConfig: any, configs: any, outputStream: 
     if (baseCommit === compareCommit) {
         console.log(`Hash of commits are identical (${baseCommit}). Skipping comparison`);
         return false;
+    }
+
+    let check, gitHubInstallation;
+    if (gitIntegration) {
+        const github = await beginBenchmarkComparisonCheck(compareCommit, globalConfig);
+        check = github.check;
+        gitHubInstallation = github.gitHubInstallation;
     }
 
     try {
@@ -88,8 +95,8 @@ export async function runCompare(globalConfig: any, configs: any, outputStream: 
 
         const compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectNames, storageProvider);
 
-        if (gitIntegration) {
-            await pushBenchmarkComparison(baseCommit, compareCommit, compareResults, globalConfig);
+        if (gitIntegration && gitHubInstallation && check) {
+            await pushBenchmarkComparisonCheck(gitHubInstallation, check, baseCommit, compareCommit, compareResults, globalConfig);
         }
 
         return compareResults;
