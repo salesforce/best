@@ -9,6 +9,7 @@
   "npmClient": "yarn",
   "useWorkspaces": true,
   "packages": [
-    "packages/@best/*"
+    "packages/@best/*",
+    "packages/best"
   ]
 }

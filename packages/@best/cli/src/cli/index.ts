@@ -58,7 +58,7 @@ export async function runCLI(argsCLI: BestCliOptions, projects: string[]) {
         outputStream.writeln('Looking for Best configurations...');
         projectConfigs = await getConfigs(projects, argsCLI);
     } finally {
-        // outputStream.clearAll();
+        outputStream.clearAll();
     }
 
     const { globalConfig, configs } = projectConfigs;
