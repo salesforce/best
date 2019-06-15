@@ -1,8 +1,8 @@
 {
     "name": "@best/frontend",
-    "version": "0.7.1",
+    "version": "4.0.0",
     "dependencies": {
-        "@best/api-db": "0.7.1",
+        "@best/api-db": "4.0.0",
         "compression": "^1.7.4",
         "express": "^4.17.1",
         "helmet": "^3.18.0",
