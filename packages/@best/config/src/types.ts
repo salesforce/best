@@ -62,8 +62,14 @@ export interface GlobalConfig {
 }
 
 export interface ProjectConfig {
-
+    cacheDirectory: string;
 }
 
 export type FrozenGlobalConfig = Readonly<GlobalConfig>;
 export type FrozenProjectConfig = Readonly<ProjectConfig>;
+
+
+export interface ProjectConfigs {
+    globalConfig: FrozenGlobalConfig,
+    configs: FrozenProjectConfig[]
+}

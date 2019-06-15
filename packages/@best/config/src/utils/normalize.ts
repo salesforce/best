@@ -107,11 +107,11 @@ export function normalizeRootDirPattern(str: string, rootDir: string) {
     return str.replace(/<rootDir>/g, rootDir);
 }
 
-export function normalizeRegexPattern(names: any) {
+export function normalizeRegexPattern(names: string | string[] | RegExp) {
     if (typeof names === 'string') {
         names = names.split(',');
     }
-    if (names instanceof Array) {
+    if (Array.isArray(names)) {
         names = names.map(name => name.replace(/\*/g, '.*'));
         names = new RegExp(`^(${names.join('|')})$`);
     }

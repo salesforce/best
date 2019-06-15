@@ -6,6 +6,8 @@ import { getConfigs, BestCliOptions } from '@best/config';
 import { preRunMessager, errorMessager } from '@best/messager';
 import { runBest } from '../run_best';
 import { runCompare } from '../run_compare';
+import { Stream } from 'stream';
+import { ProjectConfigs, ProjectConfig } from '@best/config/build/types';
 
 export function buildArgs(maybeArgv?: string[]): BestCliOptions {
     const parsedArgs = yargs(maybeArgv || process.argv.slice(2))
@@ -48,21 +50,21 @@ export async function run(maybeArgv?: string[], project?: string) {
 }
 
 export async function runCLI(argsCLI: BestCliOptions, projects: string[]) {
-    const outputStream: any = process.stdout;
-    let rawConfigs;
+    const outputStream: Stream = process.stdout;
+    let projectConfigs: ProjectConfigs;
     let results;
 
     try {
         preRunMessager.print('Looking for Best configurations...', outputStream);
-        rawConfigs = await getConfigs(projects, argsCLI);
+        projectConfigs = await getConfigs(projects, argsCLI);
     } finally {
         preRunMessager.clear(outputStream);
     }
 
-    const { globalConfig, configs } = rawConfigs;
+    const { globalConfig, configs } = projectConfigs;
 
     if (argsCLI.clearCache) {
-        configs.forEach((config :any) => {
+        configs.forEach((config : ProjectConfig) => {
             rimraf.sync(config.cacheDirectory);
             process.stdout.write(`Cleared ${config.cacheDirectory}\n`);
         });

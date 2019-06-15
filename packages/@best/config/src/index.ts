@@ -2,7 +2,7 @@
 import { resolveConfigPath, readConfigAndSetRootDir, ensureNoDuplicateConfigs } from './utils/resolve-config';
 import { getGitInfo, GitInfo } from './utils/git';
 import { normalizeConfig, normalizeRegexPattern, normalizeRootDirPattern } from './utils/normalize';
-import { BestCliOptions, DefaultProjectOptions, GlobalConfig, ProjectConfig, FrozenProjectConfig, FrozenGlobalConfig } from './types';
+import { BestCliOptions, DefaultProjectOptions, FrozenProjectConfig, FrozenGlobalConfig, ProjectConfigs } from './types';
 export { BestCliOptions };
 
 function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean, gitInfo?: GitInfo): { projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig | undefined } {
@@ -20,7 +20,7 @@ function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean,
             rootProjectName: options.projectName,
             nonFlagArgs: options.nonFlagArgs,
             gitInfo: gitInfo,
-            // outputMetricPattern: normalizeRegexPattern(options.outputMetricNames),
+            outputMetricPattern: normalizeRegexPattern(options.outputMetricNames),
             // outputTotals: options.outputTotals,
             // outputHistograms: options.outputHistograms,
             // outputHistogramPattern: normalizeRegexPattern(options.outputHistogramNames),
@@ -31,7 +31,7 @@ function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean,
         });
     }
 
-    const projectConfig: ProjectConfig = Object.freeze({
+    const projectConfig: FrozenProjectConfig = Object.freeze({
         cache: options.cache,
         cacheDirectory: options.cacheDirectory,
         useHttp: options.useHttp,
@@ -60,7 +60,7 @@ function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean,
     return { globalConfig, projectConfig };
 }
 
-export async function readConfig(cliOptions: BestCliOptions, packageRoot: string, parentConfigPath?: string): Promise<{ configPath: string, globalConfig?: GlobalConfig, projectConfig: ProjectConfig }> {
+export async function readConfig(cliOptions: BestCliOptions, packageRoot: string, parentConfigPath?: string): Promise<{ configPath: string, globalConfig?: FrozenGlobalConfig, projectConfig: FrozenProjectConfig }> {
     const configPath = resolveConfigPath(cliOptions.config ? cliOptions.config : packageRoot, process.cwd());
     const rawOptions = readConfigAndSetRootDir(configPath);
     const options = normalizeConfig(rawOptions, cliOptions);
@@ -80,7 +80,7 @@ export async function readConfig(cliOptions: BestCliOptions, packageRoot: string
     return { configPath, globalConfig, projectConfig };
 }
 
-export async function getConfigs(projectsFromCLIArgs: string[], cliOptions: BestCliOptions): Promise<{ globalConfig: FrozenGlobalConfig, configs: FrozenProjectConfig[] }> {
+export async function getConfigs(projectsFromCLIArgs: string[], cliOptions: BestCliOptions): Promise<ProjectConfigs> {
     let globalConfig: FrozenGlobalConfig | undefined;
     let configs: FrozenProjectConfig[] = [];
     let projects: string[] = [];
