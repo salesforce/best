@@ -1,25 +1,28 @@
 import SocketClient from './client';
 import BenchmarkTask from './task';
+import * as SocketIO from "socket.io";
 
 export default class Broker {
-    clients: WeakSet<any>;
-    clientQueue: any;
-    runningTask: any;
-    socketServer: any;
-    constructor(socketServer: any) {
-        this.clients = new WeakSet();
+    clients: WeakSet<SocketClient>;
+    clientQueue: SocketClient[];
+    runningTask: BenchmarkTask | null;
+    socketServer: SocketIO.Server;
+
+    constructor(socketServer: SocketIO.Server) {
+        this.clients = new WeakSet<SocketClient>();
         this.clientQueue = [];
         this.runningTask = null;
         this.socketServer = socketServer;
-        socketServer.on('connect', (socket: any) => this.setupConnection(socket));
+        socketServer.on('connect', (socket: SocketIO.Socket) => this.setupConnection(socket));
     }
 
     isTaskRunning() {
-        return !!this.runningTask;
+        return this.runningTask !== null;
     }
 
-    setupConnection(socket: any) {
+    setupConnection(socket: SocketIO.Socket) {
         const client = new SocketClient(socket);
+
         this.clients.add(client);
         this.connectedClient(client);
         client.on('disconnect', (reason) => this.disconnectedClient(client));

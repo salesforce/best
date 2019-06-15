@@ -4,6 +4,7 @@ import path from 'path';
 import { ERROR, BENCHMARK_TASK, DISCONNECT, LOAD_BENCHMARK } from './operations';
 import { cacheDirectory } from '@best/utils';
 import { x as extractTar } from 'tar';
+import * as SocketIO from "socket.io";
 
 const STATE_QUEUED = 'queued';
 const STATE_CONFIG_READY = 'config_ready';
@@ -42,7 +43,7 @@ function initializeForwarder(config: any, socket: any, logger: any) {
 }
 
 class SocketClient extends EventEmitter {
-    socket: any;
+    socket: SocketIO.Socket;
     state: string;
     benchmarkConfig: any;
     _timeout: any;
@@ -50,7 +51,7 @@ class SocketClient extends EventEmitter {
     static CONFIG_READY: any;
     static BENCHMARK_READY: any;
 
-    constructor(socket: any) {
+    constructor(socket: SocketIO.Socket) {
         super();
         this.socket = socket;
         this.state = 'init';
@@ -77,7 +78,7 @@ class SocketClient extends EventEmitter {
         this.socket.emit('state_change', state);
     }
 
-    disconnectClient(forcedError?: any) {
+    disconnectClient(forcedError?: string) {
         if (this.state !== STATE_DISCONNECTED) {
             this.state = STATE_DISCONNECTED;
             if (forcedError) {
@@ -97,7 +98,7 @@ class SocketClient extends EventEmitter {
         this.emit(STATE_CONFIG_READY);
     }
 
-    hasBenchmarkConfig() {
+    hasBenchmarkConfig(): boolean {
         return !!this.benchmarkConfig;
     }
 
