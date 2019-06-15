@@ -11858,10 +11858,10 @@ systeminformation@3.33.12:
   resolved "http://npm.lwcjs.org/systeminformation/-/systeminformation-3.33.12/bb96d176a751886fcc4123006e9a2b322e7e1cc8.tgz#bb96d176a751886fcc4123006e9a2b322e7e1cc8"
   integrity sha512-auKCft3Mc23bhx8P8GhAF+4xWHxMPSBhKRmNwmTxfWrmtwOvhwhU8GmBarYXlp0X52Jwv0QWT988Q9NhlkFecQ==
 
-systeminformation@4.1.6:
-  version "4.1.6"
-  resolved "http://npm.lwcjs.org/systeminformation/-/systeminformation-4.1.6/9ee8883178c4977d1910beb3eef6bf250f7fe3b2.tgz#9ee8883178c4977d1910beb3eef6bf250f7fe3b2"
-  integrity sha512-8Q8wPRvnZX0WRxPVVGN6Q/51GeDBhqruNhFzAjoCPaf4/l0hxTLj8XPjeAME8/Y9I5Y4bdA4fx0QjxvuFhlD8A==
+systeminformation@~4.9.2:
+  version "4.9.2"
+  resolved "http://npm.lwcjs.org/systeminformation/-/systeminformation-4.9.2/df6e534d660ee438f61dc9cc08f6f826fb599406.tgz#df6e534d660ee438f61dc9cc08f6f826fb599406"
+  integrity sha512-J3a2Rsdtk+JhJ5cL2ByMLtW5/EZnsZ5gzE573U/Jlu7Ss+cjme9qOVeND5cDKvGcouW3b+hMBtZl5ivNb7HDFw==
 
 table@^5.2.3:
   version "5.4.0"

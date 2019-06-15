@@ -1,230 +1,16 @@
-import fs from 'fs';
-import path from 'path';
-import chalk from 'chalk';
-import { replacePathSepForRegex } from '@best/regex-util';
-import DEFAULT_CONFIG from './defaults';
-import { addGitInformation } from './git';
-import { PACKAGE_JSON, BEST_CONFIG } from './constants';
-import { BestCliOptions } from './types';
 
+import { resolveConfigPath, readConfigAndSetRootDir, ensureNoDuplicateConfigs } from './utils/resolve-config';
+import { getGitInfo, GitInfo } from './utils/git';
+import { normalizeConfig, normalizeRegexPattern, normalizeRootDirPattern } from './utils/normalize';
+import { BestCliOptions, DefaultProjectOptions, GlobalConfig, ProjectConfig } from './types';
 export { BestCliOptions };
 
-const TARGET_COMMIT = process.env.TARGET_COMMIT;
-const BASE_COMMIT = process.env.BASE_COMMIT;
-const specialArgs = ['_', '$0', 'h', 'help', 'config'];
-const isFile = (filePath:string) => fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
+function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean, gitInfo?: GitInfo): { projectConfig: ProjectConfig, globalConfig: GlobalConfig | undefined } {
+    let globalConfig: GlobalConfig | undefined = undefined;
+    let projectConfig: ProjectConfig;
 
-function readConfigAndSetRootDir(configPath: string) {
-    const isJSON = configPath.endsWith('.json');
-    let configObject;
-    try {
-        configObject = require(configPath);
-    } catch (error) {
-        if (isJSON) {
-            throw new Error(`Best: Failed to parse config file ${configPath}\n`);
-        } else {
-            throw error;
-        }
-    }
-
-    if (configPath.endsWith(PACKAGE_JSON)) {
-        if (!configObject.best) {
-            throw new Error(`No "best" section has been found in ${configPath}`);
-        }
-
-        configObject = configObject.best;
-    }
-
-    if (!configObject) {
-        throw new Error("Couldn't find any configuration for Best.");
-    }
-
-    if (configObject.rootDir) {
-        // We don't touch it if it has an absolute path specified
-        if (!path.isAbsolute(configObject.rootDir)) {
-            // otherwise, we'll resolve it relative to the file's __dirname
-            configObject.rootDir = path.resolve(path.dirname(configPath), configObject.rootDir);
-        }
-    } else {
-        // If rootDir is not there, we'll set it to this file's __dirname
-        configObject.rootDir = path.dirname(configPath);
-    }
-
-    return configObject;
-}
-
-function resolveConfigPathByTraversing(pathToResolve: string, initialPath: string, cwd: string): string {
-    const bestConfig = path.resolve(pathToResolve, BEST_CONFIG);
-    if (isFile(bestConfig)) {
-        return bestConfig;
-    }
-
-    const packageJson = path.resolve(pathToResolve, PACKAGE_JSON);
-    if (isFile(packageJson)) {
-        return packageJson;
-    }
-
-    if (pathToResolve === path.dirname(pathToResolve)) {
-        throw new Error(`No config found in ${initialPath}`);
-    }
-
-    // go up a level and try it again
-    return resolveConfigPathByTraversing(path.dirname(pathToResolve), initialPath, cwd);
-}
-
-function resolveConfigPath(pathToResolve: string, cwd: string) {
-    const absolutePath = path.isAbsolute(pathToResolve) ? pathToResolve : path.resolve(cwd, pathToResolve);
-    if (isFile(absolutePath)) {
-        return absolutePath;
-    }
-
-    return resolveConfigPathByTraversing(absolutePath, pathToResolve, cwd);
-}
-
-function setFromArgs(initialOptions: any, argsCLI: any) {
-    const argvToOptions = Object.keys(argsCLI)
-        .filter(key => argsCLI[key] !== undefined && specialArgs.indexOf(key) === -1)
-        .reduce((options: any, key: string) => {
-            switch (key) {
-                case 'iterations':
-                    options.benchmarkIterations = argsCLI[key];
-                    break;
-                case 'compareStats':
-                    options[key] = argsCLI[key].filter(Boolean);
-                    break;
-                default:
-                    options[key] = argsCLI[key];
-                    break;
-            }
-            return options;
-        }, {});
-
-    return Object.assign({}, initialOptions, argvToOptions);
-}
-
-function normalizeRootDir(options: any): any {
-    // Assert that there *is* a rootDir
-    if (!options.hasOwnProperty('rootDir')) {
-        throw new Error(`  Configuration option ${chalk.bold('rootDir')} must be specified.`);
-    }
-
-    options.rootDir = path.normalize(options.rootDir);
-    return options;
-}
-
-function buildTestPathPattern(argsCLI: any) {
-    const patterns = [];
-    if (argsCLI._) {
-        patterns.push(...argsCLI._);
-    }
-
-    if (argsCLI.testPathPattern) {
-        patterns.push(...argsCLI.testPathPattern);
-    }
-
-    const testPathPattern = patterns.map(replacePathSepForRegex).join('|');
-    return testPathPattern;
-}
-
-function normalizeRootDirPattern(str: string, rootDir: string) {
-    return str.replace(/<rootDir>/g, rootDir);
-}
-
-function normalizeUnmockedModulePathPatterns(options: any, key: string) {
-    return options[key].map((pattern: any) => replacePathSepForRegex(normalizeRootDirPattern(pattern, options.rootDir)));
-}
-
-function normalizeObjectPathPatterns(options: any, rootDir: string) {
-    return Object.keys(options).reduce((m: any, key) => {
-        const value = options[key];
-        if (typeof value === 'string') {
-            m[key] = normalizeRootDirPattern(value, rootDir);
-        } else {
-            m[key] = value;
-        }
-        return m;
-    }, {});
-}
-
-function normalizePlugins(plugins: any, { rootDir }: any) {
-    return plugins.map((plugin: any) => {
-        if (typeof plugin === 'string') {
-            return normalizeRootDirPattern(plugin, rootDir);
-        } else if (Array.isArray(plugin)) {
-            return [plugin[0], normalizeObjectPathPatterns(plugin[1], rootDir)];
-        }
-        return plugin;
-    });
-}
-
-function normalizeRunnerConfig(runnerConfig: any, { runner }: any) {
-    if (!Array.isArray(runnerConfig)) {
-        runnerConfig = [runnerConfig];
-    }
-
-    const defaultRunners = runnerConfig.filter((c: any) => c.name === undefined || c.name === 'default');
-    if (defaultRunners > 1) {
-        throw new Error('Wrong configuration: More than one default configuration declared');
-    }
-
-    const match = runnerConfig.find((c: any) => c.name === runner) || defaultRunners[0] || {};
-
-    return match;
-}
-
-function normalizeCommits([base, target]: [string, string]) {
-    base = (base || BASE_COMMIT || '');
-    target = (target || TARGET_COMMIT || '');
-    return [base.slice(0, 7), target.slice(0, 7)];
-}
-
-function normalizePattern(names: any) {
-    if (typeof names === 'string') {
-        names = names.split(',');
-    }
-    if (names instanceof Array) {
-        names = names.map(name => name.replace(/\*/g, '.*'));
-        names = new RegExp(`^(${names.join('|')})$`);
-    }
-    if (!(names instanceof RegExp)) {
-        throw new Error(`  Names must be provided as a string, array or regular expression.`);
-    }
-    return typeof names === 'string' ? new RegExp(names) : names;
-}
-
-function normalize(options: any, argsCLI: any) {
-    options = normalizeRootDir(setFromArgs(options, argsCLI));
-    const newOptions = Object.assign({}, DEFAULT_CONFIG);
-    Object.keys(options).reduce((newOpts: any, key) => {
-        let value = newOpts[key];
-        switch (key) {
-            case 'projects':
-                value = normalizeUnmockedModulePathPatterns(options, key);
-                break;
-            case 'plugins':
-                value = normalizePlugins(options[key], options);
-                break;
-            case 'runnerConfig':
-                value = normalizeRunnerConfig(options[key], options);
-                break;
-            case 'compareStats':
-                value = options[key].length ? normalizeCommits(options[key]) : undefined;
-                break;
-            default:
-                value = options[key];
-        }
-        newOptions[key] = value;
-        return newOpts;
-    }, newOptions);
-
-    newOptions.nonFlagArgs = argsCLI._;
-    newOptions.testPathPattern = buildTestPathPattern(argsCLI);
-    return newOptions;
-}
-
-function _getConfigs(options: any) {
-    return {
-        globalConfig: Object.freeze({
+    if (isRoot) {
+        globalConfig = Object.freeze({
             gitIntegration: options.gitIntegration,
             detectLeaks: options.detectLeaks,
             compareStats: options.compareStats,
@@ -238,126 +24,110 @@ function _getConfigs(options: any) {
             testNamePattern: options.testNamePattern,
             testPathPattern: options.testPathPattern,
             verbose: options.verbose,
+            gitInfo: gitInfo,
             gitCommit: options.gitCommit,
             gitCommitDate: options.gitCommitDate,
             gitLocalChanges: options.gitLocalChanges,
             gitBranch: options.gitBranch,
             gitRepository: options.gitRepository,
             normalize: options.normalize,
-            outputMetricPattern: normalizePattern(options.outputMetricNames),
+            outputMetricPattern: normalizeRegexPattern(options.outputMetricNames),
             outputTotals: options.outputTotals,
             outputHistograms: options.outputHistograms,
-            outputHistogramPattern: normalizePattern(options.outputHistogramNames),
+            outputHistogramPattern: normalizeRegexPattern(options.outputHistogramNames),
             histogramQuantileRange: options.histogramQuantileRange,
             histogramMaxWidth: options.histogramMaxWidth,
             openPages: options.openPages,
-        }),
-        projectConfig: Object.freeze({
-            cache: options.cache,
-            cacheDirectory: options.cacheDirectory,
-            useHttp: options.useHttp,
-            cwd: options.cwd,
-            detectLeaks: options.detectLeaks,
-            displayName: options.displayName,
-            globals: options.globals,
-            moduleDirectories: options.moduleDirectories,
-            moduleFileExtensions: options.moduleFileExtensions,
-            moduleLoader: options.moduleLoader,
-            moduleNameMapper: options.moduleNameMapper,
-            modulePathIgnorePatterns: options.modulePathIgnorePatterns,
-            modulePaths: options.modulePaths,
-            name: options.name,
-            plugins: options.plugins,
-            rootDir: options.rootDir,
-            roots: options.roots,
+        });
+    }
 
-            projectName: options.projectName,
-            benchmarkRunner: options.runnerConfig.runner || options.runner,
-            benchmarkRunnerConfig: options.runnerConfig.config || options.runnerConfig,
-            benchmarkEnvironment: options.benchmarkEnvironment,
-            benchmarkEnvironmentOptions: options.benchmarkEnvironmentOptions,
-            benchmarkMaxDuration: options.benchmarkMaxDuration,
-            benchmarkMinIterations: options.benchmarkMinIterations,
-            benchmarkIterations: options.benchmarkIterations,
-            benchmarkOnClient: options.benchmarkOnClient,
-            benchmarkOutput: normalizeRootDirPattern(options.benchmarkOutput, options.rootDir),
+    projectConfig = Object.freeze({
+        cache: options.cache,
+        cacheDirectory: options.cacheDirectory,
+        useHttp: options.useHttp,
+        cwd: options.cwd,
+        detectLeaks: options.detectLeaks,
+        displayName: options.displayName,
+        globals: options.globals,
+        moduleDirectories: options.moduleDirectories,
+        moduleFileExtensions: options.moduleFileExtensions,
+        moduleLoader: options.moduleLoader,
+        moduleNameMapper: options.moduleNameMapper,
+        modulePathIgnorePatterns: options.modulePathIgnorePatterns,
+        modulePaths: options.modulePaths,
+        name: options.name,
+        plugins: options.plugins,
+        rootDir: options.rootDir,
+        roots: options.roots,
 
-            testMatch: options.testMatch,
-            testPathIgnorePatterns: options.testPathIgnorePatterns,
-            testRegex: options.testRegex,
-            testURL: options.testURL,
-            transform: options.transform,
-            transformIgnorePatterns: options.transformIgnorePatterns,
+        projectName: options.projectName,
+        benchmarkRunner: options.runnerConfig.runner || options.runner,
+        benchmarkRunnerConfig: options.runnerConfig.config || options.runnerConfig,
+        benchmarkEnvironment: options.benchmarkEnvironment,
+        benchmarkEnvironmentOptions: options.benchmarkEnvironmentOptions,
+        benchmarkMaxDuration: options.benchmarkMaxDuration,
+        benchmarkMinIterations: options.benchmarkMinIterations,
+        benchmarkIterations: options.benchmarkIterations,
+        benchmarkOnClient: options.benchmarkOnClient,
+        benchmarkOutput: normalizeRootDirPattern(options.benchmarkOutput, options.rootDir),
 
-            samplesQuantileThreshold: options.samplesQuantileThreshold,
-        }),
-    };
+        testMatch: options.testMatch,
+        testPathIgnorePatterns: options.testPathIgnorePatterns,
+        testRegex: options.testRegex,
+        testURL: options.testURL,
+        transform: options.transform,
+        transformIgnorePatterns: options.transformIgnorePatterns,
+
+        samplesQuantileThreshold: options.samplesQuantileThreshold,
+    });
+
+    return { globalConfig, projectConfig };
 }
 
-const ensureNoDuplicateConfigs = (parsedConfigs: any, projects: string[]) => {
-    const configPathSet = new Set();
-
-    for (const { configPath } of parsedConfigs) {
-        if (configPathSet.has(configPath)) {
-            let message = 'One or more specified projects share the same config file\n';
-
-            parsedConfigs.forEach((projectConfig: any, index: number) => {
-                message =
-                    message +
-                    '\nProject: "' +
-                    projects[index] +
-                    '"\nConfig: "' +
-                    String(projectConfig.configPath) +
-                    '"';
-            });
-            throw new Error(message);
-        }
-
-        if (configPath !== null) {
-            configPathSet.add(configPath);
-        }
-    }
-};
-
-export async function readConfig(argsCLI: any, packageRoot: string, parentConfigPath?: string) {
-    const customConfigPath = argsCLI.config ? argsCLI.config : packageRoot;
-    const configPath = resolveConfigPath(customConfigPath, process.cwd());
+export async function readConfig(cliOptions: BestCliOptions, packageRoot: string, parentConfigPath?: string): Promise<{ configPath: string, globalConfig?: GlobalConfig, projectConfig: ProjectConfig }> {
+    const configPath = resolveConfigPath(cliOptions.config ? cliOptions.config : packageRoot, process.cwd());
     const rawOptions = readConfigAndSetRootDir(configPath);
-    const options = normalize(rawOptions, argsCLI);
+    const options = normalizeConfig(rawOptions, cliOptions);
+    let gitConfig;
 
-    // We assume all projects are within the same mono-repo
-    // No need to get version control status again
+    // If we have a parent Config path, we are in a nested/project best config
     if (!parentConfigPath) {
         try {
-            await addGitInformation(options);
+            gitConfig = await getGitInfo(options.rootDir);
         } catch (e) {
             console.log('[WARN] - Unable to get git information');
             /* Unable to get git info */
         }
     }
 
-    const { globalConfig, projectConfig } = _getConfigs(options);
+    const { globalConfig, projectConfig } = generateProjectConfigs(options, !parentConfigPath, gitConfig);
     return { configPath, globalConfig, projectConfig };
 }
 
-export async function getConfigs(projectsFromCLIArgs: string[], argv: BestCliOptions) {
-    let globalConfig;
-    let configs: any = [];
-    let projects = projectsFromCLIArgs;
-    let configPath: any;
+export async function getConfigs(projectsFromCLIArgs: string[], cliOptions: BestCliOptions): Promise<{ globalConfig: GlobalConfig, configs: ProjectConfig[] }> {
+    let globalConfig: GlobalConfig | undefined;
+    let configs: ProjectConfig[] = [];
+    let projects: string[] = [];
+    let configPath: string;
 
+    // We first read the main config
     if (projectsFromCLIArgs.length === 1) {
-        const parsedConfig = await readConfig(argv, projects[0]);
-        configPath = parsedConfig.configPath;
+        const parsedConfigs = await readConfig(cliOptions, projects[0]);
+        configPath = parsedConfigs.configPath;
+        const { globalConfig: parsedGlobalConfig } = parsedConfigs;
 
-        if (parsedConfig.globalConfig.projects) {
-            // If this was a single project, and its config has `projects`
-            // settings, use that value instead.
-            projects = parsedConfig.globalConfig.projects;
+        if (!parsedGlobalConfig) {
+            throw new Error('Global configuration must exist');
         }
 
-        globalConfig = parsedConfig.globalConfig;
-        configs = [parsedConfig.projectConfig];
+        if (parsedGlobalConfig && parsedGlobalConfig.projects) {
+            // If this was a single project, and its config has `projects`
+            // settings, use that value instead.
+            projects = parsedGlobalConfig.projects;
+        }
+
+        globalConfig = parsedGlobalConfig;
+        configs = [parsedConfigs.projectConfig];
 
         if (globalConfig.projects && globalConfig.projects.length) {
             // Even though we had one project in CLI args, there might be more
@@ -366,18 +136,15 @@ export async function getConfigs(projectsFromCLIArgs: string[], argv: BestCliOpt
         }
     }
 
-    if (projects.length > 0) {
-        const parsedConfigs = await Promise.all(projects.map(root => readConfig(argv, root, configPath)));
+    if (projects.length > 1) {
+        const parsedConfigs = await Promise.all(projects.map(root => readConfig(cliOptions, root, configPath)));
         ensureNoDuplicateConfigs(parsedConfigs, projects);
         configs = parsedConfigs.map(({ projectConfig }) => projectConfig);
+        globalConfig = parsedConfigs[0].globalConfig;
+    }
 
-        if (!globalConfig) {
-            globalConfig = parsedConfigs[0].globalConfig;
-        }
-
-        if (!globalConfig || !configs.length) {
-            throw new Error('best: No configuration found for any project.');
-        }
+    if (!globalConfig) {
+        throw new Error('Global configuration not defined');
     }
 
     return {

@@ -9,7 +9,7 @@
   "dependencies": {
     "chalk": "~2.4.2",
     "is-ci": "~2.0.0",
-    "systeminformation": "4.1.6"
+    "systeminformation": "~4.9.2"
   },
   "devDependencies": {
     "@types/systeminformation": "^3.23.1"

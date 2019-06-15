@@ -1,7 +1,7 @@
 import { cacheDirectory } from '@best/utils';
-import { BestBuildOptions } from "./types";
+import { DefaultProjectOptions } from "../types";
 
-const defaultOptions: BestBuildOptions = {
+const defaultOptions: DefaultProjectOptions = {
     cache: true,
     cacheDirectory: cacheDirectory(),
     useHttp: true,
@@ -44,6 +44,8 @@ const defaultOptions: BestBuildOptions = {
 
     // If histograms are shown, make them a limited number of characters wide.
     histogramMaxWidth: 50,
+
+    rootDir: process.cwd(),
 };
 
 export default defaultOptions;

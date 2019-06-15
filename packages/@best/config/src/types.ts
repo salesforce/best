@@ -1,4 +1,12 @@
-export interface BestBuildOptions {
+export interface RawBestConfig {
+    [key: string]: any;
+    rootDir: string;
+    benchmarkIterations? : number;
+    compareStats?: string[];
+
+}
+
+export interface DefaultProjectOptions {
     [key: string]: any,
     cache: boolean,
     cacheDirectory: string,
@@ -6,7 +14,7 @@ export interface BestBuildOptions {
     openPages: boolean,
     moduleDirectories: string[],
     moduleFileExtensions: string[],
-    moduleNameMapper: {[moduleName:string]: string },
+    moduleNameMapper: { [moduleName:string]: string },
     modulePathIgnorePatterns: string[],
     runner: string,
     runnerConfig: any,
@@ -26,10 +34,11 @@ export interface BestBuildOptions {
     outputHistogramNames: string,
     histogramQuantileRange: [number, number],
     histogramMaxWidth: number,
-    rootDir?: string
+    rootDir: string
 }
 
 export interface BestCliOptions {
+    [key: string]: any,
     _: string[],
     help: boolean,
     clearCache: boolean,
@@ -44,3 +53,13 @@ export interface BestCliOptions {
     iterations: number,
     compareStats: string[] | undefined
 };
+
+
+export interface GlobalConfig {
+    gitIntegration: boolean;
+    projects: string[];
+}
+
+export interface ProjectConfig {
+
+}
