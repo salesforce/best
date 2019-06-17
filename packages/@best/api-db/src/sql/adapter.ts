@@ -36,7 +36,7 @@ export class SQLAdapter extends ApiDBAdapter {
                 return this.db.createSnapshot(snapshot, projectId)
             }))
         } catch (err) {
-            console.error('[API-DB] Could not save results', err, err.message)
+            console.error('[API-DB] Could not save results into database.');
             return false
         }
 

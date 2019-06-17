@@ -5,6 +5,8 @@ export default (config: any): Router => {
     const db = loadDbFromConfig(config);
     const router = Router()
 
+    if (! db) { return router; }
+
     router.get('/projects', async (req, res): Promise<void> => {
         try {
             const projects = await db.fetchProjects()
