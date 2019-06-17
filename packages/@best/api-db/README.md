@@ -42,10 +42,3 @@ Inside your `best.config.js` you need to have the following:
 ```
 
 You do not need to create your own sqlite file, the adapter will handle that for you.
-
-### Migrations
-In order to run the migrations required for the database you can run the following command:
-
-```
-yarn migrate:postgres up
-```
