@@ -9,15 +9,10 @@ import path from 'path';
 import micromatch from 'micromatch';
 import { FrozenGlobalConfig, FrozenProjectConfig } from '@best/config';
 
-const IGNORE_PATHS = [
-    '**/__benchmarks_results__/**',
-    '**/node_modules/**',
-    '**/__tests__/**'
-];
 
 async function getBenchmarkPaths(config: FrozenProjectConfig, globalConfig: FrozenGlobalConfig): Promise<string[]> {
     const { testMatch, testPathIgnorePatterns, rootDir: cwd } = config;
-    const ignore = [...IGNORE_PATHS, ...testPathIgnorePatterns];
+    const ignore = [ ...testPathIgnorePatterns];
     const results = await fg(testMatch, { onlyFiles: true, ignore, cwd });
     return results.map((benchPath: string) => path.resolve(cwd, benchPath));
 }

@@ -1,8 +1,8 @@
 import { cacheDirectory } from '@best/utils';
-import { DefaultProjectOptions } from "../internal-types";
 
-const defaultOptions: DefaultProjectOptions = {
+const defaultOptions = {
     cache: true,
+    gitIntegration: false,
     cacheDirectory: cacheDirectory(),
     useHttp: true,
     openPages: false,
@@ -11,11 +11,13 @@ const defaultOptions: DefaultProjectOptions = {
     moduleNameMapper: {},
     modulePathIgnorePatterns: [],
     runner: "default",
-    runnerConfig: {
+    runners: [{
         alias: "default",
-        runner: '@best/runner-headless',
-        config: {}
-    },
+        runner: '@best/runner-headless'
+    }],
+    plugins: [],
+    projects: [],
+    runnerConfig: {},
     benchmarkEnvironment: 'production',
     benchmarkMaxDuration: 1000 * 15, // 15s
     benchmarkMinIterations: 30,
@@ -25,30 +27,35 @@ const defaultOptions: DefaultProjectOptions = {
     benchmarkEnvironmentOptions: {},
     benchmarkCustomAssets: '<rootDir>/__benchmarks__/assets',
     testMatch: ['**/__benchmarks__/**/*.benchmark.js'],
+    testPathIgnorePatterns: [
+        '**/__benchmarks_results__/**',
+        '**/node_modules/**',
+        '**/__tests__/**'
+    ],
 
     // Calculate statistics on entire distributions (including possible outliers).
-    samplesQuantileThreshold: 1,
+    // samplesQuantileThreshold: 1,
 
     // Don't try to normalize distributions.
-    normalize: false,
+    // normalize: false,
 
     // Show every metric (e.g. "duration" and "runDuration") in CLI output.
-    outputMetricNames: '*',
+    // outputMetricNames: '*',
 
     // Don't show totals for each metric in a benchmark table.
-    outputTotals: false,
+    // outputTotals: false,
 
     // Don't show histograms for each distribution in CLI output.
-    outputHistograms: false,
+    // outputHistograms: false,
 
     // If showing histograms, show every one.
-    outputHistogramNames: '*',
+    // outputHistogramNames: '*',
 
     // If histograms are shown, hide long tails by omitting the top and bottom 5%.
-    histogramQuantileRange: [0.05, 0.95],
+    // histogramQuantileRange: [0.05, 0.95],
 
     // If histograms are shown, make them a limited number of characters wide.
-    histogramMaxWidth: 50,
+    // histogramMaxWidth: 50,
 
     rootDir: process.cwd(),
 };

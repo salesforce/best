@@ -1,6 +1,6 @@
 import path from 'path';
 import chalk from 'chalk';
-import { BestCliOptions, RawBestConfig, DefaultProjectOptions, RunnerConfig } from '../internal-types';
+import { BestCliOptions, UserBestConfig, NormalizedConfig, RunnerConfig } from '../internal-types';
 import DEFAULT_CONFIG from './defaults';
 import { replacePathSepForRegex } from '@best/regex-util';
 
@@ -11,24 +11,39 @@ function normalizeModulePathPatterns(options: any, key: string) {
     return options[key].map((pattern: any) => replacePathSepForRegex(normalizeRootDirPattern(pattern, options.rootDir)));
 }
 
-function normalizeRunnerConfig(runnerConfig: RunnerConfig | RunnerConfig[], { runner }: RawBestConfig) {
-    if (!Array.isArray(runnerConfig)) {
-        runnerConfig = [runnerConfig];
+function normalizeRunner(runner: string, runners?: RunnerConfig[]) {
+    if (!runners) {
+        return runner;
     }
 
-    const defaultRunners = runnerConfig.filter((c: RunnerConfig) => c.alias === undefined || c.alias === 'default');
+    const defaultRunners = runners.filter((c: RunnerConfig) => c.alias === undefined || c.alias === 'default');
     if (defaultRunners.length > 1) {
         throw new Error('Wrong configuration: More than one default configuration declared');
     }
 
-    const match = runnerConfig.find((c: RunnerConfig) => c.alias === runner) || defaultRunners[0] || {};
-    return match;
+    if (runner === "default") {
+        if (!defaultRunners.length) {
+            throw new Error('No default runner found');
+        }
+        return defaultRunners[0].runner;
+    }
+
+    const selectedRunner = runners.find((c: RunnerConfig) => c.alias === runner || c.runner === runner);
+
+    if (!selectedRunner) {
+        throw new Error(`Unable to find a runner for ${runner}`);
+    }
+
+    return selectedRunner.runner;
 }
 
-function setCliOptionOverrides(initialOptions: RawBestConfig, argsCLI: BestCliOptions): RawBestConfig {
+function setCliOptionOverrides(initialOptions: UserBestConfig, argsCLI: BestCliOptions): UserBestConfig {
     const argvToOptions = Object.keys(argsCLI)
         .reduce((options: any, key: string) => {
             switch (key) {
+                case '_':
+                    options.nonFlagArgs = argsCLI[key] || [];
+                    break;
                 case 'disableInteractive':
                     options.isInteractive = argsCLI[key] !== undefined ? false : undefined;
                     break;
@@ -38,6 +53,9 @@ function setCliOptionOverrides(initialOptions: RawBestConfig, argsCLI: BestCliOp
                 case 'compareStats':
                     options.compareStats = argsCLI.compareStats && argsCLI.compareStats.filter(Boolean);
                     break;
+                case 'gitIntegration':
+                    options.gitIntegration = Boolean(argsCLI[key]);
+                    break;
                 default:
                     options[key] = argsCLI[key];
                     break;
@@ -45,7 +63,7 @@ function setCliOptionOverrides(initialOptions: RawBestConfig, argsCLI: BestCliOp
             return options;
         }, {});
 
-    return Object.assign({}, initialOptions, argvToOptions);
+    return { ...initialOptions, ...argvToOptions };
 }
 function normalizeObjectPathPatterns(options: { [key: string]: any }, rootDir: string) {
     return Object.keys(options).reduce((m: any, key) => {
@@ -59,7 +77,7 @@ function normalizeObjectPathPatterns(options: { [key: string]: any }, rootDir: s
     }, {});
 }
 
-function normalizePlugins(plugins: any, { rootDir }: RawBestConfig) {
+function normalizePlugins(plugins: any, { rootDir }: UserBestConfig) {
     return plugins.map((plugin: any) => {
         if (typeof plugin === 'string') {
             return normalizeRootDirPattern(plugin, rootDir);
@@ -70,7 +88,7 @@ function normalizePlugins(plugins: any, { rootDir }: RawBestConfig) {
     });
 }
 
-function normalizeRootDir(options: any): any {
+function normalizeRootDir(options: UserBestConfig): UserBestConfig {
     // Assert that there *is* a rootDir
     if (!options.hasOwnProperty('rootDir')) {
         throw new Error(`  Configuration option ${chalk.bold('rootDir')} must be specified.`);
@@ -91,20 +109,6 @@ function normalizeCommits(commits?: string[]): string[] | undefined {
     return [base.slice(0, 7), target.slice(0, 7)];
 }
 
-function normalizeTestPathPattern(argsCLI: any) {
-    const patterns = [];
-    if (argsCLI._) {
-        patterns.push(...argsCLI._);
-    }
-
-    if (argsCLI.testPathPattern) {
-        patterns.push(...argsCLI.testPathPattern);
-    }
-
-    const testPathPattern = patterns.map(replacePathSepForRegex).join('|');
-    return testPathPattern;
-}
-
 export function normalizeRootDirPattern(str: string, rootDir: string) {
     return str.replace(/<rootDir>/g, rootDir);
 }
@@ -123,33 +127,31 @@ export function normalizeRegexPattern(names: string | string[] | RegExp) {
     return typeof names === 'string' ? new RegExp(names) : names;
 }
 
-export function normalizeConfig(options: RawBestConfig, cliOptions: BestCliOptions): DefaultProjectOptions {
-    options = normalizeRootDir(setCliOptionOverrides(options, cliOptions));
-    const defaultProjectOptions: DefaultProjectOptions = { ...DEFAULT_CONFIG };
+export function normalizeConfig(userConfig: UserBestConfig, cliOptions: BestCliOptions): NormalizedConfig {
+    const userCliMergedConfig = normalizeRootDir(setCliOptionOverrides(userConfig, cliOptions));
+    const normalizedConfig: NormalizedConfig = { ...DEFAULT_CONFIG, ...userCliMergedConfig };
 
-    Object.keys(options).reduce((newOpts: any, key) => {
-        let value = newOpts[key];
+    // Normalize anything thats coming from the user
+    Object.keys(userCliMergedConfig).reduce((mergeConfig: NormalizedConfig, key: string) => {
         switch (key) {
             case 'projects':
-                value = normalizeModulePathPatterns(options, key);
+                mergeConfig[key] = normalizeModulePathPatterns(userCliMergedConfig, key);
                 break;
             case 'plugins':
-                value = normalizePlugins(options[key], options);
+                mergeConfig[key] = normalizePlugins(userCliMergedConfig[key], userCliMergedConfig);
                 break;
-            case 'runnerConfig':
-                value = normalizeRunnerConfig(options[key], options);
+            case 'runner':
+                mergeConfig[key] = normalizeRunner(userCliMergedConfig[key], mergeConfig.runners);
                 break;
             case 'compareStats':
-                value = options[key] !== undefined && normalizeCommits(options[key]);
+                mergeConfig[key] = normalizeCommits(userCliMergedConfig[key]);
                 break;
             default:
-                value = options[key];
+                break;
         }
-        defaultProjectOptions[key] = value;
-        return newOpts;
-    }, defaultProjectOptions);
 
-    defaultProjectOptions.nonFlagArgs = cliOptions._;
-    defaultProjectOptions.testPathPattern = normalizeTestPathPattern(cliOptions);
-    return defaultProjectOptions;
+        return mergeConfig;
+    }, normalizedConfig);
+
+    return normalizedConfig;
 }

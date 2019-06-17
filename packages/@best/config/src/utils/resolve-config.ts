@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { PACKAGE_JSON, BEST_CONFIG } from './constants';
-import { RawBestConfig } from '../internal-types';
+import { UserBestConfig } from '../internal-types';
 
 function isFile(filePath:string) {
     return fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
@@ -35,7 +35,7 @@ export function resolveConfigPath(pathToResolve: string, cwd: string) {
     return resolveConfigPathByTraversing(absolutePath, pathToResolve, cwd);
 }
 
-export function readConfigAndSetRootDir(configPath: string): RawBestConfig {
+export function readConfigAndSetRootDir(configPath: string): UserBestConfig {
     const isJSON = configPath.endsWith('.json');
     let configObject;
     try {
@@ -69,6 +69,10 @@ export function readConfigAndSetRootDir(configPath: string): RawBestConfig {
     } else {
         // If rootDir is not there, we'll set it to this file's __dirname
         configObject.rootDir = path.dirname(configPath);
+    }
+
+    if (!configObject.projectName) {
+        throw new Error('A best project must have a projectName');
     }
 
     return configObject;

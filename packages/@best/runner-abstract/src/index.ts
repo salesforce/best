@@ -3,17 +3,24 @@ import express from 'express';
 import { dirname, basename, join } from 'path';
 import { spawn } from 'child_process';
 import { Socket } from 'net';
+import { RunnerOutputStream } from "@best/console-stream";
+
+interface RunnerBundle {
+    benchmarkName: string,
+    benchmarkEntry: string,
+    benchmarkFolder: string,
+    benchmarkSignature: string
+};
 
 const UPDATE_INTERVAL = 300;
 
-export default class Runner {
+export default abstract class AbstractRunner {
     app: any;
     browserInfo: any;
     page: any;
     browser: any;
 
-    async run({ benchmarkName, benchmarkEntry }: { benchmarkName: string, benchmarkEntry: string },
-        projectConfig: any, globalConfig: any, messager: any) {
+    async run({ benchmarkName, benchmarkEntry }: RunnerBundle, projectConfig: any, globalConfig: any, messager: RunnerOutputStream) {
         const opts = this.normalizeRuntimeOptions(projectConfig);
         const state = this.initializeBenchmarkState(opts);
         const { projectName } = projectConfig;

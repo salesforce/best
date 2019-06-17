@@ -1,11 +1,11 @@
 
 import { resolveConfigPath, readConfigAndSetRootDir, ensureNoDuplicateConfigs } from './utils/resolve-config';
 import { getGitInfo, GitInfo } from './utils/git';
-import { normalizeConfig, normalizeRegexPattern, normalizeRootDirPattern } from './utils/normalize';
-import { BestCliOptions, DefaultProjectOptions, FrozenProjectConfig, FrozenGlobalConfig, ProjectConfigs, ProjectConfigPlugin} from './internal-types';
+import { normalizeConfig, normalizeRootDirPattern } from './utils/normalize';
+import { BestCliOptions, NormalizedConfig, FrozenProjectConfig, FrozenGlobalConfig, ProjectConfigs, ProjectConfigPlugin} from './internal-types';
 export { BestCliOptions, FrozenProjectConfig, FrozenGlobalConfig, ProjectConfigs, ProjectConfigPlugin };
 
-function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean, gitInfo?: GitInfo): { projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig | undefined } {
+function generateProjectConfigs(options: NormalizedConfig, isRoot: boolean, gitInfo?: GitInfo): { projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig | undefined } {
     let globalConfig: FrozenGlobalConfig | undefined;
 
     if (isRoot) {
@@ -15,7 +15,6 @@ function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean,
 
         globalConfig = Object.freeze({
             gitIntegration: options.gitIntegration,
-            detectLeaks: options.detectLeaks,
             compareStats: options.compareStats,
             externalStorage: options.externalStorage,
             apiDatabase: options.apiDatabase,
@@ -24,15 +23,7 @@ function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean,
             rootProjectName: options.projectName,
             nonFlagArgs: options.nonFlagArgs,
             gitInfo: gitInfo,
-            outputMetricPattern: normalizeRegexPattern(options.outputMetricNames),
             isInteractive: options.isInteractive,
-            // outputTotals: options.outputTotals,
-            // outputHistograms: options.outputHistograms,
-            // outputHistogramPattern: normalizeRegexPattern(options.outputHistogramNames),
-            // histogramQuantileRange: options.histogramQuantileRange,
-            // histogramMaxWidth: options.histogramMaxWidth,
-            // normalize: options.normalize,
-            // openPages: options.openPages,
         });
     }
 
@@ -40,16 +31,14 @@ function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean,
         cache: options.cache,
         cacheDirectory: options.cacheDirectory,
         useHttp: options.useHttp,
-        detectLeaks: options.detectLeaks,
-        displayName: options.displayName,
         moduleDirectories: options.moduleDirectories,
         moduleFileExtensions: options.moduleFileExtensions,
         plugins: options.plugins,
         rootDir: options.rootDir,
         projectName: options.projectName,
 
-        benchmarkRunner: options.runnerConfig.alias || options.runner,
-        benchmarkRunnerConfig: options.runnerConfig.config || options.runnerConfig,
+        benchmarkRunner: options.runner,
+        benchmarkRunnerConfig: options.runnerConfig,
         benchmarkEnvironment: options.benchmarkEnvironment,
         benchmarkEnvironmentOptions: options.benchmarkEnvironmentOptions,
         benchmarkMaxDuration: options.benchmarkMaxDuration,
@@ -59,7 +48,7 @@ function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean,
         benchmarkOutput: normalizeRootDirPattern(options.benchmarkOutput, options.rootDir),
         benchmarkCustomAssets: normalizeRootDirPattern(options.benchmarkCustomAssets, options.rootDir),
         testMatch: options.testMatch,
-        testPathIgnorePatterns: options.testPathIgnorePatterns || [],
+        testPathIgnorePatterns: options.testPathIgnorePatterns
     });
 
     return { globalConfig, projectConfig };
@@ -67,8 +56,8 @@ function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean,
 
 export async function readConfig(cliOptions: BestCliOptions, packageRoot: string, parentConfigPath?: string): Promise<{ configPath: string, globalConfig?: FrozenGlobalConfig, projectConfig: FrozenProjectConfig }> {
     const configPath = resolveConfigPath(packageRoot, process.cwd());
-    const rawOptions = readConfigAndSetRootDir(configPath);
-    const options = normalizeConfig(rawOptions, cliOptions);
+    const userConfig = readConfigAndSetRootDir(configPath);
+    const options = normalizeConfig(userConfig, cliOptions);
     let gitConfig;
 
     // If we have a parent Config path, we are in a nested/project best config

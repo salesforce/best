@@ -1,31 +1,39 @@
 import { GitInfo } from "./utils/git";
 
-export interface RawBestConfig {
+export interface UserBestConfig {
     [key: string]: any;
     rootDir: string;
-    benchmarkIterations? : number;
-    compareStats?: string[];
-
+    projectName: string;
+    nonFlagArgs: string[];
 }
 
 export interface RunnerConfig {
     alias: string;
     runner: string;
-    config: any;
+    config?: any;
 }
 
-export interface DefaultProjectOptions {
-    [key: string]: any,
+export interface NormalizedConfig {
+    nonFlagArgs: string[];
     cache: boolean,
     cacheDirectory: string,
+    compareStats?: string[],
+    gitIntegration: boolean,
     useHttp: boolean,
+    externalStorage?: string,
+    apiDatabase?: string,
+    isInteractive?: boolean,
     openPages: boolean,
     moduleDirectories: string[],
     moduleFileExtensions: string[],
     moduleNameMapper: { [moduleName:string]: string },
     modulePathIgnorePatterns: string[],
+    projectName: string,
+    projects: string[],
+    plugins: ProjectConfigPlugin[],
     runner: string,
-    runnerConfig: RunnerConfig,
+    runners?: RunnerConfig[],
+    runnerConfig: any,
     benchmarkEnvironment: string,
     benchmarkEnvironmentOptions: {[key:string]: string },
     benchmarkMaxDuration: number,
@@ -35,14 +43,7 @@ export interface DefaultProjectOptions {
     benchmarkOutput: string,
     benchmarkCustomAssets: string,
     testMatch: string[],
-    samplesQuantileThreshold: number,
-    normalize: boolean,
-    outputMetricNames: string,
-    outputTotals: boolean,
-    outputHistograms: boolean,
-    outputHistogramNames: string,
-    histogramQuantileRange: [number, number],
-    histogramMaxWidth: number,
+    testPathIgnorePatterns: string[],
     rootDir: string
 }
 
@@ -66,7 +67,6 @@ export interface BestCliOptions {
 export interface GlobalConfig {
     gitIntegration: boolean;
     projects: string[];
-    detectLeaks: boolean;
     nonFlagArgs: string[];
     isInteractive? : boolean;
     gitInfo: GitInfo;
@@ -76,6 +76,7 @@ export type ProjectConfigPlugin = string | [string, { [key : string]: any }]
 
 export interface ProjectConfig {
     benchmarkRunner: string;
+    benchmarkRunnerConfig: any;
     benchmarkOutput: string;
     benchmarkCustomAssets: string;
     cacheDirectory: string;

@@ -8,6 +8,7 @@
     "performance"
   ],
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "dependencies": {
     "@best/utils": "4.0.0",
     "express": "~4.16.2"
