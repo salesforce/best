@@ -1,6 +1,6 @@
 import { preRunMessager } from '@best/messager';
 import { compareBenchmarkStats } from '@best/compare';
-import { beginBenchmarkComparisonCheck, pushBenchmarkComparisonCheck } from '@best/github-integration';
+import { beginBenchmarkComparisonCheck, pushBenchmarkComparisonCheck, updateLatestRelease } from '@best/github-integration';
 import { runBest } from './run_best';
 import git from 'simple-git/promise';
 
@@ -98,6 +98,8 @@ export async function runCompare(globalConfig: any, configs: any, outputStream: 
         if (gitIntegration && gitHubInstallation && check) {
             await pushBenchmarkComparisonCheck(gitHubInstallation, check, baseCommit, compareCommit, compareResults, globalConfig);
         }
+
+        updateLatestRelease(projectNames, globalConfig);
 
         return compareResults;
     } finally {
