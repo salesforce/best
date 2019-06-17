@@ -12,6 +12,8 @@ function md5(data: string) {
 export const saveBenchmarkSummaryInDB = (benchmarkResults: any, globalConfig: any) => {
     const db = loadDbFromConfig(globalConfig);
 
+    if (! db) { return; }
+
     return Promise.all(
         benchmarkResults.map(async (benchmarkResult: any) => {
             const { benchmarkSignature, projectConfig, environment, stats } = benchmarkResult;
@@ -30,7 +32,6 @@ export const saveBenchmarkSummaryInDB = (benchmarkResults: any, globalConfig: an
                 commit: gitCommit,
                 commitDate: gitCommitDate,
                 environmentHash,
-                // TODO: not sure if this is exactly what we want to determine here 
                 temporary: gitLocalChanges
             }
 

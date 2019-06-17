@@ -4,7 +4,8 @@
     "author": "Jason Silberman",
     "dependencies": {
         "node-pg-migrate": "^3.21.1",
-        "pg": "^7.11.0"
+        "pg": "^7.11.0",
+        "sqlite": "^3.0.3"
     },
     "devDependencies": {
         "@types/pg": "^7.4.14"
