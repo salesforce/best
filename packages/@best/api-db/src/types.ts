@@ -13,6 +13,7 @@ export interface Metric {
 
 export interface TemporarySnapshot {
     name: string;
+    branch: string;
     metrics: Metric[];
     environmentHash: string;
     similarityHash: string;
@@ -35,11 +36,15 @@ export class ApiDBAdapter {
         throw new Error('ApiDB.fetchProjects() not implemented')
     }
 
-    fetchSnapshots(projectId: number, since: string): Promise<Snapshot[]> {
+    fetchSnapshots(projectId: number, branch: string, since: string): Promise<Snapshot[]> {
         throw new Error('ApiDB.fetchSnapshots() not implemented')
     }
     
     saveSnapshots(snapshots: TemporarySnapshot[], projectName: string): Promise<boolean> {
         throw new Error('ApiDB.saveSnapshots() not implemented')
+    }
+
+    updateLastRelease(projectName: string, release: string | Date): Promise<boolean> {
+        throw new Error('ApiDB.updateLastRelease() not implemented')
     }
 }

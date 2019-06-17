@@ -22,7 +22,7 @@ export abstract class SQLDatabase {
         return this.query('SELECT * FROM projects', [])
     }
 
-    fetchSnapshots(projectId: number, since: string): Promise<SQLQueryResult> {
+    fetchSnapshots(projectId: number, branch: string, since: string): Promise<SQLQueryResult> {
         if (since) {
             return this.query(`SELECT * FROM snapshots WHERE "project_id" = $1 AND "temporary" = '0' AND "commit_date" > $2 ORDER BY commit_date, name`, [projectId, since])
         }
@@ -38,8 +38,12 @@ export abstract class SQLDatabase {
         return this.query('INSERT INTO projects("name") VALUES ($1)', [name])
     }
 
+    updateProjectLastRelease(id: number, release: string | Date): Promise<SQLQueryResult> {
+        return this.query('UPDATE projects SET "last_release_date" = $1 WHERE "id" = $2', [release, id]);
+    }
+
     createSnapshot(snapshot: TemporarySnapshot, projectId: number): Promise<SQLQueryResult> {
-        const values = [snapshot.name, normalizeMetrics(snapshot.metrics), snapshot.environmentHash, snapshot.similarityHash, snapshot.commit, snapshot.commitDate, snapshot.temporary, projectId]
-        return this.query('INSERT INTO snapshots("name", "metrics", "environment_hash", "similarity_hash", "commit", "commit_date", "temporary", "project_id") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', values)
+        const values = [snapshot.name, normalizeMetrics(snapshot.metrics), snapshot.environmentHash, snapshot.similarityHash, snapshot.commit, snapshot.commitDate, snapshot.temporary, snapshot.branch, projectId]
+        return this.query('INSERT INTO snapshots("name", "metrics", "environment_hash", "similarity_hash", "commit", "commit_date", "temporary", "branch", "project_id") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)', values)
     }
 }

@@ -22,6 +22,7 @@ export default {
             id: row.id,
             projectId: row.project_id,
             name: row.name,
+            branch: row.branch,
             metrics: denormalizeMetrics(JSON.parse(row.metrics)),
             environmentHash: row.environment_hash,
             similarityHash: row.similarity_hash,

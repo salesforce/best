@@ -18,7 +18,7 @@ export const saveBenchmarkSummaryInDB = (benchmarkResults: any, globalConfig: an
         benchmarkResults.map(async (benchmarkResult: any) => {
             const { benchmarkSignature, projectConfig, environment, stats } = benchmarkResult;
             const { projectName } = projectConfig;
-            const { gitCommit, gitCommitDate, gitLocalChanges } = globalConfig;
+            const { gitCommit, gitCommitDate, gitBranch, gitLocalChanges } = globalConfig;
 
             const snapshotEnvironment = {
                 hardware: environment.hardware,
@@ -32,7 +32,8 @@ export const saveBenchmarkSummaryInDB = (benchmarkResults: any, globalConfig: an
                 commit: gitCommit,
                 commitDate: gitCommitDate,
                 environmentHash,
-                temporary: gitLocalChanges
+                temporary: gitLocalChanges,
+                branch: gitBranch
             }
 
             const snapshotsToSave: TemporarySnapshot[] = [];
