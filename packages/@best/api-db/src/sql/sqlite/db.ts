@@ -1,7 +1,7 @@
 import sqlite from 'sqlite'
 import { SQLDatabase, SQLQueryResult } from '../db'
 
-export default class PostgresDatabase extends SQLDatabase {
+export default class SQLiteDatabase extends SQLDatabase {
     dbPromise: any
     constructor(config: any) {
         super()
