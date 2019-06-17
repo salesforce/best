@@ -1,5 +1,6 @@
 import Octokit from '@octokit/rest';
 import { isCI } from '@best/utils';
+import { loadDbFromConfig } from '@best/api-db';
 import GithubApplicationFactory from './git-app';
 import { generateComparisonComment } from './comment';
 
@@ -33,10 +34,30 @@ function calculateAverageChange(compareStats: any) {
     return avg;
 }
 
+export async function updateLatestRelease(projectNames: any, globalConfig: any): Promise<void> {
+    try {
+        const { gitRepository } = globalConfig;
+        const { repo, owner } = gitRepository;
+        
+        const db = loadDbFromConfig(globalConfig);
+        console.log(db)
+
+        const app = GithubApplicationFactory();
+        const gitHubInstallation = await app.authenticateAsAppAndInstallation(gitRepository);
+
+        const results = await gitHubInstallation.repos.listReleases({ repo, owner });
+        if (results.data.length > 0) {
+            const latestRelease = results.data[0];
+            console.log('found release', latestRelease);
+        }
+    } catch (err) {
+        
+    }
+}
+
 export async function beginBenchmarkComparisonCheck(targetCommit: any, { gitRepository }: any): Promise<{ check?: Octokit.ChecksCreateResponse, gitHubInstallation?: Octokit }> {
     if (!isCI) {
         console.log('[NOT A CI] - The output will not be pushed.\n');
-        // only while in development...
         return {};
     }
 

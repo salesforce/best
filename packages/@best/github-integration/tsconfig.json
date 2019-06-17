@@ -6,6 +6,7 @@
   },
   "references": [
     { "path": "../messager" },
-    { "path": "../utils" }
+    { "path": "../utils" },
+    { "path": "../api-db" }
   ]
 }

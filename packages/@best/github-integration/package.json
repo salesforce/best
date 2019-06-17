@@ -10,6 +10,7 @@
   "dependencies": {
     "@best/messager": "0.7.1",
     "@best/utils": "0.7.1",
+    "@best/api-db": "0.7.1",
     "@octokit/rest": "^16.28.1",
     "base-64": "^0.1.0",
     "expand-tilde": "~2.0.2",
