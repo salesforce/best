@@ -41,6 +41,11 @@ export const options: { [key: string]: Options } = {
         description: 'Clear all generated benchmarks from the `benchmarkOutput` folder',
         type: 'boolean',
     },
+    disableInteractive: {
+        default: undefined,
+        description: 'Disabled interactivity on TTI',
+        type: 'boolean',
+    },
     externalStorage: {
         default: undefined,
         description:
@@ -83,20 +88,21 @@ export const options: { [key: string]: Options } = {
 };
 
 export function normalize(args: { [x: string]: any; _: string[]; $0: string }): BestCliOptions {
-    const { _, help, clearCache, clearResults, gitIntegration, useHttp, externalStorage, runner, runnerConfig, config, projects, iterations, compareStats } = args;
+    const { _, help, clearCache, clearResults, disableInteractive, gitIntegration, useHttp, externalStorage, runner, runnerConfig, config, projects, iterations, compareStats } = args;
     return {
         _,
         help: Boolean(help),
         clearCache: Boolean(clearCache),
         clearResults: Boolean(clearResults),
         useHttp: Boolean(useHttp),
+        disableInteractive,
         gitIntegration,
         externalStorage,
         runner,
         runnerConfig: runnerConfig ? JSON.parse(runnerConfig): {},
         config,
         projects: projects || [],
-        iterations: parseInt(iterations, 10),
+        iterations: iterations ? parseInt(iterations, 10): 0,
         compareStats
     };
 }

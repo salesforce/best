@@ -55,9 +55,16 @@ function overwriteDefaultTemplate(templatePath: string, publicFolder: string) {
     return templateOptions;
 }
 
+function wait(n: number) {
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(), n);
+    });
+}
+
 export async function buildBenchmark(entry: string, projectConfig: any, globalConfig: any, messager: any) {
     const { projectName, cacheDirectory } = projectConfig;
     messager.onBenchmarkBuildStart(entry, projectName);
+    await wait(2000);
 
     const ext = path.extname(entry);
     const benchmarkName = path.basename(entry, ext);
@@ -70,7 +77,7 @@ export async function buildBenchmark(entry: string, projectConfig: any, globalCo
         cache: ROLLUP_CACHE.get(projectName)
     });
 
-    messager.logState('Bundling benchmark files...');
+    messager.log('Bundling benchmark files...');
 
     const bundle = await rollup(inputOptions);
     ROLLUP_CACHE.set(projectName, bundle.cache);
@@ -78,7 +85,7 @@ export async function buildBenchmark(entry: string, projectConfig: any, globalCo
         file: path.join(benchmarkFolder, benchmarkJSFileName),
     });
 
-    messager.logState('Generating artifacts...');
+    messager.log('Generating artifacts...');
 
     const { output } = await bundle.generate(outputOptions);
     const code = output[0].code;
@@ -106,7 +113,7 @@ export async function buildBenchmark(entry: string, projectConfig: any, globalCo
 
     const html = generateDefaultHTML(generateHTMLOptions);
 
-    messager.logState('Saving artifacts...');
+    messager.log('Saving artifacts...');
 
     fs.writeFileSync(htmlPath, html, 'utf8');
 

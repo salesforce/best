@@ -61,6 +61,6 @@
   },
   "workspaces": [
     "packages/@best/*",
-    "packages/best"
+    "packages/*"
   ]
 }

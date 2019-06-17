@@ -19,7 +19,7 @@ const defaultOptions: DefaultProjectOptions = {
     benchmarkIterations: 0,
     benchmarkOutput: '<rootDir>/__benchmarks_results__',
     benchmarkEnvironmentOptions: {},
-    testMatch: ['**/__benchmarks__/**/*.benchmark.js', '**/?(*.)+(benchmark).js'],
+    testMatch: ['**/__benchmarks__/**/*.benchmark.js'],
 
     // Calculate statistics on entire distributions (including possible outliers).
     samplesQuantileThreshold: 1,

@@ -30,6 +30,9 @@ function setCliOptionOverrides(initialOptions: RawBestConfig, argsCLI: BestCliOp
     const argvToOptions = Object.keys(argsCLI)
         .reduce((options: any, key: string) => {
             switch (key) {
+                case 'disableInteractive':
+                    options.isInteractive = argsCLI[key];
+                    break;
                 case 'iterations':
                     options.benchmarkIterations = argsCLI[key];
                     break;

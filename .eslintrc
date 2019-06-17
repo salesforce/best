@@ -78,6 +78,19 @@
     "overrides": [
         {
             "files": [
+                "**/__benchmarks__/**"
+            ],
+
+            "env": {
+                "jest": true
+            },
+            "globals": {
+                "benchmark": "readonly",
+                "run": "readonly"
+            }
+        },
+        {
+            "files": [
                 "**/__tests__/**",
                 "**/__mocks__/**"
             ],

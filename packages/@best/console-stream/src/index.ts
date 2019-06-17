@@ -1,3 +1,4 @@
 import OutputStream from "./output-stream";
+import BuildOutputStream from "./build-stream";
 
-export { OutputStream };
+export { OutputStream, BuildOutputStream };

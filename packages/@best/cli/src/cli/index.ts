@@ -7,7 +7,7 @@ import { OutputStream } from '@best/console-stream';
 import { logError } from "@best/utils";
 import { runBest } from '../run_best';
 import { runCompare } from '../run_compare';
-import { ProjectConfigs, ProjectConfig } from '@best/config/build/types';
+import { ProjectConfigs, FrozenProjectConfig } from '@best/config/build/types';
 
 export function buildArgs(maybeArgv?: string[]): BestCliOptions {
     const parsedArgs = yargs(maybeArgv || process.argv.slice(2))
@@ -41,8 +41,11 @@ export async function run(maybeArgv?: string[], project?: string) {
         const projects = getProjectListFromCLIArgs(argsCLI, project);
         await runCLI(argsCLI, projects);
     } catch (error) {
-        const errParts: any = error.stack ? error.stack.split('\n') : ['unknown', 'unknown'];
-        logError(errParts.shift());
+        const errParts: string[] = error.stack ? error.stack.split('\n') : ['unknown', 'unknown'];
+        const errTitle = errParts.shift();
+        if (errTitle) {
+            logError(errTitle);
+        }
         console.warn(errParts.join('\n'));
         process.exit(1);
         throw error;
@@ -55,16 +58,16 @@ export async function runCLI(argsCLI: BestCliOptions, projects: string[]) {
     let results;
 
     try {
-        outputStream.writeln('Looking for Best configurations...');
+        outputStream.write('Looking for Best configurations...');
         projectConfigs = await getConfigs(projects, argsCLI);
     } finally {
-        outputStream.clearAll();
+        outputStream.clearLine();
     }
 
     const { globalConfig, configs } = projectConfigs;
 
     if (argsCLI.clearCache) {
-        configs.forEach((config : ProjectConfig) => {
+        configs.forEach((config : FrozenProjectConfig) => {
             rimraf.sync(config.cacheDirectory);
             outputStream.writeln(`Cleared ${config.cacheDirectory}`);
         });
@@ -80,13 +83,13 @@ export async function runCLI(argsCLI: BestCliOptions, projects: string[]) {
     } else {
         if (argsCLI.clearResults) {
             outputStream.writeln('Clearing previous benchmark results...');
-            configs.forEach((config: any) => {
+            configs.forEach((config: FrozenProjectConfig) => {
                 rimraf.sync(config.benchmarkOutput);
                 outputStream.writeln(`- Cleared: ${config.benchmarkOutput}`);
             });
         }
 
-        results = await runBest(globalConfig, configs, outputStream);
+        results = await runBest(globalConfig, configs, process.stdout);
 
         if (!results) {
             throw new Error('AggregatedResult must be present after test run is complete');

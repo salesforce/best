@@ -1,12 +1,14 @@
-import globby from 'globby';
+ import fg from 'fast-glob';
 import { buildBenchmarks } from '@best/builder';
 import { runBenchmarks } from '@best/runner';
-import { BuildStateMessager, RunnerMessager } from '@best/messager';
+import { RunnerMessager } from '@best/messager';
+import { BuildOutputStream } from "@best/console-stream";
 import { storeBenchmarkResults } from '@best/store';
 import { saveBenchmarkSummaryInDB } from '@best/api-db';
 import { analyzeBenchmarks } from '@best/analyzer';
 import path from 'path';
 import micromatch from 'micromatch';
+import { FrozenGlobalConfig, FrozenProjectConfig } from '@best/config/build/types';
 
 const IGNORE_PATHS = [
     '**/__benchmarks_results__/**',
@@ -14,56 +16,51 @@ const IGNORE_PATHS = [
     '**/__tests__/**'
 ];
 
-async function getBenchmarkPaths({ rootDir }: any, config: any) {
-    const { testMatch, rootDir: projectRoot } = config;
-    const cwd = projectRoot || rootDir;
-    const ignorePaths = IGNORE_PATHS.concat(config.testPathIgnorePatterns || []);
-    const results = await globby(testMatch, { cwd, ignore: ignorePaths });
-    return results.map((p: any) => path.resolve(cwd, p));
+async function getBenchmarkPaths(config: FrozenProjectConfig, globalConfig: FrozenGlobalConfig): Promise<string[]> {
+    const { testMatch, testPathIgnorePatterns, rootDir: cwd } = config;
+    const ignore = [...IGNORE_PATHS, ...testPathIgnorePatterns];
+    const results = await fg(testMatch, { onlyFiles: true, ignore, cwd });
+    return results.map((benchPath: string) => path.resolve(cwd, benchPath));
 }
 
-function filterBenchmarks(matches: any, { nonFlagArgs, rootDir }: any) {
-    if (!nonFlagArgs || !nonFlagArgs.length) {
+function filterBenchmarks(matches: string[], filters: string[]) {
+    if (!filters || !filters.length) {
         return matches;
     }
-
-    const patterns = nonFlagArgs.map((p: any) => {
-        // To provide a good test matching we need to disambiguate between
-        // glob patterns vs. full path diretory vs a specific file.
-        if (p.includes('*')) {
-            return p;
+    // We are doing a OR with the filters (we return the sum of them matches)
+    const filteredMatches = filters.reduce((reducer: string[], filter: string): string[] => {
+        let newMatches: string[];
+        if (filter.includes('*')) {
+            newMatches = micromatch(matches, filter);
+        } else {
+            newMatches = matches.filter((match) => match.includes(filter));
         }
 
-        if (path.extname(p)) {
-            return path.resolve(rootDir, p);
-        }
+        return [...reducer, ...newMatches];
+    }, []);
 
-        return path.join(path.resolve(rootDir, p), '**');
-    });
-
-    return micromatch(matches, patterns);
+    // Dedupe results (not the most efficient, but the most idiomatic)
+    return Array.from(new Set(filteredMatches));
 }
 
-function validateBenchmarkNames(matches: any) {
-    matches.reduce((visited: any, p: any) => {
+function validateBenchmarkNames(matches: string[]) {
+    matches.reduce((visited: Set<string>, p: string) => {
         const filename = path.basename(p);
-        if (visited[filename]) {
+
+        if (visited.has(p)) {
             throw new Error(`Duplicated benchmark filename "${filename}". All benchmark file names must be unique.`);
         }
-        visited[filename] = true;
-        return visited;
-    }, {});
+        return visited.add(filename);
+    }, new Set());
 }
 
-async function getBenchmarkTests(configs: any, globalConfig: any) {
-    return Promise.all(
-        configs.map(async (config: any) => {
-            let matches = await getBenchmarkPaths(globalConfig, config);
-            matches = filterBenchmarks(matches, globalConfig);
-            validateBenchmarkNames(matches);
-            return { config, matches };
-        })
-    );
+async function getBenchmarkTests(projectConfigs: FrozenProjectConfig[], globalConfig: FrozenGlobalConfig): Promise<{ config: FrozenProjectConfig, matches: string[] }[]> {
+    return Promise.all(projectConfigs.map(async (projectConfig: FrozenProjectConfig) => {
+        const allBenchmarks = await getBenchmarkPaths(projectConfig, globalConfig);
+        const filteredBenchmarks = filterBenchmarks(allBenchmarks, globalConfig.nonFlagArgs);
+        validateBenchmarkNames(filteredBenchmarks);
+        return { config: projectConfig, matches: filteredBenchmarks };
+    }));
 }
 
 async function buildBundleBenchmarks(benchmarksTests: any, globalConfig: any, messager: any) {
@@ -87,11 +84,11 @@ async function runBundleBenchmarks(benchmarksBuilds: any, globalConfig: any, mes
     return runBenchmarks(benchmarksBuilds, globalConfig, messager);
 }
 
-function hasMatches(benchmarksTests: any) {
-    return benchmarksTests.some(({ matches }: any) => matches.length);
+function hasMatches(benchmarksTests: { config: FrozenProjectConfig, matches: string[] }[]) {
+    return benchmarksTests.some(({ matches }) => matches.length);
 }
 
-export async function runBest(globalConfig: any, configs: any, outputStream: any) {
+export async function runBest(globalConfig: FrozenGlobalConfig, configs: FrozenProjectConfig[], outputStream: NodeJS.WriteStream) {
     const benchmarksTests = await getBenchmarkTests(configs, globalConfig);
 
     if (!hasMatches(benchmarksTests)) {
@@ -99,7 +96,8 @@ export async function runBest(globalConfig: any, configs: any, outputStream: any
         return [];
     }
 
-    const buildMessager = new BuildStateMessager(benchmarksTests, globalConfig, outputStream);
+    const buildMessager = new BuildOutputStream(benchmarksTests, outputStream, globalConfig.isInteractive);
+    buildMessager.initBuild();
     const benchmarksBuilds = await buildBundleBenchmarks(benchmarksTests, globalConfig, buildMessager);
     buildMessager.finishBuild();
 

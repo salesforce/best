@@ -1,3 +1,4 @@
+
 export interface RawBestConfig {
     [key: string]: any;
     rootDir: string;
@@ -59,10 +60,17 @@ export interface GlobalConfig {
     gitIntegration: boolean;
     projects: string[];
     detectLeaks: boolean;
+    nonFlagArgs: string[];
+    isInteractive? : boolean;
 }
 
 export interface ProjectConfig {
     cacheDirectory: string;
+    benchmarkOutput: string;
+    rootDir: string;
+    testMatch: string[];
+    testPathIgnorePatterns: string[];
+    projectName: string;
 }
 
 export type FrozenGlobalConfig = Readonly<GlobalConfig>;

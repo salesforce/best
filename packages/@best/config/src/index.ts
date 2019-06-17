@@ -21,6 +21,7 @@ function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean,
             nonFlagArgs: options.nonFlagArgs,
             gitInfo: gitInfo,
             outputMetricPattern: normalizeRegexPattern(options.outputMetricNames),
+            isInteractive: options.isInteractive,
             // outputTotals: options.outputTotals,
             // outputHistograms: options.outputHistograms,
             // outputHistogramPattern: normalizeRegexPattern(options.outputHistogramNames),
@@ -54,7 +55,7 @@ function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean,
         benchmarkOutput: normalizeRootDirPattern(options.benchmarkOutput, options.rootDir),
 
         testMatch: options.testMatch,
-        testPathIgnorePatterns: options.testPathIgnorePatterns,
+        testPathIgnorePatterns: options.testPathIgnorePatterns || [],
     });
 
     return { globalConfig, projectConfig };
