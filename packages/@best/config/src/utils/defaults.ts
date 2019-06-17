@@ -1,5 +1,5 @@
 import { cacheDirectory } from '@best/utils';
-import { DefaultProjectOptions } from "../types";
+import { DefaultProjectOptions } from "../internal-types";
 
 const defaultOptions: DefaultProjectOptions = {
     cache: true,
@@ -11,7 +11,11 @@ const defaultOptions: DefaultProjectOptions = {
     moduleNameMapper: {},
     modulePathIgnorePatterns: [],
     runner: "default",
-    runnerConfig: [{ runner: '@best/runner-headless', config: {} }],
+    runnerConfig: {
+        alias: "default",
+        runner: '@best/runner-headless',
+        config: {}
+    },
     benchmarkEnvironment: 'production',
     benchmarkMaxDuration: 1000 * 15, // 15s
     benchmarkMinIterations: 30,
@@ -19,6 +23,7 @@ const defaultOptions: DefaultProjectOptions = {
     benchmarkIterations: 0,
     benchmarkOutput: '<rootDir>/__benchmarks_results__',
     benchmarkEnvironmentOptions: {},
+    benchmarkCustomAssets: '<rootDir>/__benchmarks__/assets',
     testMatch: ['**/__benchmarks__/**/*.benchmark.js'],
 
     // Calculate statistics on entire distributions (including possible outliers).

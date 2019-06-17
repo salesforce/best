@@ -1,14 +1,13 @@
  import fg from 'fast-glob';
-import { buildBenchmarks } from '@best/builder';
+import { buildBenchmarks, BuildConfig } from '@best/builder';
 import { runBenchmarks } from '@best/runner';
-import { RunnerMessager } from '@best/messager';
-import { BuildOutputStream } from "@best/console-stream";
+import { BuildOutputStream, RunnerOutputStream } from "@best/console-stream";
 import { storeBenchmarkResults } from '@best/store';
 import { saveBenchmarkSummaryInDB } from '@best/api-db';
 import { analyzeBenchmarks } from '@best/analyzer';
 import path from 'path';
 import micromatch from 'micromatch';
-import { FrozenGlobalConfig, FrozenProjectConfig } from '@best/config/build/types';
+import { FrozenGlobalConfig, FrozenProjectConfig } from '@best/config';
 
 const IGNORE_PATHS = [
     '**/__benchmarks_results__/**',
@@ -64,24 +63,20 @@ async function getBenchmarkTests(projectConfigs: FrozenProjectConfig[], globalCo
 }
 
 async function buildBundleBenchmarks(benchmarksTests: { config: FrozenProjectConfig; matches: string[] }[], globalConfig: FrozenGlobalConfig, messager: BuildOutputStream) {
-    const bundle = [];
+    const benchmarkBuilds: BuildConfig[] = [];
     // @dval: We don't parallelize here for now since this wouldn't give us much,
     // Unless we do proper spawning on threads
     for (const benchmarkTest of benchmarksTests) {
         const { matches, config } = benchmarkTest;
         const result = await buildBenchmarks(matches, config, globalConfig, messager);
-        bundle.push(result);
+        benchmarkBuilds.push(...result);
     }
 
-    // Flatten the per-project benchmarks tests
-    return bundle.reduce((benchmarks, benchBundle) => {
-        benchmarks.push(...benchBundle);
-        return benchmarks;
-    }, []);
+    return benchmarkBuilds;
 }
 
-async function runBundleBenchmarks(benchmarksBuilds: any, globalConfig: any, messager: any) {
-    return runBenchmarks(benchmarksBuilds, globalConfig, messager);
+async function runBundleBenchmarks(benchmarksBuilds: BuildConfig[], globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerOutputStream) {
+    return runBenchmarks(benchmarksBuilds, globalConfig, runnerLogStream);
 }
 
 function hasMatches(benchmarksTests: { config: FrozenProjectConfig, matches: string[] }[]) {
@@ -96,14 +91,15 @@ export async function runBest(globalConfig: FrozenGlobalConfig, configs: FrozenP
         return [];
     }
 
-    const buildMessager = new BuildOutputStream(benchmarksTests, outputStream, globalConfig.isInteractive);
-    buildMessager.initBuild();
-    const benchmarksBuilds = await buildBundleBenchmarks(benchmarksTests, globalConfig, buildMessager);
-    buildMessager.finishBuild();
+    const buildLogStream = new BuildOutputStream(benchmarksTests, outputStream, globalConfig.isInteractive);
+    buildLogStream.init();
+    const benchmarksBuilds = await buildBundleBenchmarks(benchmarksTests, globalConfig, buildLogStream);
+    buildLogStream.finish();
 
-    const runnerMessager = new RunnerMessager(benchmarksBuilds, globalConfig, outputStream);
-    const benchmarkBundleResults = await runBundleBenchmarks(benchmarksBuilds, globalConfig, runnerMessager);
-    runnerMessager.finishRun();
+    const runnerLogStream = new RunnerOutputStream(benchmarksBuilds, outputStream, globalConfig.isInteractive);
+    runnerLogStream.init();
+    const benchmarkBundleResults = await runBundleBenchmarks(benchmarksBuilds, globalConfig, runnerLogStream);
+    runnerLogStream.finish();
 
     await analyzeBenchmarks(benchmarkBundleResults);
     await storeBenchmarkResults(benchmarkBundleResults, globalConfig);

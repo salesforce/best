@@ -7,6 +7,7 @@
     "performance"
   ],
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "dependencies": {
     "@best/utils": "4.0.0",
     "chalk": "~2.4.2"

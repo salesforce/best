@@ -4,28 +4,22 @@ import chalk from "chalk";
 import trimPath from "./utils/trim-path";
 import countEOL from "./utils/count-eod";
 
-interface ProjectBenchmarkTests {
-    config: { projectName: string; rootDir: string },
-    matches: string[]
-}
-type ListProjectBenchmarkTests = ProjectBenchmarkTests[];
-
 enum State {
     QUEUED = 'QUEUED',
-    BUILDING = 'BUILDING',
+    RUNNING = 'RUNNING',
     DONE = 'DONE',
 }
 
-interface BenchmarkState { state: State; displayPath: string; projectName: string }
-type AllBencharkState = Map<string, BenchmarkState>
+interface BenchmarkRunnerState { state: State; displayPath: string; projectName: string }
+type AllBencharkRunnerState = Map<string, BenchmarkRunnerState>
 
 const STATE_ANSI = {
-    BUILDING: chalk.reset.inverse.yellow.bold(` ${State.BUILDING} `),
+    RUNNING: chalk.reset.inverse.yellow.bold(` ${State.RUNNING} `),
     QUEUED: chalk.reset.inverse.gray.bold(`  ${State.QUEUED}  `),
     DONE: chalk.reset.inverse.green.bold(`   ${State.DONE}   `)
 };
 
-const INIT_MSG = '\n Building benchmarks... \n\n';
+const INIT_MSG = '\n Running benchmarks... \n\n';
 
 function printState(state: State) {
     return STATE_ANSI[state];
@@ -41,29 +35,31 @@ function printProjectName(projectName: string) {
     return ' ' + chalk.reset.cyan.dim(`(${projectName})`);
 }
 
+interface BuildConfig {
+    benchmarkName: string,
+    benchmarkFolder: string,
+    benchmarkSignature: string,
+    benchmarkEntry: string,
+    projectConfig: any,
+    globalConfig: any,
+}
+
 export default class BuildOutputStream {
     stdout: NodeJS.WriteStream;
     isInteractive: boolean;
     _streamBuffer: string = '';
-    _state: AllBencharkState;
+    _state: AllBencharkRunnerState;
     _innerLog: string = '';
     _scheduled: NodeJS.Timeout | null = null;
 
-    constructor(buildConfig: ListProjectBenchmarkTests, stream: NodeJS.WriteStream, isInteractive?: boolean) {
+    constructor(buildConfig: BuildConfig[], stream: NodeJS.WriteStream, isInteractive?: boolean) {
         this.stdout = stream;
         this.isInteractive = isInteractive !== undefined ? isInteractive : globaIsInteractive;
         this._state = this.initState(buildConfig);
     }
 
-    initState(buildConfig: ListProjectBenchmarkTests) {
-        return buildConfig.reduce((state: AllBencharkState, { matches,  config: { rootDir, projectName } }: ProjectBenchmarkTests) => {
-            matches.forEach((benchmarkAbsPath) => {
-                state.set(benchmarkAbsPath, {
-                    projectName,
-                    state: State.QUEUED,
-                    displayPath: path.relative(rootDir, benchmarkAbsPath),
-                });
-            });
+    initState(buildConfig: BuildConfig[]) {
+        return buildConfig.reduce((state: AllBencharkRunnerState, build: any) => {
             return state;
         }, new Map());
     }
@@ -85,25 +81,12 @@ export default class BuildOutputStream {
         this.stdout.write(str);
     }
 
-    updateBenchmarkState(benchmarkPath: string, state: State) {
+    updateRunnerState(benchmarkPath: string, state: State) {
         const stateConfig = this._state.get(benchmarkPath);
         if (!stateConfig) {
             throw new Error(`Unknown benchmark build started  (${benchmarkPath})`);
         }
         stateConfig.state = state;
-    }
-
-    onBenchmarkBuildStart(benchmarkPath: string) {
-        this.updateBenchmarkState(benchmarkPath, State.BUILDING);
-        if (this.isInteractive) {
-            this.scheduleUpdate();
-        } else {
-            const benchmarkState = this._state.get(benchmarkPath);
-            if (benchmarkState) {
-                this.stdout.write(this.printBenchmark(benchmarkState));
-            }
-        }
-
     }
 
     scheduleUpdate() {
@@ -115,7 +98,7 @@ export default class BuildOutputStream {
         }
     }
 
-    printBenchmark({ state, projectName, displayPath }:{ state: State, projectName: string, displayPath: string }) {
+    printRunner({ state, projectName, displayPath }:{ state: State, projectName: string, displayPath: string }) {
         const columns = this.stdout.columns || 80;
         const overflow = columns - (state.length + projectName.length + displayPath.length + /* for padding */ 10);
         const hasOverflow = overflow < 0;
@@ -131,7 +114,7 @@ export default class BuildOutputStream {
         const innerState = this._innerLog;
         let buffer = INIT_MSG;
         for (const { state, displayPath, projectName } of this._state.values()) {
-            buffer += this.printBenchmark({ state, displayPath, projectName });
+            buffer += this.printRunner({ state, displayPath, projectName });
         }
 
         if (innerState) {
@@ -140,20 +123,6 @@ export default class BuildOutputStream {
 
         this.clearBufferStream();
         this.writeBufferStream(buffer);
-    }
-
-    onBenchmarkBuildEnd(benchmarkPath: string) {
-        this.updateBenchmarkState(benchmarkPath, State.DONE);
-        this._innerLog = '';
-
-        if (this.isInteractive) {
-            this.scheduleUpdate();
-        } else {
-            const benchmarkState = this._state.get(benchmarkPath);
-            if (benchmarkState) {
-                this.stdout.write(this.printBenchmark(benchmarkState) + '\n');
-            }
-        }
     }
 
     log(message: string) {

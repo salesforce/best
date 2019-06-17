@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { PACKAGE_JSON, BEST_CONFIG } from './constants';
-import { RawBestConfig } from '../types';
+import { RawBestConfig } from '../internal-types';
 
 function isFile(filePath:string) {
     return fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();

@@ -1,7 +1,10 @@
-export async function runBenchmarks(benchmarksBuilds: any, globalConfig: any, messager: any) {
+import { BuildConfig } from "@best/builder";
+import { FrozenGlobalConfig } from "@best/config";
+import { RunnerOutputStream } from "@best/console-stream";
+
+export async function runBenchmarks(benchmarksBuilds: BuildConfig[], globalConfig: FrozenGlobalConfig, messager: RunnerOutputStream) {
     const results = [];
     for (const benchmarkBuild of benchmarksBuilds) {
-        benchmarkBuild.globalConfig = globalConfig;
         const benchmarkResults = await runBenchmark(benchmarkBuild, messager);
         results.push(benchmarkResults);
     }
@@ -9,10 +12,8 @@ export async function runBenchmarks(benchmarksBuilds: any, globalConfig: any, me
     return results;
 }
 
-export async function runBenchmark(
-    { benchmarkName, benchmarkEntry, benchmarkSignature, projectConfig, globalConfig }:{ benchmarkName: string, benchmarkEntry: string, benchmarkSignature: string, projectConfig: any, globalConfig: any },
-    messager: any,
-) {
+export async function runBenchmark(benchmarkBuild: BuildConfig, messager: RunnerOutputStream) {
+    const { benchmarkName, benchmarkEntry, benchmarkSignature, projectConfig, globalConfig } = benchmarkBuild;
     const { benchmarkRunner } = projectConfig;
 
     // Allow runners with various module signatures to be plugged in.

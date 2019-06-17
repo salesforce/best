@@ -7,7 +7,7 @@ import { OutputStream } from '@best/console-stream';
 import { logError } from "@best/utils";
 import { runBest } from '../run_best';
 import { runCompare } from '../run_compare';
-import { ProjectConfigs, FrozenProjectConfig } from '@best/config/build/types';
+import { ProjectConfigs, FrozenProjectConfig } from '@best/config';
 
 export function buildArgs(maybeArgv?: string[]): BestCliOptions {
     const parsedArgs = yargs(maybeArgv || process.argv.slice(2))

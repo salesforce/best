@@ -1,5 +1,3 @@
-const REGEX_BRACKETS = /{{([\w]+)}}/g;
-
 // The '<!-- saved from ... -->' syntax is required to let IE know that this content is safe to execute.
 // Full details are here: https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/compatibility/ms537628(v=vs.85)
 // Also, note that the line endings have to be <CR><LF> for Internet Explorer to correctly recognize the mark.
@@ -14,19 +12,19 @@ const DEFAULT_HTML = `<!DOCTYPE html>
   </head>
   <body>
     <script>window.BEST_CONFIG = { benchmarkName: "{{benchmarkName}}" }</script>
-    <script src="{{benchmarkJS}}" type="text/javascript"></script>
+    <script src="{{benchmarkJs}}" type="text/javascript"></script>
   </body>
 </html>
-`.replace(/(\r\n|\r|\n)/g, '\r\n');
+`;
 
-export function generateParametrizedHTML(html: string, options: any) {
-    return html.replace(REGEX_BRACKETS, (m, p) => options[p] || `{{undefined_${p}}}`);
+export interface HtmlOptions {
+    benchmarkName: string;
+    benchmarkJs: string;
+    htmlTemplate?: string;
 }
 
-export function generateDefaultHTML(options: any) {
-    let template = DEFAULT_HTML;
-    if (Object.keys(options).indexOf("customTemplate") > -1) {
-        template = options.customTemplate;
-    }
-    return generateParametrizedHTML(template, options);
+export default function generateHTML({ benchmarkName, benchmarkJs, htmlTemplate = DEFAULT_HTML }: HtmlOptions) {
+    return htmlTemplate
+        .replace(/{{benchmarkName}}/g, benchmarkName)
+        .replace('{{benchmarkJs}}', benchmarkJs);
 }

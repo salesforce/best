@@ -1,6 +1,6 @@
 import path from 'path';
 import chalk from 'chalk';
-import { BestCliOptions, RawBestConfig, DefaultProjectOptions } from '../types';
+import { BestCliOptions, RawBestConfig, DefaultProjectOptions, RunnerConfig } from '../internal-types';
 import DEFAULT_CONFIG from './defaults';
 import { replacePathSepForRegex } from '@best/regex-util';
 
@@ -11,18 +11,17 @@ function normalizeModulePathPatterns(options: any, key: string) {
     return options[key].map((pattern: any) => replacePathSepForRegex(normalizeRootDirPattern(pattern, options.rootDir)));
 }
 
-function normalizeRunnerConfig(runnerConfig: any, { runner }: any) {
+function normalizeRunnerConfig(runnerConfig: RunnerConfig | RunnerConfig[], { runner }: RawBestConfig) {
     if (!Array.isArray(runnerConfig)) {
         runnerConfig = [runnerConfig];
     }
 
-    const defaultRunners = runnerConfig.filter((c: any) => c.name === undefined || c.name === 'default');
-    if (defaultRunners > 1) {
+    const defaultRunners = runnerConfig.filter((c: RunnerConfig) => c.alias === undefined || c.alias === 'default');
+    if (defaultRunners.length > 1) {
         throw new Error('Wrong configuration: More than one default configuration declared');
     }
 
-    const match = runnerConfig.find((c: any) => c.name === runner) || defaultRunners[0] || {};
-
+    const match = runnerConfig.find((c: RunnerConfig) => c.alias === runner) || defaultRunners[0] || {};
     return match;
 }
 

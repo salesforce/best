@@ -8,6 +8,12 @@ export interface RawBestConfig {
 
 }
 
+export interface RunnerConfig {
+    alias: string;
+    runner: string;
+    config: any;
+}
+
 export interface DefaultProjectOptions {
     [key: string]: any,
     cache: boolean,
@@ -19,14 +25,15 @@ export interface DefaultProjectOptions {
     moduleNameMapper: { [moduleName:string]: string },
     modulePathIgnorePatterns: string[],
     runner: string,
-    runnerConfig: any,
+    runnerConfig: RunnerConfig,
     benchmarkEnvironment: string,
+    benchmarkEnvironmentOptions: {[key:string]: string },
     benchmarkMaxDuration: number,
     benchmarkMinIterations: number,
     benchmarkOnClient: boolean,
     benchmarkIterations: number,
     benchmarkOutput: string,
-    benchmarkEnvironmentOptions: {[key:string]: string },
+    benchmarkCustomAssets: string,
     testMatch: string[],
     samplesQuantileThreshold: number,
     normalize: boolean,
@@ -56,7 +63,6 @@ export interface BestCliOptions {
     compareStats: string[] | undefined
 }
 
-
 export interface GlobalConfig {
     gitIntegration: boolean;
     projects: string[];
@@ -69,18 +75,19 @@ export interface GlobalConfig {
 export type ProjectConfigPlugin = string | [string, { [key : string]: any }]
 
 export interface ProjectConfig {
-    cacheDirectory: string;
+    benchmarkRunner: string;
     benchmarkOutput: string;
+    benchmarkCustomAssets: string;
+    cacheDirectory: string;
+    projectName: string;
+    plugins: ProjectConfigPlugin[];
     rootDir: string;
     testMatch: string[];
     testPathIgnorePatterns: string[];
-    projectName: string;
-    plugins: ProjectConfigPlugin[];
 }
 
 export type FrozenGlobalConfig = Readonly<GlobalConfig>;
 export type FrozenProjectConfig = Readonly<ProjectConfig>;
-
 
 export interface ProjectConfigs {
     globalConfig: FrozenGlobalConfig,

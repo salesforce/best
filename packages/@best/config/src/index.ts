@@ -2,15 +2,15 @@
 import { resolveConfigPath, readConfigAndSetRootDir, ensureNoDuplicateConfigs } from './utils/resolve-config';
 import { getGitInfo, GitInfo } from './utils/git';
 import { normalizeConfig, normalizeRegexPattern, normalizeRootDirPattern } from './utils/normalize';
-import { BestCliOptions, DefaultProjectOptions, FrozenProjectConfig, FrozenGlobalConfig, ProjectConfigs } from './types';
-export { BestCliOptions };
+import { BestCliOptions, DefaultProjectOptions, FrozenProjectConfig, FrozenGlobalConfig, ProjectConfigs, ProjectConfigPlugin} from './internal-types';
+export { BestCliOptions, FrozenProjectConfig, FrozenGlobalConfig, ProjectConfigs, ProjectConfigPlugin };
 
 function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean, gitInfo?: GitInfo): { projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig | undefined } {
     let globalConfig: FrozenGlobalConfig | undefined;
 
     if (isRoot) {
         if (!gitInfo) {
-            throw new Error('Unable to read git info');
+            throw new Error('Unable to read git information');
         }
 
         globalConfig = Object.freeze({
@@ -48,7 +48,7 @@ function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean,
         rootDir: options.rootDir,
         projectName: options.projectName,
 
-        benchmarkRunner: options.runnerConfig.runner || options.runner,
+        benchmarkRunner: options.runnerConfig.alias || options.runner,
         benchmarkRunnerConfig: options.runnerConfig.config || options.runnerConfig,
         benchmarkEnvironment: options.benchmarkEnvironment,
         benchmarkEnvironmentOptions: options.benchmarkEnvironmentOptions,
@@ -57,7 +57,7 @@ function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean,
         benchmarkIterations: options.benchmarkIterations,
         benchmarkOnClient: options.benchmarkOnClient,
         benchmarkOutput: normalizeRootDirPattern(options.benchmarkOutput, options.rootDir),
-
+        benchmarkCustomAssets: normalizeRootDirPattern(options.benchmarkCustomAssets, options.rootDir),
         testMatch: options.testMatch,
         testPathIgnorePatterns: options.testPathIgnorePatterns || [],
     });
