@@ -66,6 +66,11 @@ export async function runCLI(argsCLI: BestCliOptions, projects: string[]) {
 
     const { globalConfig, configs } = projectConfigs;
 
+    if (argsCLI.showConfigs) {
+        outputStream.writeln(JSON.stringify({ globalConfig, configs }, null, '  '));
+        return process.exit(0);
+    }
+
     if (argsCLI.clearCache) {
         configs.forEach((config : FrozenProjectConfig) => {
             rimraf.sync(config.cacheDirectory);

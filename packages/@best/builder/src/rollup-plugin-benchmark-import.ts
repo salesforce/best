@@ -1,3 +1,5 @@
+import { RollupOptions } from "rollup";
+
 const PRIMITIVES = [
     'beforeAll',
     'beforeEach',
@@ -28,7 +30,7 @@ export default function () {
     let input: any;
     return {
         name: 'benchmark-import',
-        options(rollupOpts: any) {
+        options(rollupOpts: RollupOptions) {
             input = rollupOpts.input;
         },
         resolveId(id: string) {

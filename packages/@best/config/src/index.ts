@@ -9,6 +9,10 @@ function generateProjectConfigs(options: DefaultProjectOptions, isRoot: boolean,
     let globalConfig: FrozenGlobalConfig | undefined;
 
     if (isRoot) {
+        if (!gitInfo) {
+            throw new Error('Unable to read git info');
+        }
+
         globalConfig = Object.freeze({
             gitIntegration: options.gitIntegration,
             detectLeaks: options.detectLeaks,

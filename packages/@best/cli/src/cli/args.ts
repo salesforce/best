@@ -46,6 +46,12 @@ export const options: { [key: string]: Options } = {
         description: 'Disabled interactivity on TTI',
         type: 'boolean',
     },
+
+    showConfigs: {
+        default: undefined,
+        description: 'Displays calculated globalConfig and project configs',
+        type: 'boolean',
+    },
     externalStorage: {
         default: undefined,
         description:
@@ -88,13 +94,14 @@ export const options: { [key: string]: Options } = {
 };
 
 export function normalize(args: { [x: string]: any; _: string[]; $0: string }): BestCliOptions {
-    const { _, help, clearCache, clearResults, disableInteractive, gitIntegration, useHttp, externalStorage, runner, runnerConfig, config, projects, iterations, compareStats } = args;
+    const { _, help, clearCache, clearResults, showConfigs, disableInteractive, gitIntegration, useHttp, externalStorage, runner, runnerConfig, config, projects, iterations, compareStats } = args;
     return {
         _,
         help: Boolean(help),
         clearCache: Boolean(clearCache),
         clearResults: Boolean(clearResults),
         useHttp: Boolean(useHttp),
+        showConfigs: Boolean(showConfigs),
         disableInteractive,
         gitIntegration,
         externalStorage,
@@ -102,7 +109,7 @@ export function normalize(args: { [x: string]: any; _: string[]; $0: string }): 
         runnerConfig: runnerConfig ? JSON.parse(runnerConfig): {},
         config,
         projects: projects || [],
-        iterations: iterations ? parseInt(iterations, 10): 0,
+        iterations: iterations ? parseInt(iterations, 10): undefined,
         compareStats
     };
 }

@@ -117,7 +117,7 @@ export default class BuildOutputStream {
 
     printBenchmark({ state, projectName, displayPath }:{ state: State, projectName: string, displayPath: string }) {
         const columns = this.stdout.columns || 80;
-        const overflow = columns - (state.length + projectName.length + displayPath.length + 5) /* for padding */;
+        const overflow = columns - (state.length + projectName.length + displayPath.length + /* for padding */ 10);
         const hasOverflow = overflow < 0;
 
         const ansiState = printState(state);
@@ -151,13 +151,18 @@ export default class BuildOutputStream {
         } else {
             const benchmarkState = this._state.get(benchmarkPath);
             if (benchmarkState) {
-                this.stdout.write(this.printBenchmark(benchmarkState));
+                this.stdout.write(this.printBenchmark(benchmarkState) + '\n');
             }
         }
     }
 
     log(message: string) {
         this._innerLog = message;
+        if (this.isInteractive) {
+            this.scheduleUpdate();
+        } else {
+            this.stdout.write(` :: ${message}\n`);
+        }
     }
 
     initBuild() {
@@ -174,10 +179,10 @@ export default class BuildOutputStream {
             this._scheduled = null;
         }
 
-        if (!this.isInteractive) {
-            this.stdout.write('\n');
-        } else {
+        if (this.isInteractive) {
             this.updateStream();
+        } else {
+            this.stdout.write('\n');
         }
     }
 }

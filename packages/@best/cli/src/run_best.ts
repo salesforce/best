@@ -63,7 +63,7 @@ async function getBenchmarkTests(projectConfigs: FrozenProjectConfig[], globalCo
     }));
 }
 
-async function buildBundleBenchmarks(benchmarksTests: any, globalConfig: any, messager: any) {
+async function buildBundleBenchmarks(benchmarksTests: { config: FrozenProjectConfig; matches: string[] }[], globalConfig: FrozenGlobalConfig, messager: BuildOutputStream) {
     const bundle = [];
     // @dval: We don't parallelize here for now since this wouldn't give us much,
     // Unless we do proper spawning on threads

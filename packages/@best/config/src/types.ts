@@ -1,3 +1,4 @@
+import { GitInfo } from "./utils/git";
 
 export interface RawBestConfig {
     [key: string]: any;
@@ -51,7 +52,7 @@ export interface BestCliOptions {
     runnerConfig: { [x:string]: any },
     config: string | undefined,
     projects: string[],
-    iterations: number,
+    iterations?: number,
     compareStats: string[] | undefined
 }
 
@@ -62,7 +63,10 @@ export interface GlobalConfig {
     detectLeaks: boolean;
     nonFlagArgs: string[];
     isInteractive? : boolean;
+    gitInfo: GitInfo;
 }
+
+export type ProjectConfigPlugin = string | [string, { [key : string]: any }]
 
 export interface ProjectConfig {
     cacheDirectory: string;
@@ -71,6 +75,7 @@ export interface ProjectConfig {
     testMatch: string[];
     testPathIgnorePatterns: string[];
     projectName: string;
+    plugins: ProjectConfigPlugin[];
 }
 
 export type FrozenGlobalConfig = Readonly<GlobalConfig>;

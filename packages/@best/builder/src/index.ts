@@ -1,19 +1,21 @@
-import { rollup } from 'rollup';
+import { rollup, ModuleFormat } from 'rollup';
 import path from 'path';
 import benchmarkRollup from './rollup-plugin-benchmark-import';
-import { generateDefaultHTML } from './html-templating';
-import { ncp } from 'ncp';
-import rimraf from 'rimraf';
-import fs from 'fs';
+// import { ncp } from 'ncp';
+// import rimraf from 'rimraf';
+// import fs from 'fs';
 import crypto from 'crypto';
-import { promisify } from 'util';
+// import { promisify } from 'util';
+import mkdirp from "mkdirp";
 
-const deepDelete = promisify(rimraf);
-const deepCopy = promisify(ncp);
+import { FrozenGlobalConfig, FrozenProjectConfig, ProjectConfigPlugin } from '@best/config/build/types';
+import { BuildOutputStream } from "@best/console-stream/build/index"
 
-const BASE_ROLLUP_INPUT = {};
+// const deepDelete = promisify(rimraf);
+// const deepCopy = promisify(ncp);
+
 const BASE_ROLLUP_OUTPUT = {
-    format: 'iife',
+    format: 'iife' as ModuleFormat,
 };
 
 const ROLLUP_CACHE = new Map();
@@ -31,7 +33,7 @@ function req(id: string) {
     return r.default || r;
 }
 
-function addResolverPlugins({ plugins }: any) {
+function addResolverPlugins(plugins: ProjectConfigPlugin[]): any[] {
     if (!plugins) {
         return [];
     }
@@ -41,98 +43,100 @@ function addResolverPlugins({ plugins }: any) {
             return req(plugin)();
         } else if (Array.isArray(plugin)) {
             return req(plugin[0])(plugin[1]);
+        } else {
+            throw new Error('Invalid plugin config');
         }
-
-        return [];
     });
 }
 
-function overwriteDefaultTemplate(templatePath: string, publicFolder: string) {
-    const template = fs.readFileSync(templatePath, 'utf8');
-    const templateOptions: any = {};
-    templateOptions.customTemplate = template;
-    templateOptions.publicFolder = publicFolder;
-    return templateOptions;
-}
+// function overwriteDefaultTemplate(templatePath: string, publicFolder: string) {
+//     const template = fs.readFileSync(templatePath, 'utf8');
+//     const templateOptions: any = {};
+//     templateOptions.customTemplate = template;
+//     templateOptions.publicFolder = publicFolder;
+//     return templateOptions;
+// }
 
-function wait(n: number) {
-    return new Promise((resolve) => {
-        setTimeout(() => resolve(), n);
-    });
-}
+// function wait(n: number) {
+//     return new Promise((resolve) => {
+//         setTimeout(() => resolve(), n);
+//     });
+// }
 
-export async function buildBenchmark(entry: string, projectConfig: any, globalConfig: any, messager: any) {
-    const { projectName, cacheDirectory } = projectConfig;
-    messager.onBenchmarkBuildStart(entry, projectName);
-    await wait(2000);
+export async function buildBenchmark(entry: string, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, buildLogStream: BuildOutputStream) {
+    buildLogStream.onBenchmarkBuildStart(entry);
 
+    const { gitInfo: { lastCommit: { hash: gitHash }, localChanges } } = globalConfig;
+    const { projectName, benchmarkOutput } = projectConfig;
     const ext = path.extname(entry);
     const benchmarkName = path.basename(entry, ext);
-    const publicFolder = path.join(cacheDirectory, projectName, "public");
-    const benchmarkFolder = path.join(cacheDirectory, projectName, benchmarkName);
-    const benchmarkJSFileName = benchmarkName + ext;
-    const inputOptions = Object.assign({}, BASE_ROLLUP_INPUT, {
+    // const benchmarkJSFileName = benchmarkName + ext;
+    const benchmarkProjectFolder = path.join(benchmarkOutput, projectName);
+
+    const rollupInputOpts = {
         input: entry,
-        plugins: [benchmarkRollup(), ...addResolverPlugins(projectConfig)],
+        plugins: [benchmarkRollup(), ...addResolverPlugins(projectConfig.plugins)],
         cache: ROLLUP_CACHE.get(projectName)
-    });
+    };
 
-    messager.log('Bundling benchmark files...');
-
-    const bundle = await rollup(inputOptions);
+    buildLogStream.log('Bundling benchmark files...');
+    const bundle = await rollup(rollupInputOpts);
     ROLLUP_CACHE.set(projectName, bundle.cache);
-    const outputOptions = Object.assign({}, BASE_ROLLUP_OUTPUT, {
-        file: path.join(benchmarkFolder, benchmarkJSFileName),
-    });
 
-    messager.log('Generating artifacts...');
+    buildLogStream.log('Generating artifacts...');
+    const rollupOutputOpts = { ...BASE_ROLLUP_OUTPUT };
+    const { output } = await bundle.generate(rollupOutputOpts);
+    const code = output[0].code; // We don't do code splitting so the first one will be the one we want
+    const benchmarkSignature = md5(code);
 
-    const { output } = await bundle.generate(outputOptions);
-    const code = output[0].code;
-    await bundle.write(outputOptions);
+    const benchmarkSnapshotName = localChanges ? `${benchmarkName}_local_${benchmarkSignature}` : `${benchmarkName}_${gitHash}`;
+    const benchmarkFolder = path.join(benchmarkProjectFolder, benchmarkSnapshotName);
+    const benchmarkArtifactsFolder = path.join(benchmarkFolder, 'artifacts');
 
-    const htmlPath = path.resolve(path.join(benchmarkFolder, benchmarkName + '.html'));
-    const projectTemplatePath = path.resolve(path.join(projectConfig.rootDir, 'src', 'template.benchmark.html'));
-    const benchmarkTemplatePath = path.resolve(path.join(entry, '..', 'template.benchmark.html'));
-    const generateHTMLOptions = {
-        benchmarkJS: `./${benchmarkJSFileName}`,
-        benchmarkName
-    };
+    mkdirp.sync(benchmarkArtifactsFolder);
 
-    const templatePath =
-        fs.existsSync(benchmarkTemplatePath) ? benchmarkTemplatePath :
-            fs.existsSync(projectTemplatePath) ? projectTemplatePath :
-                undefined;
+    // const htmlPath = path.resolve(path.join(benchmarkRootFolder, benchmarkName + '.html'));
+    // const projectTemplatePath = path.resolve(path.join(projectConfig.rootDir, 'src', 'template.benchmark.html'));
+    // const benchmarkTemplatePath = path.resolve(path.join(entry, '..', 'template.benchmark.html'));
+    // const generateHTMLOptions = {
+    //     benchmarkJS: `./${benchmarkJSFileName}`,
+    //     benchmarkName
+    // };
 
-    if (templatePath) {
-        Object.assign(generateHTMLOptions, overwriteDefaultTemplate(templatePath, publicFolder));
-        const source = path.resolve(path.join(projectConfig.rootDir, "public"));
-        await deepDelete(publicFolder);
-        await deepCopy(source, publicFolder);
-    }
+    // const templatePath =
+    //     fs.existsSync(benchmarkTemplatePath) ? benchmarkTemplatePath :
+    //         fs.existsSync(projectTemplatePath) ? projectTemplatePath :
+    //             undefined;
 
-    const html = generateDefaultHTML(generateHTMLOptions);
+    // if (templatePath) {
+    //     Object.assign(generateHTMLOptions, overwriteDefaultTemplate(templatePath, publicFolder));
+    //     const source = path.resolve(path.join(projectConfig.rootDir, "public"));
+    //     await deepDelete(publicFolder);
+    //     await deepCopy(source, publicFolder);
+    // }
 
-    messager.log('Saving artifacts...');
+    // const html = generateDefaultHTML(generateHTMLOptions);
 
-    fs.writeFileSync(htmlPath, html, 'utf8');
+    // buildLogStream.log('Saving artifacts...');
 
-    messager.onBenchmarkBuildEnd(entry, projectName);
+    // fs.writeFileSync(htmlPath, html, 'utf8');
 
-    return {
-        benchmarkName,
-        benchmarkFolder,
-        benchmarkSignature: md5(code),
-        benchmarkEntry: htmlPath,
-        projectConfig,
-        globalConfig,
-    };
+    // buildLogStream.onBenchmarkBuildEnd(entry);
+
+    // return {
+    //     benchmarkName,
+    //     benchmarkFolder,
+    //     benchmarkSignature,
+    //     benchmarkEntry: htmlPath,
+    //     projectConfig,
+    //     globalConfig,
+    // };
 }
 
-export async function buildBenchmarks(benchmarks: any, projectConfig: any, globalConfig: any, messager: any) {
+export async function buildBenchmarks(benchmarks: string[], projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, buildLogStream: BuildOutputStream) {
     const benchBuild = [];
     for (const benchmark of benchmarks) {
-        const build = await buildBenchmark(benchmark, projectConfig, globalConfig, messager);
+        const build = await buildBenchmark(benchmark, projectConfig, globalConfig, buildLogStream);
         benchBuild.push(build);
     }
     return benchBuild;
