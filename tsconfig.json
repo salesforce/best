@@ -9,7 +9,6 @@
     { "path": "./packages/@best/config" },
     { "path": "./packages/@best/console-stream" },
     { "path": "./packages/@best/github-integration" },
-    { "path": "./packages/@best/messager" },
     { "path": "./packages/@best/regex-util" },
     { "path": "./packages/@best/runner" },
     { "path": "./packages/@best/runner-abstract" },

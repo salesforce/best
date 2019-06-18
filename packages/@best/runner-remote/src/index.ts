@@ -3,7 +3,6 @@ import fs from 'fs';
 import socketIO from 'socket.io-client';
 import SocketIOFile from './file-uploader';
 import { createTarBundle } from './create-tar';
-import { preRunMessager } from '@best/messager';
 
 function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConfig: any, globalConfig: any, messager: any) {
     return new Promise(async (resolve, reject) => {
@@ -21,11 +20,11 @@ function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConf
             return reject(new Error('Benchmark artifact not found (${tarBundle})'));
         }
 
-        preRunMessager.print(`Attempting connection with agent at ${host} ...`, process.stdout);
+        // preRunMessager.print(`Attempting connection with agent at ${host} ...`, process.stdout);
         const socket = socketIO(host, options);
 
         socket.on('connect', () => {
-            preRunMessager.clear(process.stdout);
+            // preRunMessager.clear(process.stdout);
 
             socket.on('load_benchmark', () => {
                 const uploader = new SocketIOFile(socket);

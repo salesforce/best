@@ -1,5 +1,4 @@
 import { compareSamples } from '@best/analyzer';
-import { preRunMessager } from '@best/messager';
 
 // function compareEnvironment(/* baseEnv, targetEnv */) {
 //     // TODO
@@ -59,7 +58,7 @@ export async function compareBenchmarkStats(baseCommit: string, targetCommit: st
         throw new Error('Recovered odd number of stats to compare');
     }
 
-    preRunMessager.print('\n Running comparison... \n\n', process.stdout);
+    // preRunMessager.print('\n Running comparison... \n\n', process.stdout);
 
     const commitComparison: any = {
         baseCommit,

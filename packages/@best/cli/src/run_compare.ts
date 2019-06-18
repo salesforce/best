@@ -1,4 +1,4 @@
-import { preRunMessager } from '@best/messager';
+
 import { compareBenchmarkStats } from '@best/compare';
 import { pushBenchmarkComparison } from '@best/github-integration';
 import { runBest } from "./run_best";
@@ -61,19 +61,19 @@ export async function runCompare(globalConfig: any, configs: any, outputStream: 
             }
 
             // Run base commit.
-            preRunMessager.print(`\n Running best for commit ${baseCommit} \n`, outputStream);
+            // preRunMessager.print(`\n Running best for commit ${baseCommit} \n`, outputStream);
             await gitCLI.checkout(baseCommit);
             await runBest({ ...runConfig, gitCommit: baseCommit }, configs, outputStream);
 
             // Run local changes or compare commit.
             if (compareCommit === 'local') {
-                preRunMessager.print(`\n Running best for local changes \n`, outputStream);
+                // preRunMessager.print(`\n Running best for local changes \n`, outputStream);
                 await gitCLI.checkout(initialBranch);
                 if (stashedLocalChanges) {
                     await gitCLI.stash({ pop: true });
                 }
             } else {
-                preRunMessager.print(`\n Running best for commit ${compareCommit} \n`, outputStream);
+                // preRunMessager.print(`\n Running best for commit ${compareCommit} \n`, outputStream);
                 await gitCLI.checkout(compareCommit);
             }
             await runBest({ ...runConfig, gitCommit: compareCommit }, configs, outputStream);

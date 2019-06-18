@@ -53,7 +53,7 @@ const STATE_ANSI = {
 const INIT_MSG = '\n Running benchmarks... \n\n';
 const PROGRESS_TEXT = chalk.dim('Progress running: ');
 const PROGRESS_BAR_WIDTH = 40;
-const SCHEDULE_TIMEOUT = 50;
+const DEFAULT_TIMEOUT = 60;
 
 function printState(state: State) {
     return STATE_ANSI[state];
@@ -85,9 +85,7 @@ function calculateBenchmarkProgress(progress: RunnerState, { iterations, maxDura
 
 function printProgressBar(runTime: number, estimatedTime: number, width: number) {
     // If we are more than one second over the estimated time, highlight it.
-    const renderedTime =
-        estimatedTime && runTime >= estimatedTime + 1 ? chalk.bold.yellow(runTime + 's') : runTime + 's';
-
+    const renderedTime = estimatedTime && runTime >= estimatedTime + 1 ? chalk.bold.yellow(runTime + 's') : runTime + 's';
     let time = chalk.bold(`Time:`) + `        ${renderedTime}`;
     if (runTime < estimatedTime) {
         time += `, estimated ${estimatedTime}s`;
@@ -160,12 +158,12 @@ export default class BuildOutputStream {
         }
     }
 
-    scheduleUpdate() {
+    scheduleUpdate(time?: number, fn?: Function) {
         if (!this._scheduled) {
             this._scheduled = setTimeout(() => {
-                this.updateStream();
+                fn ? fn() : this.updateStream();
                 this._scheduled = null;
-            }, SCHEDULE_TIMEOUT);
+            }, time || DEFAULT_TIMEOUT);
         }
     }
 
@@ -220,8 +218,14 @@ export default class BuildOutputStream {
         }
     }
 
-    // -- Lifecycle
+    _clearTimeout() {
+        if (this._scheduled) {
+            clearTimeout(this._scheduled);
+            this._scheduled = null;
+        }
+    }
 
+    // -- Lifecycle
     onBenchmarkStart(benchmarkPath: string) {
         this.updateRunnerState(benchmarkPath, State.RUNNING);
         if (this.isInteractive) {
@@ -248,6 +252,7 @@ export default class BuildOutputStream {
                     this.scheduleUpdate();
                 }
             } else {
+                this._clearTimeout();
                 this.stdout.write(this.printBenchmarkState(benchmarkState) + '\n');
             }
         }
@@ -258,13 +263,20 @@ export default class BuildOutputStream {
     }
 
     updateBenchmarkProgress(state: RunnerState, runtimeOpts: RunnerConfig) {
-        const progress = calculateBenchmarkProgress(state, runtimeOpts);
-        this._progress = progress;
+        const progress = this._progress = calculateBenchmarkProgress(state, runtimeOpts);
+        const { executedIterations, avgIteration, estimated, runtime } = progress;
+        const runIter = executedIterations.toString().padEnd(5, " ");
+        const avgIter = `${avgIteration.toFixed(2)}ms`.padEnd(10, " ");
+        const remaining = estimated - runtime;
 
         if (this.isInteractive) {
             this.scheduleUpdate();
         } else {
-            // WIP: Update for no sync
+            this.scheduleUpdate(2500, () => {
+                this.stdout.write(
+                    ` :: ran: ${runIter} | avg: ${avgIter} | remainingTime: ${remaining}s \n`
+                );
+            });
         }
     }
 
@@ -277,11 +289,7 @@ export default class BuildOutputStream {
     }
 
     finish() {
-        if (this._scheduled) {
-            clearTimeout(this._scheduled);
-            this._scheduled = null;
-        }
-
+        this._clearTimeout();
         if (this.isInteractive) {
             this.updateStream();
         } else {
