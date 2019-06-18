@@ -30,6 +30,17 @@ function initializeForwarder(socket: SocketIO.Socket, logger: Function) {
     };
 }
 
+function extractBenchmarkTarFile(task: BenchmarkTask) {
+    return ({ uploadDir } : { uploadDir: string }) => {
+        const benchmarkName = task.benchmarkName;
+        const benchmarkDirname = path.dirname(uploadDir);
+
+        task.benchmarkEntry = path.join(benchmarkDirname, `${benchmarkName}.html`);
+
+        return extractTar({cwd: path.dirname(uploadDir), file: uploadDir});
+    };
+}
+
 export default class BenchmarkRunner extends EventEmitter {
     public _status: RunnerStatus = RunnerStatus.IDLE;
     public runningTask: BenchmarkTask | null = null;
@@ -57,6 +68,10 @@ export default class BenchmarkRunner extends EventEmitter {
     }
 
     run(task: BenchmarkTask) {
+        if (this.status !== RunnerStatus.IDLE) {
+            throw new Error("Trying to run a new benchmark while runner is busy");
+        }
+
         this.status = RunnerStatus.RUNNING;
         this.runningWasCancelled = false;
         this.runningTask = task;
@@ -67,39 +82,36 @@ export default class BenchmarkRunner extends EventEmitter {
         };
 
         loadBenchmarkJob(task.socketConnection)
-            .then(({ uploadDir }: { uploadDir: string }) => {
-                const benchmarkName = task.benchmarkName; // this.benchmarkConfig.benchmarkName;
-                const benchmarkDirname = path.dirname(uploadDir);
-
-                task.benchmarkEntry = path.join(benchmarkDirname, `${benchmarkName}.html`);
-
-                return extractTar({ cwd: path.dirname(uploadDir), file: uploadDir });
-            })
-            .then(async () => {
-                const { benchmarkName, benchmarkEntry, benchmarkSignature, projectConfig, globalConfig } = task;
-                let results;
-                let error;
-                try {
-                    this._log(`Running benchmark ${benchmarkName}`);
-
-                    // @todo: remove this await? i think we can leave it in place and block the thread till the run finishes.
-                    results = await runBenchmark(
-                        { benchmarkName, benchmarkEntry, benchmarkSignature, projectConfig, globalConfig },
-                        initializeForwarder(task.socketConnection, this._log));
-
-                    this._log(`Benchmark ${benchmarkName} completed successfully`);
-                } catch (err) {
-                    this._log(`Something went wrong while running ${benchmarkName}`);
-                    process.stderr.write(err + '\n');
-                    error = err;
-                } finally {
-                    this.afterRunBenchmark(error, results);
-                }
-                // this._log(`STATUS: ${this.state} (${benchmarkName})`);
+            .then(extractBenchmarkTarFile(task))
+            .then(() => this.runBenchmark(task))
+            .then(({ error, results }: {error: any, results: any}) => {
+                this.afterRunBenchmark(error, results);
             })
             .catch((err: any) => {
                 this.afterRunBenchmark(err, null);
             })
+    }
+
+    private async runBenchmark(task: BenchmarkTask) {
+        const { benchmarkName } = task;
+        const messenger = initializeForwarder(task.socketConnection, this._log);
+
+        let results;
+        let error;
+
+        try {
+            this._log(`Running benchmark ${benchmarkName}`);
+
+            results = await runBenchmark(task, messenger);
+
+            this._log(`Benchmark ${benchmarkName} completed successfully`);
+        } catch (err) {
+            this._log(`Something went wrong while running ${benchmarkName}`);
+            process.stderr.write(err + '\n');
+            error = err;
+        }
+
+        return { error, results }
     }
 
     private afterRunBenchmark(err: any, results: any) {

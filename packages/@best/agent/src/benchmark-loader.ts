@@ -13,37 +13,26 @@ const LOADER_CONFIG = {
     overwrite: true,
 };
 
+const UPLOAD_START_TIMEOUT = 5000;
 
 export async function loadBenchmarkJob(socketConnection: SocketIO.Socket): Promise<any> {
     return new Promise(async (resolve, reject) => {
         const socket = socketConnection;
-
+        let uploaderTimeout: any = null;
         const uploader = new SocketIOFile(socket, LOADER_CONFIG);
 
-        const errorListener = (err: any) => {
-            uploader.removeListener('stream', streamLogger);
-            uploader.removeListener('complete', completeListener);
-            uploader.removeListener('error', errorListener);
-
-            reject(err);
-        };
-
-        const completeListener = (info: any) => {
-            uploader.removeListener('stream', streamLogger);
-            uploader.removeListener('complete', completeListener);
-            uploader.removeListener('error', errorListener);
-
-            resolve(info);
-        };
-
-        const streamLogger = ({ wrote, size }: any) => {
+        uploader.on('start', () => clearTimeout(uploaderTimeout));
+        uploader.on('stream', ({ wrote, size }: any) => {
             process.stdout.write(`Client[${socketConnection.id}] - downloading ${wrote} / ${size}\n`);
-        };
-
-        uploader.on('stream', streamLogger);
-        uploader.on('complete', completeListener);
-        uploader.on('error', errorListener);
+        });
+        uploader.on('complete', (info: any) => resolve(info));
+        uploader.on('error', (err: any) => reject(err));
 
         socket.emit('load_benchmark');
+        uploaderTimeout = setTimeout(() => {
+            uploader.destroy();
+
+            reject(new Error(`Timed out waiting upload to start. Waited for ${UPLOAD_START_TIMEOUT}ms`));
+        }, UPLOAD_START_TIMEOUT);
     });
 }
