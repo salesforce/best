@@ -1,28 +1,53 @@
-/* eslint camelcase: 0 */
+// -- Modules & libs --------------------------------------------------------------------
 import fs from 'fs';
+import https from 'https';
+import expandTilde from 'expand-tilde';
 import jwt from 'jsonwebtoken';
 import base64 from 'base-64';
-import expandTilde from 'expand-tilde';
 import GitHubApi from '@octokit/rest';
 
-const APP_ID = process.env.GIT_APP_ID;
+// -- Env & config ----------------------------------------------------------------------
+const GITHUB_USER_TOKEN = process.env.GITHUB_USER_TOKEN;
+const GITHUB_APP_ID = process.env.GITHUB_APP_ID;
+const GITHUB_APP_CERTIFICATE_PATH = process.env.GITHUB_APP_CERTIFICATE_PATH;
+const GITHUB_APP_CERTIFICATE_BASE64 = process.env.GITHUB_APP_CERTIFICATE_BASE64;
 
-/*
-* NOTE: We need to do this dance to preserve breaking lines on the cert
-* (INPUT) As a environment variable we store:
-* cat cert.pem | base64
-*
-* (OUTPUT) In the CI we do:
-* echo -e "$GIT_APP_CERT" | base64 -d >> ${PATH_GIT_APP_CERT}
-*/
+const GITHUB_APP_CERTIFICATE = normalizeCert({
+    cert: process.env.GITHUB_APP_CERTIFICATE,
+    certPath: GITHUB_APP_CERTIFICATE_PATH,
+    certBase64: GITHUB_APP_CERTIFICATE_BASE64,
+});
 
-const GIT_APP_CERT_PATH = process.env.GIT_APP_CERT_PATH;
-const GIT_APP_CERT_BASE64 = process.env.GIT_APP_CERT_BASE64;
+// -- Types -----------------------------------------------------------------------------
+export interface GithubFactoryConfig {
+    applicationId: string;
+    certificate: string;
+    userToken: string;
+}
 
-const APP_CERT_BASE64 = GIT_APP_CERT_BASE64 ? (GIT_APP_CERT_BASE64[0] === '\'' ? base64.decode(GIT_APP_CERT_BASE64.slice(1, -1)) : base64.decode(GIT_APP_CERT_BASE64)) : undefined;
-const APP_CERT = GIT_APP_CERT_PATH ? fs.readFileSync(expandTilde(GIT_APP_CERT_PATH), 'utf8') : APP_CERT_BASE64;
+// -- Utils -----------------------------------------------------------------------------
+function stripQuotes(str = '') {
+    const q = "'";
+    return str[0] === q && str[str.length - 1] === q ? str.slice(1, -1) : str;
+}
 
-function generateJwt(id?: string, cert?: string) {
+function normalizeCert({
+    cert,
+    certPath,
+    certBase64,
+}: {
+    cert?: string;
+    certPath?: string;
+    certBase64?: string;
+}): string | undefined {
+    return (
+        cert ||
+        (certPath && fs.readFileSync(expandTilde(certPath), 'utf8')) ||
+        (certBase64 && base64.decode(stripQuotes(certBase64)))
+    );
+}
+
+function generateJwt(id: string, cert: string) {
     const payload = {
         iat: Math.floor(+new Date() / 1000), // Issued at time
         exp: Math.floor(+new Date() / 1000) - 1, // JWT expiration time
@@ -33,43 +58,86 @@ function generateJwt(id?: string, cert?: string) {
     return jwt.sign(payload, cert, { algorithm: 'RS256' });
 }
 
-class GitHubApp {
-    id: string | undefined;
-    cert: string | undefined;
-    opts?: {};
+// -- Public API & exports --------------------------------------------------------------
+class GithubFactory {
+    id?: string;
+    cert?: string;
+    token?: string;
+    gitOpts: GitHubApi.Options;
 
-    constructor(id?: string, cert?: string, opts = {}) {
-        this.id = id;
-        this.cert = cert;
-        this.opts = opts;
+    constructor({ applicationId, certificate, userToken }: Partial<GithubFactoryConfig>, gitClientOpts: GitHubApi.Options = {}) {
+        if (!applicationId) {
+            throw new Error ('APP_ID is required');
+        }
+
+        this.id = applicationId;
+        this.cert = certificate;
+        this.token = userToken;
+        this.gitOpts = gitClientOpts;
     }
 
-    async authAsApp() {
+    async authenticateAsApplication(gitOpts = this.gitOpts) {
         const { id, cert } = this;
-        const github = new GitHubApi(this.opts);
-        github.authenticate({
-            type: 'integration',
-            token: generateJwt(id, cert),
+
+        if (!cert || !id) {
+            throw new Error('CERT and ID are required to authenticated as an App');
+        }
+
+        const token = generateJwt(id, cert);
+        const github = new GitHubApi({
+            ...gitOpts,
+            auth: `Bearer ${token}`
         });
+
         return github;
     }
 
-    async authAsInstallation(installationId: string) {
-        const token = await this.createToken(installationId);
-        const github = new GitHubApi(this.opts);
-        github.authenticate({ type: 'token', token });
+    async authenticateAsInstallation(installationId?: number, gitOpts = this.gitOpts) {
+        if (!installationId) {
+            throw new Error ('installationId is required to authenticate as user');
+        }
+
+        const token = await this.createInstallationToken(installationId, gitOpts);
+        const github = new GitHubApi({
+            ...gitOpts,
+            auth: `token ${token}`
+        });
+
         return github;
     }
 
-    async createToken(installation_id: string) {
-        const github = await this.authAsApp();
+    async createInstallationToken(installation_id: number, gitOpts = this.gitOpts) {
+        if (!installation_id) {
+            throw new Error ('installation_id is required to authenticate as user');
+        }
+
+        const github = await this.authenticateAsApplication(gitOpts);
         const response = await github.apps.createInstallationToken({
             installation_id,
         });
+        
         return response.data.token;
+    }
+
+    async authenticateAsAppAndInstallation(git: { repo: string, owner: string }, gitOpts = this.gitOpts) {
+        const gitAppAuth = await this.authenticateAsApplication();
+        
+        const repoInstallation = await gitAppAuth.apps.getRepoInstallation(git);
+        const installationId = repoInstallation.data.id;
+        
+        return this.authenticateAsInstallation(installationId);
     }
 }
 
-export function createGithubApp(id = APP_ID, cert = APP_CERT) {
-    return new GitHubApp(id, cert);
-}
+export default function GithubApplicationFactory(
+    { applicationId , certificate, userToken }: Partial<GithubFactoryConfig> = { applicationId: GITHUB_APP_ID, certificate: GITHUB_APP_CERTIFICATE, userToken: GITHUB_USER_TOKEN },
+    githubClientOptions: GitHubApi.Options = {},
+) {
+    const { baseUrl } = githubClientOptions;
+    if (baseUrl) {
+        const agent = new https.Agent({ rejectUnauthorized: false });
+        githubClientOptions = { agent, baseUrl };
+    }
+
+    return new GithubFactory({ applicationId, certificate, userToken }, githubClientOptions);
+};

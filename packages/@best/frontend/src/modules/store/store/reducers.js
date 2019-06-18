@@ -7,7 +7,8 @@ import {
     VIEW_BENCHMARKS_CHANGED,
     VIEW_METRICS_CHANGED,
     VIEW_ZOOM_CHANGED,
-    VIEW_RESET
+    VIEW_RESET,
+    COMMIT_INFO_RECEIVED
 } from 'store/shared';
 
 export function projects(
@@ -89,6 +90,21 @@ export function view(
                 benchmark: 'all',
                 metric: 'all',
                 zoom: {}
+            }
+        default:
+            return state
+    }
+}
+
+export function commitInfo(
+    state = {},
+    action
+) {
+    switch (action.type) {
+        case COMMIT_INFO_RECEIVED:
+            return {
+                ...state,
+                [action.commit]: action.commitInfo
             }
         default:
             return state
