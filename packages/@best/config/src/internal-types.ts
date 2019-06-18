@@ -75,9 +75,14 @@ export interface GlobalConfig {
 export type ProjectConfigPlugin = string | [string, { [key : string]: any }]
 
 export interface ProjectConfig {
+    useHttp: boolean;
     benchmarkRunner: string;
     benchmarkRunnerConfig: any;
     benchmarkOutput: string;
+    benchmarkOnClient: boolean;
+    benchmarkMaxDuration: number;
+    benchmarkMinIterations: number;
+    benchmarkIterations: number;
     benchmarkCustomAssets: string;
     cacheDirectory: string;
     projectName: string;

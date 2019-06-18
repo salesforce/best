@@ -4,7 +4,7 @@ const defaultOptions = {
     cache: true,
     gitIntegration: false,
     cacheDirectory: cacheDirectory(),
-    useHttp: true,
+    useHttp: false,
     openPages: false,
     moduleDirectories: ['node_modules'],
     moduleFileExtensions: ['js'],

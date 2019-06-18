@@ -1,16 +1,30 @@
 import { getSystemInfo } from '@best/utils';
 import express from 'express';
 import { dirname, basename, join } from 'path';
-import { spawn } from 'child_process';
 import { Socket } from 'net';
 import { RunnerOutputStream } from "@best/console-stream";
+import { FrozenGlobalConfig, FrozenProjectConfig } from '@best/config';
 
 interface RunnerBundle {
     benchmarkName: string,
     benchmarkEntry: string,
     benchmarkFolder: string,
     benchmarkSignature: string
-};
+}
+
+interface RuntimeOptions {
+    maxDuration: number;
+    minSampleCount: number,
+    iterations: number,
+    iterateOnClient: boolean
+}
+
+export interface BenchmarkResultsState {
+    executedTime: number,
+    executedIterations: number,
+    results: any[],
+    iterateOnClient: boolean,
+}
 
 const UPDATE_INTERVAL = 300;
 
@@ -20,32 +34,27 @@ export default abstract class AbstractRunner {
     page: any;
     browser: any;
 
-    async run({ benchmarkName, benchmarkEntry }: RunnerBundle, projectConfig: any, globalConfig: any, messager: RunnerOutputStream) {
-        const opts = this.normalizeRuntimeOptions(projectConfig);
-        const state = this.initializeBenchmarkState(opts);
-        const { projectName } = projectConfig;
-        const { openPages } = globalConfig;
-        const url = await this.runSetupAndGetUrl(benchmarkEntry, projectConfig);
-
-        // Optionally open benchmarks in a browser for debugging.
-        const debugPages = openPages && /^de/i.test(process.env.NODE_ENV || '');
-        if (debugPages) {
-            spawn('open', [url]);
-        }
+    async run({ benchmarkEntry }: RunnerBundle, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerOutputStream) {
+        const { useHttp } = projectConfig;
+        const runtimeOptions = this.normalizeRuntimeOptions(projectConfig);
+        const state = this.initializeBenchmarkState(runtimeOptions);
+        const url = await this.runSetupAndGetUrl(benchmarkEntry, useHttp);
 
         try {
             await this.loadUrl(url, projectConfig);
+
             const environment = await this.normalizeEnvironment(this.browserInfo, projectConfig, globalConfig);
-            messager.onBenchmarkStart(benchmarkName, projectName);
-            const { results } = await this.runIterations(this.page, state, opts, messager);
+            runnerLogStream.onBenchmarkStart(benchmarkEntry);
+            const { results } = await this.runIterations(this.page, state, runtimeOptions, runnerLogStream);
             return { results, environment };
+
         } catch (e) {
-            messager.onBenchmarkError(benchmarkName, projectName);
+            runnerLogStream.onBenchmarkError(benchmarkEntry);
             throw e;
         } finally {
-            messager.onBenchmarkEnd(benchmarkName, projectName);
+            runnerLogStream.onBenchmarkEnd(benchmarkEntry);
             this.closeBrowser();
-            if (this.app && !debugPages) {
+            if (this.app) {
                 this.app.stop();
             }
         }
@@ -66,16 +75,17 @@ export default abstract class AbstractRunner {
     runIteration(...args: any): any {
         throw new Error('runIteration() must be implemented');
     }
-    runServerIterations(...args: any) {
+    runServerIterations(...args: any): Promise<BenchmarkResultsState> {
         throw new Error('runItrunServerIterationseration() must be implemented');
     }
 
-    normalizeRuntimeOptions(projectConfig: any) {
-        const { benchmarkIterations, benchmarkOnClient } = projectConfig;
+    normalizeRuntimeOptions(projectConfig: FrozenProjectConfig): RuntimeOptions {
+        const { benchmarkIterations, benchmarkOnClient, benchmarkMaxDuration, benchmarkMinIterations } = projectConfig;
         const definedIterations = Number.isInteger(benchmarkIterations);
+
         // For benchmarking on the client or a defined number of iterations duration is irrelevant
-        const maxDuration = definedIterations ? 1 : projectConfig.benchmarkMaxDuration;
-        const minSampleCount = definedIterations ? benchmarkIterations : projectConfig.benchmarkMinIterations;
+        const maxDuration = definedIterations ? 1 : benchmarkMaxDuration;
+        const minSampleCount = definedIterations ? benchmarkIterations : benchmarkMinIterations;
 
         return {
             maxDuration,
@@ -85,16 +95,16 @@ export default abstract class AbstractRunner {
         };
     }
 
-    initializeBenchmarkState(opts: any) {
+    initializeBenchmarkState({ iterateOnClient }: RuntimeOptions): BenchmarkResultsState {
         return {
             executedTime: 0,
             executedIterations: 0,
             results: [],
-            iterateOnClient: opts.iterateOnClient,
+            iterateOnClient,
         };
     }
 
-    runSetupAndGetUrl(benchmarkEntry: string, { useHttp }: any): Promise<string> {
+    runSetupAndGetUrl(benchmarkEntry: string, useHttp: boolean): Promise<string> {
         if (!useHttp) {
             return Promise.resolve(`file://${benchmarkEntry}`);
         }
@@ -164,13 +174,13 @@ export default abstract class AbstractRunner {
         };
     }
 
-    async runIterations(page: any, state: any, opts: any, messager: any) {
+    async runIterations(page: any, state: BenchmarkResultsState, runtimeOptions: RuntimeOptions, runnnerLogStream: RunnerOutputStream) {
         return state.iterateOnClient
-            ? this.runClientIterations(page, state, opts, messager)
-            : this.runServerIterations(page, state, opts, messager);
+            ? this.runClientIterations(page, state, runtimeOptions, runnnerLogStream)
+            : this.runServerIterations(page, state, runtimeOptions, runnnerLogStream);
     }
 
-    async runClientIterations(page: any, state: any, opts: any, messager: any) {
+    async runClientIterations(page: any, state: BenchmarkResultsState, runtimeOptions: RuntimeOptions, runnerLogStream: RunnerOutputStream): Promise<BenchmarkResultsState> {
         // Run an iteration to estimate the time it will take
         const testResult = await this.runIteration(page, { iterations: 1 });
         const estimatedIterationTime = testResult.executedTime;
@@ -181,11 +191,11 @@ export default abstract class AbstractRunner {
             const executing = Date.now() - start;
             state.executedTime = executing;
             state.executedIterations = Math.round(executing / estimatedIterationTime);
-            messager.updateBenchmarkProgress(state, opts);
+            runnerLogStream.updateBenchmarkProgress(state, runtimeOptions);
         }, UPDATE_INTERVAL);
 
         await this.reloadPage(page);
-        const clientRawResults = await this.runIteration(page, opts);
+        const clientRawResults = await this.runIteration(page, runtimeOptions);
         clearInterval(intervalId);
 
         const results = clientRawResults.results;

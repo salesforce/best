@@ -103,7 +103,6 @@ export default class BuildOutputStream {
                 this.stdout.write(this.printBenchmark(benchmarkState));
             }
         }
-
     }
 
     scheduleUpdate() {

@@ -6,6 +6,8 @@
   },
   "references": [
     { "path": "../messager" },
-    { "path": "../runtime" }
+    { "path": "../runtime" },
+    { "path": "../console-stream"},
+    { "path": "../config" },
   ]
 }
