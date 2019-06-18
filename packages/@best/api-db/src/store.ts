@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { loadDbFromConfig } from './utils';
 import { TemporarySnapshot } from './types';
+import { FrozenGlobalConfig } from '@best/config';
 
 function md5(data: string) {
     return crypto
@@ -9,7 +10,7 @@ function md5(data: string) {
         .digest('hex');
 }
 
-export const saveBenchmarkSummaryInDB = (benchmarkResults: any, globalConfig: any) => {
+export const saveBenchmarkSummaryInDB = (benchmarkResults: any, globalConfig: FrozenGlobalConfig) => {
     const db = loadDbFromConfig(globalConfig);
 
     if (! db) { return; }
@@ -18,7 +19,7 @@ export const saveBenchmarkSummaryInDB = (benchmarkResults: any, globalConfig: an
         benchmarkResults.map(async (benchmarkResult: any) => {
             const { benchmarkSignature, projectConfig, environment, stats } = benchmarkResult;
             const { projectName } = projectConfig;
-            const { gitCommit, gitCommitDate, gitBranch, gitLocalChanges } = globalConfig;
+            const { lastCommit, branch, localChanges } = globalConfig.gitInfo;
 
             const snapshotEnvironment = {
                 hardware: environment.hardware,
@@ -29,11 +30,11 @@ export const saveBenchmarkSummaryInDB = (benchmarkResults: any, globalConfig: an
             
             const runSettings = {
                 similarityHash: benchmarkSignature,
-                commit: gitCommit,
-                commitDate: gitCommitDate,
+                commit: lastCommit.hash,
+                commitDate: lastCommit.date,
                 environmentHash,
-                temporary: gitLocalChanges,
-                branch: gitBranch
+                temporary: localChanges,
+                branch
             }
 
             const snapshotsToSave: TemporarySnapshot[] = [];
