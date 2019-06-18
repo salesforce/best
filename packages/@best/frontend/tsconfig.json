@@ -5,6 +5,7 @@
     "outDir": "build",
   },
   "references": [
-    { "path": "../api-db" }
+    { "path": "../api-db" },
+    { "path": "../config" }
   ]
 }

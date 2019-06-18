@@ -10,7 +10,6 @@ export default (config: any): Router => {
     router.get('/projects', async (req, res): Promise<void> => {
         try {
             const projects = await db.fetchProjects()
-
             res.send({
                 projects
             })

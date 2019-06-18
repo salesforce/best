@@ -2,8 +2,8 @@
 import { resolveConfigPath, readConfigAndSetRootDir, ensureNoDuplicateConfigs } from './utils/resolve-config';
 import { getGitInfo, GitInfo } from './utils/git';
 import { normalizeConfig, normalizeRootDirPattern } from './utils/normalize';
-import { BestCliOptions, NormalizedConfig, FrozenProjectConfig, FrozenGlobalConfig, ProjectConfigs, ProjectConfigPlugin} from './internal-types';
-export { BestCliOptions, FrozenProjectConfig, FrozenGlobalConfig, ProjectConfigs, ProjectConfigPlugin };
+import { BestCliOptions, NormalizedConfig, FrozenProjectConfig, FrozenGlobalConfig, ProjectConfigs, ProjectConfigPlugin, ApiDatabaseConfig } from './internal-types';
+export { BestCliOptions, FrozenProjectConfig, FrozenGlobalConfig, ProjectConfigs, ProjectConfigPlugin, ApiDatabaseConfig };
 
 function generateProjectConfigs(options: NormalizedConfig, isRoot: boolean, gitInfo?: GitInfo): { projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig | undefined } {
     let globalConfig: FrozenGlobalConfig | undefined;

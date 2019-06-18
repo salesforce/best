@@ -1,10 +1,11 @@
 import { ApiDBAdapter, Project, TemporarySnapshot, Snapshot } from '../types'
 import transformer from './transformer'
 import { SQLDatabase } from './db'
+import { ApiDatabaseConfig } from '@best/config';
 
 export class SQLAdapter extends ApiDBAdapter {
     db: SQLDatabase
-    constructor(config: any, db: SQLDatabase) {
+    constructor(config: ApiDatabaseConfig, db: SQLDatabase) {
         super(config)
         this.db = db
     }

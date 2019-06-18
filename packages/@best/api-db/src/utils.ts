@@ -1,5 +1,6 @@
-import { ApiDBAdapter } from './types';
+import { FrozenGlobalConfig } from '@best/config';
 import path from 'path';
+import { ApiDBAdapter } from './types';
 
 const LOCAL_ADAPTERS = ['sql/postgres', 'sql/sqlite'];
 
@@ -9,7 +10,7 @@ function req(id: string) {
     return r.default || r;
 }
 
-export const loadDbFromConfig = (globalConfig: any): ApiDBAdapter | undefined => {
+export const loadDbFromConfig = (globalConfig: FrozenGlobalConfig): ApiDBAdapter | undefined => {
     const config = globalConfig.apiDatabase;
     if (! config) { return; }
 

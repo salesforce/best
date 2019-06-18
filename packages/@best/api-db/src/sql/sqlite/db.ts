@@ -1,9 +1,10 @@
 import sqlite from 'sqlite'
 import { SQLDatabase, SQLQueryResult } from '../db'
+import { ApiDatabaseConfig } from '@best/config';
 
 export default class SQLiteDatabase extends SQLDatabase {
     dbPromise: any
-    constructor(config: any) {
+    constructor(config: ApiDatabaseConfig) {
         super()
         this.dbPromise = sqlite.open(config.path, { verbose: true })
     }

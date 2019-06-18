@@ -1,3 +1,5 @@
+import { ApiDatabaseConfig } from '@best/config';
+
 export interface Project {
     id: number;
     name: string;
@@ -30,7 +32,7 @@ export interface Snapshot extends TemporarySnapshot {
 }
 
 export class ApiDBAdapter {
-    constructor(config: any) {}
+    constructor(config: ApiDatabaseConfig) {}
 
     fetchProjects(): Promise<Project[]> {
         throw new Error('ApiDB.fetchProjects() not implemented')
