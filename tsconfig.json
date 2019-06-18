@@ -1,6 +1,7 @@
 {
   "files": [/* only process references */],
   "references": [
+    { "path": "./packages/@best/types" },
     { "path": "./packages/@best/agent" },
     { "path": "./packages/@best/analyzer" },
     { "path": "./packages/@best/builder" },

@@ -1,5 +1,5 @@
 import path from 'path';
-import { FrozenGlobalConfig } from '@best/config';
+import { FrozenGlobalConfig } from '@best/types';
 import { ApiDBAdapter } from './types';
 
 const LOCAL_ADAPTERS = ['sql/postgres', 'sql/sqlite'];

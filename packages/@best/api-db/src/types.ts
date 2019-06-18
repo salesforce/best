@@ -1,4 +1,4 @@
-import { ApiDatabaseConfig } from '@best/config';
+import { ApiDatabaseConfig } from '@best/types';
 
 export interface Project {
     id: number;
@@ -41,7 +41,7 @@ export class ApiDBAdapter {
     fetchSnapshots(projectId: number, branch: string, since: string): Promise<Snapshot[]> {
         throw new Error('ApiDB.fetchSnapshots() not implemented')
     }
-    
+
     saveSnapshots(snapshots: TemporarySnapshot[], projectName: string): Promise<boolean> {
         throw new Error('ApiDB.saveSnapshots() not implemented')
     }

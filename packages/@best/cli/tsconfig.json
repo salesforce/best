@@ -16,6 +16,7 @@
     { "path": "../store" },
     { "path": "../store-fs" },
     { "path": "../utils" },
+    { "path": "../types" },
   ],
   "include": [
     "../package.json",

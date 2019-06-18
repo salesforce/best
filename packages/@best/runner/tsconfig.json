@@ -5,7 +5,7 @@
     "outDir": "build",
   },
   "references": [
-    { "path": "../builder" },
+    { "path": "../types" },
     { "path": "../console-stream" },
     { "path": "../runner-abstract" },
   ]

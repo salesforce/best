@@ -1,6 +1,6 @@
 import sqlite from 'sqlite'
 import { SQLDatabase, SQLQueryResult } from '../db'
-import { ApiDatabaseConfig } from '@best/config';
+import { ApiDatabaseConfig } from '@best/types';
 
 export default class SQLiteDatabase extends SQLDatabase {
     dbPromise: any

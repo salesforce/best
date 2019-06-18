@@ -2,14 +2,14 @@ import { normalize, usage, options, docs, check } from './args';
 import Output from './output';
 import yargs from 'yargs';
 import rimraf from 'rimraf';
-import { getConfigs, BestCliOptions } from '@best/config';
 import { OutputStream } from '@best/console-stream';
 import { logError } from "@best/utils";
 import { runBest } from '../run_best';
 import { runCompare } from '../run_compare';
-import { ProjectConfigs, FrozenProjectConfig } from '@best/config';
+import { getConfigs } from "@best/config";
+import { ProjectConfigs, FrozenProjectConfig, CliConfig } from '@best/types';
 
-export function buildArgs(maybeArgv?: string[]): BestCliOptions {
+export function buildArgs(maybeArgv?: string[]): CliConfig {
     const parsedArgs = yargs(maybeArgv || process.argv.slice(2))
         .usage(usage)
         .alias('help', 'h')
@@ -21,7 +21,7 @@ export function buildArgs(maybeArgv?: string[]): BestCliOptions {
     return normalize(parsedArgs);
 }
 
-function getProjectListFromCLIArgs(argsCLI: BestCliOptions, project?: string): string[] {
+function getProjectListFromCLIArgs(argsCLI: CliConfig, project?: string): string[] {
     const projects = argsCLI.projects;
 
     if (project) {
@@ -52,7 +52,7 @@ export async function run(maybeArgv?: string[], project?: string) {
     }
 }
 
-export async function runCLI(argsCLI: BestCliOptions, projects: string[]) {
+export async function runCLI(argsCLI: CliConfig, projects: string[]) {
     const outputStream = new OutputStream(process.stdout);
     let projectConfigs: ProjectConfigs;
     let results;
@@ -106,4 +106,4 @@ export async function runCLI(argsCLI: BestCliOptions, projects: string[]) {
     return true;
 }
 
-export { BestCliOptions };
+export { CliConfig as BestCliOptions };

@@ -1,13 +1,14 @@
+import path from 'path';
+import micromatch from 'micromatch';
 import fg from 'fast-glob';
-import { buildBenchmarks, BuildConfig } from '@best/builder';
+
+import { buildBenchmarks } from '@best/builder';
 import { runBenchmarks } from '@best/runner';
 import { BuildOutputStream, RunnerOutputStream } from "@best/console-stream";
 import { storeBenchmarkResults } from '@best/store';
 import { saveBenchmarkSummaryInDB } from '@best/api-db';
 import { analyzeBenchmarks } from '@best/analyzer';
-import path from 'path';
-import micromatch from 'micromatch';
-import { FrozenGlobalConfig, FrozenProjectConfig } from '@best/config';
+import { BuildConfig, FrozenGlobalConfig, FrozenProjectConfig} from "@best/types";
 
 async function getBenchmarkPaths(config: FrozenProjectConfig): Promise<string[]> {
     const { testMatch, testPathIgnorePatterns, rootDir: cwd } = config;

@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import { loadDbFromConfig } from './utils';
 import { TemporarySnapshot } from './types';
-import { FrozenGlobalConfig } from '@best/config';
+import { FrozenGlobalConfig } from '@best/types';
 
 function md5(data: string) {
     return crypto
@@ -27,7 +27,7 @@ export const saveBenchmarkSummaryInDB = (benchmarkResults: any, globalConfig: Fr
             }
 
             const environmentHash = md5(JSON.stringify(snapshotEnvironment));
-            
+
             const runSettings = {
                 similarityHash: benchmarkSignature,
                 commit: lastCommit.hash,
@@ -54,7 +54,7 @@ export const saveBenchmarkSummaryInDB = (benchmarkResults: any, globalConfig: Fr
                         metrics: metrics
                     }
                     snapshotsToSave.push(snapshot);
-                    
+
                 });
             });
 

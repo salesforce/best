@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { PACKAGE_JSON, BEST_CONFIG } from './constants';
-import { UserBestConfig } from '../internal-types';
+import { UserConfig } from '@best/types';
 
 function isFile(filePath:string) {
     return fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
@@ -35,7 +35,7 @@ export function resolveConfigPath(pathToResolve: string, cwd: string) {
     return resolveConfigPathByTraversing(absolutePath, pathToResolve, cwd);
 }
 
-export function readConfigAndSetRootDir(configPath: string): UserBestConfig {
+export function readConfigAndSetRootDir(configPath: string): UserConfig {
     const isJSON = configPath.endsWith('.json');
     let configObject;
     try {

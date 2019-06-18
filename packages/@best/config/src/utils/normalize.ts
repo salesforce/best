@@ -1,8 +1,8 @@
 import path from 'path';
 import chalk from 'chalk';
-import { BestCliOptions, UserBestConfig, NormalizedConfig, RunnerConfig } from '../internal-types';
 import DEFAULT_CONFIG from './defaults';
 import { replacePathSepForRegex } from '@best/regex-util';
+import { CliConfig, UserConfig, NormalizedConfig, RunnerConfig } from '@best/types';
 
 const TARGET_COMMIT = process.env.TARGET_COMMIT;
 const BASE_COMMIT = process.env.BASE_COMMIT;
@@ -37,7 +37,7 @@ function normalizeRunner(runner: string, runners?: RunnerConfig[]) {
     return selectedRunner.runner;
 }
 
-function setCliOptionOverrides(initialOptions: UserBestConfig, argsCLI: BestCliOptions): UserBestConfig {
+function setCliOptionOverrides(initialOptions: UserConfig, argsCLI: CliConfig): UserConfig {
     const argvToOptions = Object.keys(argsCLI)
         .reduce((options: any, key: string) => {
             switch (key) {
@@ -77,7 +77,7 @@ function normalizeObjectPathPatterns(options: { [key: string]: any }, rootDir: s
     }, {});
 }
 
-function normalizePlugins(plugins: any, { rootDir }: UserBestConfig) {
+function normalizePlugins(plugins: any, { rootDir }: UserConfig) {
     return plugins.map((plugin: any) => {
         if (typeof plugin === 'string') {
             return normalizeRootDirPattern(plugin, rootDir);
@@ -88,7 +88,7 @@ function normalizePlugins(plugins: any, { rootDir }: UserBestConfig) {
     });
 }
 
-function normalizeRootDir(options: UserBestConfig): UserBestConfig {
+function normalizeRootDir(options: UserConfig): UserConfig {
     // Assert that there *is* a rootDir
     if (!options.hasOwnProperty('rootDir')) {
         throw new Error(`  Configuration option ${chalk.bold('rootDir')} must be specified.`);
@@ -127,7 +127,7 @@ export function normalizeRegexPattern(names: string | string[] | RegExp) {
     return typeof names === 'string' ? new RegExp(names) : names;
 }
 
-export function normalizeConfig(userConfig: UserBestConfig, cliOptions: BestCliOptions): NormalizedConfig {
+export function normalizeConfig(userConfig: UserConfig, cliOptions: CliConfig): NormalizedConfig {
     const userCliMergedConfig = normalizeRootDir(setCliOptionOverrides(userConfig, cliOptions));
     const normalizedConfig: NormalizedConfig = { ...DEFAULT_CONFIG, ...userCliMergedConfig };
 

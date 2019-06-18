@@ -1,6 +1,6 @@
 import { getSystemInfo } from '@best/utils';
 import { RunnerOutputStream } from "@best/console-stream";
-import { FrozenGlobalConfig, FrozenProjectConfig } from '@best/config';
+import { FrozenGlobalConfig, FrozenProjectConfig } from '@best/types';
 
 export interface RunnerBundle {
     benchmarkName: string,

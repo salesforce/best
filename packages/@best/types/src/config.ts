@@ -1,6 +1,14 @@
-import { GitInfo } from "./utils/git";
+export interface GitConfig {
+    lastCommit: { hash: string, date: string }
+    localChanges: boolean,
+    branch: string,
+    repo: {
+        owner: string,
+        repo: string
+    }
+}
 
-export interface UserBestConfig {
+export interface UserConfig {
     [key: string]: any;
     rootDir: string;
     projectName: string;
@@ -17,6 +25,24 @@ export interface ApiDatabaseConfig {
     adapter: string;
     path: string;
 }
+
+export interface CliConfig {
+    [key: string]: any,
+    _: string[],
+    help: boolean,
+    clearCache: boolean,
+    clearResults: boolean,
+    gitIntegration: string | undefined,
+    useHttp: boolean,
+    externalStorage: string | undefined,
+    runner: string,
+    runnerConfig: { [x:string]: any },
+    config: string | undefined,
+    projects: string[],
+    iterations?: number,
+    compareStats: string[] | undefined
+}
+
 
 export interface NormalizedConfig {
     nonFlagArgs: string[];
@@ -52,29 +78,12 @@ export interface NormalizedConfig {
     rootDir: string
 }
 
-export interface BestCliOptions {
-    [key: string]: any,
-    _: string[],
-    help: boolean,
-    clearCache: boolean,
-    clearResults: boolean,
-    gitIntegration: string | undefined,
-    useHttp: boolean,
-    externalStorage: string | undefined,
-    runner: string,
-    runnerConfig: { [x:string]: any },
-    config: string | undefined,
-    projects: string[],
-    iterations?: number,
-    compareStats: string[] | undefined
-}
-
 export interface GlobalConfig {
     gitIntegration: boolean;
     projects: string[];
     nonFlagArgs: string[];
     isInteractive?: boolean;
-    gitInfo: GitInfo;
+    gitInfo: GitConfig;
     apiDatabase?: ApiDatabaseConfig;
 }
 
@@ -104,4 +113,13 @@ export type FrozenProjectConfig = Readonly<ProjectConfig>;
 export interface ProjectConfigs {
     globalConfig: FrozenGlobalConfig,
     configs: FrozenProjectConfig[]
+}
+
+export interface BuildConfig {
+    benchmarkName: string,
+    benchmarkFolder: string,
+    benchmarkSignature: string,
+    benchmarkEntry: string,
+    projectConfig: FrozenProjectConfig,
+    globalConfig: FrozenGlobalConfig,
 }

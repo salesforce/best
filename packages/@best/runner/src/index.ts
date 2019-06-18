@@ -1,4 +1,4 @@
-import { BuildConfig } from "@best/builder";
+import { BuildConfig } from "@best/types";
 import { RunnerOutputStream } from "@best/console-stream";
 import AbstractRunner from "@best/runner-abstract";
 

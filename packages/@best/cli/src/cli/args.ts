@@ -1,5 +1,5 @@
 import { Options } from "yargs";
-import { BestCliOptions } from "@best/config";
+import { CliConfig } from "@best/types";
 
 export const check = () => {
     // TODO: Implement checks
@@ -93,7 +93,7 @@ export const options: { [key: string]: Options } = {
     }
 };
 
-export function normalize(args: { [x: string]: any; _: string[]; $0: string }): BestCliOptions {
+export function normalize(args: { [x: string]: any; _: string[]; $0: string }): CliConfig {
     const { _, help, clearCache, clearResults, showConfigs, disableInteractive, gitIntegration, useHttp, externalStorage, runner, runnerConfig, config, projects, iterations, compareStats } = args;
     return {
         _,

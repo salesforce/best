@@ -5,7 +5,7 @@ import crypto from 'crypto';
 import mkdirp from "mkdirp";
 import benchmarkRollup from './rollup-plugin-benchmark-import';
 import generateHtml from './html-templating';
-import { FrozenGlobalConfig, FrozenProjectConfig, ProjectConfigPlugin } from '@best/config';
+import { FrozenGlobalConfig, FrozenProjectConfig, ProjectConfigPlugin, BuildConfig } from '@best/types';
 import { BuildOutputStream } from "@best/console-stream"
 
 const BASE_ROLLUP_OUTPUT = { format: 'iife' as ModuleFormat };
@@ -35,15 +35,6 @@ function addResolverPlugins(plugins: ProjectConfigPlugin[]): any[] {
             throw new Error('Invalid plugin config');
         }
     });
-}
-
-export interface BuildConfig {
-    benchmarkName: string,
-    benchmarkFolder: string,
-    benchmarkSignature: string,
-    benchmarkEntry: string,
-    projectConfig: FrozenProjectConfig,
-    globalConfig: FrozenGlobalConfig,
 }
 
 export async function buildBenchmark(entry: string, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, buildLogStream: BuildOutputStream): Promise<BuildConfig> {

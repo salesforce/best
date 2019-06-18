@@ -1,11 +1,9 @@
-
 import { resolveConfigPath, readConfigAndSetRootDir, ensureNoDuplicateConfigs } from './utils/resolve-config';
-import { getGitInfo, GitInfo } from './utils/git';
+import { getGitInfo } from './utils/git';
 import { normalizeConfig, normalizeRootDirPattern } from './utils/normalize';
-import { BestCliOptions, NormalizedConfig, FrozenProjectConfig, FrozenGlobalConfig, ProjectConfigs, ProjectConfigPlugin, ApiDatabaseConfig } from './internal-types';
-export { BestCliOptions, FrozenProjectConfig, FrozenGlobalConfig, ProjectConfigs, ProjectConfigPlugin, ApiDatabaseConfig };
+import { GitConfig, CliConfig, NormalizedConfig, FrozenProjectConfig, FrozenGlobalConfig, ProjectConfigs } from '@best/types';
 
-function generateProjectConfigs(options: NormalizedConfig, isRoot: boolean, gitInfo?: GitInfo): { projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig | undefined } {
+function generateProjectConfigs(options: NormalizedConfig, isRoot: boolean, gitInfo?: GitConfig): { projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig | undefined } {
     let globalConfig: FrozenGlobalConfig | undefined;
 
     if (isRoot) {
@@ -54,7 +52,7 @@ function generateProjectConfigs(options: NormalizedConfig, isRoot: boolean, gitI
     return { globalConfig, projectConfig };
 }
 
-export async function readConfig(cliOptions: BestCliOptions, packageRoot: string, parentConfigPath?: string): Promise<{ configPath: string, globalConfig?: FrozenGlobalConfig, projectConfig: FrozenProjectConfig }> {
+export async function readConfig(cliOptions: CliConfig, packageRoot: string, parentConfigPath?: string): Promise<{ configPath: string, globalConfig?: FrozenGlobalConfig, projectConfig: FrozenProjectConfig }> {
     const configPath = resolveConfigPath(packageRoot, process.cwd());
     const userConfig = readConfigAndSetRootDir(configPath);
     const options = normalizeConfig(userConfig, cliOptions);
@@ -74,7 +72,7 @@ export async function readConfig(cliOptions: BestCliOptions, packageRoot: string
     return { configPath, globalConfig, projectConfig };
 }
 
-export async function getConfigs(projectsFromCLIArgs: string[], cliOptions: BestCliOptions): Promise<ProjectConfigs> {
+export async function getConfigs(projectsFromCLIArgs: string[], cliOptions: CliConfig): Promise<ProjectConfigs> {
     let globalConfig: FrozenGlobalConfig | undefined;
     let configs: FrozenProjectConfig[] = [];
     let projects: string[] = [];

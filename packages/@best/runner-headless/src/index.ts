@@ -3,7 +3,7 @@ import express from 'express';
 import puppeteer from 'puppeteer';
 import { Socket } from 'net';
 import { RunnerOutputStream } from "@best/console-stream";
-import { FrozenGlobalConfig, FrozenProjectConfig } from '@best/config';
+import { FrozenGlobalConfig, FrozenProjectConfig } from '@best/types';
 import AbstractRunner, { RunnerBundle, BenchmarkResultsState, RuntimeOptions } from '@best/runner-abstract';
 
 declare var BEST: any;

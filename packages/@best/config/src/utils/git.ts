@@ -1,4 +1,5 @@
 import SimpleGit from "simple-git/promise";
+import { GitConfig } from "@best/types";
 
 // TODO: Remove this once the library fixes its types
 declare module 'simple-git/promise' {
@@ -34,17 +35,7 @@ async function getRepository(git: SimpleGit.SimpleGit): Promise<{ owner: string,
     return { owner, repo};
 }
 
-export interface GitInfo {
-    lastCommit: { hash: string, date: string }
-    localChanges: boolean,
-    branch: string,
-    repo: {
-        owner: string,
-        repo: string
-    }
-}
-
-export async function getGitInfo(baseDir?: string): Promise<GitInfo | undefined> {
+export async function getGitInfo(baseDir?: string): Promise<GitConfig | undefined> {
     const git = SimpleGit(baseDir);
     const isRepo = await git.checkIsRepo();
 

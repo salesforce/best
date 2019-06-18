@@ -1,6 +1,6 @@
 import { Pool } from 'pg'
 import { SQLDatabase, SQLQueryResult } from '../db'
-import { ApiDatabaseConfig } from '@best/config';
+import { ApiDatabaseConfig } from '@best/types';
 
 export default class PostgresDatabase extends SQLDatabase {
     pool: Pool
