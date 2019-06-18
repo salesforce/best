@@ -1,5 +1,8 @@
-import { RollupOptions } from 'rollup';
+import { RollupOptions, InputOptions, OutputOptions } from 'rollup';
 
-const rollupConfig: RollupOptions
+const rollupConfig: {
+    inputOptions: InputOptions,
+    outputOptions: OutputOptions
+}
 
 export default rollupConfig

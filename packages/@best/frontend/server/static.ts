@@ -23,6 +23,8 @@ export const buildStaticFrontend = async () => {
     const distDir = path.resolve(__dirname, '../dist');
 
     await asyncWrite(path.resolve(distDir, 'index.html'), template);
-    await rollup(rollupConfig);
+    const build = await rollup(rollupConfig.inputOptions);
+    await build.generate(rollupConfig.outputOptions);
+    await build.write(rollupConfig.outputOptions);
     console.log('done!')
 }
