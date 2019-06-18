@@ -7,7 +7,6 @@ export default class BenchmarkTask {
     public globalConfig: any;
     public benchmarkEntry: any = false;
     public socketConnection: SocketIO.Socket;
-    private _tarBundleInfo: string = '';
 
     constructor({ benchmarkName, benchmarkSignature, projectConfig, globalConfig, socket }: { benchmarkName: string, benchmarkSignature: string, projectConfig: any, globalConfig: any, socket: SocketIO.Socket }) {
         this.benchmarkName = benchmarkName;
@@ -16,13 +15,4 @@ export default class BenchmarkTask {
         this.globalConfig = globalConfig;
         this.socketConnection = socket;
     }
-
-    get tarBundle() {
-        return this._tarBundleInfo;
-    }
-
-    set tarBundle(value: string) {
-        this._tarBundleInfo = value;
-    }
-
 }

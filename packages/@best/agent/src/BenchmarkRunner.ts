@@ -8,11 +8,7 @@ import * as SocketIO from "socket.io";
 
 export enum RunnerStatus {
     IDLE = 1,
-    WAITING_FOR_CONFIG,
-    WAITING_FOR_BENCHMARK,
-    WAITING_FOR_ABORT,
     RUNNING,
-    COMPLETED,
 }
 
 function initializeForwarder(socket: SocketIO.Socket, logger: Function) {
@@ -35,15 +31,39 @@ function initializeForwarder(socket: SocketIO.Socket, logger: Function) {
 }
 
 export default class BenchmarkRunner extends EventEmitter {
-    public status: RunnerStatus = RunnerStatus.IDLE;
+    public _status: RunnerStatus = RunnerStatus.IDLE;
     public runningTask: BenchmarkTask | null = null;
+    public runningWasCancelled = false;
     private _log: Function = () => {};
+
+    get status() {
+        return this._status;
+    }
+
+    set status(value: RunnerStatus) {
+        if (value !== this._status) {
+            this._status = value;
+            if (value === RunnerStatus.IDLE) {
+                this.emit('idle-runner', this);
+            }
+        }
+    }
+
+    cancelRun(task: BenchmarkTask) {
+        if (this.runningTask === task) {
+            this._log('Running was cancelled.');
+            this.runningWasCancelled = true;
+        }
+    }
 
     run(task: BenchmarkTask) {
         this.status = RunnerStatus.RUNNING;
+        this.runningWasCancelled = false;
         this.runningTask = task;
         this._log = (msg: string) => {
-            process.stdout.write(`Task[${task.socketConnection.id}] - ${msg}\n`);
+            if (!this.runningWasCancelled) {
+                process.stdout.write(`Task[${task.socketConnection.id}] - ${msg}\n`);
+            }
         };
 
         loadBenchmarkJob(task.socketConnection)
@@ -62,7 +82,7 @@ export default class BenchmarkRunner extends EventEmitter {
                 try {
                     this._log(`Running benchmark ${benchmarkName}`);
 
-                    // @todo: remove this await
+                    // @todo: remove this await? i think we can leave it in place and block the thread till the run finishes.
                     results = await runBenchmark(
                         { benchmarkName, benchmarkEntry, benchmarkSignature, projectConfig, globalConfig },
                         initializeForwarder(task.socketConnection, this._log));
@@ -83,16 +103,19 @@ export default class BenchmarkRunner extends EventEmitter {
     }
 
     private afterRunBenchmark(err: any, results: any) {
-        this._log(`Sending results to client`);
+        if (!this.runningWasCancelled) {
+            this._log(`Sending results to client`);
 
-        if (err) {
-            this._log(`Sending error`);
-            this.runningTask!.socketConnection.emit('benchmark_error', err.toString());
-        } else {
-            this._log(`Sending results`);
-            this.runningTask!.socketConnection.emit('benchmark_results', results);
+            if (err) {
+                this._log(`Sending error`);
+                this.runningTask!.socketConnection.emit('benchmark_error', err.toString());
+            } else {
+                this._log(`Sending results`);
+                this.runningTask!.socketConnection.emit('benchmark_results', results);
+            }
         }
 
+        this.runningWasCancelled = false;
         this.runningTask = null;
         this.status = RunnerStatus.IDLE;
     }

@@ -15,7 +15,7 @@ export class AgentApp {
     }
 
     private initializeHandlers() {
-        this.queue.on('task-added', (task: BenchmarkTask) => this.handleJobAddedInQueue(task));
+        this.queue.on('item-added', (task: BenchmarkTask) => this.handleJobAddedInQueue(task));
         this.runner.on('idle-runner', (runner: BenchmarkRunner) => this.handleIdleRunner(runner));
     }
 
@@ -35,7 +35,7 @@ export class AgentApp {
 
             socket.on('disconnect', () => {
                 this.queue.remove(task);
-                // @todo: check if is the running job and cancel
+                this.runner.cancelRun(task);
             });
 
             this.queue.push(task);

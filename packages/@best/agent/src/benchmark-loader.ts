@@ -21,6 +21,7 @@ export async function loadBenchmarkJob(socketConnection: SocketIO.Socket): Promi
         const uploader = new SocketIOFile(socket, LOADER_CONFIG);
 
         const errorListener = (err: any) => {
+            uploader.removeListener('stream', streamLogger);
             uploader.removeListener('complete', completeListener);
             uploader.removeListener('error', errorListener);
 
@@ -28,12 +29,18 @@ export async function loadBenchmarkJob(socketConnection: SocketIO.Socket): Promi
         };
 
         const completeListener = (info: any) => {
+            uploader.removeListener('stream', streamLogger);
             uploader.removeListener('complete', completeListener);
             uploader.removeListener('error', errorListener);
 
             resolve(info);
         };
 
+        const streamLogger = ({ wrote, size }: any) => {
+            process.stdout.write(`Client[${socketConnection.id}] - downloading ${wrote} / ${size}\n`);
+        };
+
+        uploader.on('stream', streamLogger);
         uploader.on('complete', completeListener);
         uploader.on('error', errorListener);
 
