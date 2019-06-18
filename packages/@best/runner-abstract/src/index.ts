@@ -1,20 +1,6 @@
 import { getSystemInfo } from '@best/utils';
 import { RunnerOutputStream } from "@best/console-stream";
-import { FrozenGlobalConfig, FrozenProjectConfig } from '@best/types';
-
-export interface RunnerBundle {
-    benchmarkName: string,
-    benchmarkEntry: string,
-    benchmarkFolder: string,
-    benchmarkSignature: string
-}
-
-export interface RuntimeOptions {
-    maxDuration: number;
-    minSampleCount: number,
-    iterations: number,
-    iterateOnClient: boolean
-}
+import { FrozenGlobalConfig, FrozenProjectConfig, BenchmarkInfo, BenchmarkRuntimeConfig } from '@best/types';
 
 export interface BenchmarkResultsState {
     executedTime: number,
@@ -23,14 +9,12 @@ export interface BenchmarkResultsState {
     iterateOnClient: boolean,
 }
 
-export interface BenchmarkResults {
-
-}
+export interface BenchmarkResults {}
 
 export default abstract class AbstractRunner {
-    abstract async run({ benchmarkEntry }: RunnerBundle, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerOutputStream): Promise<BenchmarkResults>;
+    abstract async run({ benchmarkEntry }: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerOutputStream): Promise<BenchmarkResults>;
 
-    getRuntimeOptions(projectConfig: FrozenProjectConfig): RuntimeOptions {
+    getRuntimeOptions(projectConfig: FrozenProjectConfig): BenchmarkRuntimeConfig {
         const { benchmarkIterations, benchmarkOnClient, benchmarkMaxDuration, benchmarkMinIterations } = projectConfig;
         const definedIterations = Number.isInteger(benchmarkIterations);
 

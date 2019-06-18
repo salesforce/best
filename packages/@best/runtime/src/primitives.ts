@@ -1,15 +1,15 @@
 import { dispatch } from './state';
 import { HOOKS, RUN_BENCHMARK, MODES } from './constants';
 
-const _dispatchDescribe = (blockName: any, blockFn: Function, mode?: string) => {
+const _dispatchDescribe = (blockName: string, blockFn: Function, mode?: string) => {
     dispatch({ blockName, mode, name: 'start_describe_definition' });
     blockFn();
     dispatch({ name: 'finish_describe_definition' });
 };
 
-const describe = (blockName: any, blockFn: Function) => _dispatchDescribe(blockName, blockFn);
-describe.only = (blockName: any, blockFn: Function) => _dispatchDescribe(blockName, blockFn, MODES.ONLY);
-describe.skip = (blockName: any, blockFn: Function) => _dispatchDescribe(blockName, blockFn, MODES.SKIP);
+const describe = (blockName: string, blockFn: Function) => _dispatchDescribe(blockName, blockFn);
+describe.only = (blockName: string, blockFn: Function) => _dispatchDescribe(blockName, blockFn, MODES.ONLY);
+describe.skip = (blockName: string, blockFn: Function) => _dispatchDescribe(blockName, blockFn, MODES.SKIP);
 
 const _dispatchBenchmark = (blockName: any, blockFn: Function, mode?: string) => {
     dispatch({ blockName, mode, name: 'start_benchmark_definition' });

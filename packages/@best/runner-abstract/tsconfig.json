@@ -8,5 +8,6 @@
     { "path": "../utils" },
     { "path": "../console-stream" },
     { "path": "../builder" },
+    { "path": "../types" }
   ]
 }

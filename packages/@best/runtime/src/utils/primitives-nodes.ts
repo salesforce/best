@@ -35,14 +35,9 @@ export const makeBenchmark = (name: string, parent: any, mode: string) => {
     };
 };
 
-export const makeBenchmarkRun = (fn: Function, parent: any) => {
-    return {
-        duration: null,
-        errors: [],
-        fn,
-        name: RUN_BENCHMARK,
-        parent,
-        startedAt: null,
-        status: null,
-    };
-};
+export const makeBenchmarkRun = (fn: Function, parent: any): BenchmarkPrimitiveRunNode => ({
+    fn,
+    name: RUN_BENCHMARK,
+    parent,
+    startedAt: 0,
+});

@@ -5,7 +5,7 @@ function fib(n) {
 describe('js-execution2', () => {
     benchmark('fibonacci', () => {
         run(() => {
-            fib(15);
+            return fib(15);
         })
     });
 });

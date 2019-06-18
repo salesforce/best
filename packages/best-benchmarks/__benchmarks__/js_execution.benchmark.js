@@ -3,9 +3,15 @@ function fib(n) {
 }
 
 describe('js-execution', () => {
-    benchmark('fibonacci', () => {
+    benchmark('fibonacci 15', () => {
         run(() => {
-            fib(15);
+            return fib(15);
+        })
+    });
+
+    benchmark('fibonacci 16', () => {
+        run(() => {
+            return fib(16);
         })
     });
 });

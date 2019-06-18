@@ -40,7 +40,7 @@ const executeBenchmark = async (benchmarkNode: any, markName: string, { useMacro
 
             try {
                 await benchmarkNode.fn();
-                benchmarkNode.runDuration = formatTime(time() - benchmarkNode.startedAt);
+                benchmarkNode.metrics.runDuration = formatTime(time() - benchmarkNode.startedAt);
 
                 if (useMacroTaskAfterBenchmark) {
                     withMacroTask(async () => {
