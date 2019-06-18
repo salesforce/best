@@ -18,6 +18,9 @@ function timeQuery(project, timing) {
 }
 
 export async function fetchProjects() {
+    if (! window.BEST_DATA) {
+        console.log('what-the-hell');
+    }
     const response = await fetch(createURL('projects'));
     const { projects } = await response.json();
     return projects
