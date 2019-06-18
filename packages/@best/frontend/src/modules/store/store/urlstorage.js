@@ -91,47 +91,34 @@ function loadViewFromQuery() {
 }
 
 export const loadState = () => {
-    try {
-        let state = {};
+    let state = {};
 
-        const projectId = loadProjectFromPath();
-        const view = loadViewFromQuery();
+    const projectId = loadProjectFromPath();
+    const view = loadViewFromQuery();
 
-        if (projectId.length > 0) {
-            state = {
-                ...state,
-                projects: {
-                    items: [],
-                    selectedProjectId: parseInt(projectId, 10)
-                }
+    if (projectId.length > 0) {
+        state = {
+            ...state,
+            projects: {
+                items: [],
+                selectedProjectId: parseInt(projectId, 10)
             }
         }
-
-        if (view) {
-            state = {
-                ...state,
-                view
-            }
-        }
-
-        return state;
-    } catch (error) {
-        if (process.env.NODE_ENV !== 'production') {
-            console.warn('Failed to load state in middleware', error);
-        }
-        return {};
     }
+
+    if (view) {
+        state = {
+            ...state,
+            view
+        }
+    }
+
+    return state;
 }
 
 const saveState = ({ projects: { selectedProjectId }, view }) => {
-    try {
-        updateProjectsPathIfNeeded(selectedProjectId);
+    updateProjectsPathIfNeeded(selectedProjectId);
         updateViewQueryIfNeeded(view);
-    } catch (error) {
-        if (process.env.NODE_ENV !== 'production') {
-            console.warn('Failed to save state in middleware', error);
-        }
-    }
 }
 
 const debouncedSave = debounce(saveState, DEBOUNCE_DURATION);

@@ -102,6 +102,7 @@ export default class ComponentGraph extends LightningElement {
             this.timeout = null;
         } else {
             const grandParent = event.target.parentElement.parentElement;
+            // eslint-disable-next-line @lwc/lwc/no-async-operation
             this.timeout = setTimeout(() => {
                 if (grandParent !== this.element && this.recentHoverData) {
                     this.traceClicked();

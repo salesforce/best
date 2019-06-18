@@ -66,7 +66,11 @@ export default (config: any): Router => {
         const branch = 'master'
 
         try {
-            const snapshots = await db.fetchSnapshots(project, branch, since)
+            let parsedSince: Date | undefined;
+            if (since && since.length > 0) {
+                parsedSince = new Date(parseInt(since))
+            }
+            const snapshots = await db.fetchSnapshots(project, branch, parsedSince)
 
             res.send({
                 snapshots

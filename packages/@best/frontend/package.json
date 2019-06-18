@@ -72,7 +72,7 @@
         "lwc:serve": "lwc-services build && lwc-services serve",
         "lwc:watch": "lwc-services watch --webpack=webpack.config.js",
         "api:migrate": "node-pg-migrate -m server/migrations",
-        "api:watch": "nodemon --watch server -e js,ts --exec 'NODE_ENV=development ts-node server/index.ts'",
+        "api:watch": "nodemon --watch server -e ts --exec 'NODE_ENV=development ts-node server/index.ts --files typings/index.d.ts'",
         "watch": "concurrently 'yarn lwc:watch' 'yarn api:watch'"
     }
 }

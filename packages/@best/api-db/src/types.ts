@@ -38,7 +38,7 @@ export class ApiDBAdapter {
         throw new Error('ApiDB.fetchProjects() not implemented')
     }
 
-    fetchSnapshots(projectId: number, branch: string, since: string): Promise<Snapshot[]> {
+    fetchSnapshots(projectId: number, branch: string, since: Date | undefined): Promise<Snapshot[]> {
         throw new Error('ApiDB.fetchSnapshots() not implemented')
     }
 
