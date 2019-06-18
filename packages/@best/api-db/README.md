@@ -12,9 +12,7 @@ Inside your `best.config.js` you need to have the following:
 {
     apiDatabase: {
         adapter: 'sql/postgres',
-        host: '',
-        user: '',
-        password: ''
+        path: 'postgresql://dbuser:secretpassword@database.server.com:3211/mydb
     }
 }
 ```
