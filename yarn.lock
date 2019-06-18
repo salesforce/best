@@ -1957,6 +1957,25 @@
     universal-user-agent "^2.0.0"
     url-template "^2.0.8"
 
+"@octokit/rest@^16.28.1":
+  version "16.28.1"
+  resolved "https://registry.npmjs.org/@octokit/rest/-/rest-16.28.1.tgz#a10c3d4fe61e994878d66a4c12b9923b18548236"
+  integrity sha512-9H/5F0f2bSVhk78ypu/A9dkK5GCH/aI8CxRJ0L8JU/XEYNIYozxqD6HVC7shsofrCfR61YORfjTE+GxfZ/wasQ==
+  dependencies:
+    "@octokit/request" "^4.0.1"
+    "@octokit/request-error" "^1.0.2"
+    atob-lite "^2.0.0"
+    before-after-hook "^1.4.0"
+    btoa-lite "^1.0.0"
+    deprecation "^2.0.0"
+    lodash.get "^4.4.2"
+    lodash.set "^4.3.2"
+    lodash.uniq "^4.5.0"
+    octokit-pagination-methods "^1.1.0"
+    once "^1.4.0"
+    universal-user-agent "^2.0.0"
+    url-template "^2.0.8"
+
 "@salesforce/eslint-config-lwc@^0.3":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@salesforce/eslint-config-lwc/-/eslint-config-lwc-0.3.0.tgz#92ea44fd8f38728f769a021bcd3c03d30ee9e75f"
@@ -6952,6 +6971,7 @@ is-accessor-descriptor@^1.0.0:
     kind-of "^6.0.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 is-array-buffer@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/is-array-buffer/-/is-array-buffer-1.0.1.tgz#a4fac0cf325c1fad3f713e2b109eb241a907cf27"
@@ -6959,6 +6979,8 @@ is-array-buffer@^1.0.0:
 
 =======
 >>>>>>> chore: update yarn.lock
+=======
+>>>>>>> a98709d76124c7ba15bc9cc52823a74497c0f8f9
 is-arrayish@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/is-arrayish/-/is-arrayish-0.2.1.tgz#77c99840527aa8ecb1a8ba697b80645a7a926a9d"
