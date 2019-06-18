@@ -70,8 +70,8 @@ async function buildBundleBenchmarks(benchmarksTests: { config: FrozenProjectCon
     return benchmarkBuilds;
 }
 
-async function runBundleBenchmarks(benchmarksBuilds: BuildConfig[], globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerOutputStream) {
-    return runBenchmarks(benchmarksBuilds, globalConfig, runnerLogStream);
+async function runBundleBenchmarks(benchmarksBuilds: BuildConfig[], runnerLogStream: RunnerOutputStream) {
+    return runBenchmarks(benchmarksBuilds, runnerLogStream);
 }
 
 function hasMatches(benchmarksTests: { config: FrozenProjectConfig, matches: string[] }[]) {
@@ -93,7 +93,7 @@ export async function runBest(globalConfig: FrozenGlobalConfig, configs: FrozenP
 
     const runnerLogStream = new RunnerOutputStream(benchmarksBuilds, outputStream, globalConfig.isInteractive);
     runnerLogStream.init();
-    const benchmarkBundleResults = await runBundleBenchmarks(benchmarksBuilds, globalConfig, runnerLogStream);
+    const benchmarkBundleResults = await runBundleBenchmarks(benchmarksBuilds, runnerLogStream);
     runnerLogStream.finish();
 
     await analyzeBenchmarks(benchmarkBundleResults);
