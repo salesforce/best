@@ -10,11 +10,11 @@ const asyncRead = promisify(fs.readFile);
 const asyncWrite = promisify(fs.writeFile);
 
 const fetchTemplate = async () => {
-    return await asyncRead(path.resolve(__dirname, 'local-template.html'), 'utf8')
+    return await asyncRead(path.resolve(__dirname, 'static-template.html'), 'utf8')
 }
 
-export const buildLocalFrontend = async () => {
-    console.log('building local frontend...')
+export const buildStaticFrontend = async () => {
+    console.log('building static frontend...')
 
     const options = {
         projectIds: [1],
@@ -30,16 +30,14 @@ export const buildLocalFrontend = async () => {
         console.log('rollup done')
 
         const template = await fetchTemplate();
-        const distDir = path.resolve(__dirname, '../../dist/local');
+        const distDir = path.resolve(__dirname, '../../dist/static');
 
         const indexPath = path.resolve(distDir, 'index.html')
         await asyncWrite(indexPath, template);
 
-        console.log('Done compiling local frontend:', indexPath)
+        console.log('Done compiling static frontend:', indexPath)
     } catch (err) {
         console.error('oops')
         console.error(err);
     }
 }
-
-buildLocalFrontend()

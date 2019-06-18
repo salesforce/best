@@ -26,7 +26,7 @@ const rollupConfig: {
         ]
     }),
     outputOptions: () => ({
-        file: path.resolve(__dirname, '../../dist/local/bundle.js'),
+        file: path.resolve(__dirname, '../../dist/static/bundle.js'),
         format: 'iife'
     })
 }
