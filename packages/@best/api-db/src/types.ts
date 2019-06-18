@@ -1,3 +1,5 @@
+import { ApiDatabaseConfig } from '@best/config';
+
 export interface Project {
     id: number;
     name: string;
@@ -13,6 +15,7 @@ export interface Metric {
 
 export interface TemporarySnapshot {
     name: string;
+    branch: string;
     metrics: Metric[];
     environmentHash: string;
     similarityHash: string;
@@ -28,18 +31,22 @@ export interface Snapshot extends TemporarySnapshot {
     updatedAt: string;
 }
 
-export class ApiDB {
-    constructor(config: any) {}
+export class ApiDBAdapter {
+    constructor(config: ApiDatabaseConfig) {}
 
     fetchProjects(): Promise<Project[]> {
         throw new Error('ApiDB.fetchProjects() not implemented')
     }
 
-    fetchSnapshots(projectId: number, since: string): Promise<Snapshot[]> {
+    fetchSnapshots(projectId: number, branch: string, since: string): Promise<Snapshot[]> {
         throw new Error('ApiDB.fetchSnapshots() not implemented')
     }
     
     saveSnapshots(snapshots: TemporarySnapshot[], projectName: string): Promise<boolean> {
         throw new Error('ApiDB.saveSnapshots() not implemented')
+    }
+
+    updateLastRelease(projectName: string, release: string | Date): Promise<boolean> {
+        throw new Error('ApiDB.updateLastRelease() not implemented')
     }
 }

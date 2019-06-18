@@ -23,7 +23,7 @@ exports.up = pgm => {
             notNull: true,
             default: pgm.func('current_timestamp'),
         },
-        temporary: 'boolean',
+        temporary: { type: 'boolean', notNull: true},
     });
 
     pgm.createIndex('snapshots', 'project_id');

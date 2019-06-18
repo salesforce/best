@@ -13,6 +13,11 @@ export interface RunnerConfig {
     config?: any;
 }
 
+export interface ApiDatabaseConfig {
+    adapter: string;
+    path: string;
+}
+
 export interface NormalizedConfig {
     nonFlagArgs: string[];
     cache: boolean,
@@ -21,7 +26,7 @@ export interface NormalizedConfig {
     gitIntegration: boolean,
     useHttp: boolean,
     externalStorage?: string,
-    apiDatabase?: string,
+    apiDatabase?: ApiDatabaseConfig,
     isInteractive?: boolean,
     openPages: boolean,
     moduleDirectories: string[],
@@ -68,8 +73,9 @@ export interface GlobalConfig {
     gitIntegration: boolean;
     projects: string[];
     nonFlagArgs: string[];
-    isInteractive? : boolean;
+    isInteractive?: boolean;
     gitInfo: GitInfo;
+    apiDatabase?: ApiDatabaseConfig;
 }
 
 export type ProjectConfigPlugin = string | [string, { [key : string]: any }]

@@ -5,10 +5,11 @@ export default (config: any): Router => {
     const db = loadDbFromConfig(config);
     const router = Router()
 
+    if (! db) { return router; }
+
     router.get('/projects', async (req, res): Promise<void> => {
         try {
             const projects = await db.fetchProjects()
-
             res.send({
                 projects
             })
@@ -21,9 +22,10 @@ export default (config: any): Router => {
     router.get('/:project/snapshots', async (req, res): Promise<void> => {
         const { project } = req.params
         const { since } = req.query
+        const branch = 'master'
 
         try {
-            const snapshots = await db.fetchSnapshots(project, since)
+            const snapshots = await db.fetchSnapshots(project, branch, since)
 
             res.send({
                 snapshots
