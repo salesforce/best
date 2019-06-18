@@ -1,4 +1,4 @@
- import fg from 'fast-glob';
+import fg from 'fast-glob';
 import { buildBenchmarks, BuildConfig } from '@best/builder';
 import { runBenchmarks } from '@best/runner';
 import { BuildOutputStream, RunnerOutputStream } from "@best/console-stream";
@@ -9,8 +9,7 @@ import path from 'path';
 import micromatch from 'micromatch';
 import { FrozenGlobalConfig, FrozenProjectConfig } from '@best/config';
 
-
-async function getBenchmarkPaths(config: FrozenProjectConfig, globalConfig: FrozenGlobalConfig): Promise<string[]> {
+async function getBenchmarkPaths(config: FrozenProjectConfig): Promise<string[]> {
     const { testMatch, testPathIgnorePatterns, rootDir: cwd } = config;
     const ignore = [ ...testPathIgnorePatterns];
     const results = await fg(testMatch, { onlyFiles: true, ignore, cwd });
@@ -50,7 +49,7 @@ function validateBenchmarkNames(matches: string[]) {
 
 async function getBenchmarkTests(projectConfigs: FrozenProjectConfig[], globalConfig: FrozenGlobalConfig): Promise<{ config: FrozenProjectConfig, matches: string[] }[]> {
     return Promise.all(projectConfigs.map(async (projectConfig: FrozenProjectConfig) => {
-        const allBenchmarks = await getBenchmarkPaths(projectConfig, globalConfig);
+        const allBenchmarks = await getBenchmarkPaths(projectConfig);
         const filteredBenchmarks = filterBenchmarks(allBenchmarks, globalConfig.nonFlagArgs);
         validateBenchmarkNames(filteredBenchmarks);
         return { config: projectConfig, matches: filteredBenchmarks };
