@@ -1,10 +1,12 @@
-export function normalizeResults(benchmarkState: any) {
-    const { benchmarkName, executedIterations, executedTime, results } = benchmarkState;
+import { BenchmarkResults } from "@best/types";
+
+export function normalizeResults(benchmarkState: BenchmarkState): BenchmarkResults {
+    const { benchmarkName, executedIterations, executedTime: aggregate, results } = benchmarkState;
 
     return {
         benchmarkName,
         executedIterations,
-        executedTime,
+        aggregate,
         results,
     };
 }

@@ -4,11 +4,11 @@
  *
  */
 
-function isNative(Ctor: any) {
+function isNative(Ctor: Function) {
     return typeof Ctor === 'function' && /native code/.test(Ctor.toString());
 }
 
-const callbacks: any[] = [];
+const callbacks: Function[] = [];
 let pending = false;
 
 function flushCallbacks() {
@@ -24,8 +24,8 @@ function handleError(e: any, ctx: any, type: any) {
     console.error(e, ctx, type);
 }
 
-let microTimerFunc: any;
-let macroTimerFunc : any;
+let microTimerFunc: Function;
+let macroTimerFunc : Function;
 let useMacroTask = false;
 
 // Determine (macro) Task defer implementation.

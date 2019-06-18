@@ -1,4 +1,4 @@
-export function validateState(benchmarkState: any) {
+export function validateState(benchmarkState: BenchmarkState) {
     const {
         rootDescribeBlock,
         currentDescribeBlock,
@@ -13,7 +13,7 @@ export function validateState(benchmarkState: any) {
         benchmarkState.benchmarkDefinitionError = new Error('Benchmark parsing error');
     }
 
-    if (rootDescribeBlock.children === 0) {
+    if (rootDescribeBlock.children.length === 0) {
         benchmarkState.benchmarkDefinitionError = new Error('No benchmarks to run');
     }
 }

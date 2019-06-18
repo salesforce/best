@@ -9,7 +9,7 @@ const _initHandlers = () =>
         return o;
     }, {});
 
-const _initHooks = (hooks: Function[]) =>
+const _initHooks = (hooks: RuntimeHook[]) =>
     hooks.reduce((m, { type, fn }: any) => {
         m[type].push(fn);
         return m;
@@ -27,7 +27,7 @@ function endMeasure(markName: string) {
     performance.clearMeasures(markName);
 }
 
-const executeBenchmark = async (benchmarkNode: any, markName: string, { useMacroTaskAfterBenchmark }: any) => {
+const executeBenchmark = async (benchmarkNode: RuntimeNodeRunner, markName: string, { useMacroTaskAfterBenchmark }: { useMacroTaskAfterBenchmark: boolean } ) => {
     // Force garbage collection before executing an iteration (--js-flags=--expose-gc)
     _forceGC();
     return new Promise((resolve, reject) => {
@@ -40,26 +40,26 @@ const executeBenchmark = async (benchmarkNode: any, markName: string, { useMacro
 
             try {
                 await benchmarkNode.fn();
-                benchmarkNode.metrics.runDuration = formatTime(time() - benchmarkNode.startedAt);
+                benchmarkNode.metrics.script = formatTime(time() - benchmarkNode.startedAt);
 
                 if (useMacroTaskAfterBenchmark) {
                     withMacroTask(async () => {
                         await nextTick();
-                        benchmarkNode.duration = formatTime(time() - benchmarkNode.startedAt);
+                        benchmarkNode.aggregate = formatTime(time() - benchmarkNode.startedAt);
                         if (process.env.NODE_ENV !== 'production') {
                             endMeasure(markName);
                         }
                         resolve();
                     })();
                 } else {
-                    benchmarkNode.duration = formatTime(time() - benchmarkNode.startedAt);
+                    benchmarkNode.aggregate = formatTime(time() - benchmarkNode.startedAt);
                     if (process.env.NODE_ENV !== 'production') {
                         endMeasure(markName);
                     }
                     resolve();
                 }
             } catch (e) {
-                benchmarkNode.duration = -1;
+                benchmarkNode.aggregate = -1;
                 if (process.env.NODE_ENV !== 'production') {
                     endMeasure(markName);
                 }
@@ -69,7 +69,7 @@ const executeBenchmark = async (benchmarkNode: any, markName: string, { useMacro
     });
 };
 
-export const runBenchmarkIteration = async (node: any, opts: any) => {
+export const runBenchmarkIteration = async (node: RuntimeNode, opts: { useMacroTaskAfterBenchmark: boolean }): Promise<RuntimeNode> => {
     const { hooks, children, run } = node;
     const hookHandlers = _initHooks(hooks);
 
@@ -79,20 +79,22 @@ export const runBenchmarkIteration = async (node: any, opts: any) => {
     }
 
     // -- For each children ----
-    for (const child of children) {
-        // -- Before Each ----
-        for (const hook of hookHandlers[HOOKS.BEFORE_EACH]) {
-            await hook();
-        }
+    if (children) {
+        for (const child of children) {
+            // -- Before Each ----
+            for (const hook of hookHandlers[HOOKS.BEFORE_EACH]) {
+                await hook();
+            }
 
-        // -- Traverse Child ----
-        node.startedAt = formatTime(time());
-        await runBenchmarkIteration(child, opts);
-        node.duration = formatTime(time() - node.startedAt);
+            // -- Traverse Child ----
+            node.startedAt = formatTime(time());
+            await runBenchmarkIteration(child, opts);
+            node.aggregate = formatTime(time() - node.startedAt);
 
-        // -- After Each Child ----
-        for (const hook of hookHandlers[HOOKS.AFTER_EACH]) {
-            await hook();
+            // -- After Each Child ----
+            for (const hook of hookHandlers[HOOKS.AFTER_EACH]) {
+                await hook();
+            }
         }
     }
 
@@ -112,7 +114,7 @@ export const runBenchmarkIteration = async (node: any, opts: any) => {
         // -- Run ----
         node.startedAt = formatTime(time());
         await executeBenchmark(run, markName, opts);
-        node.duration = formatTime(time() - node.startedAt);
+        node.aggregate = formatTime(time() - node.startedAt);
 
         // -- After ----
         if (process.env.NODE_ENV !== 'production') {

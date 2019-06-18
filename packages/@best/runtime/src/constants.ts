@@ -18,3 +18,9 @@ export const HOOKS = {
     AFTER,
 };
 export const RUN_BENCHMARK = 'run_benchmark';
+
+export const PRIMITIVE_NODE_TYPES: { [key:string]: NodeTypes } = {
+    GROUP: "group",
+    BENCHMARK: "benchmark",
+    RUN: "run"
+};

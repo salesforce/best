@@ -1,33 +1,33 @@
 import { makeDescribe, makeBenchmark, makeBenchmarkRun } from './utils/primitives-nodes';
 
-const handler = (event: any, state: any) => {
-    switch (event.name) {
+const handler = (event: PrimitiveNode, state: BenchmarkState) => {
+    switch (event.nodeType) {
         case 'start_describe_definition': {
-            const { blockName, mode } = event;
-            const { currentDescribeBlock } = state;
-            const describeBlock = makeDescribe(blockName, currentDescribeBlock, mode);
+            const { nodeName, mode } = event;
+            const currentDescribeBlock = state.currentDescribeBlock as RuntimeNodeDescribe;
+            const describeBlock = makeDescribe(nodeName, currentDescribeBlock, mode);
             currentDescribeBlock.children.push(describeBlock);
             state.currentDescribeBlock = describeBlock;
             break;
         }
 
         case 'start_benchmark_definition': {
-            const { blockName, mode } = event;
-            const { currentDescribeBlock } = state;
-            const describeBlock = makeBenchmark(blockName, currentDescribeBlock, mode);
-            currentDescribeBlock.children.push(describeBlock);
-            state.currentDescribeBlock = describeBlock;
+            const { nodeName, mode } = event;
+            const currentDescribeBlock = state.currentDescribeBlock as RuntimeNodeDescribe;
+            const benchmarkBlock = makeBenchmark(nodeName, currentDescribeBlock, mode);
+            currentDescribeBlock.children.push(benchmarkBlock);
+            state.currentDescribeBlock = benchmarkBlock;
             break;
         }
 
         case 'finish_describe_definition':
         case 'finish_benchmark_definition': {
-            const { currentDescribeBlock } = state;
+            const currentDescribeBlock = state.currentDescribeBlock as RuntimeNodeDescribe | RuntimeNodeBenchmark;
             if (!currentDescribeBlock) {
                 throw new Error(`"currentDescribeBlock" has to be there since we're finishing its definition.`);
             }
 
-            if (currentDescribeBlock.children.length === 0 && !currentDescribeBlock.run) {
+            if (currentDescribeBlock.type === "benchmark" && !currentDescribeBlock.run) {
                 throw new Error(
                     `Benchmark "${
                         currentDescribeBlock.name
@@ -38,21 +38,27 @@ const handler = (event: any, state: any) => {
             if (currentDescribeBlock.parent) {
                 state.currentDescribeBlock = currentDescribeBlock.parent;
             }
+
             break;
         }
 
         case 'add_hook': {
             const { currentDescribeBlock } = state;
             const { fn, hookType: type } = event;
-            currentDescribeBlock.hooks.push({ fn, type });
+
+            if (fn && type) {
+                currentDescribeBlock.hooks.push({ fn, type });
+            }
             break;
         }
 
         case 'run_benchmark': {
-            const { currentDescribeBlock } = state;
+            const currentDescribeBlock = state.currentDescribeBlock as RuntimeNodeBenchmark;
             const { fn } = event;
-            const benchmark = makeBenchmarkRun(fn, currentDescribeBlock);
-            currentDescribeBlock.run = benchmark;
+            if (fn) {
+                const benchmark = makeBenchmarkRun(fn, currentDescribeBlock);
+                currentDescribeBlock.run = benchmark;
+            }
             break;
         }
 

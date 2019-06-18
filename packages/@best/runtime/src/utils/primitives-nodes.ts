@@ -1,43 +1,33 @@
 import { RUN_BENCHMARK } from '../constants';
-export const makeDescribe = (name: string, parent?: any, mode?: string) => {
-    if (parent && !mode) {
-        // If not set explicitly, inherit from the parent describe.
-        mode = parent.mode;
-    }
 
-    return {
-        children: [],
-        hooks: [],
-        mode,
-        name,
-        parent,
-    };
-};
+export const makeDescribe = (name: string, parent?: RuntimeNodeDescribe, mode?: string): RuntimeNodeDescribe => ({
+    type: "group",
+    mode: parent && !mode ? parent.mode : mode,
+    children: [],
+    hooks: [],
+    startedAt: 0,
+    aggregate: 0,
+    name,
+    parent,
+});
 
-export const makeBenchmark = (name: string, parent: any, mode: string) => {
-    if (parent && !mode) {
-        // If not set explicitly, inherit from the parent describe.
-        mode = parent.mode;
-    }
+export const makeBenchmark = (name: string, parent: RuntimeNodeDescribe, mode?: string): RuntimeNodeBenchmark => ({
+    type: "benchmark",
+    mode: parent && !mode ? parent.mode : mode,
+    hooks: [],
+    name,
+    parent,
+    startedAt: 0,
+    aggregate: 0,
+});
 
-    return {
-        duration: 0,
-        runDuration: 0,
-        children: [],
-        errors: [],
-        hooks: [],
-        run: null,
-        mode,
-        name,
-        parent,
-        startedAt: null,
-        status: null,
-    };
-};
-
-export const makeBenchmarkRun = (fn: Function, parent: any): BenchmarkPrimitiveRunNode => ({
+export const makeBenchmarkRun = (fn: Function, parent: RuntimeNodeBenchmark): RuntimeNodeRunner => ({
+    type: "run",
     fn,
     name: RUN_BENCHMARK,
     parent,
     startedAt: 0,
+    metrics: {},
+    hooks: [],
+    aggregate: 0
 });

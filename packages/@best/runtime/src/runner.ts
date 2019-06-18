@@ -2,30 +2,31 @@ import { getBenchmarkRootNode } from './state';
 import { runBenchmarkIteration } from './run_iteration';
 import { normalizeResults } from './results';
 import { validateState } from "./utils/validate";
+import { BenchmarkResultNode, ResultNodeTypes, BenchmarkResults } from "@best/types";
 
-function collectResults(node: any) {
-    const { name, duration, startedAt, run } = node;
-    const resultNode: any = { name, duration, startedAt };
+function collectNodeResults(node: RuntimeNode): BenchmarkResultNode {
+    const { name, aggregate, startedAt, run, children  } = node;
+    const type = node.type as ResultNodeTypes;
+    const resultNode: BenchmarkResultNode = { type, name, aggregate, startedAt };
 
     if (run) {
-        resultNode.duration = run.duration;
-        resultNode.runDuration = run.runDuration;
-    } else {
-        resultNode.benchmarks = node.children.map((c: any) => collectResults(c));
+        resultNode.aggregate = run.aggregate;
+        resultNode.metrics = { script: run.metrics.script };
+    } else if (children) {
+        resultNode.nodes = children.map((c: RuntimeNode) => collectNodeResults(c));
     }
 
     return resultNode;
 }
 
-async function runIterations(config: any): Promise<any> {
+async function runIterations(config: BenchmarkState): Promise<BenchmarkState> {
     if (config.executedTime < config.maxDuration || config.executedIterations < config.minSampleCount) {
         const { useMacroTaskAfterBenchmark } = config;
-        const benchmark = await runBenchmarkIteration(getBenchmarkRootNode(), {
-            useMacroTaskAfterBenchmark,
-        });
-        const results = collectResults(benchmark);
+
+        const benchmark = await runBenchmarkIteration(getBenchmarkRootNode(), { useMacroTaskAfterBenchmark });
+        const results = collectNodeResults(benchmark);
         config.results.push(results);
-        config.executedTime += benchmark.duration;
+        config.executedTime += benchmark.aggregate;
         config.executedIterations += 1;
 
         if (!config.iterateOnClient) {
@@ -38,7 +39,7 @@ async function runIterations(config: any): Promise<any> {
     return config;
 }
 
-export async function runBenchmark(benchmarkState: any) {
+export async function runBenchmark(benchmarkState: BenchmarkState): Promise<BenchmarkResults> {
     validateState(benchmarkState);
     if (benchmarkState.benchmarkDefinitionError) {
         throw benchmarkState.benchmarkDefinitionError;

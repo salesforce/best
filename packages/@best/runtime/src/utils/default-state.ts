@@ -1,19 +1,10 @@
 export default Object.freeze({
-    iterateOnClient: undefined,
+    benchmarkName: "",
     useMacroTaskAfterBenchmark: true,
     maxDuration: 1000 * 20, // 20 seconds
     minSampleCount: 30,
     iterations: 0,
-
-    // Internals
-    hasFocusedTests: false,
-    results: null,
-
-    // Runtime
+    results: [],
     executedTime: 0,
     executedIterations: 0,
-
-    // Memory
-    memoryAllocatedStart: 0,
-    memoryAllocatedFinish: 0,
 });
