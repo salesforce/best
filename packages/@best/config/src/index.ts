@@ -46,7 +46,8 @@ function generateProjectConfigs(options: NormalizedConfig, isRoot: boolean, gitI
         benchmarkOutput: normalizeRootDirPattern(options.benchmarkOutput, options.rootDir),
         benchmarkCustomAssets: normalizeRootDirPattern(options.benchmarkCustomAssets, options.rootDir),
         testMatch: options.testMatch,
-        testPathIgnorePatterns: options.testPathIgnorePatterns
+        testPathIgnorePatterns: options.testPathIgnorePatterns,
+        samplesQuantileThreshold: options.samplesQuantileThreshold
     });
 
     return { globalConfig, projectConfig };

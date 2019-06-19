@@ -20,7 +20,7 @@ export function variance(arr: number[]) {
 
 export function median(arr: number[]) {
     if (!arr.length) {
-        return null;
+        return 0;
     }
 
     const sorted = sort(arr);
@@ -33,6 +33,8 @@ export function medianAbsoluteDeviation(arr: number[]) {
     const med = median(arr);
     if (med) {
         return median(arr.map(x => Math.abs(x - med)));
+    } else {
+        return 0;
     }
 }
 

@@ -34,7 +34,7 @@ const defaultOptions = {
     ],
 
     // Calculate statistics on entire distributions (including possible outliers).
-    // samplesQuantileThreshold: 1,
+    samplesQuantileThreshold: 0.8,
 
     // Don't try to normalize distributions.
     // normalize: false,

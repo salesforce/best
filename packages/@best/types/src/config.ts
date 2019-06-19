@@ -75,6 +75,7 @@ export interface NormalizedConfig {
     benchmarkCustomAssets: string,
     testMatch: string[],
     testPathIgnorePatterns: string[],
+    samplesQuantileThreshold: number;
     rootDir: string
 }
 
@@ -106,6 +107,7 @@ export interface ProjectConfig {
     rootDir: string;
     testMatch: string[];
     testPathIgnorePatterns: string[];
+    samplesQuantileThreshold: number;
 }
 
 export type FrozenGlobalConfig = Readonly<GlobalConfig>;

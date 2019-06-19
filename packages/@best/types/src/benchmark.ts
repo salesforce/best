@@ -1,4 +1,4 @@
-import { EnvironmentConfig } from "./config";
+import { EnvironmentConfig, FrozenProjectConfig } from "./config";
 
 export interface BenchmarkInfo {
     benchmarkName: string;
@@ -14,9 +14,11 @@ export interface BenchmarkRuntimeConfig {
     iterateOnClient: boolean;
 }
 
-export interface BenchmarkMetrics {
-    [key: string]: number;
-    script: number;
+
+export type BenchmarkMetricNames = "script" | "aggregate" | "paint" | "layout" | "system" | "idle";
+
+export type BenchmarkMetrics = {
+    [key in BenchmarkMetricNames]?: number;
 }
 
 export type ResultNodeTypes = "group" | "benchmark";
@@ -51,10 +53,21 @@ export interface BenchmarkResultsSnapshot {
     results: BenchmarkResultNode[];
     environment: EnvironmentConfig;
     benchmarkInfo: BenchmarkInfo;
+    projectConfig: FrozenProjectConfig;
+    stats?: any;
 }
 
 export interface BenchmarkResultsState {
     executedTime: number,
     executedIterations: number,
     results: BenchmarkResultNode[];
+}
+export interface BenchmarkStats {
+    samples: number[],
+    sampleSize: number,
+    samplesQuantileThreshold: number,
+    mean: number,
+    median: number,
+    variance: number,
+    medianAbsoluteDeviation: number,
 }

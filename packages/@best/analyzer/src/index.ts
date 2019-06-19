@@ -1,12 +1,13 @@
+import { BenchmarkResultsSnapshot, BenchmarkResultNode, BenchmarkMetricNames, BenchmarkStats } from "@best/types";
 import { VERSION } from './constants';
 import { quantile, mean, median, variance, medianAbsoluteDeviation, compare as compareSamples } from './stats';
 
-function computeSampleStats(arr: number[], config: any) {
-    const { samplesQuantileThreshold } = config;
+function computeSampleStats(arr: number[], samplesQuantileThreshold: number): BenchmarkStats {
     if (samplesQuantileThreshold < 1) {
         const q = quantile(arr, samplesQuantileThreshold);
         arr = arr.filter(v => v <= q);
     }
+
     return {
         samples: arr,
         sampleSize: arr.length,
@@ -18,61 +19,88 @@ function computeSampleStats(arr: number[], config: any) {
     };
 }
 
-function collectResults({ name, duration, runDuration, benchmarks }: any, collector: any) {
-    let cNode = collector[name];
-    if (typeof cNode !== 'object') {
-        cNode = collector[name] = { duration: [], runDuration: [] };
+type BenchmarkMetricsAggregate = { [key in BenchmarkMetricNames]?: number[] }
+
+// This type will hold as keys all benchmark names, and then an array with all results
+interface BenchmarkMetricsMap {
+    [key: string]: BenchmarkMetricsAggregate
+}
+
+// Given an iteration benchmark (whith nested benchmarks), collect its metrics
+function collectResults({ name, metrics, nodes, aggregate }: BenchmarkResultNode, collector: BenchmarkMetricsMap) {
+    let collectorNode = collector[name];
+    if (!collectorNode) {
+        collectorNode = collector[name] = { script: [], aggregate: [] };
     }
 
-    if (duration > 0) {
-        cNode.duration.push(duration);
+    if (aggregate > 0 && collectorNode.aggregate) {
+        collectorNode.aggregate.push(aggregate);
     }
 
-    if (runDuration !== undefined) {
-        cNode.runDuration.push(runDuration);
-    } else {
-        benchmarks.forEach((node: any) => collectResults(node, collector));
+    if (metrics) {
+        Object.keys(metrics).reduce((collector: BenchmarkMetricsAggregate, key: string) => {
+            const bucket = collector[key as BenchmarkMetricNames];
+            const value = metrics[key as BenchmarkMetricNames];
+            if (bucket && value) {
+                bucket.push(value);
+            }
+
+            return collector;
+        }, collectorNode);
     }
+
+    if (nodes) {
+        nodes.forEach((node: BenchmarkResultNode) => collectResults(node, collector));
+    }
+
     return collector;
 }
 
-function createStructure({ benchmarks, name, runDuration }: any, collector: any) {
-    if (runDuration !== undefined) {
+function createStructure({ nodes, name, type }: BenchmarkResultNode, collector: any): any {
+    if (type === "benchmark") {
         const newNode = collector[name];
         newNode.name = name;
         return newNode;
     }
 
-    return {
-        name,
-        benchmarks: benchmarks.map((childNode: any) => createStructure(childNode, collector)),
-    };
+    if (nodes) {
+        return {
+            name,
+            nodes: nodes.map((childNode: any) => createStructure(childNode, collector)),
+        };
+    }
+
+    return collector[name];
 }
 
-export async function analyzeBenchmarks(benchmarkResults: any) {
+export async function analyzeBenchmarks(benchmarkResults: BenchmarkResultsSnapshot[]) {
     return Promise.all(
-        benchmarkResults.map(async (benchmarkResult: any) => {
-            const { results, environment, benchmarkName, projectConfig } = benchmarkResult;
+        // For each benchmark file runned...
+        benchmarkResults.map(async (benchmarkResult: BenchmarkResultsSnapshot) => {
+            const { results, environment, benchmarkInfo: { benchmarkName }, projectConfig } = benchmarkResult;
             const structure = results[0];
-            const collector = results.reduce((c: any, result: any) => collectResults(result, c), {});
 
-            const benchmarkStats = Object.keys(collector).reduce((stats: any, bName) => {
-                const benchmarkMetrics = collector[bName];
-                stats[bName] = Object.keys(benchmarkMetrics).reduce((mc: any, metric) => {
-                    const list = benchmarkMetrics[metric];
-                    if (Array.isArray(list)) {
-                        if (list.length) {
-                            mc[metric] = computeSampleStats(benchmarkMetrics[metric], projectConfig);
-                        }
-                    } else {
-                        mc[metric] = benchmarkMetrics[metric];
+            // Collect the metrics for the nested benchmarks within
+            const collector: BenchmarkMetricsMap = results.reduce((reducer: BenchmarkMetricsMap, node: BenchmarkResultNode) => collectResults(node, reducer), {});
+
+            // For each metric
+            const benchmarkStats = Object.keys(collector).reduce((stats: any, benchmarkName: string) => {
+                const benchmarkMetrics = collector[benchmarkName];
+
+                stats[benchmarkName] = Object.keys(benchmarkMetrics).reduce((metricStats: any, metric: string) => {
+                    const metricResults = benchmarkMetrics[metric as BenchmarkMetricNames];
+                    if (Array.isArray(metricResults) && metricResults.length > 0) {
+                        metricStats[metric] = computeSampleStats(metricResults, projectConfig.samplesQuantileThreshold);
                     }
-                    return mc;
+                    return metricStats;
                 }, {});
+
                 return stats;
             }, {});
 
             const benchmarkStructure = createStructure(structure, benchmarkStats);
+
+            console.log(benchmarkStructure);
 
             benchmarkResult.stats = {
                 version: VERSION,

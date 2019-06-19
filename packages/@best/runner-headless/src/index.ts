@@ -22,7 +22,7 @@ export default class Runner extends AbstractRunner {
             const { results } = await this.runIterations(browser, state, runtimeOptions, runnerLogStream);
             const version = await browser.version();
             const environment = await this.getEnvironment({ version }, projectConfig, globalConfig);
-            return { results, environment, benchmarkInfo };
+            return { results, environment, benchmarkInfo, projectConfig };
 
         } catch (e) {
             runnerLogStream.onBenchmarkError(benchmarkEntry);
