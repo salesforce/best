@@ -60,4 +60,7 @@ export default class HeadlessBrowser {
 
         return result;
     }
+    version() {
+        return this.browser ? this.browser.version(): Promise.resolve('unknown');
+    }
 }

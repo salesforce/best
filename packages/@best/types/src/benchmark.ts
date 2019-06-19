@@ -1,3 +1,5 @@
+import { EnvironmentConfig } from "./config";
+
 export interface BenchmarkInfo {
     benchmarkName: string;
     benchmarkEntry: string;
@@ -47,6 +49,8 @@ export interface BenchmarkResults {
 
 export interface BenchmarkResultsSnapshot {
     results: BenchmarkResultNode[];
+    environment: EnvironmentConfig;
+    benchmarkInfo: BenchmarkInfo;
 }
 
 export interface BenchmarkResultsState {

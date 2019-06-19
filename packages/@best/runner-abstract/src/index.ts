@@ -5,7 +5,7 @@ import { RunnerOutputStream } from "@best/console-stream";
 import { FrozenGlobalConfig, FrozenProjectConfig, BenchmarkInfo, BenchmarkRuntimeConfig, BenchmarkResultsSnapshot, BrowserConfig, EnvironmentConfig } from '@best/types';
 
 export default abstract class AbstractRunner {
-    abstract async run({ benchmarkEntry }: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerOutputStream): Promise<BenchmarkResultsSnapshot>;
+    abstract async run(benchmarkInfo: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerOutputStream): Promise<BenchmarkResultsSnapshot>;
 
     initializeServer(benchmarkEntry: string, useHttp: boolean): Promise<{ terminate:Function, url: string }> {
         if (!useHttp) {
@@ -41,15 +41,8 @@ export default abstract class AbstractRunner {
         };
     }
 
-    async getHardwareSpec() {
+    async getEnvironment(browser: BrowserConfig, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig): Promise<EnvironmentConfig> {
         const { system, cpu, os, load } = await getSystemInfo();
-        return {
-            hardware: { system, cpu, os },
-            container: { load }
-        }
-    }
-
-    async normalizeEnvironment(browser: BrowserConfig, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig): Promise<EnvironmentConfig> {
         const {
             benchmarkOnClient,
             benchmarkRunner,
@@ -57,8 +50,6 @@ export default abstract class AbstractRunner {
             benchmarkIterations,
             projectName,
         } = projectConfig;
-
-        const { system, cpu, os, load } = await getSystemInfo();
 
         return {
             hardware: { system, cpu, os },

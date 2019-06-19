@@ -126,7 +126,7 @@ export interface BuildConfig {
 }
 
 export interface BrowserConfig {
-    version: number;
+    version: string;
     name?: string;
     config?: { [key: string]: any }
 }

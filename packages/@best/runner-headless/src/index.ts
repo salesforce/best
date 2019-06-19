@@ -8,7 +8,8 @@ const UPDATE_INTERVAL = 300;
 
 export default class Runner extends AbstractRunner {
 
-    async run({ benchmarkEntry }: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerOutputStream): Promise<BenchmarkResultsSnapshot> {
+    async run(benchmarkInfo: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerOutputStream): Promise<BenchmarkResultsSnapshot> {
+        const { benchmarkEntry } = benchmarkInfo;
         const { useHttp } = projectConfig;
         const runtimeOptions = this.getRuntimeOptions(projectConfig);
         const state = this.initializeBenchmarkState();
@@ -19,7 +20,9 @@ export default class Runner extends AbstractRunner {
             await browser.initialize();
             runnerLogStream.onBenchmarkStart(benchmarkEntry);
             const { results } = await this.runIterations(browser, state, runtimeOptions, runnerLogStream);
-            return { results };
+            const version = await browser.version();
+            const environment = await this.getEnvironment({ version }, projectConfig, globalConfig);
+            return { results, environment, benchmarkInfo };
 
         } catch (e) {
             runnerLogStream.onBenchmarkError(benchmarkEntry);
