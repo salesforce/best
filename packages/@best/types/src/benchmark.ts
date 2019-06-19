@@ -1,5 +1,3 @@
-import { EnvironmentConfig, FrozenProjectConfig } from "./config";
-
 export interface BenchmarkInfo {
     benchmarkName: string;
     benchmarkEntry: string;
@@ -22,39 +20,30 @@ export type BenchmarkMetrics = {
 }
 
 export type ResultNodeTypes = "group" | "benchmark";
-export interface BenchmarkResultNode {
+export interface BenchmarkResultNodeBase {
     type: ResultNodeTypes;
     name: string;
     aggregate: number;
     startedAt: number;
-    metrics?: BenchmarkMetrics;
-    nodes? : BenchmarkResultNode[];
 }
 
-export interface BenchmarkResultGroupNode extends BenchmarkResultNode {
+export interface BenchmarkResultGroupNode extends BenchmarkResultNodeBase {
     type: "group";
     nodes : BenchmarkResultNode[];
 }
 
-export interface BenchmarkResultBenchmarkNode extends BenchmarkResultNode {
+export interface BenchmarkResultBenchmarkNode extends BenchmarkResultNodeBase {
     type: "benchmark";
     metrics: BenchmarkMetrics;
 }
+
+export type BenchmarkResultNode = BenchmarkResultGroupNode | BenchmarkResultBenchmarkNode;
 
 export interface BenchmarkResults {
     benchmarkName: string;
     executedIterations: number;
     aggregate: number;
     results: BenchmarkResultNode[];
-}
-
-
-export interface BenchmarkResultsSnapshot {
-    results: BenchmarkResultNode[];
-    environment: EnvironmentConfig;
-    benchmarkInfo: BenchmarkInfo;
-    projectConfig: FrozenProjectConfig;
-    stats?: any;
 }
 
 export interface BenchmarkResultsState {

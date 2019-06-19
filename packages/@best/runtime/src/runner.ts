@@ -2,21 +2,21 @@ import { getBenchmarkRootNode } from './state';
 import { runBenchmarkIteration } from './run_iteration';
 import { normalizeResults } from './results';
 import { validateState } from "./utils/validate";
-import { BenchmarkResultNode, ResultNodeTypes, BenchmarkResults } from "@best/types";
+import { BenchmarkResultNode, ResultNodeTypes, BenchmarkResults, BenchmarkResultBenchmarkNode, BenchmarkResultGroupNode } from "@best/types";
 
 function collectNodeResults(node: RuntimeNode): BenchmarkResultNode {
     const { name, aggregate, startedAt, run, children  } = node;
     const type = node.type as ResultNodeTypes;
-    const resultNode: BenchmarkResultNode = { type, name, aggregate, startedAt };
+    const resultNode = { type, name, aggregate, startedAt };
 
     if (run) {
         resultNode.aggregate = run.aggregate;
-        resultNode.metrics = { script: run.metrics.script };
+        (resultNode as BenchmarkResultBenchmarkNode).metrics = { script: run.metrics.script };
     } else if (children) {
-        resultNode.nodes = children.map((c: RuntimeNode) => collectNodeResults(c));
+        (resultNode as BenchmarkResultGroupNode).nodes = children.map((c: RuntimeNode) => collectNodeResults(c));
     }
 
-    return resultNode;
+    return (resultNode as BenchmarkResultNode);
 }
 
 async function runIterations(config: BenchmarkState): Promise<BenchmarkState> {

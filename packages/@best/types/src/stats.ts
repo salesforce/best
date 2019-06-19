@@ -1,4 +1,13 @@
-import { BenchmarkMetricNames } from "./benchmark";
+import { BenchmarkMetricNames, BenchmarkResultNode, BenchmarkInfo } from "./benchmark";
+import { EnvironmentConfig, FrozenProjectConfig } from "./config";
+
+export interface BenchmarkResultsSnapshot {
+    results: BenchmarkResultNode[];
+    environment: EnvironmentConfig;
+    benchmarkInfo: BenchmarkInfo;
+    projectConfig: FrozenProjectConfig;
+    stats?: StatsResults;
+}
 
 export type BenchmarkStatsNames = "samples" | "sampleSize" | "samplesQuantileThreshold" | "mean" | "median" | "variance" | "medianAbsoluteDeviation";
 export interface BenchmarkStats {
@@ -26,9 +35,27 @@ export type MetricsStatsMap = {
     }
 }
 
-export interface StatsNode {
-    type: "group" | "benchmark";
+type StatsNodeTypes = "group" | "benchmark";
+export interface StatsNodeBase {
+    type: StatsNodeTypes;
     name: string;
-    nodes?: StatsNode[];
-    metrics?: MetricsStatsMap
+}
+
+export interface StatsNodeBenchmark extends StatsNodeBase {
+    type: "benchmark";
+    metrics: MetricsStatsMap
+}
+
+export interface StatsNodeGroup extends StatsNodeBase {
+    type: "group";
+    nodes: StatsNode[];
+}
+
+export type StatsNode = StatsNodeGroup | StatsNodeBenchmark;
+
+
+export interface StatsResults {
+    version: number;
+    benchmarkName: string;
+    results: StatsNode[];
 }

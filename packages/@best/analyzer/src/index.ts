@@ -1,5 +1,5 @@
 import { VERSION } from './constants';
-import { BenchmarkResultsSnapshot, BenchmarkResultNode, BenchmarkMetricNames, BenchmarkStats, AllBenchmarksMetricsMap, BenchmarkMetricsAggregate, AllBenchmarkMetricStatsMap, StatsNode, BenchmarkMetricStatsMap } from "@best/types";
+import { BenchmarkResultsSnapshot, BenchmarkResultNode, BenchmarkMetricNames, BenchmarkStats, AllBenchmarksMetricsMap, BenchmarkMetricsAggregate, AllBenchmarkMetricStatsMap, StatsNode, BenchmarkMetricStatsMap, StatsNodeGroup } from "@best/types";
 import { quantile, mean, median, variance, medianAbsoluteDeviation, compare as compareSamples } from './stats';
 
 function computeSampleStats(arr: number[], samplesQuantileThreshold: number): BenchmarkStats {
@@ -20,17 +20,19 @@ function computeSampleStats(arr: number[], samplesQuantileThreshold: number): Be
 }
 
 // Given an iteration benchmark (whith nested benchmarks), collect its metrics
-function collectResults({ name, metrics, nodes, aggregate }: BenchmarkResultNode, collector: AllBenchmarksMetricsMap) {
+function collectResults(resultNode: BenchmarkResultNode, collector: AllBenchmarksMetricsMap) {
+    const { name } = resultNode;
     let collectorNode = collector[name];
     if (!collectorNode) {
         collectorNode = collector[name] = { script: [], aggregate: [] };
     }
 
-    if (aggregate > 0 && collectorNode.aggregate) {
-        collectorNode.aggregate.push(aggregate);
+    if (resultNode.aggregate > 0 && collectorNode.aggregate) {
+        collectorNode.aggregate.push(resultNode.aggregate);
     }
 
-    if (metrics) {
+    if (resultNode.type ==="benchmark") {
+        const { metrics } = resultNode;
         Object.keys(metrics).reduce((collector: BenchmarkMetricsAggregate, key: string) => {
             const bucket = collector[key as BenchmarkMetricNames];
             const value = metrics[key as BenchmarkMetricNames];
@@ -40,17 +42,16 @@ function collectResults({ name, metrics, nodes, aggregate }: BenchmarkResultNode
 
             return collector;
         }, collectorNode);
-    }
-
-    if (nodes) {
-        nodes.forEach((node: BenchmarkResultNode) => collectResults(node, collector));
+    } else {
+        resultNode.nodes.forEach((node: BenchmarkResultNode) => collectResults(node, collector));
     }
 
     return collector;
 }
 
-function createStatsStructure({ nodes: children = [], name, type }: BenchmarkResultNode, collector: AllBenchmarkMetricStatsMap): StatsNode {
-    if (type === "benchmark") {
+function createStatsStructure(node: BenchmarkResultNode, collector: AllBenchmarkMetricStatsMap): StatsNode {
+    if (node.type === "benchmark") {
+        const { name, type } = node;
         const stats = collector[name];
         const metrics = Object.keys(stats).reduce((metricReducer: any, metric: string) => {
             metricReducer[metric as BenchmarkMetricNames] = { stats: stats[metric as BenchmarkMetricNames] };
@@ -58,6 +59,7 @@ function createStatsStructure({ nodes: children = [], name, type }: BenchmarkRes
         }, {});
         return { type, name, metrics };
     } else {
+        const { name, type, nodes: children } = node;
         const nodes = children.map((childNode: BenchmarkResultNode) => createStatsStructure(childNode, collector))
         return { type, name, nodes };
     }
@@ -88,15 +90,13 @@ export async function analyzeBenchmarks(benchmarkResults: BenchmarkResultsSnapsh
                 return stats;
             }, {});
 
-            const benchmarkStructure = createStatsStructure(structure, benchmarkStats);
-
+            const benchmarkStructure = createStatsStructure(structure, benchmarkStats) as StatsNodeGroup;
             console.log(JSON.stringify(benchmarkStructure, null, '  '));
 
             benchmarkResult.stats = {
                 version: VERSION,
                 benchmarkName,
-                benchmarks: benchmarkStructure.nodes,
-                environment,
+                results: benchmarkStructure.nodes
             };
         }),
     );
