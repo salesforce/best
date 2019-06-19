@@ -62,12 +62,3 @@ export interface BenchmarkResultsState {
     executedIterations: number,
     results: BenchmarkResultNode[];
 }
-export interface BenchmarkStats {
-    samples: number[],
-    sampleSize: number,
-    samplesQuantileThreshold: number,
-    mean: number,
-    median: number,
-    variance: number,
-    medianAbsoluteDeviation: number,
-}
