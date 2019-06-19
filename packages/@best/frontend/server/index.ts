@@ -34,3 +34,7 @@ if (process.env.NODE_ENV === 'production') {
 app.listen(PORT, (): void => {
     console.log('[%s] API Listening on http://localhost:%d', app.settings.env, PORT)
 })
+
+// EXPORTS
+
+export { buildStaticFrontend } from './static'

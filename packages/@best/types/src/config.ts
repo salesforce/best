@@ -40,7 +40,8 @@ export interface CliConfig {
     config: string | undefined,
     projects: string[],
     iterations?: number,
-    compareStats: string[] | undefined
+    compareStats: string[] | undefined,
+    generateHTML: boolean | undefined
 }
 
 export interface NormalizedConfig {
@@ -49,6 +50,7 @@ export interface NormalizedConfig {
     cacheDirectory: string,
     compareStats?: string[],
     gitIntegration: boolean,
+    generateHTML: boolean,
     useHttp: boolean,
     externalStorage?: string,
     apiDatabase?: ApiDatabaseConfig,

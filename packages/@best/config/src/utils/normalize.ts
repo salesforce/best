@@ -73,6 +73,8 @@ function setCliOptionOverrides(initialOptions: UserConfig, argsCLI: CliConfig): 
                 case 'gitIntegration':
                     options.gitIntegration = Boolean(argsCLI[key]);
                     break;
+                case 'generateHTML':
+                    options.generateHTML = Boolean(argsCLI[key]);
                 default:
                     options[key] = argsCLI[key];
                     break;

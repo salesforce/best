@@ -100,6 +100,10 @@ export async function runCLI(argsCLI: CliConfig, projects: string[]) {
         }
 
         output.report(results);
+
+        if (argsCLI.generateHTML) {
+            
+        }
     }
 
     return true;

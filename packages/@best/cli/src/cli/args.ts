@@ -73,6 +73,11 @@ export const options: { [key: string]: Options } = {
         description: 'Integrates with Git, posting the results of the benchmark or comparison',
         type: 'boolean',
     },
+    generateHTML: {
+        default: undefined,
+        description: 'Generate a static HTML version of the results of the benchmrak or comparison',
+        type: 'boolean',
+    },
     runner: {
         default: 'default',
         description:
@@ -94,7 +99,7 @@ export const options: { [key: string]: Options } = {
 };
 
 export function normalize(args: { [x: string]: any; _: string[]; $0: string }): CliConfig {
-    const { _, help, clearCache, clearResults, showConfigs, disableInteractive, gitIntegration, useHttp, externalStorage, runner, runnerConfig, config, projects, iterations, compareStats } = args;
+    const { _, help, clearCache, clearResults, showConfigs, disableInteractive, gitIntegration, generateHTML, useHttp, externalStorage, runner, runnerConfig, config, projects, iterations, compareStats } = args;
     return {
         _,
         help: Boolean(help),
@@ -104,6 +109,7 @@ export function normalize(args: { [x: string]: any; _: string[]; $0: string }): 
         showConfigs: Boolean(showConfigs),
         disableInteractive,
         gitIntegration,
+        generateHTML,
         externalStorage,
         runner,
         runnerConfig: runnerConfig ? JSON.parse(runnerConfig): {},
