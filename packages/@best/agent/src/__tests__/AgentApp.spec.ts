@@ -1,21 +1,29 @@
 import ObservableQueue from "../utils/ObservableQueue";
 import BenchmarkTask from "../BenchmarkTask";
-import {AgentApp} from "../AgentApp";
+import { AgentApp } from "../AgentApp";
 import BenchmarkRunner, {RunnerStatus} from "../BenchmarkRunner";
 import * as SocketIO from "socket.io";
-import {EventEmitter} from "events";
+import { EventEmitter } from "events";
+import { FrozenGlobalConfig, FrozenProjectConfig } from "@best/types";
 
 const createTask = (idx: number) => {
     const SocketMock = jest.fn<SocketIO.Socket, any>();
     const socket = new SocketMock();
 
-    return new BenchmarkTask({
-        benchmarkName: 'name' + idx,
-        benchmarkSignature: 'signature' + idx,
-        projectConfig: 'project-config' + idx,
-        globalConfig: 'global-config' + idx,
+    const ProjectConfigMock = jest.fn<FrozenProjectConfig, any>();
+    const GlobalConfigMock = jest.fn<FrozenGlobalConfig, any>();
+
+    return new BenchmarkTask(
+        {
+            benchmarkName: 'name' + idx,
+            benchmarkEntry: 'entry' + idx,
+            benchmarkFolder: 'folder' + idx,
+            benchmarkSignature: 'signature' + idx,
+            projectConfig: new ProjectConfigMock(),
+            globalConfig: new GlobalConfigMock(),
+        },
         socket
-    });
+    );
 };
 
 describe('Agent app', () => {
