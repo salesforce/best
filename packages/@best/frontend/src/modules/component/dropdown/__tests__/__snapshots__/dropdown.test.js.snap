@@ -1,0 +1,119 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`component-dropdown display correct text and data-index with one selected item 1`] = `
+<component-dropdown>
+  #shadow-root(open)
+    <div
+      class="control closed"
+    >
+      <div
+        class="selected"
+      >
+        <img
+          src="/resources/arrow.svg"
+        />
+        <div
+          class="selected-item"
+          data-index="0"
+        >
+          First Selected Item
+        </div>
+      </div>
+      <div
+        class="items"
+      >
+        <div
+          class="item"
+          data-index="0"
+        >
+          First Selected Item
+        </div>
+        <div
+          class="item"
+          data-index="1"
+        >
+          Second Item
+        </div>
+        <div
+          class="item"
+          data-index="2"
+        >
+          Third Item
+        </div>
+      </div>
+    </div>
+</component-dropdown>
+`;
+
+exports[`component-dropdown displays items in correct order 1`] = `
+<component-dropdown>
+  #shadow-root(open)
+    <div
+      class="control closed"
+    >
+      <div
+        class="items"
+      >
+        <div
+          class="item"
+          data-index="0"
+        >
+          First Selected Item
+        </div>
+        <div
+          class="item"
+          data-index="1"
+        >
+          Second Item
+        </div>
+        <div
+          class="item"
+          data-index="2"
+        >
+          Third Item
+        </div>
+      </div>
+    </div>
+</component-dropdown>
+`;
+
+exports[`component-dropdown displays no items when none are provided 1`] = `
+<component-dropdown>
+  #shadow-root(open)
+    <div
+      class="control closed"
+    />
+</component-dropdown>
+`;
+
+exports[`component-dropdown displays no selected items when none are provided 1`] = `
+<component-dropdown>
+  #shadow-root(open)
+    <div
+      class="control closed"
+    >
+      <div
+        class="items"
+      >
+        <div
+          class="item"
+          data-index="0"
+        >
+          First Selected Item
+        </div>
+        <div
+          class="item"
+          data-index="1"
+        >
+          Second Item
+        </div>
+        <div
+          class="item"
+          data-index="2"
+        >
+          Third Item
+        </div>
+      </div>
+    </div>
+</component-dropdown>
+`;
