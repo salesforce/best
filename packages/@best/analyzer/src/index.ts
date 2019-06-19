@@ -91,7 +91,6 @@ export async function analyzeBenchmarks(benchmarkResults: BenchmarkResultsSnapsh
             }, {});
 
             const benchmarkStructure = createStatsStructure(structure, benchmarkStats) as StatsNodeGroup;
-            console.log(JSON.stringify(benchmarkStructure, null, '  '));
 
             benchmarkResult.stats = {
                 version: VERSION,
