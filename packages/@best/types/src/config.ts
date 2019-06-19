@@ -92,6 +92,7 @@ export type ProjectConfigPlugin = string | [string, { [key : string]: any }]
 export interface ProjectConfig {
     useHttp: boolean;
     benchmarkRunner: string;
+    benchmarkEnvironment: any;
     benchmarkRunnerConfig: any;
     benchmarkOutput: string;
     benchmarkOnClient: boolean;
@@ -122,4 +123,38 @@ export interface BuildConfig {
     benchmarkEntry: string,
     projectConfig: FrozenProjectConfig,
     globalConfig: FrozenGlobalConfig,
+}
+
+export interface BrowserConfig {
+    version: number;
+    name?: string;
+    config?: { [key: string]: any }
+}
+
+
+export interface EnvironmentConfig {
+    hardware: {
+    system: any;
+        cpu: any;
+        os: any;
+    },
+    container: {
+        load: any
+    },
+    browser: BrowserConfig;
+    configuration: {
+        project: {
+            projectName: string;
+            benchmarkOnClient: boolean;
+            benchmarkRunner: string;
+            benchmarkEnvironment: any;
+            benchmarkIterations: number;
+        },
+        global: {
+            gitCommitHash: string;
+            gitHasLocalChanges: boolean;
+            gitBranch: string;
+            gitRepository: { owner: string, repo: string };
+        }
+    }
 }

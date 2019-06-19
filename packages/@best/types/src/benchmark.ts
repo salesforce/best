@@ -43,3 +43,14 @@ export interface BenchmarkResults {
     aggregate: number;
     results: BenchmarkResultNode[];
 }
+
+
+export interface BenchmarkResultsSnapshot {
+    results: BenchmarkResultNode[];
+}
+
+export interface BenchmarkResultsState {
+    executedTime: number,
+    executedIterations: number,
+    results: BenchmarkResultNode[];
+}

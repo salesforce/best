@@ -9,9 +9,9 @@ describe('js-execution', () => {
         })
     });
 
-    benchmark('fibonacci 16', () => {
+    benchmark('fibonacci 38', () => {
         run(() => {
-            return fib(16);
+            return fib(38);
         })
     });
 });

@@ -1,18 +1,29 @@
+import { dirname, basename } from 'path';
+import express from 'express';
 import { getSystemInfo } from '@best/utils';
 import { RunnerOutputStream } from "@best/console-stream";
-import { FrozenGlobalConfig, FrozenProjectConfig, BenchmarkInfo, BenchmarkRuntimeConfig } from '@best/types';
-
-export interface BenchmarkResultsState {
-    executedTime: number,
-    executedIterations: number,
-    results: any[],
-    iterateOnClient: boolean,
-}
-
-export interface BenchmarkResults {}
+import { FrozenGlobalConfig, FrozenProjectConfig, BenchmarkInfo, BenchmarkRuntimeConfig, BenchmarkResultsSnapshot, BrowserConfig, EnvironmentConfig } from '@best/types';
 
 export default abstract class AbstractRunner {
-    abstract async run({ benchmarkEntry }: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerOutputStream): Promise<BenchmarkResults>;
+    abstract async run({ benchmarkEntry }: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerOutputStream): Promise<BenchmarkResultsSnapshot>;
+
+    initializeServer(benchmarkEntry: string, useHttp: boolean): Promise<{ terminate:Function, url: string }> {
+        if (!useHttp) {
+            return Promise.resolve({ url: `file://${benchmarkEntry}`, terminate: () => {}});
+        }
+
+        return new Promise((resolve) => {
+            const app = express();
+            app.use(express.static(dirname(benchmarkEntry)));
+            const server = app.listen(() => {
+                const { port }: any = server.address();
+                resolve({
+                    url: `http://127.0.0.1:${port}/${basename(benchmarkEntry)}`,
+                    terminate: () => { server.close(); }
+                });
+            });
+        });
+    }
 
     getRuntimeOptions(projectConfig: FrozenProjectConfig): BenchmarkRuntimeConfig {
         const { benchmarkIterations, benchmarkOnClient, benchmarkMaxDuration, benchmarkMinIterations } = projectConfig;
@@ -36,5 +47,38 @@ export default abstract class AbstractRunner {
             hardware: { system, cpu, os },
             container: { load }
         }
+    }
+
+    async normalizeEnvironment(browser: BrowserConfig, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig): Promise<EnvironmentConfig> {
+        const {
+            benchmarkOnClient,
+            benchmarkRunner,
+            benchmarkEnvironment,
+            benchmarkIterations,
+            projectName,
+        } = projectConfig;
+
+        const { system, cpu, os, load } = await getSystemInfo();
+
+        return {
+            hardware: { system, cpu, os },
+            container: { load },
+            browser,
+            configuration: {
+                project: {
+                    projectName,
+                    benchmarkOnClient,
+                    benchmarkRunner,
+                    benchmarkEnvironment,
+                    benchmarkIterations,
+                },
+                global: {
+                    gitCommitHash: globalConfig.gitInfo.lastCommit.hash,
+                    gitHasLocalChanges: globalConfig.gitInfo.localChanges,
+                    gitBranch: globalConfig.gitInfo.branch,
+                    gitRepository: globalConfig.gitInfo.repo,
+                },
+            },
+        };
     }
 }

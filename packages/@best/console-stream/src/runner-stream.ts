@@ -26,14 +26,12 @@ interface RunnerConfig {
     maxDuration: number;
     minSampleCount: number,
     iterations: number,
-    iterateOnClient: boolean
 }
 
 interface RunnerState {
     executedTime: number,
     executedIterations: number,
     results: any[],
-    iterateOnClient: boolean,
 }
 interface BenchmarkProgress {
     executedIterations: number,
