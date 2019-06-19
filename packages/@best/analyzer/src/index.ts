@@ -31,7 +31,7 @@ function collectResults(resultNode: BenchmarkResultNode, collector: AllBenchmark
         collectorNode.aggregate.push(resultNode.aggregate);
     }
 
-    if (resultNode.type ==="benchmark") {
+    if (resultNode.type === "benchmark") {
         const { metrics } = resultNode;
         Object.keys(metrics).reduce((collector: BenchmarkMetricsAggregate, key: string) => {
             const bucket = collector[key as BenchmarkMetricNames];
@@ -69,7 +69,7 @@ export async function analyzeBenchmarks(benchmarkResults: BenchmarkResultsSnapsh
     return Promise.all(
         // For each benchmark file runned...
         benchmarkResults.map(async (benchmarkResult: BenchmarkResultsSnapshot) => {
-            const { results, environment, benchmarkInfo: { benchmarkName }, projectConfig } = benchmarkResult;
+            const { results, benchmarkInfo: { benchmarkName }, projectConfig } = benchmarkResult;
             const structure = results[0];
 
             // Collect the metrics for the nested benchmarks within
