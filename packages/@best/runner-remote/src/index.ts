@@ -3,8 +3,9 @@ import fs from 'fs';
 import socketIO from 'socket.io-client';
 import SocketIOFile from './file-uploader';
 import { createTarBundle } from './create-tar';
+import { RunnerOutputStream } from "@best/console-stream";
 
-function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConfig: any, globalConfig: any, messager: any) {
+function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConfig: any, globalConfig: any, messager: RunnerOutputStream) {
     return new Promise(async (resolve, reject) => {
         const { benchmarkName, benchmarkEntry, benchmarkSignature } = benchmarkEntryBundle;
         const { host, options, remoteRunner } = runnerConfig;
@@ -37,22 +38,20 @@ function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConf
                 });
             });
 
-            socket.on('running_benchmark_start', (benchName: string, projectName: string) => {
-                messager.logState(`Running benchmarks remotely...`);
-                messager.onBenchmarkStart(benchName, projectName, {
-                    displayPath: `${host}/${benchName}`,
-                });
+            socket.on('running_benchmark_start', () => {
+                messager.log(`Running benchmarks remotely...`);
+                messager.onBenchmarkStart(benchmarkEntry);
             });
 
             socket.on('running_benchmark_update', ({ state, opts }: any) => {
                 messager.updateBenchmarkProgress(state, opts);
             });
             socket.on('running_benchmark_end', (benchName: string, projectName: string) => {
-                messager.onBenchmarkEnd(benchName, projectName);
+                messager.onBenchmarkEnd(benchmarkEntry);
             });
 
             socket.on('benchmark_enqueued', ({ pending }: any) => {
-                messager.logState(`Queued in agent. Pending tasks: ${pending}`);
+                messager.log(`Queued in agent. Pending tasks: ${pending}`);
             });
 
             socket.on('disconnect', (reason: string) => {
@@ -93,7 +92,7 @@ function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConf
 }
 
 export class Runner {
-    run(benchmarkEntryBundle: any, projectConfig: any, globalConfig: any, messager: any) {
+    run(benchmarkEntryBundle: any, projectConfig: any, globalConfig: any, messager: RunnerOutputStream) {
         const { benchmarkRunnerConfig } = projectConfig;
         return proxifyRunner(benchmarkEntryBundle, benchmarkRunnerConfig, projectConfig, globalConfig, messager);
     }

@@ -5,29 +5,33 @@ import BenchmarkTask from "./BenchmarkTask";
 import { loadBenchmarkJob } from "./benchmark-loader";
 import { x as extractTar } from 'tar';
 import * as SocketIO from "socket.io";
+import {RunnerOutputStream} from "@best/console-stream";
 
 export enum RunnerStatus {
     IDLE = 1,
     RUNNING,
 }
 
-function initializeForwarder(socket: SocketIO.Socket, logger: Function) {
+// @todo: make a Runner Stream, and add an interface type instead of the class.
+function initializeForwarder(socket: SocketIO.Socket, logger: Function): RunnerOutputStream {
     return {
-        onBenchmarkStart(benchmarkName: string, projectName: string) {
-            logger(`STATUS: running_benchmark ${benchmarkName} (${projectName})`);
-            socket.emit('running_benchmark_start', benchmarkName, projectName);
+        init() {},
+        finish() {},
+        onBenchmarkStart(benchmarkPath: string) {
+            logger(`STATUS: running_benchmark ${benchmarkPath}`);
+            socket.emit('running_benchmark_start', benchmarkPath);
+        },
+        onBenchmarkEnd(benchmarkPath: string) {
+            logger(`STATUS: finished_benchmark ${benchmarkPath}`);
+            socket.emit('running_benchmark_end', benchmarkPath);
+        },
+        onBenchmarkError(benchmarkPath: string) {
+            socket.emit('running_benchmark_error', benchmarkPath);
         },
         updateBenchmarkProgress(state: any, opts: any) {
-            socket.emit('running_benchmark_update', { state, opts });
+            socket.emit('running_benchmark_update', {state, opts});
         },
-        onBenchmarkEnd(benchmarkName: string, projectName: string) {
-            logger(`STATUS: finished_benchmark ${benchmarkName} (${projectName})`);
-            socket.emit('running_benchmark_end', benchmarkName, projectName);
-        },
-        onBenchmarkError(benchmarkName: string, projectName: string) {
-            socket.emit('running_benchmark_error', benchmarkName, projectName);
-        },
-    };
+    } as RunnerOutputStream;
 }
 
 function extractBenchmarkTarFile(task: BenchmarkTask) {
@@ -35,9 +39,10 @@ function extractBenchmarkTarFile(task: BenchmarkTask) {
         const benchmarkName = task.benchmarkName;
         const benchmarkDirname = path.dirname(uploadDir);
 
+        task.benchmarkFolder = benchmarkDirname;
         task.benchmarkEntry = path.join(benchmarkDirname, `${benchmarkName}.html`);
 
-        return extractTar({cwd: path.dirname(uploadDir), file: uploadDir});
+        return extractTar({cwd: benchmarkDirname, file: uploadDir});
     };
 }
 
@@ -81,6 +86,7 @@ export default class BenchmarkRunner extends EventEmitter {
             }
         };
 
+        // @todo: just to be safe, add timeout in cancel so it waits for the runner to finish or dismiss the run assuming something went wrong
         loadBenchmarkJob(task.socketConnection)
             .then(extractBenchmarkTarFile(task))
             .then(() => this.runBenchmark(task))
@@ -102,7 +108,7 @@ export default class BenchmarkRunner extends EventEmitter {
         try {
             this._log(`Running benchmark ${benchmarkName}`);
 
-            results = await runBenchmark(task, messenger);
+            results = await runBenchmark(task.config, messenger);
 
             this._log(`Benchmark ${benchmarkName} completed successfully`);
         } catch (err) {

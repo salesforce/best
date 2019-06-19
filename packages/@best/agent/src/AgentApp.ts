@@ -2,6 +2,7 @@ import * as SocketIO from "socket.io";
 import ObservableQueue from "./utils/ObservableQueue";
 import BenchmarkRunner, { RunnerStatus } from "./BenchmarkRunner";
 import BenchmarkTask from "./BenchmarkTask";
+import { BuildConfig } from "@best/types";
 
 export class AgentApp {
     private queue: ObservableQueue<BenchmarkTask>;
@@ -20,18 +21,8 @@ export class AgentApp {
     }
 
     handleIncomingConnection(socket: SocketIO.Socket) {
-        // In the original implementation, it has a timeout for this connection waiting for the benchmark_task. @todo: implement this timeout functionality via weakmap[
-        socket.on('benchmark_task', (data: any) => {
-            const { benchmarkName, benchmarkSignature, projectConfig, globalConfig }
-                : { benchmarkName: string, benchmarkSignature: string, projectConfig: any, globalConfig: any } = data;
-
-            const task = new BenchmarkTask({
-                benchmarkName,
-                benchmarkSignature,
-                projectConfig,
-                globalConfig,
-                socket
-            });
+        socket.on('benchmark_task', (data: BuildConfig) => {
+            const task = new BenchmarkTask(data, socket);
 
             socket.on('disconnect', () => {
                 this.queue.remove(task);
