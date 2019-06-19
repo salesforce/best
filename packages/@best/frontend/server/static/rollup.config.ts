@@ -6,13 +6,13 @@ import resolve from 'rollup-plugin-node-resolve';
 import replace from 'rollup-plugin-replace';
 import { terser } from 'rollup-plugin-terser';
 import { bestMocker, MockerOptions } from './mocker'
-import { InputOptions, OutputOptions } from 'rollup';
+import * as rollup from 'rollup';
 
 const rollupConfig: {
-    inputOptions: (options: MockerOptions) => InputOptions,
-    outputOptions: () => OutputOptions
+    inputOptions: (options: MockerOptions) => rollup.InputOptions;
+    outputOptions: () => rollup.OutputOptions;
 } = {
-    inputOptions: (options) => ({
+    inputOptions: (options): rollup.InputOptions => ({
         input: path.resolve(__dirname, '../../src/index.js'),
         plugins: [
             bestMocker(options),
@@ -25,7 +25,7 @@ const rollupConfig: {
             terser()
         ]
     }),
-    outputOptions: () => ({
+    outputOptions: (): rollup.OutputOptions => ({
         file: path.resolve(__dirname, '../../dist/static/bundle.js'),
         format: 'iife'
     })

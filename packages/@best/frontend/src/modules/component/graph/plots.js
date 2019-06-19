@@ -1,5 +1,3 @@
-/* global Plotly */
-
 export function buildLayout(title, isFirst) {
     return {
         height: isFirst ? 400 * 1.15 : 400,
@@ -113,7 +111,7 @@ export function buildTrends(benchmark, showsVariation = true) {
         // for each metric and then for each of (median, low, high) create the trend layout
         trends = combinedDatasets.flatMap(combined => combined.map(set => buildTrend(set, showsVariation)));
     } else {
-        trends = metrics.map(metric => buildLineTrend({ commits: benchmark.commits, keys: benchmark.commitDates, values: metric.durations, name: metric.name }, showsVariation));
+        trends = benchmark.metrics.map(metric => buildLineTrend({ commits: benchmark.commits, keys: benchmark.commitDates, values: metric.durations, name: metric.name }, showsVariation));
     }
 
     return trends;
@@ -127,6 +125,12 @@ export async function drawPlot(element, trends, layout) {
         showTips: false,
         responsive: true
     });
+
+    return element.layout;
+}
+
+export function relayout(element, update) {
+    window.Plotly.relayout(element, update);
 
     return element.layout;
 }
@@ -158,12 +162,6 @@ export function createAnnotation(element, point) {
 
 export function removeAnnotation(element, idx) {
     window.Plotly.relayout(element, `annotations[${idx}]`, 'remove');
-
-    return element.layout;
-}
-
-export function relayout(element, update) {
-    window.Plotly.relayout(element, update);
 
     return element.layout;
 }

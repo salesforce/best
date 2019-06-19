@@ -32,6 +32,7 @@ if (process.env.NODE_ENV === 'production') {
 // LISTEN
 
 app.listen(PORT, (): void => {
+    // eslint-disable-next-line no-console
     console.log('[%s] API Listening on http://localhost:%d', app.settings.env, PORT)
 })
 

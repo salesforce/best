@@ -2,6 +2,7 @@ import fs from 'fs';
 import { promisify } from 'util';
 import { ApiDatabaseConfig } from '@best/types';
 import { buildMockedDataFromApi } from './builder'
+import * as rollup from 'rollup';
 
 const asyncRead = promisify(fs.readFile);
 
@@ -12,9 +13,9 @@ export interface MockerOptions {
     config: { apiDatabase: ApiDatabaseConfig };
 }
 
-export const bestMocker = (options: MockerOptions) => ({
+export const bestMocker = (options: MockerOptions): rollup.Plugin => ({
     name: 'best-frontend-mocker',
-    load: async (id: string) => {
+    load: async (id: string): Promise<string | null> => {
         // this is a bit fragile, but im not sure how it would be best to improve it.
         if (id.includes('store/api/api.js')) {
             try {
@@ -27,7 +28,7 @@ export const bestMocker = (options: MockerOptions) => ({
                     return mockTemplate.replace('INSERT_MOCKED_DATA', JSON.stringify(mockedData));
                 }
             } catch (err) {
-                console.error('[Best Frontend Mocker] Could not properly load mocked api');
+                return null;
             }
         }
         return null;

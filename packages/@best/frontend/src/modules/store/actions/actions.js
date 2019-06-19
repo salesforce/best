@@ -14,12 +14,6 @@ import {
 import * as api from 'store/api';
 import * as transformer from 'store/transformer';
 
-/*
- * PROJECTS
-*/
-
-// fetchProjectIfNeeded
-
 function shouldFetchProjects(state) {
     return !state.projects.length;
 }
@@ -43,14 +37,12 @@ export function fetchProjectsIfNeeded() {
     };
 }
 
-/*
- * BENCHMARKS
-*/
-
-// selectProject
-
 function benchmarksReceived(benchmarks) {
     return { type: BENCHMARKS_RECEIVED, benchmarks };
+}
+
+function clearBenchmarks() {
+    return { type: CLEAR_BENCHMARKS };
 }
 
 function fetchBenchmarks(project) {
@@ -62,38 +54,8 @@ function fetchBenchmarks(project) {
     };
 }
 
-function clearBenchmarks() {
-    return { type: CLEAR_BENCHMARKS };
-}
-
-export function selectProject(project, shouldResetView) {
-    return (dispatch) => {
-        dispatch(clearBenchmarks());
-        
-        if (shouldResetView) { dispatch(resetView()) }
-
-        dispatch(fetchBenchmarks(project));
-        dispatch({ type: PROJECT_SELECTED, id: project.id });
-    };
-}
-
-/*
- * VIEW
-*/
-
 function findSelectedProject({ projects }) {
     return projects.items.find(proj => proj.id === projects.selectedProjectId);
-}
-
-export function timingChanged(timing) {
-    return (dispatch, getState) => {
-        dispatch(zoomChanged({}));
-        dispatch({ type: VIEW_TIMING_CHANGED, timing });
-
-        const selectedProject = findSelectedProject(getState());
-        dispatch(clearBenchmarks());
-        dispatch(fetchBenchmarks(selectedProject));
-    }
 }
 
 export function benchmarksChanged(benchmark) {
@@ -112,33 +74,24 @@ export function resetView() {
     return { type: VIEW_RESET };
 }
 
-/*
- * COMMIT INFO
-*/
-
-function normalizeCommit(commit) {
-    return commit.slice(0, 7);
-}
-
-function shouldFetchCommitInfo(state, commit) {
-    return !state.commitInfo.hasOwnProperty(normalizeCommit(commit));
-}
-
-function commitInfoReceived(commit, commitInfo) {
-    return { type: COMMIT_INFO_RECEIVED, commit: normalizeCommit(commit), commitInfo };
-}
-
-function fetchCommitInfo(commit) {
-    return async (dispatch) => {
-        const commitInfo = await api.fetchCommitInfo(commit);
-        dispatch(commitInfoReceived(commit, commitInfo));
-    }
-}
-
-export function fetchCommitInfoIfNeeded(commit) {
+export function timingChanged(timing) {
     return (dispatch, getState) => {
-        if (shouldFetchCommitInfo(getState(), commit)) {
-            dispatch(fetchCommitInfo(commit));
-        }
+        dispatch(zoomChanged({}));
+        dispatch({ type: VIEW_TIMING_CHANGED, timing });
+
+        const selectedProject = findSelectedProject(getState());
+        dispatch(clearBenchmarks());
+        dispatch(fetchBenchmarks(selectedProject));
     }
+}
+
+export function selectProject(project, shouldResetView) {
+    return (dispatch) => {
+        dispatch(clearBenchmarks());
+        
+        if (shouldResetView) { dispatch(resetView()) }
+
+        dispatch(fetchBenchmarks(project));
+        dispatch({ type: PROJECT_SELECTED, id: project.id });
+    };
 }

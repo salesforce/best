@@ -1,8 +1,9 @@
 import { Router } from 'express'
 import { loadDbFromConfig } from '@best/api-db'
 import { GithubApplicationFactory } from '@best/github-integration'
+import { ApiDatabaseConfig } from '@best/types';
 
-export default (config: any): Router => {
+export default (config: { apiDatabase: ApiDatabaseConfig }): Router => {
     const db = loadDbFromConfig(config);
     const router = Router()
 
@@ -55,7 +56,6 @@ export default (config: any): Router => {
                 projects
             })
         } catch (err) {
-            console.error(err)
             res.send({ err })
         }
     })
@@ -68,7 +68,7 @@ export default (config: any): Router => {
         try {
             let parsedSince: Date | undefined;
             if (since && since.length > 0) {
-                parsedSince = new Date(parseInt(since))
+                parsedSince = new Date(parseInt(since, 10))
             }
             const snapshots = await db.fetchSnapshots(project, branch, parsedSince)
 
@@ -76,7 +76,6 @@ export default (config: any): Router => {
                 snapshots
             })
         } catch (err) {
-            console.error(err)
             res.send({ err })
         }
     })

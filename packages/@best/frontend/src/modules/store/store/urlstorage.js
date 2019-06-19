@@ -118,7 +118,7 @@ export const loadState = () => {
 
 const saveState = ({ projects: { selectedProjectId }, view }) => {
     updateProjectsPathIfNeeded(selectedProjectId);
-        updateViewQueryIfNeeded(view);
+    updateViewQueryIfNeeded(view);
 }
 
 const debouncedSave = debounce(saveState, DEBOUNCE_DURATION);

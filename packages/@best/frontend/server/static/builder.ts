@@ -2,15 +2,15 @@ import { loadDbFromConfig, Project, Snapshot, ApiDBAdapter } from '@best/api-db'
 import { MockerOptions } from './mocker'
 
 interface MockedSnapshotBranch {
-    [timing: string]: Snapshot[]
+    [timing: string]: Snapshot[];
 }
 
 interface MockedSnapshotProject {
-    [branch: string]: MockedSnapshotBranch
+    [branch: string]: MockedSnapshotBranch;
 }
 
 interface MockedSnapshots {
-    [projectId: string]: MockedSnapshotProject
+    [projectId: string]: MockedSnapshotProject;
 }
 
 // taken from frontend/src/store/api/api.js
@@ -28,7 +28,7 @@ const timeFromQuery = (project: { lastReleaseDate: string }, timing: string): Da
 }
 
 const buildBranch = async (options: MockerOptions, db: ApiDBAdapter, proj: Project, branch: string): Promise<MockedSnapshotBranch> => {
-    return await options.timingOptions.reduce(async (acc, timing) => {
+    return options.timingOptions.reduce(async (acc, timing): Promise<MockedSnapshotBranch> => {
         return {
             ...await acc,
             [timing]: await db.fetchSnapshots(proj.id, branch, timeFromQuery(proj, timing))
@@ -37,7 +37,7 @@ const buildBranch = async (options: MockerOptions, db: ApiDBAdapter, proj: Proje
 }
 
 const buildProject = async (options: MockerOptions, db: ApiDBAdapter, proj: Project): Promise<MockedSnapshotProject> => {
-    return await options.branches.reduce(async (acc, branch) => {
+    return options.branches.reduce(async (acc, branch): Promise<MockedSnapshotProject> => {
         return {
             ...await acc,
             [branch]: await buildBranch(options, db, proj, branch)
@@ -45,15 +45,18 @@ const buildProject = async (options: MockerOptions, db: ApiDBAdapter, proj: Proj
     }, {})
 }
 
-export const buildMockedDataFromApi = async (options: MockerOptions) => {
+export const buildMockedDataFromApi = async (options: MockerOptions): Promise<{
+    projects: Project[];
+    snapshots: MockedSnapshots;
+} | null> => {
     const db = loadDbFromConfig(options.config);
 
     if (! db) { return null }
 
     const allProjects = await db.fetchProjects()
-    const projects = allProjects.filter(proj => options.projectIds.includes(proj.id))
+    const projects = allProjects.filter((proj): boolean => options.projectIds.includes(proj.id))
 
-    const snapshots: MockedSnapshots = await projects.reduce(async (acc, proj) => {
+    const snapshots: MockedSnapshots = await projects.reduce(async (acc, proj): Promise<MockedSnapshots> => {
         return {
             ...await acc,
             [proj.id]: await buildProject(options, db, proj)
