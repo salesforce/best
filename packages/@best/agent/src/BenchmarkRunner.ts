@@ -5,7 +5,7 @@ import BenchmarkTask from "./BenchmarkTask";
 import { loadBenchmarkJob } from "./benchmark-loader";
 import { x as extractTar } from 'tar';
 import * as SocketIO from "socket.io";
-import {RunnerOutputStream} from "@best/console-stream";
+import { RunnerOutputStream } from "@best/console-stream";
 
 export enum RunnerStatus {
     IDLE = 1,
@@ -18,18 +18,26 @@ function initializeForwarder(socket: SocketIO.Socket, logger: Function): RunnerO
         init() {},
         finish() {},
         onBenchmarkStart(benchmarkPath: string) {
-            logger(`STATUS: running_benchmark ${benchmarkPath}`);
-            socket.emit('running_benchmark_start', benchmarkPath);
+            if (socket.connected) {
+                logger(`STATUS: running_benchmark ${benchmarkPath}`);
+                socket.emit('running_benchmark_start', benchmarkPath);
+            }
         },
         onBenchmarkEnd(benchmarkPath: string) {
-            logger(`STATUS: finished_benchmark ${benchmarkPath}`);
-            socket.emit('running_benchmark_end', benchmarkPath);
+            if (socket.connected) {
+                logger(`STATUS: finished_benchmark ${benchmarkPath}`);
+                socket.emit('running_benchmark_end', benchmarkPath);
+            }
         },
         onBenchmarkError(benchmarkPath: string) {
-            socket.emit('running_benchmark_error', benchmarkPath);
+            if (socket.connected) {
+                socket.emit('running_benchmark_error', benchmarkPath);
+            }
         },
         updateBenchmarkProgress(state: any, opts: any) {
-            socket.emit('running_benchmark_update', {state, opts});
+            if (socket.connected) {
+                socket.emit('running_benchmark_update', {state, opts});
+            }
         },
     } as RunnerOutputStream;
 }

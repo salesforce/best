@@ -1,9 +1,9 @@
 import * as SocketIO from "socket.io";
-import { BuildConfig } from "@best/types";
+import { BuildConfig, GlobalConfig, ProjectConfig } from "@best/types";
 
 export default class BenchmarkTask {
-    public projectConfig: any;
-    public globalConfig: any;
+    public projectConfig: ProjectConfig;
+    public globalConfig: GlobalConfig;
     public socketConnection: SocketIO.Socket;
     private readonly _taskConfig: BuildConfig;
 
