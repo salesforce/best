@@ -26,6 +26,10 @@ export interface ApiDatabaseConfig {
     path: string;
 }
 
+export interface FrontendConfig {
+    apiDatabase: ApiDatabaseConfig;
+}
+
 export interface CliConfig {
     [key: string]: any,
     _: string[],

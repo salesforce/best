@@ -1,9 +1,9 @@
 import { Router } from 'express'
 import { loadDbFromConfig } from '@best/api-db'
 import { GithubApplicationFactory } from '@best/github-integration'
-import { ApiDatabaseConfig } from '@best/types';
+import { ApiDatabaseConfig, FrontendConfig } from '@best/types';
 
-export default (config: { apiDatabase: ApiDatabaseConfig }): Router => {
+export default (config: FrontendConfig): Router => {
     const db = loadDbFromConfig(config);
     const router = Router()
 

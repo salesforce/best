@@ -8,6 +8,7 @@
   "references": [
     { "path": "../api-db" },
     { "path": "../github-integration" },
-    { "path": "../config" }
+    { "path": "../config" },
+    { "path": "../types" }
   ]
 }

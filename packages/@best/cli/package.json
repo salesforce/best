@@ -13,6 +13,7 @@
     "@best/builder": "4.0.0",
     "@best/compare": "4.0.0",
     "@best/config": "4.0.0",
+    "@best/frontend": "4.0.0",
     "@best/github-integration": "4.0.0",
     "@best/console-stream": "4.0.0",
     "@best/utils": "4.0.0",

@@ -7,7 +7,7 @@ import * as rollup from 'rollup';
 const asyncRead = promisify(fs.readFile);
 
 export interface MockerOptions {
-    projectIds: number[];
+    projectNames: string[];
     timingOptions: string[];
     branches: string[];
     config: { apiDatabase: ApiDatabaseConfig };

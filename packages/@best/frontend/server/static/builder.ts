@@ -21,10 +21,10 @@ const timeFromQuery = (project: { lastReleaseDate: string }, timing: string): Da
     } else if (timing === '2-months') {
         let date = new Date();
         date.setMonth(date.getMonth() - 2);
-        return date
+        return date;
     }
 
-    return undefined
+    return undefined;
 }
 
 const buildBranch = async (options: MockerOptions, db: ApiDBAdapter, proj: Project, branch: string): Promise<MockedSnapshotBranch> => {
@@ -53,8 +53,8 @@ export const buildMockedDataFromApi = async (options: MockerOptions): Promise<{
 
     if (! db) { return null }
 
-    const allProjects = await db.fetchProjects()
-    const projects = allProjects.filter((proj): boolean => options.projectIds.includes(proj.id))
+    const allProjects = await db.fetchProjects();
+    const projects = allProjects.filter((proj): boolean => options.projectNames.includes(proj.name));
 
     const snapshots: MockedSnapshots = await projects.reduce(async (acc, proj): Promise<MockedSnapshots> => {
         return {
