@@ -54,7 +54,6 @@ export async function runCompare(globalConfig: FrozenGlobalConfig, configs: Froz
 
     try {
         const projectNames = configs.map((cfg: any) => cfg.projectName);
-        // const projectNames = projects.length ? projects : [globalConfig.rootProjectName];
         const runConfig = { ...globalConfig, gitLocalChanges: false };
         let storageProvider;
 
@@ -72,19 +71,16 @@ export async function runCompare(globalConfig: FrozenGlobalConfig, configs: Froz
             }
 
             // Run base commit.
-            // preRunMessager.print(`\n Running best for commit ${baseCommit} \n`, outputStream);
             await gitCLI.checkout(baseCommit);
             await runBest({ ...runConfig, gitInfo: { ...runConfig.gitInfo, lastCommit: { ...runConfig.gitInfo.lastCommit, hash: baseCommit }} }, configs, outputStream);
 
             // Run local changes or compare commit.
             if (compareCommit === 'local') {
-                // preRunMessager.print(`\n Running best for local changes \n`, outputStream);
                 await gitCLI.checkout(initialBranch);
                 if (stashedLocalChanges) {
                     await gitCLI.stash(['pop']);
                 }
             } else {
-                // preRunMessager.print(`\n Running best for commit ${compareCommit} \n`, outputStream);
                 await gitCLI.checkout(compareCommit);
             }
             await runBest({ ...runConfig, gitInfo: { ...runConfig.gitInfo, lastCommit: { ...runConfig.gitInfo.lastCommit, hash: compareCommit }} }, configs, outputStream);
