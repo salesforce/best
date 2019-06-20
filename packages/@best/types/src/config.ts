@@ -82,6 +82,8 @@ export interface NormalizedConfig {
 export interface GlobalConfig {
     gitIntegration: boolean;
     projects: string[];
+    rootDir: string;
+    compareStats?: string[];
     nonFlagArgs: string[];
     isInteractive?: boolean;
     gitInfo: GitConfig;
