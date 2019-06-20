@@ -31,7 +31,7 @@ const generateSnapshots = (runSettings: RunSettings, benchmarks: StatsNode[], gr
                         {
                             name: metricName,
                             duration: values.stats.median,
-                            stdDeviation: values.stats.medianAbsoluteDeviation
+                            stdDeviation: Math.sqrt(values.stats.variance)
                         }
                     ]
                 }
