@@ -34,7 +34,7 @@ export class SQLAdapter extends ApiDBAdapter {
             const projectId = projectResult.rows[0].id
 
             await Promise.all(snapshots.map(async (snapshot) => {
-                return this.db.createSnapshot(snapshot, projectId)
+                return this.db.createOrUpdateSnapshot(snapshot, projectId)
             }))
         } catch (err) {
             console.error('[API-DB] Could not save results into database.')
