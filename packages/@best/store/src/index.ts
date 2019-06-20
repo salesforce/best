@@ -7,7 +7,7 @@ import chalk from 'chalk';
 import { BenchmarkResultsSnapshot, FrozenGlobalConfig } from "@best/types";
 
 function formatJSON(json: any) {
-    return stringify(json, { indent: "2", maxLength: 90 });
+    return stringify(json, { indent: 2, maxLength: 90 });
 }
 
 function getStoredFileMapping(benchmarkFolder: string, artifactsFolder: string) {

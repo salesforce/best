@@ -9,9 +9,9 @@ const stringOrChar = /("(?:[^\\"]|\\.)*")|[:,]/g;
 const prettify = (string: string) => string.replace(stringOrChar, (match, str: string) => (str ? match : match + ' '));
 const comma = (array: any[], index: number) => (index === array.length - 1 ? 0 : 1);
 
-export function stringify(o:any = {}, { indent = "2", maxLength = 80, inlineArray = true } = {}) {
-    indent = JSON.stringify([1], null, indent).slice(2, -3);
-    maxLength = indent === '' ? Infinity : maxLength;
+export function stringify(o:any = {}, { indent = 2, maxLength = 80, inlineArray = true } = {}) {
+    const indentString = JSON.stringify([1], null, indent).slice(2, -3);
+    maxLength = indentString === '' ? Infinity : maxLength;
 
     return (function _stringify(obj, currentIndent, reserved): string {
         if (obj && typeof obj.toJSON === 'function') {
@@ -34,7 +34,7 @@ export function stringify(o:any = {}, { indent = "2", maxLength = 80, inlineArra
         }
 
         if (typeof obj === 'object' && obj !== null) {
-            const nextIndent = currentIndent + indent;
+            const nextIndent = currentIndent + indentString;
             const items = [];
             let delimiters;
 
@@ -58,7 +58,7 @@ export function stringify(o:any = {}, { indent = "2", maxLength = 80, inlineArra
             }
 
             if (items.length > 0 && delimiters) {
-                return [delimiters[0], indent + items.join(',\n' + nextIndent), delimiters[1]].join(
+                return [delimiters[0], indentString + items.join(',\n' + nextIndent), delimiters[1]].join(
                     '\n' + currentIndent,
                 );
             }
