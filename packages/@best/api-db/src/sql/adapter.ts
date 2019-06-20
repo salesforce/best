@@ -16,8 +16,8 @@ export class SQLAdapter extends ApiDBAdapter {
         return transformer.projects(results)
     }
 
-    async fetchSnapshots(projectId: number, branch: string, since: Date | undefined): Promise<Snapshot[]> {
-        const results = await this.db.fetchSnapshots(projectId, branch, since)
+    async fetchSnapshots(projectId: number, since: Date | undefined): Promise<Snapshot[]> {
+        const results = await this.db.fetchSnapshots(projectId, since)
 
         return transformer.snapshots(results)
     }

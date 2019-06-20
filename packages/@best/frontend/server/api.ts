@@ -63,14 +63,13 @@ export default (config: FrontendConfig): Router => {
     router.get('/:project/snapshots', async (req, res): Promise<void> => {
         const { project } = req.params
         const { since } = req.query
-        const branch = 'master'
 
         try {
             let parsedSince: Date | undefined;
             if (since && since.length > 0) {
                 parsedSince = new Date(parseInt(since, 10))
             }
-            const snapshots = await db.fetchSnapshots(project, branch, parsedSince)
+            const snapshots = await db.fetchSnapshots(project, parsedSince)
 
             res.send({
                 snapshots

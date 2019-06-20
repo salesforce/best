@@ -9,7 +9,6 @@ const asyncRead = promisify(fs.readFile);
 export interface MockerOptions {
     projectNames: string[];
     timingOptions: string[];
-    branches: string[];
     config: { apiDatabase: ApiDatabaseConfig };
 }
 

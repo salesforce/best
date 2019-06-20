@@ -15,7 +15,6 @@ export interface Metric {
 
 export interface TemporarySnapshot {
     name: string;
-    branch: string;
     metrics: Metric[];
     environmentHash: string;
     similarityHash: string;
@@ -38,7 +37,7 @@ export class ApiDBAdapter {
         throw new Error('ApiDB.fetchProjects() not implemented')
     }
 
-    fetchSnapshots(projectId: number, branch: string, since: Date | undefined): Promise<Snapshot[]> {
+    fetchSnapshots(projectId: number, since: Date | undefined): Promise<Snapshot[]> {
         throw new Error('ApiDB.fetchSnapshots() not implemented')
     }
 

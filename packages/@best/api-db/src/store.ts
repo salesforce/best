@@ -9,7 +9,6 @@ interface RunSettings {
     commitDate: string;
     environmentHash: string;
     temporary: boolean;
-    branch: string;
 }
 
 function md5(data: string) {
@@ -63,7 +62,7 @@ export const saveBenchmarkSummaryInDB = (benchmarkResults: BenchmarkResultsSnaps
         benchmarkResults.map(async (benchmarkResult) => {
             const { benchmarkInfo: { benchmarkSignature }, projectConfig, environment, stats } = benchmarkResult;
             const { projectName } = projectConfig;
-            const { lastCommit, branch, localChanges } = globalConfig.gitInfo;
+            const { lastCommit, branch } = globalConfig.gitInfo;
 
             const snapshotEnvironment = {
                 hardware: environment.hardware,
@@ -77,8 +76,7 @@ export const saveBenchmarkSummaryInDB = (benchmarkResults: BenchmarkResultsSnaps
                 commit: lastCommit.hash,
                 commitDate: lastCommit.date,
                 environmentHash,
-                temporary: localChanges,
-                branch
+                temporary: branch === 'master'
             }
 
             if (stats) {

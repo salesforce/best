@@ -15,7 +15,6 @@ export const buildStaticFrontend = async (results: BenchmarkResultsSnapshot[], g
     if (! globalConfig.apiDatabase) { throw new Error('No database configured') }
 
     const outputStream = new OutputStream(stream, globalConfig.isInteractive);
-    const { branch } = globalConfig.gitInfo;
 
     outputStream.writeln('Beginning to generate static HTML...');
 
@@ -24,7 +23,6 @@ export const buildStaticFrontend = async (results: BenchmarkResultsSnapshot[], g
     const options = {
         projectNames,
         timingOptions: ['all', '2-months', 'last-release'],
-        branches: [branch],
         config: { apiDatabase: globalConfig.apiDatabase }
     }
 

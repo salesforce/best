@@ -22,12 +22,12 @@ export abstract class SQLDatabase {
         return this.query('SELECT * FROM projects', [])
     }
 
-    fetchSnapshots(projectId: number, branch: string, since: Date | undefined): Promise<SQLQueryResult> {
+    fetchSnapshots(projectId: number,since: Date | undefined): Promise<SQLQueryResult> {
         if (since) {
-            return this.query(`SELECT * FROM snapshots WHERE "project_id" = $1 AND "branch" = $2 AND "temporary" = '0' AND "commit_date" > $3 ORDER BY commit_date, name`, [projectId, branch, since])
+            return this.query(`SELECT * FROM snapshots WHERE "project_id" = $1 AND "temporary" = '0' AND "commit_date" > $2 ORDER BY commit_date, name`, [projectId, since])
         }
 
-        return this.query(`SELECT * FROM snapshots WHERE "project_id" = $1 AND "branch" = $2 AND "temporary" = '0' ORDER BY commit_date, name`, [projectId, branch])
+        return this.query(`SELECT * FROM snapshots WHERE "project_id" = $1 AND "temporary" = '0' ORDER BY commit_date, name`, [projectId])
     }
 
     fetchProject(name: string): Promise<SQLQueryResult> {
@@ -43,7 +43,7 @@ export abstract class SQLDatabase {
     }
 
     createSnapshot(snapshot: TemporarySnapshot, projectId: number): Promise<SQLQueryResult> {
-        const values = [snapshot.name, normalizeMetrics(snapshot.metrics), snapshot.environmentHash, snapshot.similarityHash, snapshot.commit, snapshot.commitDate, snapshot.temporary, snapshot.branch, projectId]
-        return this.query('INSERT INTO snapshots("name", "metrics", "environment_hash", "similarity_hash", "commit", "commit_date", "temporary", "branch", "project_id") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)', values)
+        const values = [snapshot.name, normalizeMetrics(snapshot.metrics), snapshot.environmentHash, snapshot.similarityHash, snapshot.commit, snapshot.commitDate, snapshot.temporary, projectId]
+        return this.query('INSERT INTO snapshots("name", "metrics", "environment_hash", "similarity_hash", "commit", "commit_date", "temporary", "project_id") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', values)
     }
 }

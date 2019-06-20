@@ -1,12 +1,8 @@
 import { loadDbFromConfig, Project, Snapshot, ApiDBAdapter } from '@best/api-db';
 import { MockerOptions } from './mocker'
 
-interface MockedSnapshotBranch {
-    [timing: string]: Snapshot[];
-}
-
 interface MockedSnapshotProject {
-    [branch: string]: MockedSnapshotBranch;
+    [timing: string]: Snapshot[];
 }
 
 interface MockedSnapshots {
@@ -27,20 +23,11 @@ const timeFromQuery = (project: { lastReleaseDate: string }, timing: string): Da
     return undefined;
 }
 
-const buildBranch = async (options: MockerOptions, db: ApiDBAdapter, proj: Project, branch: string): Promise<MockedSnapshotBranch> => {
-    return options.timingOptions.reduce(async (acc, timing): Promise<MockedSnapshotBranch> => {
-        return {
-            ...await acc,
-            [timing]: await db.fetchSnapshots(proj.id, branch, timeFromQuery(proj, timing))
-        }
-    }, {})
-}
-
 const buildProject = async (options: MockerOptions, db: ApiDBAdapter, proj: Project): Promise<MockedSnapshotProject> => {
-    return options.branches.reduce(async (acc, branch): Promise<MockedSnapshotProject> => {
+    return options.timingOptions.reduce(async (acc, timing): Promise<MockedSnapshotProject> => {
         return {
             ...await acc,
-            [branch]: await buildBranch(options, db, proj, branch)
+            [timing]: await db.fetchSnapshots(proj.id, timeFromQuery(proj, timing))
         }
     }, {})
 }

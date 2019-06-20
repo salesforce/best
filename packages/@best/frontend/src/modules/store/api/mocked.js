@@ -8,6 +8,6 @@ export async function fetchProjects() {
     return getMocked().projects;
 }
 
-export async function fetchSnapshots(project, timing, branch = 'master') {
-    return getMocked().snapshots[project.id][branch][timing];
+export async function fetchSnapshots(project, timing) {
+    return getMocked().snapshots[project.id][timing];
 }
