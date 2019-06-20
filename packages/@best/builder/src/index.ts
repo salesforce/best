@@ -26,7 +26,7 @@ function addResolverPlugins(plugins: ProjectConfigPlugin[]): any[] {
         return [];
     }
 
-    return plugins.map((plugin: any) => {
+    return plugins.map((plugin: ProjectConfigPlugin) => {
         if (typeof plugin === 'string') {
             return req(plugin)();
         } else if (Array.isArray(plugin)) {

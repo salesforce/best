@@ -5,6 +5,7 @@
     "outDir": "build",
   },
   "references": [
-    { "path": "../utils" }
+    { "path": "../utils" },
+    { "path": "../types" },
   ]
 }
