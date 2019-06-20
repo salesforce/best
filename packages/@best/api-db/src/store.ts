@@ -1,7 +1,16 @@
 import crypto from 'crypto';
 import { loadDbFromConfig } from './utils';
-import { TemporarySnapshot } from './types';
-import { FrozenGlobalConfig } from '@best/types';
+import { TemporarySnapshot, Metric } from './types';
+import { FrozenGlobalConfig, BenchmarkResultsSnapshot, StatsNode, RunnerConfig } from '@best/types';
+
+interface RunSettings {
+    similarityHash: string;
+    commit: string;
+    commitDate: string;
+    environmentHash: string;
+    temporary: boolean;
+    branch: string;
+}
 
 function md5(data: string) {
     return crypto
@@ -10,14 +19,29 @@ function md5(data: string) {
         .digest('hex');
 }
 
-export const saveBenchmarkSummaryInDB = (benchmarkResults: any, globalConfig: FrozenGlobalConfig) => {
+const generateSnapshots = (runSettings: RunSettings, benchmarks: StatsNode[], snapshots: TemporarySnapshot[] = []): TemporarySnapshot[] => {
+    const things: TemporarySnapshot[] = benchmarks.reduce((results, benchmark): TemporarySnapshot[] => {
+        if (benchmark.type === "benchmark") {
+            Object.keys(benchmark.metrics).forEach((key: string) => {
+                const values = benchmark.metrics[key as BenchmarkMetricNames].stats;
+
+            })
+        }
+
+        return results;
+    }, <TemporarySnapshot[]>[])
+
+    return snapshots;
+}
+
+export const saveBenchmarkSummaryInDB = (benchmarkResults: BenchmarkResultsSnapshot[], globalConfig: FrozenGlobalConfig) => {
     const db = loadDbFromConfig(globalConfig);
 
     if (! db) { return; }
 
     return Promise.all(
-        benchmarkResults.map(async (benchmarkResult: any) => {
-            const { benchmarkSignature, projectConfig, environment, stats } = benchmarkResult;
+        benchmarkResults.map(async (benchmarkResult) => {
+            const { benchmarkInfo: { benchmarkSignature }, projectConfig, environment, stats } = benchmarkResult;
             const { projectName } = projectConfig;
             const { lastCommit, branch, localChanges } = globalConfig.gitInfo;
 
@@ -38,6 +62,12 @@ export const saveBenchmarkSummaryInDB = (benchmarkResults: any, globalConfig: Fr
             }
 
             const snapshotsToSave: TemporarySnapshot[] = [];
+
+            if (! stats) { return };
+
+            stats.results.map((node) => {
+
+            })
 
             stats.benchmarks.forEach((element: any) => {
                 element.benchmarks.forEach((bench: any) => {
