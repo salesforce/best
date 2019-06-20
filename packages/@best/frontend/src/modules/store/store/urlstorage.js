@@ -117,7 +117,11 @@ export const loadState = () => {
 }
 
 const saveState = ({ projects: { selectedProjectId }, view }) => {
-    updateProjectsPathIfNeeded(selectedProjectId);
+    try {
+        updateProjectsPathIfNeeded(selectedProjectId);
+    } catch (err) {
+        // log error or something
+    }
     updateViewQueryIfNeeded(view);
 }
 

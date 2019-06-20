@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+export default `<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
@@ -20,4 +20,4 @@
     <body>
         <my-app></my-app>
     </body>
-</html>
+</html>`
