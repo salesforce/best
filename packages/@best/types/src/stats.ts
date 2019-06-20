@@ -28,10 +28,8 @@ export interface AllBenchmarksMetricsMap { [key: string]: BenchmarkMetricsAggreg
 export interface AllBenchmarkMetricStatsMap { [key: string]: BenchmarkMetricStatsMap; }
 
 export type MetricsStatsMap = {
-    [key in BenchmarkMetricNames]?: {
-        stats: {
-            [key in BenchmarkStatsNames]?: BenchmarkStats
-        }
+    [key in BenchmarkMetricNames]: {
+        stats: BenchmarkStats
     }
 }
 

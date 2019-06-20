@@ -2,6 +2,12 @@ import Table from 'cli-table';
 import chalk from 'chalk';
 import Histogram from './histogram';
 import { computeSampleStats } from '@best/analyzer';
+import {
+    BenchmarkMetricNames,
+    BenchmarkResultsSnapshot,
+    EnvironmentConfig, GlobalConfig, StatsNode,
+    StatsResults
+} from "@best/types";
 
 /*
  * The Output module can write a report or a comparison to a given stream based on a configuration.
@@ -9,7 +15,7 @@ import { computeSampleStats } from '@best/analyzer';
 export default class Output {
     config: any;
     stream: any;
-    constructor(config: any, stream: any) {
+    constructor(config: GlobalConfig, stream: any) {
         this.config = config || {};
         this.stream = stream;
     }
@@ -17,20 +23,20 @@ export default class Output {
     /*
      * Show a report for a given set of results.
      */
-    report(results: any) {
-        results.forEach((result: any) => {
-            const { benchmarkName, benchmarkOutputResult, stats } = result;
+    report(results: BenchmarkResultsSnapshot[]) {
+        results.forEach((result: BenchmarkResultsSnapshot) => {
+            const { benchmarkInfo: { benchmarkName, benchmarkFolder }, stats } = result;
             // Optionally calculate totals for each metric.
             if (this.config.outputTotals) {
                 this.generateTotal(stats);
             }
             // Stats table.
-            this.writeStats(benchmarkName, benchmarkOutputResult, stats.benchmarks);
+            this.writeStats(benchmarkName, benchmarkFolder, stats!);
             // OS & Browser.
-            this.writeEnvironment(stats.environment);
+            this.writeEnvironment(result.environment);
             // Optional histogram for each line in the stats table.
             if (this.config.outputHistograms) {
-                this.writeHistograms(stats.benchmarks);
+                this.writeHistograms(stats!);
             }
         });
     }
@@ -40,7 +46,7 @@ export default class Output {
      */
     generateTotal(stats: any) {
         const total: any = {};
-        const metricPattern = this.config.outputMetricPattern;
+        const metricPattern = new RegExp(`^(.*)$`); // this.config.outputMetricPattern
 
         function add(node: any) {
             const children = node.benchmarks;
@@ -69,13 +75,13 @@ export default class Output {
     /*
      * Write a table of statistics for a single benchmark file.
      */
-    writeStats(benchmarkName: string, resultsFolder: string, stats: any) {
+    writeStats(benchmarkName: string, resultsFolder: string, stats: StatsResults) {
         const table = new Table({
             head: ['Benchmark name', 'Metric (ms)', 'N', 'Mean ± StdDev', 'Median ± MAD'],
             style: { head: ['bgBlue', 'white'] },
         });
 
-        this.generateRows(table, stats);
+        this.generateRows(table, stats.results);
 
         this.stream.write(
             [
@@ -89,8 +95,8 @@ export default class Output {
     /*
      * Write browser and CPU load information.
      */
-    writeEnvironment({ browser, runtime }: any) {
-        const cpuLoad = runtime.load.cpuLoad;
+    writeEnvironment({ browser, container }: EnvironmentConfig) {
+        const cpuLoad = container.load.cpuLoad; //.cpu.cpuLoad;
         const loadColor = cpuLoad < 10 ? 'green' : cpuLoad < 50 ? 'yellow' : 'red';
 
         this.stream.write(' ');
@@ -108,21 +114,21 @@ export default class Output {
      * Write a set of histograms for a tree of benchmarks.
      */
     writeHistograms(benchmarks: any, parentPath: string = '') {
-        const metricPattern = this.config.outputMetricPattern;
-        const histogramPattern = this.config.outputHistogramPattern;
+        // const metricPattern = this.config.outputMetricPattern;
+        // const histogramPattern = this.config.outputHistogramPattern;
         benchmarks.forEach((benchmark: any) => {
             const path = `${parentPath}${benchmark.name}`;
             const children = benchmark.benchmarks;
             if (children) {
                 this.writeHistograms(children, `${path} > `);
             } else {
-                if (!histogramPattern.test(path)) {
-                    return;
-                }
+                // if (!histogramPattern.test(path)) {
+                //     return;
+                // }
                 Object.keys(benchmark).forEach(metric => {
-                    if (!metricPattern.test(metric)) {
-                        return;
-                    }
+                    // if (!metricPattern.test(metric)) {
+                    //     return;
+                    // }
                     const stats = benchmark[metric];
                     if (stats && stats.sampleSize) {
                         const { samples } = stats;
@@ -138,17 +144,18 @@ export default class Output {
     /*
      * Recursively populate rows of statistics into a table for a tree of benchmarks.
      */
-    generateRows(table: any, benchmarks: any, level = 0) {
-        const metricPattern = this.config.outputMetricPattern;
-        benchmarks.forEach((benchmarkNode: any) => {
+    generateRows(table: any, benchmarks: StatsNode[], level = 0) {
+        // const metricPattern = //this.config.outputMetricPattern;
+        benchmarks.forEach((benchmarkNode: StatsNode) => {
             const name = benchmarkNode.name;
             // Root benchmark
-            if (!benchmarkNode.benchmarks) {
-                Object.keys(benchmarkNode).forEach(metric => {
-                    if (!metricPattern.test(metric)) {
-                        return;
-                    }
-                    const metricValues = benchmarkNode[metric];
+            if (benchmarkNode.type === "benchmark") {
+                Object.keys(benchmarkNode.metrics).forEach((metric: string) => {
+                    // if (!metricPattern.test(metric)) {
+                    //     return;
+                    // }
+
+                    const metricValues = benchmarkNode.metrics[metric as BenchmarkMetricNames].stats;
                     if (metricValues && metricValues.sampleSize) {
                         const { sampleSize, mean, median, variance, medianAbsoluteDeviation } = metricValues;
                         table.push([
@@ -161,10 +168,10 @@ export default class Output {
                     }
                 });
                 // Group
-            } else {
+            } else if (benchmarkNode.type === "group") {
                 const emptyFields = Array.apply(null, Array(4)).map(() => '-');
                 table.push([padding(level) + name, ...emptyFields]);
-                this.generateRows(table, benchmarkNode.benchmarks, level + 1);
+                this.generateRows(table, benchmarkNode.nodes, level + 1);
             }
         });
     }

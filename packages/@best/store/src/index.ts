@@ -1,29 +1,16 @@
-import mkdirp from 'mkdirp';
-import rimraf from 'rimraf';
+
 import path from 'path';
-import { ncp } from 'ncp';
 import { formatEnvironment } from './md-formatter';
 import { stringify } from './pretty-json';
 import fs from 'fs';
 import chalk from 'chalk';
-
-function copyArtifacts(benchmarkFolder: any, outputFolder: any) {
-    return new Promise((resolve, reject) => {
-        ncp(benchmarkFolder, outputFolder, err => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve();
-            }
-        });
-    });
-}
+import { BenchmarkResultsSnapshot, FrozenGlobalConfig } from "@best/types";
 
 function formatJSON(json: any) {
     return stringify(json, { indent: "2", maxLength: 90 });
 }
 
-function getStoredFileMapping(benchmarkFolder:any, artifactsFolder:any) {
+function getStoredFileMapping(benchmarkFolder: string, artifactsFolder: string) {
     const WHITELIST = ['.js', '.html', '.css', '.json'];
 
     const currentFiles = fs.readdirSync(benchmarkFolder);
@@ -36,33 +23,25 @@ function getStoredFileMapping(benchmarkFolder:any, artifactsFolder:any) {
     }, {});
 }
 
-export function storeBenchmarkResults(benchmarkResults: any, globalConfig: any) {
+export function storeBenchmarkResults(benchmarkResults: BenchmarkResultsSnapshot[], globalConfig: FrozenGlobalConfig) {
     return Promise.all(
-        benchmarkResults.map(async (benchmarkResult: any) => {
-            const { benchmarkName, benchmarkSignature, projectConfig, environment, results, stats } = benchmarkResult;
-            const { benchmarkOutput, cacheDirectory, projectName } = projectConfig;
-            const { externalStorage, gitCommit, gitLocalChanges } = globalConfig;
-            const hash = gitLocalChanges ? 'local_' + benchmarkSignature.substr(0, 6) : gitCommit;
-            const outputFolder = path.join(benchmarkOutput, projectName, `${benchmarkName}_${hash}`);
-            const artifactsFolder = path.join(outputFolder, 'artifacts');
-            const benchmarkFolder = path.join(cacheDirectory, projectName, benchmarkName);
+        benchmarkResults.map(async (benchmarkResult: BenchmarkResultsSnapshot) => {
+            const { benchmarkInfo: { benchmarkFolder }, environment, results, stats } = benchmarkResult;
+            const { externalStorage } =  globalConfig;
 
-            mkdirp.sync(outputFolder);
-            rimraf.sync(artifactsFolder);
-            await copyArtifacts(benchmarkFolder, artifactsFolder);
+            const artifactsFolder = path.join(benchmarkFolder, 'artifacts');
 
             // Environment
-            fs.writeFileSync(path.join(outputFolder, 'environment.md'), formatEnvironment(environment), 'utf8');
+            fs.writeFileSync(path.join(benchmarkFolder, 'environment.md'), formatEnvironment(environment), 'utf8');
 
             // Results
-            fs.writeFileSync(path.join(outputFolder, 'stats.json'), formatJSON(stats), 'utf8');
-            fs.writeFileSync(path.join(outputFolder, 'raw_results.json'), formatJSON(results), 'utf8');
-            benchmarkResult.benchmarkOutputResult = outputFolder;
+            fs.writeFileSync(path.join(benchmarkFolder, 'stats.json'), formatJSON(stats), 'utf8');
+            fs.writeFileSync(path.join(benchmarkFolder, 'raw_results.json'), formatJSON(results), 'utf8');
 
             if (externalStorage) {
                 try {
                     const storageModule = require(externalStorage);
-                    const fileMap = getStoredFileMapping(outputFolder, artifactsFolder);
+                    const fileMap = getStoredFileMapping(benchmarkFolder, artifactsFolder);
                     await storageModule.storeBenchmarkResults(fileMap, benchmarkResult, globalConfig);
                 } catch (err) {
                     const ERR_TEXT = chalk.reset.inverse.red.bold('  ERROR   ') + ' ';
