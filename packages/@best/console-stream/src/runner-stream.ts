@@ -3,6 +3,11 @@ import { isInteractive as globaIsInteractive, clearLine } from "@best/utils";
 import chalk from "chalk";
 import trimPath from "./utils/trim-path";
 import countEOL from "./utils/count-eod";
+import {
+    BenchmarkResultsState,
+    BenchmarkRuntimeConfig,
+    BuildConfig
+} from "@best/types";
 
 enum State {
     QUEUED = 'QUEUED',
@@ -10,29 +15,10 @@ enum State {
     DONE = 'DONE',
     ERROR = 'ERROR',
 }
-interface BuildConfig {
-    benchmarkName: string,
-    benchmarkFolder: string,
-    benchmarkSignature: string,
-    benchmarkEntry: string,
-    projectConfig: { projectName: string, rootDir: string },
-    globalConfig: any,
-}
 
 interface BenchmarkStatus { state: State; displayPath: string; projectName: string }
 type AllBencharkRunnerState = Map<string, BenchmarkStatus>
 
-interface RunnerConfig {
-    maxDuration: number;
-    minSampleCount: number,
-    iterations: number,
-}
-
-interface RunnerState {
-    executedTime: number,
-    executedIterations: number,
-    results: any[],
-}
 interface BenchmarkProgress {
     executedIterations: number,
     estimated: number,
@@ -67,7 +53,7 @@ function printProjectName(projectName: string) {
     return ' ' + chalk.reset.cyan.dim(`(${projectName})`);
 }
 
-function calculateBenchmarkProgress(progress: RunnerState, { iterations, maxDuration }: RunnerConfig): BenchmarkProgress {
+function calculateBenchmarkProgress(progress: BenchmarkResultsState, { iterations, maxDuration }: BenchmarkRuntimeConfig): BenchmarkProgress {
     const { executedIterations, executedTime } = progress;
     const avgIteration = executedTime / executedIterations;
     const runtime = parseInt((executedTime / 1000) + '', 10);
@@ -100,7 +86,7 @@ function printProgressBar(runTime: number, estimatedTime: number, width: number)
     return time;
 }
 
-export default class BuildOutputStream {
+export default class RunnerOutputStream {
     stdout: NodeJS.WriteStream;
     isInteractive: boolean;
 
@@ -117,8 +103,8 @@ export default class BuildOutputStream {
     }
 
     initState(buildConfigs: BuildConfig[]): AllBencharkRunnerState {
-        return buildConfigs.reduce((state: AllBencharkRunnerState, build: any): AllBencharkRunnerState => {
-            buildConfigs.forEach(({ benchmarkEntry, projectConfig: { projectName, rootDir }}) => {
+        return buildConfigs.reduce((state: AllBencharkRunnerState): AllBencharkRunnerState => {
+            buildConfigs.forEach(({ benchmarkEntry, projectConfig: { projectName }}) => {
                 state.set(benchmarkEntry, {
                     projectName,
                     state: State.QUEUED,
@@ -260,7 +246,7 @@ export default class BuildOutputStream {
         this.updateRunnerState(benchmarkPath, State.ERROR);
     }
 
-    updateBenchmarkProgress(state: RunnerState, runtimeOpts: RunnerConfig) {
+    updateBenchmarkProgress(state: BenchmarkResultsState, runtimeOpts: BenchmarkRuntimeConfig) {
         const progress = this._progress = calculateBenchmarkProgress(state, runtimeOpts);
         const { executedIterations, avgIteration, estimated, runtime } = progress;
         const runIter = executedIterations.toString().padEnd(5, " ");

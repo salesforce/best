@@ -1,4 +1,3 @@
-
 import path from 'path';
 import { formatEnvironment } from './md-formatter';
 import { stringify } from './pretty-json';
@@ -17,7 +16,7 @@ function getStoredFileMapping(benchmarkFolder: string, artifactsFolder: string) 
     const artifactFiles = fs.readdirSync(artifactsFolder).map(p => path.join('artifacts', p));
     const files = [...currentFiles, ...artifactFiles].filter(p => WHITELIST.includes(path.extname(p)));
 
-    return files.reduce((map: any, file: string) => {
+    return files.reduce((map: { [key: string]: string }, file: string) => {
         map[file] = path.join(benchmarkFolder, file);
         return map;
     }, {});

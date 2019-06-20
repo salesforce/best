@@ -1,4 +1,5 @@
 import json2md from 'json2md';
+import {EnvironmentConfig} from "@best/types";
 
 const ENV_TEXT = 'Benchmark Environment';
 
@@ -6,13 +7,13 @@ function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export function formatEnvironment(env: any) {
+export function formatEnvironment(env: EnvironmentConfig) {
     const jsonMd = Object.keys(env)
         .sort()
         .reduce(
-            (md:any, k1) => {
+            (md:any, k1: string) => {
                 const nKey = capitalizeFirstLetter(k1);
-                const value = env[k1];
+                const value = env[k1 as keyof EnvironmentConfig];
                 md.push({ h2: nKey });
                 if (typeof value === 'string') {
                     md.push({ p: value });
@@ -21,7 +22,7 @@ export function formatEnvironment(env: any) {
                 } else {
                     Object.keys(value).forEach(k2 => {
                         const subKey = capitalizeFirstLetter(k2);
-                        const subValue = value[k2];
+                        const subValue = value[k2 as keyof typeof value];
                         if (typeof subValue === 'string') {
                             md.push({ h3: subKey }, { p: subValue });
                         } else if (Array.isArray(subValue)) {
