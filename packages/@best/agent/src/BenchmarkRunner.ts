@@ -6,6 +6,7 @@ import { loadBenchmarkJob } from "./benchmark-loader";
 import { x as extractTar } from 'tar';
 import * as SocketIO from "socket.io";
 import { RunnerOutputStream } from "@best/console-stream";
+import { BenchmarkResultsState } from "@best/types";
 
 export enum RunnerStatus {
     IDLE = 1,
@@ -34,7 +35,7 @@ function initializeForwarder(socket: SocketIO.Socket, logger: Function): RunnerO
                 socket.emit('running_benchmark_error', benchmarkPath);
             }
         },
-        updateBenchmarkProgress(state: any, opts: any) {
+        updateBenchmarkProgress(state: BenchmarkResultsState, opts: any) {
             if (socket.connected) {
                 socket.emit('running_benchmark_update', {state, opts});
             }

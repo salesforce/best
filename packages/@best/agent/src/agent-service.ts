@@ -4,8 +4,9 @@ import { AgentApp } from "./AgentApp";
 import ObservableQueue from "./utils/ObservableQueue";
 import BenchmarkTask from "./BenchmarkTask";
 import BenchmarkRunner from "./BenchmarkRunner";
+import { Server } from "https";
 
-export async function runAgent(server: any) {
+export async function runAgent(server: Server) {
     const socketServer: SocketIO.Server = socketIO(server, { path: '/best' });
 
     const taskQueue = new ObservableQueue<BenchmarkTask>();
