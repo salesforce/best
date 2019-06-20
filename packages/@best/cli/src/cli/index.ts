@@ -79,7 +79,7 @@ export async function runCLI(argsCLI: CliConfig, projects: string[]) {
         return process.exit(0);
     }
 
-    const output = new Output(globalConfig, outputStream);
+    const output = new Output({}, outputStream);
     if (argsCLI.compareStats) {
         results = await runCompare(globalConfig, configs, outputStream);
         if (results) {

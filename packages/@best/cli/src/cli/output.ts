@@ -1,21 +1,26 @@
 import Table from 'cli-table';
 import chalk from 'chalk';
 import Histogram from './histogram';
-import { computeSampleStats } from '@best/analyzer';
+
 import {
     BenchmarkMetricNames,
     BenchmarkResultsSnapshot,
-    EnvironmentConfig, GlobalConfig, StatsNode,
+    EnvironmentConfig, StatsNode,
     StatsResults
 } from "@best/types";
+import { OutputStream } from '@best/console-stream';
+
+interface OutputConfig {
+    outputHistograms?: boolean;
+}
 
 /*
  * The Output module can write a report or a comparison to a given stream based on a configuration.
  */
 export default class Output {
-    config: any;
-    stream: any;
-    constructor(config: GlobalConfig, stream: any) {
+    config: OutputConfig;
+    stream: OutputStream;
+    constructor(config: OutputConfig, stream: OutputStream) {
         this.config = config || {};
         this.stream = stream;
     }
@@ -26,50 +31,18 @@ export default class Output {
     report(results: BenchmarkResultsSnapshot[]) {
         results.forEach((result: BenchmarkResultsSnapshot) => {
             const { benchmarkInfo: { benchmarkName, benchmarkFolder }, stats } = result;
-            // Optionally calculate totals for each metric.
-            if (this.config.outputTotals) {
-                this.generateTotal(stats);
-            }
+
             // Stats table.
             this.writeStats(benchmarkName, benchmarkFolder, stats!);
+
             // OS & Browser.
             this.writeEnvironment(result.environment);
+
             // Optional histogram for each line in the stats table.
             if (this.config.outputHistograms) {
                 this.writeHistograms(stats!);
             }
         });
-    }
-
-    /*
-     * Add a new entry under `stats.benchmarks`, containing totals across all of the other entries.
-     */
-    generateTotal(stats: any) {
-        const total: any = {};
-        const metricPattern = new RegExp(`^(.*)$`); // this.config.outputMetricPattern
-
-        function add(node: any) {
-            const children = node.benchmarks;
-            if (children) {
-                children.forEach((child: any) => { add(child); });
-            } else {
-                Object.keys(node).forEach((metric: any) => {
-                    if (metricPattern.test(metric) && metric !== 'name') {
-                        const samples = total[metric] = total[metric] || [];
-                        node[metric].samples.forEach((v: any, i: any) => {
-                            samples[i] = (samples[i] || 0) + v;
-                        });
-                    }
-                });
-            }
-        }
-
-        add(stats);
-        Object.keys(total).forEach(metric => {
-            total[metric] = computeSampleStats(total[metric], this.config);
-        });
-        total.name = 'total';
-        stats.benchmarks.push(total);
     }
 
     /*
@@ -96,7 +69,7 @@ export default class Output {
      * Write browser and CPU load information.
      */
     writeEnvironment({ browser, container }: EnvironmentConfig) {
-        const cpuLoad = container.load.cpuLoad; //.cpu.cpuLoad;
+        const cpuLoad = container.load.cpuLoad;
         const loadColor = cpuLoad < 10 ? 'green' : cpuLoad < 50 ? 'yellow' : 'red';
 
         this.stream.write(' ');
@@ -151,11 +124,8 @@ export default class Output {
             // Root benchmark
             if (benchmarkNode.type === "benchmark") {
                 Object.keys(benchmarkNode.metrics).forEach((metric: string) => {
-                    // if (!metricPattern.test(metric)) {
-                    //     return;
-                    // }
-
-                    const metricValues = benchmarkNode.metrics[metric as BenchmarkMetricNames].stats;
+                    const metricsStats = benchmarkNode.metrics[metric as BenchmarkMetricNames];
+                    const metricValues = metricsStats && metricsStats.stats;
                     if (metricValues && metricValues.sampleSize) {
                         const { sampleSize, mean, median, variance, medianAbsoluteDeviation } = metricValues;
                         table.push([
@@ -242,7 +212,7 @@ export default class Output {
     }
 }
 
-function padding(n: any) {
+function padding(n: number) {
     return n > 0
         ? Array.apply(null, Array((n - 1) * 3))
             .map(() => ' ')

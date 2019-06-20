@@ -20,15 +20,19 @@ export interface BenchmarkStats {
     medianAbsoluteDeviation: number,
 }
 
-export type BenchmarkMetricsAggregate = { [key in BenchmarkMetricNames]?: number[] }
-export type BenchmarkMetricStatsMap = { [key in BenchmarkMetricNames]?: BenchmarkStats; }
+export type BenchmarkMetricsAggregate = {
+    [key in BenchmarkMetricNames]?: number[]
+}
+export type BenchmarkMetricStatsMap = {
+    [key in BenchmarkMetricNames]?: BenchmarkStats;
+}
 
 // This type will hold as keys all benchmark names, and then an array with all results
 export interface AllBenchmarksMetricsMap { [key: string]: BenchmarkMetricsAggregate }
 export interface AllBenchmarkMetricStatsMap { [key: string]: BenchmarkMetricStatsMap; }
 
 export type MetricsStatsMap = {
-    [key in BenchmarkMetricNames]: {
+    [key in BenchmarkMetricNames]?: {
         stats: BenchmarkStats
     }
 }

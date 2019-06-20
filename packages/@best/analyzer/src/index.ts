@@ -1,5 +1,5 @@
 import { VERSION } from './constants';
-import { BenchmarkResultsSnapshot, BenchmarkResultNode, BenchmarkMetricNames, BenchmarkStats, AllBenchmarksMetricsMap, BenchmarkMetricsAggregate, AllBenchmarkMetricStatsMap, StatsNode, BenchmarkMetricStatsMap, StatsNodeGroup } from "@best/types";
+import { BenchmarkResultsSnapshot, BenchmarkResultNode, BenchmarkMetricNames, BenchmarkStats, AllBenchmarksMetricsMap, BenchmarkMetricsAggregate, AllBenchmarkMetricStatsMap, StatsNode, BenchmarkMetricStatsMap, StatsNodeGroup, MetricsStatsMap } from "@best/types";
 import { quantile, mean, median, variance, medianAbsoluteDeviation, compare as compareSamples } from './stats';
 
 function computeSampleStats(arr: number[], samplesQuantileThreshold: number): BenchmarkStats {
@@ -52,9 +52,12 @@ function collectResults(resultNode: BenchmarkResultNode, collector: AllBenchmark
 function createStatsStructure(node: BenchmarkResultNode, collector: AllBenchmarkMetricStatsMap): StatsNode {
     if (node.type === "benchmark") {
         const { name, type } = node;
-        const stats = collector[name];
-        const metrics = Object.keys(stats).reduce((metricReducer: any, metric: string) => {
-            metricReducer[metric as BenchmarkMetricNames] = { stats: stats[metric as BenchmarkMetricNames] };
+        const metricStats = collector[name];
+        const metrics = Object.keys(metricStats).reduce((metricReducer: MetricsStatsMap, metric: string) => {
+            const stats = metricStats[metric as BenchmarkMetricNames];
+            if (stats) {
+                metricReducer[metric as BenchmarkMetricNames] = { stats };
+            }
             return metricReducer;
         }, {});
         return { type, name, metrics };
