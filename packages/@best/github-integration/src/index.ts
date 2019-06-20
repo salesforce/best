@@ -85,8 +85,8 @@ export async function beginBenchmarkComparisonCheck(targetCommit: any, { gitRepo
     return { check, gitHubInstallation }
 }
 
-export async function pushBenchmarkComparisonCheck(gitHubInstallation: Octokit, check: Octokit.ChecksCreateResponse, baseCommit: any, targetCommit: any, compareStats: any, { gitRepository }: any) {
-    const { repo, owner } = gitRepository;
+export async function pushBenchmarkComparisonCheck(gitHubInstallation: Octokit, check: Octokit.ChecksCreateResponse, baseCommit: any, targetCommit: any, compareStats: any, globalConfig: any) {
+    const { repo, owner } = globalConfig.gitRepository;
     const body = generateComparisonComment(baseCommit, targetCommit, compareStats);
     const now = (new Date()).toISOString();
 
@@ -102,16 +102,22 @@ export async function pushBenchmarkComparisonCheck(gitHubInstallation: Octokit, 
         }
     })
 
-    // TODO: move this to config and allow for mode of always commenting
     const averageChange = calculateAverageChange(compareStats);
-    const threshold = -5; // if performance degrades by more than 5% then comment
-    const significantlyDegraded = averageChange < threshold; // less than a negative is WORSE
+    const highThreshold = Math.abs(globalConfig.commentThreshold); // handle whether the threshold is positive or negative
+    const lowThreshold = -1 * highThreshold;
+    const significantlyRegressed = averageChange < lowThreshold; // less than a negative is WORSE
+    const significantlyImproved = averageChange > highThreshold; // more than a positive is GOOD
 
-    if (significantlyDegraded && PULL_REQUEST_URL !== undefined) {
+    if ((significantlyRegressed || significantlyImproved) && PULL_REQUEST_URL !== undefined) {
         const prId: any = PULL_REQUEST_URL.split('/').pop();
         const pullRequestId = parseInt(prId, 10);
 
-        const comment = `# ⚠ Performance Degradation\n\nBest has detected that there is a \`${Math.abs(averageChange).toFixed(1)}%\` performance decrease across your benchmarks.\n\nPlease [click here](${check.html_url}) to see more details.`
+        let comment: string;
+        if (significantlyRegressed) {
+            comment = `# ⚠ Performance Regression\n\nBest has detected that there is a \`${Math.abs(averageChange).toFixed(1)}%\` performance regression across your benchmarks.\n\nPlease [click here](${check.html_url}) to see more details.`
+        } else {
+            comment = `# 🥳 Performance Improvement\n\nBest has detected that there is a \`${Math.abs(averageChange).toFixed(1)}%\` performance improvement across your benchmarks.\n\nPlease [click here](${check.html_url}) to see more details.`
+        }
 
         await gitHubInstallation.issues.createComment({
             owner,

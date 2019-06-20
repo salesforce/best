@@ -3,6 +3,7 @@ import { cacheDirectory } from '@best/utils';
 const defaultOptions = {
     cache: true,
     gitIntegration: false,
+    commentThreshold: 5,
     cacheDirectory: cacheDirectory(),
     useHttp: false,
     openPages: false,
