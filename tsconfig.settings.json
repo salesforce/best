@@ -4,6 +4,7 @@
     "resolveJsonModule": true,
     "noUnusedLocals": true,
     "declaration": true,
+    "declarationMap": true,
     "sourceMap": true,
     "module": "commonjs",
     "moduleResolution": "node",
