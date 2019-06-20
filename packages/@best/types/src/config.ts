@@ -32,9 +32,9 @@ export interface CliConfig {
     help: boolean,
     clearCache: boolean,
     clearResults: boolean,
-    gitIntegration: string | undefined,
+    gitIntegration?: string,
     useHttp: boolean,
-    externalStorage: string | undefined,
+    externalStorage?: string,
     runner: string,
     runnerConfig: { [x:string]: any },
     config: string | undefined,
@@ -42,7 +42,6 @@ export interface CliConfig {
     iterations?: number,
     compareStats: string[] | undefined
 }
-
 
 export interface NormalizedConfig {
     nonFlagArgs: string[];
@@ -86,6 +85,7 @@ export interface GlobalConfig {
     isInteractive?: boolean;
     gitInfo: GitConfig;
     apiDatabase?: ApiDatabaseConfig;
+    externalStorage?: string;
 }
 
 export type ProjectConfigPlugin = string | [string, { [key : string]: any }]
@@ -136,12 +136,22 @@ export interface BrowserConfig {
 
 export interface EnvironmentConfig {
     hardware: {
-    system: any;
-        cpu: any;
-        os: any;
+        system: {
+            manufacturer: string,
+            model: string,
+        },
+        cpu: {
+            manufacturer: string;
+            brand: string;
+            family: string;
+            model: string;
+            speed: string;
+            cores: number;
+        },
+        os: { platform: string, distro: string, release: string, kernel: string, arch: string };
     },
     container: {
-        load: any
+        load: { cpuLoad: number }
     },
     browser: BrowserConfig;
     configuration: {
