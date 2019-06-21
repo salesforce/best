@@ -11,11 +11,7 @@ function normalizeModulePathPatterns(options: any, key: string) {
     return options[key].map((pattern: any) => replacePathSepForRegex(normalizeRootDirPattern(pattern, options.rootDir)));
 }
 
-function normalizeRunner(runner: string, runners?: RunnerConfig[]) {
-    if (!runners) {
-        return runner;
-    }
-
+function normalizeRunner(runner: string, runners: RunnerConfig[]) {
     const defaultRunners = runners.filter((c: RunnerConfig) => c.alias === undefined || c.alias === 'default');
     if (defaultRunners.length > 1) {
         throw new Error('Wrong configuration: More than one default configuration declared');
