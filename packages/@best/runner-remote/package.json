@@ -9,7 +9,8 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "socket.io-client": "~2.0.4",
-    "tar": "~4.2.0"
+    "@best/console-stream": "4.0.0",
+    "socket.io-client": "~2.2.0",
+    "tar": "~4.4.10"
   }
 }

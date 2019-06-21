@@ -2,6 +2,10 @@
   "extends": "../../../tsconfig.settings.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "build",
-  }
+    "outDir": "build"
+  },
+  "references": [
+    { "path": "../console-stream" },
+    { "path": "../types" }
+  ]
 }

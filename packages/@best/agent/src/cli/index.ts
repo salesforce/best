@@ -7,18 +7,15 @@ const SSL_PFX_PASSPHRASE = process.env.SSL_PFX_PASSPHRASE;
 
 export function run() {
     const app = express();
-    let server;
+    const enableHttps = SSL_PFX_FILE && SSL_PFX_PASSPHRASE;
+    const http = require(enableHttps ? 'https' : 'http');
 
-    if (SSL_PFX_FILE && SSL_PFX_PASSPHRASE) {
-        const options = {
-            pfx: readFileSync(SSL_PFX_FILE),
-            passphrase: SSL_PFX_PASSPHRASE
-        };
-        server = require('https').createServer(options, app);
-    } else {
-        server = require('http').createServer(app);
-    }
+    const options = {
+        pfx: SSL_PFX_FILE ? readFileSync(SSL_PFX_FILE) : undefined,
+        passphrase: enableHttps ? SSL_PFX_PASSPHRASE: undefined
+    };
 
+    const server = http.createServer(options, app);
     server.listen(PORT);
 
     app.get('/', (req, res) => res.send('BEST agent running!'));

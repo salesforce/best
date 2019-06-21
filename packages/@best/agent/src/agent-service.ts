@@ -1,18 +1,19 @@
 import socketIO from 'socket.io';
-import AgentBroker from './broker';
+import * as SocketIO from "socket.io";
+import { AgentApp } from "./AgentApp";
+import ObservableQueue from "./utils/ObservableQueue";
+import BenchmarkTask from "./BenchmarkTask";
+import BenchmarkRunner from "./BenchmarkRunner";
+import { Server } from "http";
 
-let BROKER: any;
+export async function runAgent(server: Server) {
+    const socketServer: SocketIO.Server = socketIO(server, { path: '/best' });
 
-export async function runAgent(server: any) {
-    const socketServer = socketIO(server, { path: '/best' });
-    BROKER = new AgentBroker(socketServer);
+    const taskQueue = new ObservableQueue<BenchmarkTask>();
+    const taskRunner = new BenchmarkRunner();
+    const agentApp: AgentApp = new AgentApp(taskQueue, taskRunner);
+
+    socketServer.on('connect', (socket: SocketIO.Socket) => agentApp.handleIncomingConnection(socket));
 }
 
-export async function reset() {
-    return BROKER.reset();
-}
-export async function getState() {
-    return BROKER.getState();
-}
-
-export default { runAgent, reset, getState };
+export default { runAgent };

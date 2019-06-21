@@ -63,7 +63,7 @@ export interface NormalizedConfig {
     projects: string[],
     plugins: ProjectConfigPlugin[],
     runner: string,
-    runners?: RunnerConfig[],
+    runners: RunnerConfig[],
     runnerConfig: any,
     benchmarkEnvironment: string,
     benchmarkEnvironmentOptions: {[key:string]: string },

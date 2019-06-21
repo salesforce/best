@@ -11,11 +11,7 @@ function normalizeModulePathPatterns(options: any, key: string) {
     return options[key].map((pattern: any) => replacePathSepForRegex(normalizeRootDirPattern(pattern, options.rootDir)));
 }
 
-function normalizeRunner(runner: string, runners?: RunnerConfig[]) {
-    if (!runners) {
-        return runner;
-    }
-
+function normalizeRunner(runner: string, runners: RunnerConfig[]) {
     const defaultRunners = runners.filter((c: RunnerConfig) => c.alias === undefined || c.alias === 'default');
     if (defaultRunners.length > 1) {
         throw new Error('Wrong configuration: More than one default configuration declared');
@@ -35,6 +31,27 @@ function normalizeRunner(runner: string, runners?: RunnerConfig[]) {
     }
 
     return selectedRunner.runner;
+}
+
+function normalizeRunnerConfig(runner: string, runners?: RunnerConfig[]) {
+    if (!runners) {
+        return {};
+    }
+
+    if (runner === "default") {
+        const defaultRunners = runners.filter((c: RunnerConfig) => c.alias === undefined || c.alias === 'default');
+        if (defaultRunners.length > 0) {
+            return defaultRunners[0].config ? defaultRunners[0].config : {};
+        }
+    }
+
+    const selectedRunner = runners.find((c: RunnerConfig) => c.alias === runner || c.runner === runner);
+
+    if (!selectedRunner) {
+        throw new Error(`Unable to find a runner for ${runner}`);
+    }
+
+    return selectedRunner ? selectedRunner.config : {};
 }
 
 function setCliOptionOverrides(initialOptions: UserConfig, argsCLI: CliConfig): UserConfig {
@@ -142,6 +159,9 @@ export function normalizeConfig(userConfig: UserConfig, cliOptions: CliConfig): 
                 break;
             case 'runner':
                 mergeConfig[key] = normalizeRunner(userCliMergedConfig[key], mergeConfig.runners);
+                break;
+            case 'runnerConfig':
+                mergeConfig[key] = normalizeRunnerConfig(userCliMergedConfig['runner'], mergeConfig.runners);
                 break;
             case 'compareStats':
                 mergeConfig[key] = normalizeCommits(userCliMergedConfig[key]);

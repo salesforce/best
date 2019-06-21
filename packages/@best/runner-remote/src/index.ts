@@ -3,11 +3,20 @@ import fs from 'fs';
 import socketIO from 'socket.io-client';
 import SocketIOFile from './file-uploader';
 import { createTarBundle } from './create-tar';
+import { RunnerOutputStream } from "@best/console-stream";
+import {
+    BenchmarkInfo,
+    BenchmarkResultsSnapshot,
+    BenchmarkResultsState,
+    BenchmarkRuntimeConfig,
+    FrozenGlobalConfig,
+    FrozenProjectConfig
+} from "@best/types";
 
-function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConfig: any, globalConfig: any, messager: any) {
+function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, messager: RunnerOutputStream) : Promise<BenchmarkResultsSnapshot> {
     return new Promise(async (resolve, reject) => {
         const { benchmarkName, benchmarkEntry, benchmarkSignature } = benchmarkEntryBundle;
-        const { host, options, remoteRunner } = runnerConfig;
+        const { host, options, remoteRunner } = projectConfig.benchmarkRunnerConfig;
         const bundleDirname = path.dirname(benchmarkEntry);
         const remoteProjectConfig = Object.assign({}, projectConfig, {
             benchmarkRunner: remoteRunner,
@@ -20,12 +29,9 @@ function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConf
             return reject(new Error('Benchmark artifact not found (${tarBundle})'));
         }
 
-        // preRunMessager.print(`Attempting connection with agent at ${host} ...`, process.stdout);
         const socket = socketIO(host, options);
 
         socket.on('connect', () => {
-            // preRunMessager.clear(process.stdout);
-
             socket.on('load_benchmark', () => {
                 const uploader = new SocketIOFile(socket);
                 uploader.on('ready', () => {
@@ -37,22 +43,20 @@ function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConf
                 });
             });
 
-            socket.on('running_benchmark_start', (benchName: string, projectName: string) => {
-                messager.logState(`Running benchmarks remotely...`);
-                messager.onBenchmarkStart(benchName, projectName, {
-                    displayPath: `${host}/${benchName}`,
-                });
+            socket.on('running_benchmark_start', () => {
+                messager.log(`Running benchmarks remotely...`);
+                messager.onBenchmarkStart(benchmarkEntry);
             });
 
-            socket.on('running_benchmark_update', ({ state, opts }: any) => {
+            socket.on('running_benchmark_update', ({ state, opts }: { state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig }) => {
                 messager.updateBenchmarkProgress(state, opts);
             });
-            socket.on('running_benchmark_end', (benchName: string, projectName: string) => {
-                messager.onBenchmarkEnd(benchName, projectName);
+            socket.on('running_benchmark_end', () => {
+                messager.onBenchmarkEnd(benchmarkEntry);
             });
 
-            socket.on('benchmark_enqueued', ({ pending }: any) => {
-                messager.logState(`Queued in agent. Pending tasks: ${pending}`);
+            socket.on('benchmark_enqueued', ({ pending }: { pending: number }) => {
+                messager.log(`Queued in agent. Pending tasks: ${pending}`);
             });
 
             socket.on('disconnect', (reason: string) => {
@@ -61,12 +65,8 @@ function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConf
                 }
             });
 
-            // socket.on('state_change', (s) => {
-            //     console.log('>> State change', s);
-            // });
-
             socket.on('error', (err: any) => {
-                console.log('> ', err);
+                console.log('Error in connection to agent > ', err);
                 reject(err);
             });
 
@@ -75,9 +75,9 @@ function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConf
                 reject(new Error('Benchmark couldn\'t finish running. '));
             });
 
-            socket.on('benchmark_results', ({ results, environment }: any) => {
+            socket.on('benchmark_results', (result: BenchmarkResultsSnapshot) => {
                 socket.disconnect();
-                resolve({ results, environment });
+                resolve(result);
             });
 
             socket.emit('benchmark_task', {
@@ -93,8 +93,7 @@ function proxifyRunner(benchmarkEntryBundle: any, runnerConfig: any, projectConf
 }
 
 export class Runner {
-    run(benchmarkEntryBundle: any, projectConfig: any, globalConfig: any, messager: any) {
-        const { benchmarkRunnerConfig } = projectConfig;
-        return proxifyRunner(benchmarkEntryBundle, benchmarkRunnerConfig, projectConfig, globalConfig, messager);
+    run(benchmarkInfo: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerOutputStream): Promise<BenchmarkResultsSnapshot> {
+        return proxifyRunner(benchmarkInfo, projectConfig, globalConfig, runnerLogStream);
     }
 }
