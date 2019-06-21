@@ -55,7 +55,6 @@ export async function run(maybeArgv?: string[], project?: string) {
 export async function runCLI(argsCLI: CliConfig, projects: string[]) {
     const outputStream = new OutputStream(process.stdout);
     let projectConfigs: ProjectConfigs;
-    let results;
 
     try {
         outputStream.write('Looking for Best configurations...');
@@ -81,7 +80,7 @@ export async function runCLI(argsCLI: CliConfig, projects: string[]) {
 
     const output = new Output({}, outputStream);
     if (argsCLI.compareStats) {
-        results = await runCompare(globalConfig, configs, process.stdout);
+        const results = await runCompare(globalConfig, configs, process.stdout);
         if (results) {
             output.compare(results);
         }
@@ -94,7 +93,7 @@ export async function runCLI(argsCLI: CliConfig, projects: string[]) {
             });
         }
 
-        results = await runBest(globalConfig, configs, process.stdout);
+        const results = await runBest(globalConfig, configs, process.stdout);
 
         if (!results) {
             throw new Error('AggregatedResult must be present after test run is complete');

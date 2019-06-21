@@ -6,6 +6,7 @@ import {
     BenchmarkMetricNames,
     BenchmarkResultsSnapshot,
     EnvironmentConfig, StatsNode,
+    BenchmarkComparison, ResultComparison,
     StatsResults
 } from "@best/types";
 import { OutputStream } from '@best/console-stream';
@@ -149,39 +150,46 @@ export default class Output {
     /*
      * Show a comparison for a pair of commits.
      */
-    compare(stats: any) {
-        const { baseCommit, targetCommit } = stats;
-        const tables = stats.comparison.map((child: any) => {
-            return this.generateComparisonTable(baseCommit, targetCommit, child);
-        });
+    compare(result: BenchmarkComparison) {
+        const { baseCommit, targetCommit } = result;
 
-        const projectNames = Array.from(tables.reduce((list: any, tableObj: any) => {
-            list.add(tableObj._projectName);
-            return list;
-        }, new Set()));
+        type GroupedTables = { [projectName: string]: Table[] }
 
-        const groupTables: any = projectNames.reduce((group: any, projectName: any) => {
-            const filterTables = tables.filter((t: any) => t._projectName === projectName).map((t: any) => t.toString() + '\n');
+        const tables: GroupedTables = result.comparisons.reduce((tables, node): GroupedTables => {
+            if (node.type === "project" || node.type === "group") {
+                const group = node.comparisons.map(node => {
+                    return this.generateComparisonTable(baseCommit, targetCommit, node);
+                })
+
+                return {
+                    ...tables,
+                    [node.name]: group
+                }
+            }
+            return tables;
+        }, <GroupedTables>{})
+
+        const flattenedTables: string[] = Object.keys(tables).reduce((groups, projectName): string[] => {
+            const stringifiedTables = tables[projectName].map(t => t.toString() + '\n');
             const colorProjectName = chalk.bold.dim(projectName);
-            group.push(`\nProject: ${colorProjectName} \n`);
-            group.push(...filterTables);
-            return group;
-        }, []);
+            groups.push(`\nProject: ${colorProjectName} \n`);
+            groups.push(...stringifiedTables);
+            return groups;
+        }, <string[]>[])
 
-        this.stream.write(groupTables.join(''));
+        this.stream.write(flattenedTables.join(''));
     }
 
     /*
      * Get a comparison table for two different commits.
      */
-    generateComparisonTable(baseCommit: string, targetCommit: string, stats: any) {
-        const benchmark = stats.benchmarkName.replace('.benchmark', '');
-        const table: any = new Table({
-            head: [`Benchmark: ${benchmark}`, 'metric', `base(${baseCommit})`, `target(${targetCommit})`, 'Trend'],
+    generateComparisonTable(baseCommit: string, targetCommit: string, stats: ResultComparison) {
+        const benchmark = stats.name.replace('.benchmark', '');
+        const table = new Table({
+            head: [`Benchmark: ${benchmark}`, /*'metric',*/ `base (${baseCommit})`, `target (${targetCommit})`, 'trend'],
             style: {head: ['bgBlue', 'white']},
         });
 
-        table._projectName = stats.projectName;
         this.generateComparisonRows(table, stats);
         return table;
     }
@@ -189,26 +197,37 @@ export default class Output {
     /*
      * Recursively populate rows into a table for a tree of comparisons.
      */
-    generateComparisonRows(table: any, stats: any, name = '') {
-        return stats.comparison.map((node: any) => {
-            if (node.comparison) {
-                const nodeName = `${node.benchmarkName || node.name}:`;
-                return this.generateComparisonRows(table, node, nodeName).reduce((a: any, b: any) => a.concat(b), []);
-            }
+    generateComparisonRows(table: Table, stats: ResultComparison, groupName = '') {
+        if (stats.type === "project" || stats.type === "group") {
+            stats.comparisons.forEach(node => {
+                if (node.type === "project" || node.type === "group") {
+                    const name = node.name;
+                    this.generateComparisonRows(table, node, name);
+                } else if (node.type === "benchmark") {
+                    // // row with benchmark name
+                    const emptyFields = Array.apply(null, Array(3)).map(() => '-');
+                    table.push([chalk.dim(groupName + '/') + chalk.bold(node.name), ...emptyFields]);
 
-            const durationMetric = node.metrics.duration;
-            const { baseStats, targetStats, samplesComparison } = durationMetric;
+                    // row for each metric
+                    Object.keys(node.metrics).forEach((metric: string) => {
+                        const metrics = node.metrics[metric as BenchmarkMetricNames];
 
-            table.push([
-                name + node.name,
-                'duration',
-                `${baseStats.median.toFixed(2)} (± ${baseStats.medianAbsoluteDeviation.toFixed(2)}ms)`,
-                `${targetStats.median.toFixed(2)} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)}ms)`,
-                samplesComparison === 0 ? 'SAME' : samplesComparison === 1 ? 'SLOWER' : 'FASTER',
-            ]);
+                        const baseStats = metrics && metrics.baseStats;
+                        const targetStats = metrics && metrics.targetStats;
+                        const samplesComparison = metrics && metrics.samplesComparison;
 
-            return [];
-        });
+                        if (baseStats && targetStats && samplesComparison !== undefined) {
+                            table.push([
+                                padding(1) + metric,
+                                `${baseStats.median.toFixed(2)}` + chalk.gray(` (± ${baseStats.medianAbsoluteDeviation.toFixed(2)}ms)`),
+                                `${targetStats.median.toFixed(2)}` + chalk.gray(` (± ${targetStats.medianAbsoluteDeviation.toFixed(2)}ms)`),
+                                chalk.bold(samplesComparison === 0 ? 'SAME' : samplesComparison === 1 ? chalk.red('SLOWER') : chalk.green('FASTER'))
+                            ]);
+                        }
+                    });
+                }
+            })
+        }
     }
 }
 

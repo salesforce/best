@@ -2,7 +2,7 @@ import { compareBenchmarkStats } from '@best/compare';
 import { beginBenchmarkComparisonCheck, pushBenchmarkComparisonCheck, updateLatestRelease } from '@best/github-integration';
 import { runBest } from './run_best';
 import git from 'simple-git/promise';
-import { FrozenProjectConfig, FrozenGlobalConfig } from '@best/types';
+import { FrozenProjectConfig, FrozenGlobalConfig, BenchmarkComparison } from '@best/types';
 
 const STORAGE_FS = '@best/store-fs';
 const isHex = (x:string) => /^[0-9a-fA-F]+$/.test(x);
@@ -20,7 +20,7 @@ const normalizeCommit = async (commit: string, gitCLI: any) => {
     return commit.slice(0, 7);
 };
 
-export async function runCompare(globalConfig: FrozenGlobalConfig, configs: FrozenProjectConfig[], outputStream: NodeJS.WriteStream) {
+export async function runCompare(globalConfig: FrozenGlobalConfig, configs: FrozenProjectConfig[], outputStream: NodeJS.WriteStream): Promise<BenchmarkComparison | undefined> {
     const { gitInfo: { localChanges }, rootDir, gitIntegration, externalStorage, compareStats = [] } = globalConfig;
     const gitCLI = git(rootDir);
     const status = await gitCLI.status();
@@ -42,7 +42,7 @@ export async function runCompare(globalConfig: FrozenGlobalConfig, configs: Froz
 
     if (baseCommit === compareCommit) {
         console.log(`Hash of commits are identical (${baseCommit}). Skipping comparison`);
-        return false;
+        return;
     }
 
     let check, gitHubInstallation;
