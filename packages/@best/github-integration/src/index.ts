@@ -3,6 +3,7 @@ import { isCI } from '@best/utils';
 import { loadDbFromConfig } from '@best/api-db';
 import GithubApplicationFactory from './git-app';
 import { generateComparisonComment } from './comment';
+import { FrozenGlobalConfig, BenchmarkComparison } from '@best/types';
 
 const PULL_REQUEST_URL = process.env.PULL_REQUEST;
 
@@ -34,17 +35,16 @@ function calculateAverageChange(compareStats: any) {
     return avg;
 }
 
-export async function updateLatestRelease(projectNames: string[], globalConfig: any): Promise<void> {
+export async function updateLatestRelease(projectNames: string[], globalConfig: FrozenGlobalConfig): Promise<void> {
     try {
-        const { gitRepository } = globalConfig;
-        const { repo, owner } = gitRepository;
+        const { gitInfo: { repo: { repo, owner } } } = globalConfig;
         
         const db = loadDbFromConfig(globalConfig);
 
         if (! db) { return; }
 
         const app = GithubApplicationFactory();
-        const gitHubInstallation = await app.authenticateAsAppAndInstallation(gitRepository);
+        const gitHubInstallation = await app.authenticateAsAppAndInstallation({ repo, owner });
 
         const results = await gitHubInstallation.repos.listReleases({ repo, owner });
         if (results.data.length > 0) {
@@ -58,7 +58,7 @@ export async function updateLatestRelease(projectNames: string[], globalConfig: 
     }
 }
 
-export async function beginBenchmarkComparisonCheck(targetCommit: any, { gitRepository }: any): Promise<{ check?: Octokit.ChecksCreateResponse, gitHubInstallation?: Octokit }> {
+export async function beginBenchmarkComparisonCheck(targetCommit: string, { gitInfo }: FrozenGlobalConfig): Promise<{ check?: Octokit.ChecksCreateResponse, gitHubInstallation?: Octokit }> {
     if (!isCI) {
         console.log('[NOT A CI] - The output will not be pushed.\n');
         return {};
@@ -68,9 +68,9 @@ export async function beginBenchmarkComparisonCheck(targetCommit: any, { gitRepo
         throw new Error('PULL_REQUEST_URL enviroment variable is needed');
     }
 
-    const { repo, owner } = gitRepository;
+    const { repo: { repo, owner } } = gitInfo;
     const app = GithubApplicationFactory();
-    const gitHubInstallation = await app.authenticateAsAppAndInstallation(gitRepository);
+    const gitHubInstallation = await app.authenticateAsAppAndInstallation({ repo, owner });
 
     const result = await gitHubInstallation.checks.create({
         owner,
@@ -85,9 +85,9 @@ export async function beginBenchmarkComparisonCheck(targetCommit: any, { gitRepo
     return { check, gitHubInstallation }
 }
 
-export async function pushBenchmarkComparisonCheck(gitHubInstallation: Octokit, check: Octokit.ChecksCreateResponse, baseCommit: any, targetCommit: any, compareStats: any, globalConfig: any) {
-    const { repo, owner } = globalConfig.gitRepository;
-    const body = generateComparisonComment(baseCommit, targetCommit, compareStats);
+export async function pushBenchmarkComparisonCheck(gitHubInstallation: Octokit, check: Octokit.ChecksCreateResponse, comparison: BenchmarkComparison, globalConfig: FrozenGlobalConfig) {
+    const { repo: { repo, owner }  } = globalConfig.gitInfo;
+    const body = generateComparisonComment(comparison);
     const now = (new Date()).toISOString();
 
     await gitHubInstallation.checks.update({
@@ -102,7 +102,7 @@ export async function pushBenchmarkComparisonCheck(gitHubInstallation: Octokit, 
         }
     })
 
-    const averageChange = calculateAverageChange(compareStats);
+    const averageChange = calculateAverageChange(comparison);
     const highThreshold = Math.abs(globalConfig.commentThreshold); // handle whether the threshold is positive or negative
     const lowThreshold = -1 * highThreshold;
     const significantlyRegressed = averageChange < lowThreshold; // less than a negative is WORSE

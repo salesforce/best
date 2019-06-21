@@ -1,44 +1,9 @@
 import { compareSamples } from '@best/analyzer';
-import { StatsResults, StatsNode, BenchmarkMetricNames, BenchmarkStats } from '@best/types';
+import { StatsResults, StatsNode, BenchmarkMetricNames, BenchmarkComparison, ResultComparison, ResultComparisonProject, ResultComparisonGroup, ResultComparisonBenchmark } from '@best/types';
 
 // function compareEnvironment(/* baseEnv, targetEnv */) {
 //     // TODO
 // }
-
-export type ResultComparisonTypes = "project" | "group" | "benchmark";
-export interface ResultComparisonBase {
-    type: ResultComparisonTypes;
-    name: string;
-}
-
-export interface ResultComparisonProject extends ResultComparisonBase {
-    type: "project";
-    comparisons: ResultComparison[]
-}
-
-export interface ResultComparisonGroup extends ResultComparisonBase {
-    type: "group";
-    comparisons: ResultComparison[]
-}
-
-export interface ResultComparisonBenchmark extends ResultComparisonBase {
-    type: "benchmark";
-    metrics: {
-        [key in BenchmarkMetricNames]?: {
-            baseStats: BenchmarkStats,
-            targetStats: BenchmarkStats
-            samplesComparison: 0 | 1 | -1
-        }
-    }
-}
-
-export type ResultComparison = ResultComparisonProject | ResultComparisonGroup | ResultComparisonBenchmark;
-
-export interface BenchmarkComparison {
-    baseCommit: string;
-    targetCommit: string;
-    comparisons: ResultComparison[]
-}
 
 function compareResults(baseResults: StatsNode[], targetResults: StatsNode[]): ResultComparison[] {
     const comparison: ResultComparison[] = []
