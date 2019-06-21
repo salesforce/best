@@ -8,8 +8,9 @@
   ],
   "main": "build/index.js",
   "dependencies": {
+    "@best/api-db": "4.0.0",
     "@best/utils": "4.0.0",
-    "@octokit/rest": "^14.0.9",
+    "@octokit/rest": "^16.28.2",
     "base-64": "^0.1.0",
     "expand-tilde": "~2.0.2",
     "json2md": "~1.5.11",

@@ -29,3 +29,9 @@ export async function fetchSnapshots(project, timing) {
     const { snapshots } = await response.json();
     return snapshots;
 }
+
+export async function fetchCommitInfo(commit) {
+    const response = await fetch(createURL(`info/${commit}`));
+    const { commit: info, error } = await response.json();
+    return info || error;
+}

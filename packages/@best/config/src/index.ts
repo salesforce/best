@@ -16,6 +16,7 @@ function generateProjectConfigs(options: NormalizedConfig, isRoot: boolean, gitI
             compareStats: options.compareStats,
             externalStorage: options.externalStorage,
             apiDatabase: options.apiDatabase,
+            commentThreshold: options.commentThreshold,
             projects: options.projects,
             rootDir: options.rootDir,
             rootProjectName: options.projectName,

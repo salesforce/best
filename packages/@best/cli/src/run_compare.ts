@@ -1,8 +1,8 @@
-
 import { compareBenchmarkStats } from '@best/compare';
-import { pushBenchmarkComparison } from '@best/github-integration';
-import { runBest } from "./run_best";
-import git from "simple-git/promise";
+import { beginBenchmarkComparisonCheck, pushBenchmarkComparisonCheck, updateLatestRelease } from '@best/github-integration';
+import { runBest } from './run_best';
+import git from 'simple-git/promise';
+import { FrozenProjectConfig, FrozenGlobalConfig } from '@best/types';
 
 const STORAGE_FS = '@best/store-fs';
 const isHex = (x:string) => /^[0-9a-fA-F]+$/.test(x);
@@ -20,14 +20,14 @@ const normalizeCommit = async (commit: string, gitCLI: any) => {
     return commit.slice(0, 7);
 };
 
-export async function runCompare(globalConfig: any, configs: any, outputStream: any) {
-    const { gitLocalChanges, rootDir, gitIntegration, externalStorage, compareStats = [] } = globalConfig;
-    const gitCLI: any = git(rootDir);
+export async function runCompare(globalConfig: FrozenGlobalConfig, configs: FrozenProjectConfig[], outputStream: NodeJS.WriteStream) {
+    const { gitInfo: { localChanges }, rootDir, gitIntegration, externalStorage, compareStats = [] } = globalConfig;
+    const gitCLI = git(rootDir);
     const status = await gitCLI.status();
     const initialBranch = status.current;
 
     let baseCommit = compareStats[0] || 'master';
-    let compareCommit = compareStats[1] || (gitLocalChanges ? 'local' : 'current');
+    let compareCommit = compareStats[1] || (localChanges ? 'local' : 'current');
     let stashedLocalChanges = false;
 
     if (compareStats.length > 2) {
@@ -45,9 +45,15 @@ export async function runCompare(globalConfig: any, configs: any, outputStream: 
         return false;
     }
 
+    let check, gitHubInstallation;
+    if (gitIntegration) {
+        const github = await beginBenchmarkComparisonCheck(compareCommit, globalConfig);
+        check = github.check;
+        gitHubInstallation = github.gitHubInstallation;
+    }
+
     try {
-        const projects = configs.map((cfg: any) => cfg.projectName);
-        const projectNames = projects.length ? projects : [globalConfig.rootProjectName];
+        const projectNames = configs.map((cfg: any) => cfg.projectName);
         const runConfig = { ...globalConfig, gitLocalChanges: false };
         let storageProvider;
 
@@ -55,28 +61,31 @@ export async function runCompare(globalConfig: any, configs: any, outputStream: 
         if (!externalStorage) {
             storageProvider = require(STORAGE_FS);
             storageProvider.initialize({ rootDir });
-            if (gitLocalChanges) {
+            if (localChanges) {
                 await gitCLI.stash({ '--include-untracked': true });
                 stashedLocalChanges = true;
             }
 
             // Run base commit.
-            // preRunMessager.print(`\n Running best for commit ${baseCommit} \n`, outputStream);
             await gitCLI.checkout(baseCommit);
-            await runBest({ ...runConfig, gitCommit: baseCommit }, configs, outputStream);
+            await runBest({ ...runConfig, gitInfo: { ...runConfig.gitInfo, lastCommit: { ...runConfig.gitInfo.lastCommit, hash: baseCommit }} }, configs, outputStream);
 
             // Run local changes or compare commit.
             if (compareCommit === 'local') {
-                // preRunMessager.print(`\n Running best for local changes \n`, outputStream);
                 await gitCLI.checkout(initialBranch);
                 if (stashedLocalChanges) {
-                    await gitCLI.stash({ pop: true });
+                    await gitCLI.stash(['pop']);
                 }
             } else {
-                // preRunMessager.print(`\n Running best for commit ${compareCommit} \n`, outputStream);
                 await gitCLI.checkout(compareCommit);
             }
-            await runBest({ ...runConfig, gitCommit: compareCommit }, configs, outputStream);
+            await runBest({ ...runConfig, gitInfo: { ...runConfig.gitInfo, lastCommit: { ...runConfig.gitInfo.lastCommit, hash: compareCommit }} }, configs, outputStream);
+
+            // Return local files to their initial state no matter what happens.
+            await gitCLI.checkout(initialBranch);
+            if (stashedLocalChanges) {
+                await gitCLI.stash(['pop']);
+            }
         } else {
             try {
                 storageProvider = require(externalStorage);
@@ -88,16 +97,14 @@ export async function runCompare(globalConfig: any, configs: any, outputStream: 
 
         const compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectNames, storageProvider);
 
-        if (gitIntegration) {
-            await pushBenchmarkComparison(baseCommit, compareCommit, compareResults, globalConfig);
+        if (gitIntegration && gitHubInstallation && check) {
+            await pushBenchmarkComparisonCheck(gitHubInstallation, check, baseCommit, compareCommit, compareResults, globalConfig);
         }
 
+        updateLatestRelease(projectNames, globalConfig);
+
         return compareResults;
-    } finally {
-        // Return local files to their initial state no matter what happens.
-        await gitCLI.checkout(initialBranch);
-        if (stashedLocalChanges) {
-            await gitCLI.stash({ pop: true });
-        }
+    } catch (err) {
+        console.error('ugh', err);
     }
 }
