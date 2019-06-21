@@ -10,6 +10,7 @@
     { "path": "../builder" },
     { "path": "../compare" },
     { "path": "../config" },
+    { "path": "../frontend" },
     { "path": "../github-integration" },
     { "path": "../console-stream" },
     { "path": "../runner" },

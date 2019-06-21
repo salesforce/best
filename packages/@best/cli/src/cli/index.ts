@@ -7,7 +7,8 @@ import { logError } from "@best/utils";
 import { runBest } from '../run_best';
 import { runCompare } from '../run_compare';
 import { getConfigs } from "@best/config";
-import { ProjectConfigs, FrozenProjectConfig, CliConfig } from '@best/types';
+import { ProjectConfigs, FrozenProjectConfig, CliConfig, BenchmarkResultsSnapshot } from '@best/types';
+import { buildStaticFrontend } from '@best/frontend';
 
 export function buildArgs(maybeArgv?: string[]): CliConfig {
     const parsedArgs = yargs(maybeArgv || process.argv.slice(2))
@@ -100,6 +101,11 @@ export async function runCLI(argsCLI: CliConfig, projects: string[]) {
         }
 
         output.report(results);
+
+        if (argsCLI.generateHTML) {
+            const benchmarkResults: BenchmarkResultsSnapshot[] = results;
+            await buildStaticFrontend(benchmarkResults, globalConfig, process.stdout);
+        }
     }
 
     return true;

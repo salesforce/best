@@ -4,6 +4,7 @@ const defaultOptions = {
     cache: true,
     gitIntegration: false,
     commentThreshold: 5,
+    generateHTML: false,
     cacheDirectory: cacheDirectory(),
     useHttp: false,
     openPages: false,

@@ -6,6 +6,7 @@ logs
 
 # Standard dist folder
 /dist
+/static
 
 # Tooling files
 node_modules

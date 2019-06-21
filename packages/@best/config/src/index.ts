@@ -13,6 +13,7 @@ function generateProjectConfigs(options: NormalizedConfig, isRoot: boolean, gitI
 
         globalConfig = Object.freeze({
             gitIntegration: options.gitIntegration,
+            generateHTML: options.generateHTML,
             compareStats: options.compareStats,
             externalStorage: options.externalStorage,
             apiDatabase: options.apiDatabase,

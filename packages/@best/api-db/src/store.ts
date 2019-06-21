@@ -1,7 +1,15 @@
 import crypto from 'crypto';
 import { loadDbFromConfig } from './utils';
-import { TemporarySnapshot } from './types';
-import { FrozenGlobalConfig } from '@best/types';
+import { TemporarySnapshot, Metric } from './types';
+import { FrozenGlobalConfig, BenchmarkResultsSnapshot, BenchmarkMetricNames, StatsNode } from '@best/types';
+
+interface RunSettings {
+    similarityHash: string;
+    commit: string;
+    commitDate: string;
+    environmentHash: string;
+    temporary: boolean;
+}
 
 function md5(data: string) {
     return crypto
@@ -10,16 +18,51 @@ function md5(data: string) {
         .digest('hex');
 }
 
-export const saveBenchmarkSummaryInDB = (benchmarkResults: any, globalConfig: FrozenGlobalConfig) => {
+const generateSnapshots = (runSettings: RunSettings, benchmarks: StatsNode[], groupName?: string): TemporarySnapshot[] => {
+    return benchmarks.reduce((results, benchmark): TemporarySnapshot[] => {
+        if (benchmark.type === "benchmark") {
+            const metrics = Object.keys(benchmark.metrics).reduce((results, metricName: string): Metric[] => {
+                const values = benchmark.metrics[metricName as BenchmarkMetricNames];
+
+                if (values) {
+                    return [
+                        ...results,
+                        {
+                            name: metricName,
+                            duration: values.stats.median,
+                            stdDeviation: Math.sqrt(values.stats.variance)
+                        }
+                    ]
+                }
+
+                return results;
+            }, <Metric[]>[])
+
+            const snapshot: TemporarySnapshot = {
+                ...runSettings,
+                name: `${groupName ? groupName + '/' : ''}${benchmark.name}`,
+                metrics: metrics
+            }
+
+            return [...results, snapshot]
+        } else if (benchmark.type === "group") {
+            return [...results, ...generateSnapshots(runSettings, benchmark.nodes, benchmark.name)]
+        }
+
+        return results;
+    }, <TemporarySnapshot[]>[])
+}
+
+export const saveBenchmarkSummaryInDB = (benchmarkResults: BenchmarkResultsSnapshot[], globalConfig: FrozenGlobalConfig) => {
     const db = loadDbFromConfig(globalConfig);
 
     if (! db) { return; }
 
     return Promise.all(
-        benchmarkResults.map(async (benchmarkResult: any) => {
-            const { benchmarkSignature, projectConfig, environment, stats } = benchmarkResult;
+        benchmarkResults.map(async (benchmarkResult) => {
+            const { benchmarkInfo: { benchmarkSignature }, projectConfig, environment, stats } = benchmarkResult;
             const { projectName } = projectConfig;
-            const { lastCommit, branch, localChanges } = globalConfig.gitInfo;
+            const { lastCommit, branch } = globalConfig.gitInfo;
 
             const snapshotEnvironment = {
                 hardware: environment.hardware,
@@ -33,32 +76,15 @@ export const saveBenchmarkSummaryInDB = (benchmarkResults: any, globalConfig: Fr
                 commit: lastCommit.hash,
                 commitDate: lastCommit.date,
                 environmentHash,
-                temporary: localChanges,
-                branch
+                temporary: branch === 'master'
             }
 
-            const snapshotsToSave: TemporarySnapshot[] = [];
-
-            stats.benchmarks.forEach((element: any) => {
-                element.benchmarks.forEach((bench: any) => {
-                    const metricKeys = Object.keys(bench).filter(key => key !== 'name')
-                    const metrics = metricKeys.map(name => ({
-                        name,
-                        duration: bench[name].median,
-                        stdDeviation: bench[name].medianAbsoluteDeviation,
-                    }))
-
-                    const snapshot = {
-                        ...runSettings,
-                        name: `${element.name}/${bench.name}`,
-                        metrics: metrics
-                    }
-                    snapshotsToSave.push(snapshot);
-
-                });
-            });
-
-            return db.saveSnapshots(snapshotsToSave, projectName);
+            if (stats) {
+                const snapshots = generateSnapshots(runSettings, stats.results);
+                return db.saveSnapshots(snapshots, projectName);
+            } else {
+                return false;
+            }
         }),
     );
 }

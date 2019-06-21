@@ -1,16 +1,25 @@
 {
     "name": "@best/frontend",
     "version": "4.0.0",
+    "main": "build/index.js",
+    "types": "build/index.d.ts",
     "dependencies": {
         "@best/api-db": "4.0.0",
         "@best/github-integration": "4.0.0",
+        "@best/types": "4.0.0",
+        "@lwc/rollup-plugin": "^1.0.0",
         "compression": "^1.7.4",
         "express": "^4.17.1",
         "helmet": "^3.18.0",
         "lwc-services": "^1",
         "query-string": "^6.6.0",
         "redux": "^4.0.1",
-        "redux-thunk": "^2.3.0"
+        "redux-thunk": "^2.3.0",
+        "rollup": "^1.15.6",
+        "rollup-plugin-commonjs": "^10.0.0",
+        "rollup-plugin-node-resolve": "^5.0.3",
+        "rollup-plugin-replace": "^2.2.0",
+        "rollup-plugin-terser": "^5.0.0"
     },
     "devDependencies": {
         "@types/compression": "^0.0.36",
@@ -65,7 +74,7 @@
         "lwc:serve": "lwc-services build && lwc-services serve",
         "lwc:watch": "lwc-services watch --webpack=webpack.config.js",
         "api:migrate": "node-pg-migrate -m server/migrations",
-        "api:watch": "nodemon --watch server -e js,ts --exec 'NODE_ENV=development ts-node server/index.ts'",
+        "api:watch": "nodemon --watch server -e ts --exec 'NODE_ENV=development ts-node server/serve.ts'",
         "watch": "concurrently 'yarn lwc:watch' 'yarn api:watch'"
     }
 }

@@ -1,7 +1,7 @@
 {
     "parser": "@typescript-eslint/parser",
     "plugins": ["@typescript-eslint"],
-    "extends": ["@salesforce/eslint-config-lwc/recommended", "plugin:@typescript-eslint/recommended", "plugin:eslint-comments/recommended"],
+    "extends": ["@salesforce/eslint-config-lwc/recommended", "plugin:@typescript-eslint/recommended"],
     "rules": {
         "@lwc/lwc/no-async-operation": "warn",
         "@lwc/lwc/no-inner-html": "warn",

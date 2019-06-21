@@ -7,11 +7,12 @@ function createURL(path) {
 
 function timeQuery(project, timing) {
     if (timing === 'last-release' && project.lastReleaseDate) {
-        return `since=${project.lastReleaseDate}`;
+        const date = new Date(project.lastReleaseDate);
+        return `since=${date.getTime()}`;
     } else if (timing === '2-months') {
         let date = new Date();
         date.setMonth(date.getMonth() - 2);
-        return `since=${date.toISOString()}`
+        return `since=${date.getTime()}`
     }
 
     return ''

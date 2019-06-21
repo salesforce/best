@@ -15,15 +15,15 @@ exports.up = pgm => {
         similarity_hash: { type: 'varchar(100)', notNull: true },
         commit: { type: 'varchar(100)', notNull: true },
         commit_date: {
-            type: 'timestamp',
+            type: 'timestamptz',
             notNull: true,
         },
         created_at: {
-            type: 'timestamp',
+            type: 'timestamptz',
             notNull: true,
             default: pgm.func('current_timestamp'),
         },
-        temporary: { type: 'boolean', notNull: true},
+        temporary: { type: 'boolean', notNull: true },
     });
 
     pgm.createIndex('snapshots', 'project_id');

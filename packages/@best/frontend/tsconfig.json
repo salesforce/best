@@ -3,10 +3,12 @@
   "compilerOptions": {
     "rootDir": "server",
     "outDir": "build",
+    "types": ["./typings"]
   },
   "references": [
     { "path": "../api-db" },
     { "path": "../github-integration" },
-    { "path": "../config" }
+    { "path": "../config" },
+    { "path": "../types" }
   ]
 }

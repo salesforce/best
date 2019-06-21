@@ -2,35 +2,38 @@ import express from 'express'
 import helmet from 'helmet'
 import compression from 'compression'
 import * as path from 'path'
+import { FrontendConfig } from '@best/types';
 
 import api from './api'
-import config from './best-fe.config'
-
-// CONFIG
-
-const PORT = process.env.PORT || 3000
-const DIST_DIR = path.resolve(__dirname, '../dist/')
-
-// EXPRESS
-
-const app: express.Application = express()
-
-app.use(helmet())
-app.use(compression())
-
-// API
-
-app.use('/api/v1', api(config))
 
 // FRONTEND
 
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(DIST_DIR))
-    app.get('*', (req, res): void => res.sendFile(path.resolve(DIST_DIR, 'index.html')))
+export const Frontend = (config: FrontendConfig): express.Application => {
+    // CONFIG
+
+    const DIST_DIR = path.resolve(__dirname, '../dist/')
+
+    // EXPRESS
+
+    const app: express.Application = express()
+
+    app.use(helmet())
+    app.use(compression())
+
+    // API
+
+    app.use('/api/v1', api(config))
+
+    // FRONTEND
+
+    if (process.env.NODE_ENV === 'production') {
+        app.use(express.static(DIST_DIR))
+        app.get('*', (req, res): void => res.sendFile(path.resolve(DIST_DIR, 'index.html')))
+    }
+
+    return app
 }
 
-// LISTEN
+// EXPORTS
 
-app.listen(PORT, (): void => {
-    console.log('[%s] API Listening on http://localhost:%d', app.settings.env, PORT)
-})
+export { buildStaticFrontend } from './static'

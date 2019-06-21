@@ -22,7 +22,7 @@ export abstract class SQLDatabase {
         return this.query('SELECT * FROM projects', [])
     }
 
-    fetchSnapshots(projectId: number, branch: string, since: string): Promise<SQLQueryResult> {
+    fetchSnapshots(projectId: number, since: Date | undefined): Promise<SQLQueryResult> {
         if (since) {
             return this.query(`SELECT * FROM snapshots WHERE "project_id" = $1 AND "temporary" = '0' AND "commit_date" > $2 ORDER BY commit_date, name`, [projectId, since])
         }
@@ -43,7 +43,22 @@ export abstract class SQLDatabase {
     }
 
     createSnapshot(snapshot: TemporarySnapshot, projectId: number): Promise<SQLQueryResult> {
-        const values = [snapshot.name, normalizeMetrics(snapshot.metrics), snapshot.environmentHash, snapshot.similarityHash, snapshot.commit, snapshot.commitDate, snapshot.temporary, snapshot.branch, projectId]
-        return this.query('INSERT INTO snapshots("name", "metrics", "environment_hash", "similarity_hash", "commit", "commit_date", "temporary", "branch", "project_id") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)', values)
+        const values = [snapshot.name, normalizeMetrics(snapshot.metrics), snapshot.environmentHash, snapshot.similarityHash, snapshot.commit, snapshot.commitDate, snapshot.temporary, projectId]
+        return this.query('INSERT INTO snapshots("name", "metrics", "environment_hash", "similarity_hash", "commit", "commit_date", "temporary", "project_id") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', values)
+    }
+
+    async createOrUpdateSnapshot(snapshot: TemporarySnapshot, projectId: number): Promise<SQLQueryResult> {
+        try {
+            return await this.createSnapshot(snapshot, projectId)
+        } catch (err) {
+            if (err.constraint === 'best_snapshot_unqiue_index') {
+                const updatedAt = new Date()
+                const values = [normalizeMetrics(snapshot.metrics), snapshot.environmentHash, snapshot.similarityHash, updatedAt, projectId, snapshot.commit, snapshot.name]
+                return this.query('UPDATE snapshots SET "metrics" = $1, "environment_hash" = $2, "similarity_hash" = $3, "updated_at" = $4 WHERE "project_id" = $5 AND "commit" = $6 AND "name" = $7', values)
+            } else {
+                console.log(err)
+                throw err;
+            }
+        }
     }
 }
