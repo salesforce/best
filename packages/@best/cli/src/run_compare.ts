@@ -98,10 +98,12 @@ export async function runCompare(globalConfig: FrozenGlobalConfig, configs: Froz
         const compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectNames, storageProvider);
 
         if (gitIntegration && gitHubInstallation && check) {
-            await pushBenchmarkComparisonCheck(gitHubInstallation, check, baseCommit, compareCommit, compareResults, globalConfig);
+            await pushBenchmarkComparisonCheck(gitHubInstallation, check, compareResults, globalConfig);
         }
 
-        updateLatestRelease(projectNames, globalConfig);
+        if (gitIntegration) {
+            updateLatestRelease(projectNames, globalConfig);
+        }
 
         return compareResults;
     } catch (err) {

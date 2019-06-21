@@ -9,6 +9,7 @@
   "main": "build/index.js",
   "dependencies": {
     "@best/api-db": "4.0.0",
+    "@best/types": "4.0.0",
     "@best/utils": "4.0.0",
     "@octokit/rest": "^16.28.2",
     "base-64": "^0.1.0",

@@ -1,20 +1,18 @@
-# Benchmark results 
-
-<details><summary>Click for full results</summary>
-&nbsp;
-
 Base commit: `abcdef0` | Target commit: `1234567`
 
-## *Project Foo*
+## *project-foo*
 
-foo.js | base(`abcdef0`) | target(`1234567`) | trend
+bar | base (`abcdef0`) | target (`1234567`) | trend
 --- | --- | --- | ---
-Foo Test 1 | 3000.00 (±2.00 ms) | 4000.00 (±3.00 ms) | +1000.0ms (33.3%) 👎
-Foo Test 2 | 7000.00 (±-3.25 ms) | 5000.00 (±7.30 ms) | -2000.0ms (28.6%) 👍
+bar 1/fibonacci 15 | - | - | -
+└─ script | 0.14 (± 0.01ms) | 0.17 (± 0.04ms) | +0.0ms (21.4%) 👌
+└─ aggregate | 0.56 (± 0.26ms) | 0.73 (± 0.16ms) | +0.2ms (31.2%) 👌
+bar 1/fibonacci 38 | - | - | -
+└─ script | 475.37 (± 2.74ms) | 478.37 (± 1.70ms) | +3.0ms (0.6%) 👌
+└─ aggregate | 475.63 (± 2.67ms) | 478.61 (± 1.60ms) | +3.0ms (0.6%) 👌
 
-## *Project Bar*
-
-bar.js | base(`abcdef0`) | target(`1234567`) | trend
+baz | base (`abcdef0`) | target (`1234567`) | trend
 --- | --- | --- | ---
-Bar Test 1 | 1000.00 (±-1.00 ms) | 2000.00 (±-2.78 ms) | +1000.0ms (100.0%) 👎
-</details>
+baz 1/fibonacci | - | - | -
+└─ script | 0.33 (± 0.03ms) | 0.19 (± 0.01ms) | -0.1ms (41.5%) 👌
+└─ aggregate | 0.73 (± 0.15ms) | 0.70 (± 0.18ms) | -0.0ms (4.1%) 👌

@@ -157,8 +157,8 @@ export default class Output {
 
         const tables: GroupedTables = result.comparisons.reduce((tables, node): GroupedTables => {
             if (node.type === "project" || node.type === "group") {
-                const group = node.comparisons.map(node => {
-                    return this.generateComparisonTable(baseCommit, targetCommit, node);
+                const group = node.comparisons.map(child => {
+                    return this.generateComparisonTable(baseCommit, targetCommit, child);
                 })
 
                 return {
@@ -169,7 +169,7 @@ export default class Output {
             return tables;
         }, <GroupedTables>{})
 
-        const flattenedTables: string[] = Object.keys(tables).reduce((groups, projectName): string[] => {
+        const flattenedTables = Object.keys(tables).reduce((groups, projectName): string[] => {
             const stringifiedTables = tables[projectName].map(t => t.toString() + '\n');
             const colorProjectName = chalk.bold.dim(projectName);
             groups.push(`\nProject: ${colorProjectName} \n`);
@@ -212,11 +212,11 @@ export default class Output {
                     Object.keys(node.metrics).forEach((metric: string) => {
                         const metrics = node.metrics[metric as BenchmarkMetricNames];
 
-                        const baseStats = metrics && metrics.baseStats;
-                        const targetStats = metrics && metrics.targetStats;
-                        const samplesComparison = metrics && metrics.samplesComparison;
+                        if (metrics) {
+                            const baseStats = metrics.baseStats;
+                            const targetStats = metrics.targetStats;
+                            const samplesComparison = metrics.samplesComparison;
 
-                        if (baseStats && targetStats && samplesComparison !== undefined) {
                             table.push([
                                 padding(1) + metric,
                                 `${baseStats.median.toFixed(2)}` + chalk.gray(` (± ${baseStats.medianAbsoluteDeviation.toFixed(2)}ms)`),

@@ -5,8 +5,7 @@ import { generateComparisonComment } from '../../src/comment';
 
 describe('generateComment', () => {
     test('fixtures/comparison1.js', () => {
-        const { baseCommit, targetCommit, stats } = comparison1;
-        const actual = generateComparisonComment(baseCommit, targetCommit, stats);
+        const actual = generateComparisonComment(comparison1);
         const expected = fs.readFileSync(path.resolve(__dirname, 'fixtures/expected1.md'), 'utf8');
         expect(actual.trim()).toEqual(expected.trim());
     });
