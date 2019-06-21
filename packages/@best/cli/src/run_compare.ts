@@ -57,10 +57,6 @@ export async function runCompare(globalConfig: FrozenGlobalConfig, configs: Froz
         const runConfig = { ...globalConfig, gitLocalChanges: false };
         let storageProvider;
 
-        if (projectNames.length < 1) {
-            throw new Error('what the heck')
-        }
-
         // If not external storage we will run the benchmarks and compare using fs
         if (!externalStorage) {
             storageProvider = require(STORAGE_FS);
@@ -84,6 +80,12 @@ export async function runCompare(globalConfig: FrozenGlobalConfig, configs: Froz
                 await gitCLI.checkout(compareCommit);
             }
             await runBest({ ...runConfig, gitInfo: { ...runConfig.gitInfo, lastCommit: { ...runConfig.gitInfo.lastCommit, hash: compareCommit }} }, configs, outputStream);
+
+            // Return local files to their initial state no matter what happens.
+            await gitCLI.checkout(initialBranch);
+            if (stashedLocalChanges) {
+                await gitCLI.stash(['pop']);
+            }
         } else {
             try {
                 storageProvider = require(externalStorage);
@@ -102,11 +104,7 @@ export async function runCompare(globalConfig: FrozenGlobalConfig, configs: Froz
         updateLatestRelease(projectNames, globalConfig);
 
         return compareResults;
-    } finally {
-        // Return local files to their initial state no matter what happens.
-        await gitCLI.checkout(initialBranch);
-        if (stashedLocalChanges) {
-            await gitCLI.stash(['pop']);
-        }
+    } catch (err) {
+        console.error('ugh', err);
     }
 }

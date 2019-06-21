@@ -1,95 +1,158 @@
 import { compareSamples } from '@best/analyzer';
+import { StatsResults, StatsNode, BenchmarkMetricNames, BenchmarkStats } from '@best/types';
 
 // function compareEnvironment(/* baseEnv, targetEnv */) {
 //     // TODO
 // }
 
-function compareBenchmarks(baseBenchs: any, targetBenchs: any, comparison: any = []) {
-    if (baseBenchs && baseBenchs.length && targetBenchs && targetBenchs.length) {
-        baseBenchs.forEach((baseBenchmark: any) => {
-            const targetBenchmark = targetBenchs.find((tb: any) => tb.name === baseBenchmark.name);
-            if (!targetBenchmark) {
-                console.log(
-                    `Skipping benchmark test ${baseBenchmark.name} since we couldn't find it in target.` +
-                        'The test has probably been changed between commits',
-                );
-                return;
+export type ResultComparisonTypes = "project" | "group" | "benchmark";
+export interface ResultComparisonBase {
+    type: ResultComparisonTypes;
+    name: string;
+}
+
+export interface ResultComparisonProject extends ResultComparisonBase {
+    type: "project";
+    comparisons: ResultComparison[]
+}
+
+export interface ResultComparisonGroup extends ResultComparisonBase {
+    type: "group";
+    comparisons: ResultComparison[]
+}
+
+export interface ResultComparisonBenchmark extends ResultComparisonBase {
+    type: "benchmark";
+    metrics: {
+        [key in BenchmarkMetricNames]?: {
+            baseStats: BenchmarkStats,
+            targetStats: BenchmarkStats
+            samplesComparison: 0 | 1 | -1
+        }
+    }
+}
+
+export type ResultComparison = ResultComparisonProject | ResultComparisonGroup | ResultComparisonBenchmark;
+
+export interface BenchmarkComparison {
+    baseCommit: string;
+    targetCommit: string;
+    comparisons: ResultComparison[]
+}
+
+function compareResults(baseResults: StatsNode[], targetResults: StatsNode[]): ResultComparison[] {
+    const comparison: ResultComparison[] = []
+
+    if (baseResults && baseResults.length && targetResults && targetResults.length) {
+        baseResults.forEach(baseResult => {
+            const targetResult = targetResults.find(r => r.name === baseResult.name);
+            if (! targetResult) {
+                console.log(`Skipping benchmark test ${baseResult.name} since we couldn't find it in target. The test has probably been changed between commits`)
+                return
             }
 
-            if (baseBenchmark.benchmarks) {
-                comparison.push(...compareBenchmarks(baseBenchmark.benchmarks, targetBenchmark.benchmarks));
+            if (baseResult.type === "group" && targetResult.type === "group") {
+                const group: ResultComparisonGroup = {
+                    type: "group",
+                    name: baseResult.name,
+                    comparisons: compareResults(baseResult.nodes, targetResult.nodes)
+                }
+                comparison.push(group);
+            } else if (baseResult.type === "benchmark" && targetResult.type === "benchmark") {
+                const benchmark: ResultComparisonBenchmark = {
+                    type: "benchmark",
+                    name: baseResult.name,
+                    metrics: {}
+                }
+
+                Object.keys(baseResult.metrics).forEach((metricName) => {
+                    const baseMetrics = baseResult.metrics[metricName as BenchmarkMetricNames];
+                    const targetMetrics = targetResult.metrics[metricName as BenchmarkMetricNames];
+
+                    if (baseMetrics && targetMetrics) {
+                        const samplesComparison = compareSamples(baseMetrics.stats.samples, targetMetrics.stats.samples);
+
+                        const baseStats = baseMetrics.stats;
+                        const targetStats = targetMetrics.stats;
+
+                        benchmark.metrics[metricName as BenchmarkMetricNames] = {
+                            baseStats,
+                            targetStats,
+                            samplesComparison
+                        }
+                    }
+                })
+                
+                comparison.push(benchmark)
             } else {
-                // For now compare only duration metrics, we should compare more things
-                const baseDurationMetrics = baseBenchmark.duration;
-                const targetDurationMetrics = targetBenchmark.duration;
-                const durationSampleComparison = compareSamples(
-                    baseDurationMetrics.samples,
-                    targetDurationMetrics.samples,
-                );
-
-                comparison.push({
-                    name: baseBenchmark.name,
-                    metrics: {
-                        duration: {
-                            // hardcoded for now
-                            baseStats: baseDurationMetrics,
-                            targetStats: targetDurationMetrics,
-                            samplesComparison: durationSampleComparison, // Returns `-1` if slower, `1` if faster, and `0` if indeterminate.
-                        },
-                    },
-                });
+                console.log(`Skipping benchmark test ${baseResult.name} since it's base type and target type were not the same.`)
             }
-        });
+        })
     }
 
     return comparison;
 }
 
-export async function compareBenchmarkStats(baseCommit: string, targetCommit: string, projectNames: string[], storageProvider: any) {
-    const stats = await Promise.all(
-        projectNames.reduce((reducer: any, projectName) => [
-            ...reducer,
-            storageProvider.getAllBenchmarkStatsPerCommit(projectName, baseCommit),
-            storageProvider.getAllBenchmarkStatsPerCommit(projectName, targetCommit)
-        ], [])
-    );
+export async function compareBenchmarkStats(baseCommit: string, targetCommit: string, projectNames: string[], storageProvider: any): Promise<BenchmarkComparison> {
+    const projectStats: {
+        name: string;
+        base: StatsResults[];
+        target: StatsResults[];
+    }[] = await Promise.all(projectNames.map(async (name) => {
+        return {
+            name,
+            base: await storageProvider.getAllBenchmarkStatsPerCommit(projectNames, baseCommit),
+            target: await storageProvider.getAllBenchmarkStatsPerCommit(projectNames, targetCommit)
+        }
+    }))
 
-    if (stats.length % 2) {
-        throw new Error('Recovered odd number of stats to compare');
-    }
-
-    // preRunMessager.print('\n Running comparison... \n\n', process.stdout);
-
-    const commitComparison: any = {
+    const commitComparison: BenchmarkComparison = {
         baseCommit,
         targetCommit,
-        comparison: [],
-    };
-
-    while (stats.length) {
-        const baseBenchmarks: any = stats.shift();
-        const targetBenchmarks: any = stats.shift();
-
-        baseBenchmarks.forEach((baseBenchmarkBundle: any) => {
-            const { benchmarkName, projectName }: { benchmarkName: string, projectName: string } = baseBenchmarkBundle;
-            const targetBenchmarkBundle = targetBenchmarks.find((b: any) => b.benchmarkName === benchmarkName);
-            if (!targetBenchmarkBundle) {
-                console.log(`Skipping benchmark ${benchmarkName} since we couldn't find it in commit ${targetCommit}`);
-                return;
-            }
-            const { version: baseVersion, /*environment: baseEnv,*/ benchmarks: baseBenchs } = baseBenchmarkBundle;
-            const { version: targetVersion, /*environment: targetEnv,*/ benchmarks: targetBenchs } = targetBenchmarkBundle;
-
-            if (baseVersion !== targetVersion) {
-                console.log(`Skipping comparing ${benchmarkName} since stat versions are different`);
-            }
-
-            // compareEnvironment(baseEnv, targetEnv);
-
-            const comparison = compareBenchmarks(baseBenchs, targetBenchs);
-            commitComparison.comparison.push({ projectName, benchmarkName, comparison });
-        });
+        comparisons: [],
     }
+
+    projectStats.forEach(project => {
+        const allBaseStats = project.base;
+        const allTargetStats = project.target;
+
+        if (allBaseStats && allTargetStats) {
+            const comparisons: ResultComparison[] = []
+
+            allBaseStats.forEach(baseStats => {
+                const { benchmarkName } = baseStats;
+                const targetStats = allTargetStats.find(s => s.benchmarkName === benchmarkName)
+
+                if (! targetStats) {
+                    console.log(`Skipping benchmark ${benchmarkName} since we couldn't find it in commit ${targetCommit}`)
+                    return;
+                }
+                const { version: baseVersion, results: baseResults } = baseStats;
+                const { version: targetVersion, results: targetResults } = targetStats;
+
+                if (baseVersion !== targetVersion) {
+                    console.log(`Skipping comparing ${benchmarkName} since stat versions are different`)
+                    return
+                }
+
+                const comparison = compareResults(baseResults, targetResults)
+                const benchmark: ResultComparisonGroup = {
+                    type: "group",
+                    name: benchmarkName,
+                    comparisons: comparison
+                }
+                
+                comparisons.push(benchmark)
+            })
+
+            const projectComparison: ResultComparisonProject = {
+                type: "project",
+                name: project.name,
+                comparisons
+            }
+            commitComparison.comparisons.push(projectComparison)
+        }
+    })
 
     return commitComparison;
 }
