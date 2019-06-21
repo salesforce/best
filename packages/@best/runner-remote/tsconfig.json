@@ -5,6 +5,7 @@
     "outDir": "build"
   },
   "references": [
-    { "path": "../console-stream" }
+    { "path": "../console-stream" },
+    { "path": "../types" }
   ]
 }
