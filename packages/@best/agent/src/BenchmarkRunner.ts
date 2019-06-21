@@ -6,7 +6,11 @@ import { loadBenchmarkJob } from "./benchmark-loader";
 import { x as extractTar } from 'tar';
 import * as SocketIO from "socket.io";
 import { RunnerOutputStream } from "@best/console-stream";
-import { BenchmarkResultsState } from "@best/types";
+import {
+    BenchmarkResultsSnapshot,
+    BenchmarkResultsState,
+    BenchmarkRuntimeConfig
+} from "@best/types";
 
 export enum RunnerStatus {
     IDLE = 1,
@@ -35,7 +39,7 @@ function initializeForwarder(socket: SocketIO.Socket, logger: Function): RunnerO
                 socket.emit('running_benchmark_error', benchmarkPath);
             }
         },
-        updateBenchmarkProgress(state: BenchmarkResultsState, opts: any) {
+        updateBenchmarkProgress(state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) {
             if (socket.connected) {
                 socket.emit('running_benchmark_update', {state, opts});
             }
@@ -129,7 +133,7 @@ export default class BenchmarkRunner extends EventEmitter {
         return { error, results }
     }
 
-    private afterRunBenchmark(err: any, results: any) {
+    private afterRunBenchmark(err: any, results: BenchmarkResultsSnapshot | null) {
         if (!this.runningWasCancelled) {
             this._log(`Sending results to client`);
 
