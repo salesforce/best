@@ -3,34 +3,47 @@ import { isCI } from '@best/utils';
 import { loadDbFromConfig } from '@best/api-db';
 import GithubApplicationFactory from './git-app';
 import { generateComparisonComment } from './comment';
-import { FrozenGlobalConfig, BenchmarkComparison } from '@best/types';
+import { FrozenGlobalConfig, BenchmarkComparison, ResultComparison, BenchmarkMetricNames } from '@best/types';
 
 const PULL_REQUEST_URL = process.env.PULL_REQUEST;
 
-function generatePercentages(stats: any, rows = []) {
-    return stats.comparison.reduce((allRows: any, node: any) => {
-        if (node.comparison) {
-            generatePercentages(node, rows);
-        } else {
-            const durationMetric = node.metrics.duration;
-            const { baseStats, targetStats } = durationMetric;
-            const baseMed = baseStats.median;
-            const targetMed = targetStats.median;
+// this takes all the results and recursively goes through them
+// then it creates a flat list of all of the percentages of change
+function generatePercentages(stats: ResultComparison, rows: number[] = []): number[] {
+    if (stats.type === "project" || stats.type === "group") {
+        return stats.comparisons.reduce((allRows, node: ResultComparison) => {
+            if (node.type === "project" || node.type === "group") {
+                generatePercentages(node, rows);
+            } else if (node.type === "benchmark") {
+                Object.keys(node.metrics).forEach(metricName => {
+                    const metrics = node.metrics[metricName as BenchmarkMetricNames];
 
-            const percentage = Math.abs((baseMed - targetMed) / baseMed * 100);
-            const relativeTrend = targetMed - baseMed;
+                    if (metrics) {
+                        const { baseStats, targetStats } = metrics;
+                        const baseMed = baseStats.median;
+                        const targetMed = targetStats.median;
+            
+                        const percentage = Math.abs((baseMed - targetMed) / baseMed * 100);
+                        const relativeTrend = targetMed - baseMed;
+            
+                        allRows.push(Math.sign(relativeTrend) * percentage);
+                    }
+                })
+            }
+            return allRows;
+        }, rows);
+    }
 
-            allRows.push(Math.sign(relativeTrend) * percentage);
-        }
-        return allRows;
-    }, rows);
+    return rows;
 }
 
-function calculateAverageChange(compareStats: any) {
-    const values: number[] = generatePercentages(compareStats);
+function calculateAverageChange(result: BenchmarkComparison) {
+    const flattenedValues = result.comparisons.reduce((all, node): number[] => {
+        return [...all, ...generatePercentages(node)]
+    }, <number[]>[])
 
-    let sum = values.reduce((previous, current) => current += previous);
-    let avg = sum / values.length;
+    let sum = flattenedValues.reduce((previous, current) => current += previous);
+    let avg = sum / flattenedValues.length;
 
     return avg;
 }
