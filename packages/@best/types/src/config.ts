@@ -28,6 +28,10 @@ export interface ApiDatabaseConfig {
 
 export interface FrontendConfig {
     apiDatabase: ApiDatabaseConfig;
+    githubConfig?: {
+        repo: string;
+        owner: string;
+    }
 }
 
 export interface CliConfig {

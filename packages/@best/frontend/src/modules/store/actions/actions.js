@@ -95,3 +95,34 @@ export function selectProject(project, shouldResetView) {
         dispatch({ type: PROJECT_SELECTED, id: project.id });
     };
 }
+
+/*
+ * COMMIT INFO
+*/
+
+function normalizeCommit(commit) {
+    return commit.slice(0, 7);
+}
+
+function shouldFetchCommitInfo(state, commit) {
+    return !state.commitInfo.hasOwnProperty(normalizeCommit(commit));
+}
+
+function commitInfoReceived(commit, commitInfo) {
+    return { type: COMMIT_INFO_RECEIVED, commit: normalizeCommit(commit), commitInfo };
+}
+
+function fetchCommitInfo(commit) {
+    return async (dispatch) => {
+        const commitInfo = await api.fetchCommitInfo(commit);
+        dispatch(commitInfoReceived(commit, commitInfo));
+    }
+}
+
+export function fetchCommitInfoIfNeeded(commit) {
+    return (dispatch, getState) => {
+        if (shouldFetchCommitInfo(getState(), commit)) {
+            dispatch(fetchCommitInfo(commit));
+        }
+    }
+}

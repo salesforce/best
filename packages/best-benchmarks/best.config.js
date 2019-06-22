@@ -14,5 +14,5 @@ module.exports = {
                 "remoteRunner": "@best/runner-headless"
             }
         }
-    ],
+    ]
 };
