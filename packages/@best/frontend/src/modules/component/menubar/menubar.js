@@ -1,7 +1,7 @@
 import { LightningElement, track, wire } from 'lwc';
 
 import { connectStore, store } from 'store/store';
-import { timingChanged, benchmarksChanged, metricsChanged } from 'store/actions';
+import { timingChanged, benchmarksChanged, metricsChanged, zoomChanged } from 'store/actions';
 
 export default class ComponentMenubar extends LightningElement {
 
@@ -11,6 +11,7 @@ export default class ComponentMenubar extends LightningElement {
     @track viewTiming;
     @track viewBenchmark;
     @track viewMetric;
+    @track viewZoom;
 
     @wire(connectStore, { store })
     storeChange({ benchmarks, view }) {
@@ -22,6 +23,7 @@ export default class ComponentMenubar extends LightningElement {
         this.viewTiming = view.timing;
         this.viewBenchmark = view.benchmark;
         this.viewMetric = view.metric;
+        this.viewZoom = view.zoom;
     }
 
     get timingOptions() {
@@ -82,5 +84,21 @@ export default class ComponentMenubar extends LightningElement {
     metricUpdated(event) {
         const metric = event.detail.selectedItems[0];
         store.dispatch(metricsChanged(metric.id))
+    }
+
+    get isZoomed() {
+        if (this.viewZoom.hasOwnProperty('xaxis.range')) {
+            return true;
+        } else if (this.viewZoom.hasOwnProperty('xaxis.range[0]')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    zoomUpdated() {
+        store.dispatch(zoomChanged({
+            'xaxis.autorange': true
+        }))
     }
 }

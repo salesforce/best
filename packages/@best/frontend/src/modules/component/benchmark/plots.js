@@ -123,7 +123,8 @@ export async function drawPlot(element, trends, layout) {
         displayModeBar: false,
         scrollZoom: false,
         showTips: false,
-        responsive: true
+        responsive: true,
+        doubleClick: false
     });
 
     return element.layout;

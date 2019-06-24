@@ -3,5 +3,8 @@
         <component-dropdown onselection={timingUpdated} name="Timing" options={timingOptions}></component-dropdown>
         <component-dropdown onselection={benchmarkUpdated} name="Benchmarks" options={benchmarkOptions}></component-dropdown>
         <component-dropdown onselection={metricUpdated} name="Metrics" options={metricOptions}></component-dropdown>
+        <template if:true={isZoomed}>
+            <component-button class="padded" onclick={zoomUpdated}>Zoom out</component-button>
+        </template>
     </section>
 </template>

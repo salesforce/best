@@ -1,0 +1,24 @@
+button {
+    position: relative;
+    padding: 10px 14px;
+    font: inherit;
+    
+    border-radius: 3px;
+
+    background: #00a3ff;
+    color: #fff;
+    box-shadow: 0 5px 8px rgba(0, 163, 255, 0.12), 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all .1s ease;
+    outline: none;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(1px);
+}

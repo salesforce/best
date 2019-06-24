@@ -135,21 +135,11 @@ export default class ComponentBenchmark extends LightningElement {
         })
     }
 
-    timeout = null;
     rawClickHandler(event) {
-        if (this.timeout) {
-            clearTimeout(this.timeout);
-            this.timeout = null;
-        } else {
-            const grandParent = event.target.parentElement.parentElement;
-            // eslint-disable-next-line @lwc/lwc/no-async-operation
-            this.timeout = setTimeout(() => {
-                if (grandParent !== this.element && this.recentHoverData) {
-                    this.traceClicked();
-                }
-
-                this.timeout = null;
-            }, 200);
+        const grandParent = event.target.parentElement.parentElement;
+        
+        if (grandParent !== this.element && this.recentHoverData) {
+            this.traceClicked();
         }
     }
 

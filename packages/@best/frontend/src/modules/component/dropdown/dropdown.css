@@ -42,7 +42,7 @@
 .selected {
     border: 1px solid #8c8c8c;
     border-radius: 3px;
-    padding: 8px 12px;
+    padding: 10px 14px;
     position: relative;
 }
 
