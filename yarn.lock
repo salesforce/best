@@ -1999,6 +1999,13 @@
     eslint-plugin-import "^2.14.0"
     eslint-plugin-jest "^22.0.0"
 
+"@types/apicache@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@types/apicache/-/apicache-1.2.0.tgz#5f6e9225e66d22da97042a39ad626b3c158d650d"
+  integrity sha512-8uatdizj2GbYHtS4u+x4k2aG1thG6JBWKRidcnauXav+Bxe3bHsWS8HSwcybuLE2q39/95cwb4hkHvqmP7ja2w==
+  dependencies:
+    "@types/redis" "*"
+
 "@types/babel__core@^7.1.0":
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.2.tgz#608c74f55928033fce18b99b213c16be4b3d114f"
@@ -2226,6 +2233,13 @@
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.3.tgz#7ee330ba7caafb98090bece86a5ee44115904c2c"
   integrity sha512-ewFXqrQHlFsgc09MK5jP5iR7vumV/BYayNC6PgJO2LPe8vrnNFyjQjSppfEngITi0qvfKtzFvgKymGheFM9UOA==
+
+"@types/redis@*":
+  version "2.8.13"
+  resolved "https://registry.yarnpkg.com/@types/redis/-/redis-2.8.13.tgz#fdd76d9a8b7c36ff24d8506a94ef2a890c87f498"
+  integrity sha512-p86cm5P6DMotUqCS6odQRz0JJwc5QXZw9eyH0ALVIqmq12yqtex5ighWyGFHKxak9vaA/GF/Ilu0KZ0MuXXUbg==
+  dependencies:
+    "@types/node" "*"
 
 "@types/resolve@0.0.8":
   version "0.0.8"
@@ -2709,6 +2723,11 @@ anymatch@^2.0.0:
   dependencies:
     micromatch "^3.1.4"
     normalize-path "^2.1.1"
+
+apicache@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/apicache/-/apicache-1.4.0.tgz#3835fbe18717caca3a44cb6272d49b52cac30d3a"
+  integrity sha512-pX/Sf9q9HNzAC5F+hPgxt8v3eQVZkXL/+8HpAnrDJXFmma80F2aHAAeWTql3BsG87lc3T6A7CFPNWMTl97L/7Q==
 
 aproba@^1.0.3, aproba@^1.1.1:
   version "1.2.0"
