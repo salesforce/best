@@ -9,7 +9,7 @@ export default (config: FrontendConfig): Router => {
     const router = Router()
 
     let cache = apicache.middleware;
-    const onlyStatus200: RequestHandler = (req, res) => res.statusCode === 200;
+    const onlyStatus200: RequestHandler = (req, res): boolean => res.statusCode === 200;
     const cacheSuccesses = cache('2 minutes', onlyStatus200);
 
     router.get('/info/:commit', cacheSuccesses, async (req, res): Promise<void> => {
