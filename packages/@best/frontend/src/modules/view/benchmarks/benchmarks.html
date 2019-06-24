@@ -3,10 +3,7 @@
     <section class="benchmarks" data-metric={viewMetric}>
         <template for:each={visibleBenchmarks} for:item="benchmark" for:index="index">
             <div key={benchmark.name} data-index={index} class="graph-wrapper">
-                <template for:each={benchmark.selectedPoints} for:item="point">
-                    <component-commit-info key={point.commit} commit={point.commit} benchmark={index} left={point.left} top={point.top} onclose={closeCommitInfo}></component-commit-info>
-                </template>
-                <component-graph metric={viewMetric} benchmark={benchmark} first={benchmark.isFirst} zoom={viewZoom} onzoom={handleZoom}></component-graph>
+                <component-benchmark metric={viewMetric} benchmark={benchmark} first={benchmark.isFirst} zoom={viewZoom} onzoom={handleZoom}></component-benchmark>
             </div>
         </template>
     </section>

@@ -1,13 +1,31 @@
-import { LightningElement, track, api } from 'lwc';
+import { LightningElement, track, api, wire } from 'lwc';
 import { drawPlot, buildTrends, buildLayout, relayout, createAnnotation, removeAnnotation } from './plots';
 
-export default class ComponentGraph extends LightningElement {
+import { connectStore, store } from 'store/store';
+import { fetchComparison, comparisonChanged } from 'store/actions';
+
+export default class ComponentBenchmark extends LightningElement {
+    // PROPERTIES
+
     element;
     hasRegisteredHandlers = false;
     currentLayout = {};
 
     @track selectedPoints = [];
     recentHoverData;
+
+    comparisonElement;
+    @track pendingCommitsToCompare = [];
+    @track viewComparisonCommits = [];
+    @track comparisonResults = {};
+    @track comparisonName = null;
+
+    @wire(connectStore, { store })
+    storeChanged({ view }) {
+        this.comparisonResults = view.comparison.results;
+        this.viewComparisonCommits = view.comparison.commits;
+        this.comparisonName = view.comparison.benchmarkName;
+    }
 
     @api metric;
 
@@ -61,6 +79,22 @@ export default class ComponentGraph extends LightningElement {
         }
     }
 
+    // GETTERS
+
+    get comparing() {
+        return this.pendingCommitsToCompare.length > 0;
+    }
+
+    get showingComparison() {
+        return this.viewComparisonCommits.length > 0;
+    }
+
+    get hasComparisonResults() {
+        return Object.keys(this.comparisonResults).length > 0;
+    }
+
+    // METHODS
+
     handleRelayout(update) {
         const firstKey = Object.keys(update).shift();
         if (this.first && firstKey && firstKey.includes('xaxis')) { // make sure we are talking about zoom updates
@@ -86,7 +120,9 @@ export default class ComponentGraph extends LightningElement {
 
         this.selectedPoints.every((point, idx) => {
             if (point.commit === commit) {
-                this.currentLayout = removeAnnotation(this.element, idx);
+                if (! point.pendingCompare) {
+                    this.currentLayout = removeAnnotation(this.element, idx);
+                }
                 this.selectedPoints.splice(idx, 1);
                 return false;
             }
@@ -119,20 +155,25 @@ export default class ComponentGraph extends LightningElement {
         const { x: commit } = point;
         const top = this.first ? 400 * 1.15 : 400;
         const left = point.xaxis.l2p(point.xaxis.d2c(point.x)) + point.xaxis._offset;
-        const commitInfo = { commit, top, left }
+        const commitInfo = { commit, top, left, hidden: false, pendingCompare: this.pendingCommitsToCompare.includes(commit) };
 
-        this.selectedPoints.every((pastPoint, idx) => {
-            if (pastPoint.commit === commit) {
+        const needsInsertion = this.selectedPoints.every((pastPoint, idx) => {
+            if (pastPoint.commit === commit && !pastPoint.hidden) {
                 this.selectedPoints.splice(idx, 1);
                 this.currentLayout = removeAnnotation(this.element, idx);
+                return false;
+            } else if (pastPoint.commit === commit && pastPoint.hidden) {
+                this.selectedPoints[idx] = { ...commitInfo };
                 return false;
             }
 
             return true;
         })
 
-        this.selectedPoints.push(commitInfo);
-        this.currentLayout = createAnnotation(this.element, point);
+        if (needsInsertion) {
+            this.selectedPoints.push(commitInfo);
+            this.currentLayout = createAnnotation(this.element, point);
+        }
     }
 
     hoverHandler(data) {
@@ -143,6 +184,45 @@ export default class ComponentGraph extends LightningElement {
         if (this.allTrends.length > 0) {
             this.visibleTrends = this.metric === 'all' ? this.allTrends : this.allTrends.filter(trend => trend.name.includes(this.metric));
         }
+    }
+
+    onCompareClick(event) {
+        const { commit } = event.detail;
+
+        const previousIndex = this.pendingCommitsToCompare.indexOf(commit);
+
+        if (previousIndex !== -1) {
+            this.pendingCommitsToCompare.splice(previousIndex, 1);
+
+            this.selectedPoints.every((pastPoint, idx) => {
+                if (pastPoint.commit === commit && !pastPoint.hidden) {
+                    this.selectedPoints[idx] = { ...pastPoint, pendingCompare: false };
+                    return false;
+                }
+    
+                return true;
+            })
+        } else {
+            this.pendingCommitsToCompare.push(commit);
+
+            this.selectedPoints.every((pastPoint, idx) => {
+                if (pastPoint.commit === commit && !pastPoint.hidden) {
+                    this.selectedPoints[idx] = { ...pastPoint, hidden: true, pendingCompare: true };
+                    return false;
+                }
+    
+                return true;
+            })
+        }
+    }
+
+    runComparison() {
+        store.dispatch(fetchComparison(this.benchmark.name, this.pendingCommitsToCompare));
+    }
+
+    closeModal() {
+        this.comparisonElement = null;
+        store.dispatch(comparisonChanged());
     }
 
     async renderedCallback() {
@@ -164,6 +244,22 @@ export default class ComponentGraph extends LightningElement {
         if (!this.hasSetInitialZoom) {
             this.hasSetInitialZoom = true;
             this.updateGraphZoom();
+        }
+
+        // COMPARISON
+        // fetch comparison results if all we have is the commits from the url
+        if (this.showingComparison && !this.hasComparisonResults && this.comparisonName === this.benchmark.name) {
+            store.dispatch(fetchComparison(this.benchmark.name, this.viewComparisonCommits));
+        }
+
+        if (this.showingComparison && this.hasComparisonResults) {
+            if (! this.comparisonElement) this.comparisonElement = this.template.querySelector('.comparison-graph');
+
+            if (this.comparisonElement) {
+                const comparisonTrend = buildTrends(this.comparisonResults, true, true);
+                const initialComparisonLayout = buildLayout(this.comparisonResults.name, false);
+                await drawPlot(this.comparisonElement, comparisonTrend, initialComparisonLayout)
+            }
         }
     }
 }

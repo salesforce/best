@@ -7,6 +7,8 @@ export default class ComponentCommitInfo extends LightningElement {
     @api commit;
     @api top;
     @api left;
+    @api hidden;
+    @api pendingcompare;
 
     @track commitInfo = {};
 
@@ -27,8 +29,24 @@ export default class ComponentCommitInfo extends LightningElement {
         return `transform: translate(${this.left}px, ${this.top}px)`;
     }
 
+    get classNames() {
+        return this.hidden ? 'hidden commit-info' : 'commit-info';
+    }
+
+    get compareButtonText() {
+        return this.pendingcompare ? 'Uncompare' : 'Compare';
+    }
+
     close() {
         this.dispatchEvent(new CustomEvent('close', {
+            detail: {
+                commit: this.commit
+            }
+        }))
+    }
+
+    compare() {
+        this.dispatchEvent(new CustomEvent('compare', {
             detail: {
                 commit: this.commit
             }

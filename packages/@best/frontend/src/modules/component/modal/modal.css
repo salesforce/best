@@ -1,0 +1,41 @@
+:host {
+    position: fixed;
+    top: 0; bottom: 0;
+    left: 0; right: 0;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 9;
+    padding-left: 300px;
+}
+
+.modal {
+    background: #fff;
+    border-radius: 6px;
+    width: 65vw;
+    height: 80vh;
+    overflow-y: scroll;
+    margin: 10vh auto;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.title {
+    margin: 0;
+    text-align: center;
+}
+
+.close {
+    position: absolute;
+    right: 0;
+}
+
+.content {
+    padding: 18px;
+}

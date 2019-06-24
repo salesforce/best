@@ -10,6 +10,10 @@
     min-width: 400px;
 }
 
+.commit-info.hidden {
+    display: none;
+}
+
 .container {
     transform: translateX(-50%);
     padding: 15px;
@@ -47,7 +51,7 @@
 
 .info .user {
     display: flex;
-    flex-direction: horizontal;
+    flex-direction: row;
     align-items: center;
     position: relative;
 }

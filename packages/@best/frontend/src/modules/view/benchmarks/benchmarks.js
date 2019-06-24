@@ -7,7 +7,6 @@ export default class ViewBenchmarks extends LightningElement {
     allBenchmarks = [];
 
     @track visibleBenchmarks = [];
-    needsRelayoutOfBenchmarks = false;
 
     viewTiming;
     @track viewBenchmark;
@@ -28,7 +27,6 @@ export default class ViewBenchmarks extends LightningElement {
             this.viewBenchmark !== view.benchmark ||
             this.viewTiming !== view.timing
         ) {
-            this.needsRelayoutOfBenchmarks = true;
             if (view.benchmark === 'all') {
                 this.visibleBenchmarks = benchmarks.items;
             } else {
@@ -36,7 +34,6 @@ export default class ViewBenchmarks extends LightningElement {
             }
             this.visibleBenchmarks = this.visibleBenchmarks.map((bench, idx) => ({
                 ...bench,
-                selectedPoints: [],
                 isFirst: idx === 0
             }))
             this.allBenchmarks = benchmarks.items;
@@ -44,7 +41,6 @@ export default class ViewBenchmarks extends LightningElement {
 
         if (this.viewMetric !== view.metric) {
             this.viewMetric = view.metric;
-            this.needsRelayoutOfBenchmarks = true;
         }
 
         this.viewTiming = view.timing;

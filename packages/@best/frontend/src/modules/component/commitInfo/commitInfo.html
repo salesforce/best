@@ -1,9 +1,9 @@
 <template>
-    <div class="commit-info" style={styleTag}>
+    <div class={classNames} style={styleTag}>
         <div class="container">
             <section class="actions">
                 <button class="close" onclick={close}>Close</button>
-                <button class="compare">Compare</button>
+                <button class="compare" onclick={compare}>{compareButtonText}</button>
             </section>
             <template if:true={hasCommitInfo}>
                 <template if:true={hasError}>

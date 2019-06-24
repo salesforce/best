@@ -7,12 +7,17 @@ import {
     VIEW_BENCHMARKS_CHANGED,
     VIEW_METRICS_CHANGED,
     VIEW_ZOOM_CHANGED,
+    VIEW_COMPARISON_CHANGED,
     VIEW_RESET,
     COMMIT_INFO_RECEIVED
 } from 'store/shared';
 
 import * as api from 'store/api';
 import * as transformer from 'store/transformer';
+
+function normalizeCommit(commit) {
+    return commit.slice(0, 7);
+}
 
 function shouldFetchProjects(state) {
     return !state.projects.length;
@@ -37,8 +42,8 @@ export function fetchProjectsIfNeeded() {
     };
 }
 
-function benchmarksReceived(benchmarks) {
-    return { type: BENCHMARKS_RECEIVED, benchmarks };
+function benchmarksReceived(snapshots, benchmarks) {
+    return { type: BENCHMARKS_RECEIVED, snapshots, benchmarks };
 }
 
 function clearBenchmarks() {
@@ -50,12 +55,16 @@ function fetchBenchmarks(project) {
         const { timing } = getState().view;
         const snapshots = await api.fetchSnapshots(project, timing);
         const benchmarks = transformer.snapshotsToBenchmarks(snapshots);
-        dispatch(benchmarksReceived(benchmarks));
+        dispatch(benchmarksReceived(snapshots, benchmarks));
     };
 }
 
 function findSelectedProject({ projects }) {
     return projects.items.find(proj => proj.id === projects.selectedProjectId);
+}
+
+export function comparisonChanged(comparison) {
+    return { type: VIEW_COMPARISON_CHANGED, comparison };
 }
 
 export function benchmarksChanged(benchmark) {
@@ -85,6 +94,20 @@ export function timingChanged(timing) {
     }
 }
 
+function filterSnapshotsForCommits(benchmarkName, commits, state) {
+    const snapshotsForCommit = state.benchmarks.snapshots.filter(snap => commits.includes(normalizeCommit(snap.commit)));
+    const benchmark = transformer.snapshotsToBenchmarks(snapshotsForCommit).find(bench => bench.name === benchmarkName);
+
+    return benchmark;
+}
+
+export function fetchComparison(benchmarkName, commits) {
+    return (dispatch, getState) => {
+        const results = filterSnapshotsForCommits(benchmarkName, commits, getState());
+        dispatch(comparisonChanged({ results, commits, benchmarkName }))
+    }
+}
+
 export function selectProject(project, shouldResetView) {
     return (dispatch) => {
         dispatch(clearBenchmarks());
@@ -99,10 +122,6 @@ export function selectProject(project, shouldResetView) {
 /*
  * COMMIT INFO
 */
-
-function normalizeCommit(commit) {
-    return commit.slice(0, 7);
-}
 
 function shouldFetchCommitInfo(state, commit) {
     return !state.commitInfo.hasOwnProperty(normalizeCommit(commit));

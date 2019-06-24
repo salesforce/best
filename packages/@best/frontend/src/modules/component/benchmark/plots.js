@@ -19,12 +19,12 @@ export function buildLayout(title, isFirst) {
     };
 }
 
-function buildLineTrend({ dates, values, name, commits }, showsVariation) {
+function buildLineTrend({ dates, values, name, commits }, showsVariation, comparison) {
     return {
         y: values,
         x: commits.map(commit => commit.slice(0, 7)),
         text: dates,
-        mode: 'lines',
+        mode: comparison ? 'lines+markers' : 'lines',
         name,
         line: {
             shape: 'spline',
@@ -56,11 +56,11 @@ function buildVarianceTrend({ dates, values, name, commits }) {
     };
 }
 
-function buildTrend(object, showsVariation) {
+function buildTrend(object, showsVariation, comparison) {
     if (object.type === 'filled') {
         return buildVarianceTrend(object);
     } else if (object.type === 'line') {
-        return buildLineTrend(object, showsVariation);
+        return buildLineTrend(object, showsVariation, comparison);
     }
 
     return {};
@@ -102,14 +102,14 @@ export function normalizeTitle(benchmarkName) {
     return parts.join(':');
 }
 
-export function buildTrends(benchmark, showsVariation = true) {
+export function buildTrends(benchmark, showsVariation = true, comparison = false) {
     let trends;
     if (showsVariation) {
         // create a combined dataset for graphing that has the low, high, and median values
         const combinedDatasets = buildCombinedValues(benchmark.metrics, benchmark);
         
         // for each metric and then for each of (median, low, high) create the trend layout
-        trends = combinedDatasets.flatMap(combined => combined.map(set => buildTrend(set, showsVariation)));
+        trends = combinedDatasets.flatMap(combined => combined.map(set => buildTrend(set, showsVariation, comparison)));
     } else {
         trends = benchmark.metrics.map(metric => buildLineTrend({ commits: benchmark.commits, keys: benchmark.commitDates, values: metric.durations, name: metric.name }, showsVariation));
     }
