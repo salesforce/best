@@ -148,6 +148,7 @@ export function createAnnotation(element, point) {
         ax: 0,
         ay: point.yaxis.range[1],
         ayref: 'y',
+        _commit: point.x
     }
 
     const newIndex = (element.layout.annotations || []).length;
@@ -160,8 +161,14 @@ export function createAnnotation(element, point) {
     return relayout(element, update);
 }
 
-export function removeAnnotation(element, idx) {
-    window.Plotly.relayout(element, `annotations[${idx}]`, 'remove');
+export function removeAnnotation(element, commit) {
+    element.layout.annotations.every((annotation, idx) => {
+        if (annotation._commit === commit) {
+            window.Plotly.relayout(element, `annotations[${idx}]`, 'remove');
+            return false
+        }
+        return true;
+    })
 
     return element.layout;
 }

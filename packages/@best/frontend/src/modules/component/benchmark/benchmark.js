@@ -15,7 +15,7 @@ export default class ComponentBenchmark extends LightningElement {
     recentHoverData;
 
     comparisonElement;
-    @track pendingCommitsToCompare = [];
+    @track pendingCommitsToCompare = new Set();
     @track viewComparisonCommits = [];
     @track comparisonResults = {};
     @track comparisonName = null;
@@ -82,7 +82,7 @@ export default class ComponentBenchmark extends LightningElement {
     // GETTERS
 
     get comparing() {
-        return this.pendingCommitsToCompare.length > 0;
+        return this.pendingCommitsToCompare.size > 0;
     }
 
     get showingComparison() {
@@ -91,6 +91,10 @@ export default class ComponentBenchmark extends LightningElement {
 
     get hasComparisonResults() {
         return Object.keys(this.comparisonResults).length > 0;
+    }
+
+    get containerClassNames() {
+        return this.comparing ? 'comparing container' : 'container';
     }
 
     // METHODS
@@ -121,7 +125,7 @@ export default class ComponentBenchmark extends LightningElement {
         this.selectedPoints.every((point, idx) => {
             if (point.commit === commit) {
                 if (! point.pendingCompare) {
-                    this.currentLayout = removeAnnotation(this.element, idx);
+                    this.currentLayout = removeAnnotation(this.element, commit);
                 }
                 this.selectedPoints.splice(idx, 1);
                 return false;
@@ -155,12 +159,10 @@ export default class ComponentBenchmark extends LightningElement {
         const { x: commit } = point;
         const top = this.first ? 400 * 1.15 : 400;
         const left = point.xaxis.l2p(point.xaxis.d2c(point.x)) + point.xaxis._offset;
-        const commitInfo = { commit, top, left, hidden: false, pendingCompare: this.pendingCommitsToCompare.includes(commit) };
+        const commitInfo = { commit, top, left, hidden: false, pendingCompare: this.pendingCommitsToCompare.has(commit) };
 
         const needsInsertion = this.selectedPoints.every((pastPoint, idx) => {
             if (pastPoint.commit === commit && !pastPoint.hidden) {
-                this.selectedPoints.splice(idx, 1);
-                this.currentLayout = removeAnnotation(this.element, idx);
                 return false;
             } else if (pastPoint.commit === commit && pastPoint.hidden) {
                 this.selectedPoints[idx] = { ...commitInfo };
@@ -170,8 +172,12 @@ export default class ComponentBenchmark extends LightningElement {
             return true;
         })
 
-        if (needsInsertion) {
+        if (needsInsertion && !this.comparing) {
             this.selectedPoints.push(commitInfo);
+            this.currentLayout = createAnnotation(this.element, point);
+        } else if (needsInsertion && this.comparing) {
+            this.pendingCommitsToCompare.add(commit);
+            this.selectedPoints.push({ ...commitInfo, hidden: true, pendingCompare: true });
             this.currentLayout = createAnnotation(this.element, point);
         }
     }
@@ -189,10 +195,10 @@ export default class ComponentBenchmark extends LightningElement {
     onCompareClick(event) {
         const { commit } = event.detail;
 
-        const previousIndex = this.pendingCommitsToCompare.indexOf(commit);
+        const beingCompared = this.pendingCommitsToCompare.has(commit);
 
-        if (previousIndex !== -1) {
-            this.pendingCommitsToCompare.splice(previousIndex, 1);
+        if (beingCompared) {
+            this.pendingCommitsToCompare.delete(commit)
 
             this.selectedPoints.every((pastPoint, idx) => {
                 if (pastPoint.commit === commit && !pastPoint.hidden) {
@@ -203,7 +209,7 @@ export default class ComponentBenchmark extends LightningElement {
                 return true;
             })
         } else {
-            this.pendingCommitsToCompare.push(commit);
+            this.pendingCommitsToCompare.add(commit);
 
             this.selectedPoints.every((pastPoint, idx) => {
                 if (pastPoint.commit === commit && !pastPoint.hidden) {
@@ -217,7 +223,7 @@ export default class ComponentBenchmark extends LightningElement {
     }
 
     runComparison() {
-        store.dispatch(fetchComparison(this.benchmark.name, this.pendingCommitsToCompare));
+        store.dispatch(fetchComparison(this.benchmark.name, [...this.pendingCommitsToCompare]));
     }
 
     closeModal() {

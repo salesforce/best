@@ -1,5 +1,5 @@
 <template>
-    <div class="container" data-metric={metric} data-first={first}>
+    <div class={containerClassNames} data-metric={metric} data-first={first}>
         <template for:each={selectedPoints} for:item="point">
             <component-commit-info key={point.commit} hidden={point.hidden} pendingcompare={point.pendingCompare} commit={point.commit} left={point.left} top={point.top} oncompare={onCompareClick} onclose={closeCommitInfo}></component-commit-info>
         </template>
