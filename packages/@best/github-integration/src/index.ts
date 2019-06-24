@@ -42,19 +42,19 @@ function calculateAverageChange(result: BenchmarkComparison) {
         return [...all, ...generatePercentages(node)]
     }, <number[]>[])
 
-    let sum = flattenedValues.reduce((previous, current) => current += previous);
-    let avg = sum / flattenedValues.length;
+    const sum = flattenedValues.reduce((previous, current) => current += previous);
+    const avg = sum / flattenedValues.length;
 
     return avg;
 }
 
-export async function updateLatestRelease(projectNames: string[], globalConfig: FrozenGlobalConfig): Promise<void> {
+export async function updateLatestRelease(projectNames: string[], globalConfig: FrozenGlobalConfig): Promise<boolean> {
     try {
         const { gitInfo: { repo: { repo, owner } } } = globalConfig;
         
         const db = loadDbFromConfig(globalConfig);
 
-        if (! db) { return; }
+        if (! db) { return false; }
 
         const app = GithubApplicationFactory();
         const gitHubInstallation = await app.authenticateAsAppAndInstallation({ repo, owner });
@@ -67,8 +67,10 @@ export async function updateLatestRelease(projectNames: string[], globalConfig: 
             }))
         }
     } catch (err) {
-        
+        return false;
     }
+
+    return true;
 }
 
 export async function beginBenchmarkComparisonCheck(targetCommit: string, { gitInfo }: FrozenGlobalConfig): Promise<{ check?: Octokit.ChecksCreateResponse, gitHubInstallation?: Octokit }> {

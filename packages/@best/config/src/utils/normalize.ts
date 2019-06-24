@@ -75,6 +75,7 @@ function setCliOptionOverrides(initialOptions: UserConfig, argsCLI: CliConfig): 
                     break;
                 case 'generateHTML':
                     options.generateHTML = Boolean(argsCLI[key]);
+                    break;
                 default:
                     options[key] = argsCLI[key];
                     break;

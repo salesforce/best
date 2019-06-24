@@ -140,4 +140,4 @@ export default function GithubApplicationFactory(
     }
 
     return new GithubFactory({ applicationId, certificate, userToken }, githubClientOptions);
-};
+}
