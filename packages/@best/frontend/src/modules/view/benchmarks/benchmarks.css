@@ -1,3 +1,8 @@
 .graph-wrapper {
     position: relative;
 }
+
+.stats {
+    text-align: center;
+    color: #444;
+}

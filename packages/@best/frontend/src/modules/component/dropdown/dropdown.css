@@ -20,7 +20,7 @@
 }
 
 .items {
-    z-index: 1;
+    z-index: 5;
     width: calc(100% - 2px);
     position: absolute;
     

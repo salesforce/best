@@ -191,7 +191,7 @@ export default class ComponentBenchmark extends LightningElement {
             this.pendingCommitsToCompare.delete(commit)
 
             this.selectedPoints.every((pastPoint, idx) => {
-                if (pastPoint.commit === commit && !pastPoint.hidden) {
+                if (pastPoint.commit === commit) {
                     this.selectedPoints[idx] = { ...pastPoint, pendingCompare: false };
                     return false;
                 }
@@ -214,6 +214,15 @@ export default class ComponentBenchmark extends LightningElement {
 
     runComparison() {
         store.dispatch(fetchComparison(this.benchmark.name, [...this.pendingCommitsToCompare]));
+    }
+
+    cancelComparison() {
+        this.pendingCommitsToCompare.forEach(commit => {
+            this.currentLayout = removeAnnotation(this.element, commit);
+        })
+
+        this.pendingCommitsToCompare = new Set();
+        this.selectedPoints = [];
     }
 
     closeModal() {

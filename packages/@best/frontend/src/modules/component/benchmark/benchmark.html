@@ -1,22 +1,20 @@
 <template>
     <div class={containerClassNames} data-metric={metric} data-first={first}>
+        <div class="header">
+            <h1 class="title">{benchmark.name}</h1>
+            <template if:true={comparing}>
+                <div class="compare-actions">
+                    <component-button flavor="close" onclick={cancelComparison}>Cancel</component-button>
+                    <component-button onclick={runComparison}>Compare</component-button>
+                </div>
+            </template>
+        </div>
         <template for:each={selectedPoints} for:item="point">
             <component-commit-info key={point.commit} hidden={point.hidden} pendingcompare={point.pendingCompare} commit={point.commit} left={point.left} top={point.top} oncompare={onCompareClick} onclose={closeCommitInfo}></component-commit-info>
         </template>
         <div class="graph" lwc:dom="manual"></div>
-        <template if:true={comparing}>
-            <span>Comparing: </span>
-            <template for:each={pendingCommitsToCompare} for:item="commit">
-                <span key={commit}>{commit} </span>
-            </template>
-            <button onclick={runComparison}>Run Comparison</button>
-        </template>
         <template if:true={showingComparison}>
             <component-modal onclose={closeModal} title="Comparison">
-                <span>Comparing: </span>
-                <template for:each={viewComparisonCommits} for:item="commit">
-                    <span key={commit}>{commit} </span>
-                </template>
                 <template if:true={hasComparisonResults}>
                     <div class="comparison-graph" lwc:dom="manual"></div>
                 </template>

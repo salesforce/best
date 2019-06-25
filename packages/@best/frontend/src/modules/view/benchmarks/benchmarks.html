@@ -1,6 +1,12 @@
 <template>
     <component-menubar></component-menubar>
     <section class="benchmarks" data-metric={viewMetric}>
+        <template if:true={hasStats}>
+            <div class="stats">
+                <p>Viewing <span>{numberOfCommits}</span> commits on <span>{numberOfBenchmarks}</span> benchmarks from <span>{startDate}</span> to <span>{endDate}</span></p>
+            </div>
+        </template>
+
         <template for:each={visibleBenchmarks} for:item="benchmark" for:index="index">
             <div key={benchmark.name} data-index={index} class="graph-wrapper">
                 <component-benchmark metric={viewMetric} benchmark={benchmark} first={benchmark.isFirst} zoom={viewZoom} onzoom={handleZoom}></component-benchmark>

@@ -1,7 +1,6 @@
 export function buildLayout(title, isFirst) {
     return {
         height: isFirst ? 400 * 1.15 : 400,
-        title,
         xaxis: {
             title: 'Commits',
             fixedrange: isFirst ? false : true,
@@ -15,7 +14,10 @@ export function buildLayout(title, isFirst) {
         },
         showlegend: false,
         side: 'bottom',
-        colorway: ['#e7a4b6', '#17BECF']
+        colorway: ['#DB5461', '#17BECF'],
+        margin: {
+            t: 0,
+        }
     };
 }
 
@@ -28,7 +30,7 @@ function buildLineTrend({ dates, values, name, commits }, showsVariation, compar
         name,
         line: {
             shape: 'spline',
-            width: 3
+            width: 2
         },
         opacity: 0.8,
         type: 'scatter',
@@ -49,8 +51,7 @@ function buildVarianceTrend({ dates, values, name, commits }) {
             color: 'transparent'
         },
         fill: 'tonexty',
-        fillcolor: name.includes('high') ? 'rgba(0, 0, 50, 0.1)' : 'transparent',
-        // fillcolor: 'rgba(0, 0, 50, 0.1)',
+        fillcolor: name.includes('high') ? 'rgba(70, 0, 160, 0.08)' : 'transparent',
         showlegend: false,
         hoverinfo: 'skip'
     };

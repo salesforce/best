@@ -2,8 +2,8 @@
     <div class={classNames} style={styleTag}>
         <div class="container">
             <section class="actions">
-                <button class="close" onclick={close}>Close</button>
-                <button class="compare" onclick={compare}>{compareButtonText}</button>
+                <component-button size="small" flavor="close" class="close" onclick={close}>Close</component-button>
+                <component-button size="small" flavor="primary" class="compare" onclick={compare}>{compareButtonText}</component-button>
             </section>
             <template if:true={hasCommitInfo}>
                 <template if:true={hasError}>

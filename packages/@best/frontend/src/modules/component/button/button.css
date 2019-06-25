@@ -1,13 +1,9 @@
 button {
     position: relative;
-    padding: 10px 14px;
     font: inherit;
     
     border-radius: 3px;
 
-    background: #00a3ff;
-    color: #fff;
-    box-shadow: 0 5px 8px rgba(0, 163, 255, 0.12), 0 1px 3px rgba(0, 0, 0, 0.1);
     border: none;
     cursor: pointer;
     text-transform: uppercase;
@@ -21,4 +17,25 @@ button:hover {
 
 button:active {
     transform: translateY(1px);
+}
+
+button.primary {
+    background: rgb(0, 163, 255);
+    box-shadow: 0 5px 8px rgba(0, 163, 255, 0.12);
+    color: #fff;
+}
+
+button.default {
+    padding: 10px 14px;
+}
+
+button.small {
+    padding: 8px 12px;
+    font-size: 85%;
+}
+
+button.close {
+    background: rgb(62, 63, 66);
+    box-shadow: 0 5px 8px rgba(62, 63, 66, 0.14);
+    color: #fff;
 }
