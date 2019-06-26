@@ -10,11 +10,10 @@ export interface HubConfig {
 
 function createHubApplication(config: HubConfig): HubApplication {
     const incomingQueue = new ObservableQueue<BenchmarkJob>();
-    const readyQueue = new ObservableQueue<BenchmarkJob>();
 
     const agentsManager = createAgentManager(config.categories);
 
-    return new HubApplication(incomingQueue, readyQueue, agentsManager);
+    return new HubApplication(incomingQueue, agentsManager);
 }
 
 

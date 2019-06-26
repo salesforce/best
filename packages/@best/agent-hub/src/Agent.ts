@@ -1,9 +1,9 @@
-// import socketIO from 'socket.io-client';
 import BenchmarkJob from "./BenchmarkJob";
-import {EventEmitter} from "events";
+import { EventEmitter} from "events";
 import socketIO from "socket.io-client";
 import SocketIOFile from "@best/runner-remote/build/file-uploader";
-import {BenchmarkResultsSnapshot, BenchmarkResultsState, BenchmarkRuntimeConfig} from "@best/types";
+import { BenchmarkResultsSnapshot, BenchmarkResultsState, BenchmarkRuntimeConfig } from "@best/types";
+import { loadBenchmarkJob } from "./benchmark-loader";
 
 export interface AgentConfig {
     category: string,
@@ -37,18 +37,28 @@ export class Agent extends EventEmitter {
         if (value !== this._status) {
             const oldValue = this._status;
             this._status = value;
-            this.emit('statuschanged', {
+            this.emit('status-changed', {
                 oldValue,
                 newValue: value
             })
         }
     }
 
-    runJob(job: BenchmarkJob) {
+    async runJob(job: BenchmarkJob) {
         if (this.status !== AgentStatus.Idle) {
             throw new Error("Can't run job in a busy agent");
         }
         this.status = AgentStatus.RunningJob;
+
+        // load the tar file...
+        try {
+            await loadBenchmarkJob(job);
+        } catch (err) {
+            console.log('Error while uploading file to the hub', err);
+            job.socketConnection.emit('benchmark_error', job.jobId, err);
+            this.status = AgentStatus.Idle;
+            return ;
+        }
 
         // eventually this can become a runner...
         this.proxifyJob(job)
@@ -73,7 +83,6 @@ export class Agent extends EventEmitter {
 
     private async proxifyJob(job: BenchmarkJob) {
         const self = this;
-        let jobRunning = true;
         const remoteAgentRunnerConfig = Object.assign(
             {},
             this._config.remoteRunnerConfig,
@@ -91,6 +100,22 @@ export class Agent extends EventEmitter {
 
         return new Promise(async (resolve, reject) => {
             const socket = socketIO(self._config.host, self._config.options);
+            let resolved: boolean = false;
+
+            job.socketConnection.on('disconnect', () => {
+                resolved = true;
+                socket.disconnect();
+                reject(new Error('Connection terminated'));
+            });
+
+            socket.on('connect_error', function() {
+                console.log("Connection error with hub: ", [self._config.host, self._config.options]);
+                self.status = AgentStatus.Offline;
+                // this is a special case that we need to handle with care, right now the job is scheduled to run in this hub
+                // which is offline, but, is not the job fault, it can run in another agent. Note: can be solved if we add a new queue, and retry in another queue.
+                reject(new Error('Agent running job became offline.'));
+                // @todo: add a retry logic?
+            });
 
             socket.on('connect', () => {
                 socket.on('load_benchmark', () => {
@@ -120,20 +145,25 @@ export class Agent extends EventEmitter {
                     job.socketConnection.emit('benchmark_enqueued', job.jobId, { pending });
                 });
 
+                // @todo: this should put the runner in a weird state and dont allow any new job until we can confirm the connection is valid.
                 socket.on('disconnect', (reason: string) => {
-                    if (jobRunning && reason === 'io server disconnect') {
+                    if (!resolved) {
+                        resolved = true;
+                        const err = new Error(reason);
                         job.socketConnection.emit('benchmark_error', job.jobId, reason);
-                        reject(new Error('Connection terminated'));
+                        reject(err);
                     }
                 });
 
                 socket.on('error', (err: any) => {
-                    console.log('Error in connection to agent > ', err);
+                    resolved = true;
+                    job.socketConnection.emit('benchmark_error', job.jobId, err instanceof Error ? err.message : err);
+                    socket.disconnect();
                     reject(err);
                 });
 
                 socket.on('benchmark_error', (err: any) => {
-                    jobRunning = false;
+                    resolved = true;
                     console.log(err);
                     job.socketConnection.emit('benchmark_error', job.jobId, err);
                     socket.disconnect();
@@ -141,7 +171,7 @@ export class Agent extends EventEmitter {
                 });
 
                 socket.on('benchmark_results', (result: BenchmarkResultsSnapshot) => {
-                    jobRunning = false;
+                    resolved = true;
                     job.socketConnection.emit('benchmark_results', job.jobId, result);
                     socket.disconnect();
                     resolve(result);
@@ -154,79 +184,6 @@ export class Agent extends EventEmitter {
                     globalConfig: job.globalConfig,
                 });
             });
-            // const socket: SocketIOClient.Socket = socketIO(this._config.host, this._config.options);
-            // let resolved: boolean = false;
-            //
-            //
-            // job.socketConnection.on('disconnect', () => {
-            //     resolved = true;
-            //     socket.disconnect();
-            //     reject(new Error('Connection terminated'));
-            // });
-            //
-            // socket.on('connect_error', function() {
-            //     console.log("Connection error with hub: ", [self._config.host, self._config.options]);
-            //     self.status = AgentStatus.Offline;
-            //     // this is a special case that we need to handle with care, right now the job is scheduled to run in this hub
-            //     // which is offline, but, is not the job fault, it can run in another agent. Note: can be solved if we add a new queue, and retry in another queue.
-            //     reject(new Error('Agent running job became offline.'));
-            //     // @todo: add a retry logic?
-            // });
-            //
-            // socket.on('connect', () => {
-            //     const remoteAgent: RemoteAgent = new RemoteAgent(socket);
-            //
-            //     remoteAgent.on('running_benchmark_start', (benchName: string, projectName: string) => {
-            //         job.socketConnection.emit('running_benchmark_start', benchName, projectName);
-            //     });
-            //
-            //     remoteAgent.on('running_benchmark_update', ({ state, opts }: any) => {
-            //         job.socketConnection.emit('running_benchmark_update', { state, opts });
-            //     });
-            //     remoteAgent.on('running_benchmark_end', (benchName: string, projectName: string) => {
-            //         job.socketConnection.emit('running_benchmark_end', benchName, projectName);
-            //
-            //     });
-            //
-            //     // @todo: this should put the runner in a weird state and dont allow any new job until we can confirm the connection is valid.
-            //     socket.on('disconnect', (reason: string) => {
-            //         if (!resolved) {
-            //             resolved = true;
-            //             const err = new Error(reason);
-            //             job.socketConnection.emit('benchmark_error', reason);
-            //             reject(err);
-            //         }
-            //     });
-            //
-            //
-            //     remoteAgent.on('error', (err: any) => {
-            //         job.socketConnection.emit('benchmark_error', err instanceof Error ? err.message : err);
-            //         socket.disconnect();
-            //         reject(err);
-            //     });
-            //
-            //     remoteAgent.on('benchmark_error', (err: any) => {
-            //         resolved = true;
-            //         job.socketConnection.emit('benchmark_error', err instanceof Error ? err.message : err);
-            //         socket.disconnect();
-            //         reject(new Error('Benchmark couldn\'t finish running. '));
-            //     });
-            //
-            //     remoteAgent.on('benchmark_results', ({ results, environment }: any) => {
-            //         resolved = true;
-            //         socket.disconnect();
-            //         job.socketConnection.emit('benchmark_results', { results, environment });
-            //         resolve({ results, environment });
-            //     });
-            //
-            //     remoteAgent.runBenchmark({
-            //         tarBundle: job.tarBundle,
-            //         benchmarkName: job.benchmarkName,
-            //         benchmarkSignature: job.benchmarkSignature,
-            //         projectConfig: overriddenProjectConfig,
-            //         globalConfig: job.globalConfig,
-            //     });
-            // });
 
             return true;
         });
