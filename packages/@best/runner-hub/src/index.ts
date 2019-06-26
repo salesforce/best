@@ -31,73 +31,53 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
         }
 
         // we need the socket dance here...
-        const socket = await createHubSocket(host, options); // socketIO(host, options);
+        const hubSocket = await createHubSocket(host, options);
 
-        // socket.on('connect', () => {
-        //     socket.on('load_benchmark', () => {
-        //         const uploader = new SocketIOFile(socket);
-        //         uploader.on('ready', () => {
-        //             uploader.upload(tarBundle);
-        //         });
-        //
-        //         uploader.on('error', (err) => {
-        //             reject(err);
-        //         });
-        //     });
+        hubSocket.on('running_benchmark_start', () => {
+            messager.log(`Running benchmarks remotely...`);
+            messager.onBenchmarkStart(benchmarkEntry);
+        });
 
-            socket.on('running_benchmark_start', () => {
-                messager.log(`Running benchmarks remotely...`);
-                messager.onBenchmarkStart(benchmarkEntry);
-            });
+        hubSocket.on('running_benchmark_update', (state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) => {
+            messager.updateBenchmarkProgress(state, opts);
+        });
+        hubSocket.on('running_benchmark_end', () => {
+            messager.onBenchmarkEnd(benchmarkEntry);
+        });
 
-            socket.on('running_benchmark_update', (state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) => {
-                messager.updateBenchmarkProgress(state, opts);
-            });
-            socket.on('running_benchmark_end', () => {
-                messager.onBenchmarkEnd(benchmarkEntry);
-            });
+        hubSocket.on('benchmark_enqueued', (pending: number) => {
+            messager.log(`Queued in agent. Pending tasks: ${pending}`);
+        });
 
-            socket.on('benchmark_enqueued', (pending: number) => {
-                messager.log(`Queued in agent. Pending tasks: ${pending}`);
-            });
+        hubSocket.on('disconnect', (reason: string) => {
+            if (reason === 'io server disconnect') {
+                reject(new Error('Connection terminated'));
+            }
+        });
 
-            socket.on('disconnect', (reason: string) => {
-                if (reason === 'io server disconnect') {
-                    reject(new Error('Connection terminated'));
-                }
-            });
+        hubSocket.on('error', (err: any) => {
+            console.log('Error in connection to agent > ', err);
+            reject(err);
+        });
 
-            socket.on('error', (err: any) => {
-                console.log('Error in connection to agent > ', err);
-                reject(err);
-            });
+        hubSocket.on('benchmark_error', (err: any) => {
+            hubSocket.disconnect();
+            console.log(err);
+            reject(new Error('Benchmark couldn\'t finish running. '));
+        });
 
-            socket.on('benchmark_error', (err: any) => {
-                console.log(err);
-                reject(new Error('Benchmark couldn\'t finish running. '));
-            });
+        hubSocket.on('benchmark_results', (result: BenchmarkResultsSnapshot) => {
+            hubSocket.disconnect();
+            resolve(result);
+        });
 
-            socket.on('benchmark_results', (result: BenchmarkResultsSnapshot) => {
-                socket.disconnect();
-                resolve(result);
-            });
-
-            socket.runBenchmark({
-                benchmarkName,
-                benchmarkSignature,
-                tarBundle,
-                projectConfig: remoteProjectConfig,
-                globalConfig,
-            });
-
-            // socket.emit('benchmark_task', {
-            //     benchmarkName,
-            //     benchmarkSignature,
-            //     tarBundle,
-            //     projectConfig: remoteProjectConfig,
-            //     globalConfig,
-            // });
-        // });
+        hubSocket.runBenchmark({
+            benchmarkName,
+            benchmarkSignature,
+            tarBundle,
+            projectConfig: remoteProjectConfig,
+            globalConfig,
+        });
 
         return true;
     });

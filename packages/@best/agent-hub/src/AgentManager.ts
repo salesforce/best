@@ -2,20 +2,6 @@ import { EventEmitter } from "events";
 import { Agent, AgentConfig, AgentStatus } from "./Agent";
 import BenchmarkJob from "./BenchmarkJob";
 
-interface AgentConnection {
-    host: string,
-    options: {
-        path: string
-    }
-}
-
-export interface AgentCategory {
-    category: string,
-    remoteRunner: string,
-    remoteRunnerConfig?: object,
-    agents: AgentConnection[]
-}
-
 export class AgentManager extends EventEmitter {
     private agents: Agent[] = [];
 
@@ -44,17 +30,8 @@ export class AgentManager extends EventEmitter {
     }
 }
 
-export function createAgentManager(categoriesConfig: AgentCategory[]): AgentManager {
-    const agents: Agent[] = [];
-    categoriesConfig.forEach((categoryConfig: AgentCategory) => {
-        const { category, remoteRunner, remoteRunnerConfig = {} } = categoryConfig;
-
-        categoryConfig.agents.forEach((agentConnection: AgentConnection) => {
-            const agentConfig : AgentConfig = Object.assign({category, remoteRunner, remoteRunnerConfig}, agentConnection);
-
-            agents.push(new Agent(agentConfig));
-        });
-    });
+export function createAgentManager(agentsConfig: AgentConfig[]): AgentManager {
+    const agents: Agent[] = agentsConfig.map((agentConfig: AgentConfig) => new Agent(agentConfig));
 
     return new AgentManager(agents);
 }

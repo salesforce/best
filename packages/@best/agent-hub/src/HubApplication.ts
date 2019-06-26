@@ -32,7 +32,7 @@ export class HubApplication {
                 this._incomingQueue.push(job);
             } else {
                 // there is no agent to run this job
-                socket.emit('benchmark_error', 'There is no agent in the hub that match the specs to run this job.');
+                socket.emit('benchmark_error', job.jobId, 'There is no agent in the hub that match the specs to run this job.');
                 socket.disconnect(true);
             }
         });

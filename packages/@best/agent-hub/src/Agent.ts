@@ -1,16 +1,20 @@
 import BenchmarkJob from "./BenchmarkJob";
 import { EventEmitter} from "events";
 import socketIO from "socket.io-client";
+// @todo: use this indirectly... make an abstraction for the runner in agent
 import SocketIOFile from "@best/runner-remote/build/file-uploader";
 import { BenchmarkResultsSnapshot, BenchmarkResultsState, BenchmarkRuntimeConfig } from "@best/types";
 import { loadBenchmarkJob } from "./benchmark-loader";
 
 export interface AgentConfig {
-    category: string,
     host: string,
     options: {
         path: string
     },
+    spec: {
+        browser: string,
+        version: string,
+    }
     remoteRunner: string,
     remoteRunnerConfig?: object
 }
@@ -73,8 +77,15 @@ export class Agent extends EventEmitter {
     }
 
     canRunJob(job: BenchmarkJob): boolean {
-        return job.projectConfig.benchmarkRunner === this._config.category &&
-            this.status !== AgentStatus.Offline;
+        const jobRunnerConfig = job.projectConfig.benchmarkRunnerConfig;
+        const jobSpec = jobRunnerConfig.spec || {};
+        const jobHasSameSpec = jobSpec.browser == this._config.spec.browser &&
+            jobSpec.version === this._config.spec.version;
+
+        return jobHasSameSpec && this.status !== AgentStatus.Offline;
+
+        // return job.projectConfig.benchmarkRunner === this._config.category &&
+        //     this.status !== AgentStatus.Offline;
     }
 
     isIdle(): boolean {
