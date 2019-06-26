@@ -57,7 +57,7 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
                 messager.onBenchmarkEnd(benchmarkEntry);
             });
 
-            socket.on('benchmark_enqueued', ({ pending }: { pending: number }) => {
+            socket.on('benchmark_enqueued', (pending: number) => {
                 messager.log(`Queued in agent. Pending tasks: ${pending}`);
             });
 

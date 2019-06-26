@@ -24,9 +24,9 @@ export class AgentManager extends EventEmitter {
         this.agents = agents;
 
         this.agents.forEach((agent: Agent) => {
-            agent.on('statuschanged', ({ newValue }: { newValue: AgentStatus }) => {
+            agent.on('status-changed', ({ newValue }: { newValue: AgentStatus }) => {
                 if (newValue === AgentStatus.Idle) {
-                    this.emit('idleagent', agent);
+                    this.emit('idle-agent', agent);
                 }
             })
         });
