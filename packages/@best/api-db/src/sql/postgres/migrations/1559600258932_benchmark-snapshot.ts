@@ -1,13 +1,13 @@
-exports.shorthands = undefined;
+import { MigrationBuilder } from 'node-pg-migrate';
 
-exports.up = pgm => {
+exports.up = (pgm: MigrationBuilder) => {
     pgm.createTable('snapshots', {
         id: 'id',
         project_id: {
             type: 'integer',
             notNull: true,
             references: '"projects"',
-            onDelete: 'cascade',
+            onDelete: 'CASCADE',
         },
         name: { type: 'varchar(200)', notNull: true },
         metrics: { type: 'varchar(2000)', notNull: true },
@@ -29,6 +29,6 @@ exports.up = pgm => {
     pgm.createIndex('snapshots', 'project_id');
 };
 
-exports.down = pgm => {
+exports.down = (pgm: MigrationBuilder) => {
     pgm.dropTable('snapshots');
 };

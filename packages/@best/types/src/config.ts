@@ -61,7 +61,7 @@ export interface NormalizedConfig {
     generateHTML: boolean,
     useHttp: boolean,
     externalStorage?: string,
-    apiDatabase?: ApiDatabaseConfig,
+    apiDatabase: ApiDatabaseConfig | false,
     commentThreshold: number,
     isInteractive?: boolean,
     openPages: boolean,
@@ -97,7 +97,7 @@ export interface GlobalConfig {
     nonFlagArgs: string[];
     isInteractive?: boolean;
     gitInfo: GitConfig;
-    apiDatabase?: ApiDatabaseConfig;
+    apiDatabase: ApiDatabaseConfig | false;
     commentThreshold: number;
     externalStorage?: string;
 }

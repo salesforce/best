@@ -23,42 +23,36 @@ export class SQLAdapter extends ApiDBAdapter {
     }
 
     async saveSnapshots(snapshots: TemporarySnapshot[], projectName: string): Promise<boolean> {
-        try {
-            let projectResult = await this.db.fetchProject(projectName)
+        let projectResult = await this.db.fetchProject(projectName)
 
-            if (projectResult.rows.length < 1) {
-                await this.db.createProject(projectName)
-                projectResult = await this.db.fetchProject(projectName)
-            }
-
-            const projectId = projectResult.rows[0].id
-
-            await Promise.all(snapshots.map(async (snapshot) => {
-                return this.db.createOrUpdateSnapshot(snapshot, projectId)
-            }))
-        } catch (err) {
-            console.error('[API-DB] Could not save results into database.')
-            return false
+        if (projectResult.rows.length < 1) {
+            await this.db.createProject(projectName, true)
+            projectResult = await this.db.fetchProject(projectName)
         }
+
+        const projectId = projectResult.rows[0].id
+
+        await Promise.all(snapshots.map(async (snapshot) => {
+            return this.db.createOrUpdateSnapshot(snapshot, projectId)
+        }))
 
         return true
     }
 
     async updateLastRelease(projectName: string, release: string | Date): Promise<boolean> {
-        try {
-            const projectResult = await this.db.fetchProject(projectName)
+        const projectResult = await this.db.fetchProject(projectName)
 
-            if (projectResult.rows.length > 0) {
-                const projectId = projectResult.rows[0].id
-                await this.db.updateProjectLastRelease(projectId, release)
-            } else {
-                throw new Error(`Project with name: '${projectName}' does not exist.`)
-            }
-        } catch (err) {
-            console.log('[API-DB] Could not update latest result')
-            return false
+        if (projectResult.rows.length > 0) {
+            const projectId = projectResult.rows[0].id
+            await this.db.updateProjectLastRelease(projectId, release)
+        } else {
+            throw new Error(`Project with name: '${projectName}' does not exist.`)
         }
 
         return true
+    }
+
+    migrate() {
+        return this.db.performMigrations()
     }
 }

@@ -151,24 +151,28 @@ export function normalizeConfig(userConfig: UserConfig, cliOptions: CliConfig): 
     const userCliMergedConfig = normalizeRootDir(setCliOptionOverrides(userConfig, cliOptions));
     const normalizedConfig: NormalizedConfig = { ...DEFAULT_CONFIG, ...userCliMergedConfig };
 
-    // Normalize anything thats coming from the user
-    Object.keys(userCliMergedConfig).reduce((mergeConfig: NormalizedConfig, key: string) => {
+    Object.keys(normalizedConfig).reduce((mergeConfig: NormalizedConfig, key: string) => {
         switch (key) {
             case 'projects':
-                mergeConfig[key] = normalizeModulePathPatterns(userCliMergedConfig, key);
+                mergeConfig[key] = normalizeModulePathPatterns(normalizedConfig, key);
                 break;
             case 'plugins':
-                mergeConfig[key] = normalizePlugins(userCliMergedConfig[key], userCliMergedConfig);
+                mergeConfig[key] = normalizePlugins(normalizedConfig[key], normalizedConfig);
                 break;
             case 'runner':
-                mergeConfig[key] = normalizeRunner(userCliMergedConfig[key], mergeConfig.runners);
+                mergeConfig[key] = normalizeRunner(normalizedConfig[key], mergeConfig.runners);
                 break;
             case 'runnerConfig':
-                mergeConfig[key] = normalizeRunnerConfig(userCliMergedConfig['runner'], mergeConfig.runners);
+                mergeConfig[key] = normalizeRunnerConfig(normalizedConfig['runner'], mergeConfig.runners);
                 break;
             case 'compareStats':
-                mergeConfig[key] = normalizeCommits(userCliMergedConfig[key]);
+                mergeConfig[key] = normalizeCommits(normalizedConfig[key]);
                 break;
+            case 'apiDatabase': {
+                const apiDatabaseConfig = normalizedConfig[key];
+                mergeConfig[key] = apiDatabaseConfig ? normalizeObjectPathPatterns(apiDatabaseConfig, normalizedConfig.rootDir) : apiDatabaseConfig;
+                break;
+            }
             default:
                 break;
         }

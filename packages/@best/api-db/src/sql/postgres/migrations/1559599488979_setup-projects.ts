@@ -1,6 +1,6 @@
-exports.shorthands = undefined;
+import { MigrationBuilder } from 'node-pg-migrate';
 
-exports.up = pgm => {
+exports.up = (pgm: MigrationBuilder) => {
     pgm.createTable('projects', {
         id: 'id',
         name: { type: 'varchar(100)', notNull: true },
@@ -10,8 +10,10 @@ exports.up = pgm => {
             default: pgm.func('current_timestamp'),
         },
     });
+
+    pgm.createIndex('projects', 'name', { unique: true, name: 'projects_unique_name' })
 };
 
-exports.down = pgm => {
+exports.down = (pgm: MigrationBuilder) => {
     pgm.dropTable('projects');
 };

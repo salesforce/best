@@ -34,8 +34,16 @@ export abstract class SQLDatabase {
         return this.query('SELECT * FROM projects WHERE "name" = $1 LIMIT 1', [name])
     }
 
-    createProject(name: string): Promise<SQLQueryResult> {
-        return this.query('INSERT INTO projects("name") VALUES ($1)', [name])
+    async createProject(name: string, swallowNonUniqueErrors: boolean = false): Promise<SQLQueryResult> {
+        try {
+            return await this.query('INSERT INTO projects("name") VALUES ($1)', [name]);
+        } catch (err) {
+            if (swallowNonUniqueErrors && (err.constraint === 'projects_unique_name' || err.code === 'SQLITE_CONSTRAINT')) {
+                return this.fetchProject(name);
+            }
+
+            throw err;
+        }
     }
 
     updateProjectLastRelease(id: number, release: string | Date): Promise<SQLQueryResult> {
@@ -49,16 +57,19 @@ export abstract class SQLDatabase {
 
     async createOrUpdateSnapshot(snapshot: TemporarySnapshot, projectId: number): Promise<SQLQueryResult> {
         try {
-            return await this.createSnapshot(snapshot, projectId)
+            return await this.createSnapshot(snapshot, projectId);
         } catch (err) {
-            if (err.constraint === 'best_snapshot_unqiue_index') {
+            if (err.constraint === 'best_snapshot_unqiue_index' || err.code === 'SQLITE_CONSTRAINT') {
                 const updatedAt = new Date()
                 const values = [normalizeMetrics(snapshot.metrics), snapshot.environmentHash, snapshot.similarityHash, updatedAt, projectId, snapshot.commit, snapshot.name]
                 return this.query('UPDATE snapshots SET "metrics" = $1, "environment_hash" = $2, "similarity_hash" = $3, "updated_at" = $4 WHERE "project_id" = $5 AND "commit" = $6 AND "name" = $7', values)
-            } else {
-                console.log(err)
-                throw err;
             }
+
+            throw err;
         }
+    }
+
+    async performMigrations() {
+        throw new Error('Migrations are not implemented.')
     }
 }
