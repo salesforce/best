@@ -1,6 +1,6 @@
+import { readFileSync } from 'fs';
 import express from 'express';
 import { HubConfig, runHub } from '../hub-server';
-import { readFileSync } from 'fs';
 const PORT = process.env.PORT || 5000;
 const SSL_PFX_FILE = process.env.SSL_PFX_FILE;
 const SSL_PFX_PASSPHRASE = process.env.SSL_PFX_PASSPHRASE;
@@ -19,18 +19,15 @@ function getDefaultConfig(configAsJSON?: string): HubConfig {
 
 export function run(config?: HubConfig) {
     const app = express();
-    let server;
+    const enableHttps = SSL_PFX_FILE && SSL_PFX_PASSPHRASE;
+    const http = require(enableHttps ? 'https' : 'http');
 
-    if (SSL_PFX_FILE && SSL_PFX_PASSPHRASE) {
-        const options = {
-            pfx: readFileSync(SSL_PFX_FILE),
-            passphrase: SSL_PFX_PASSPHRASE
-        };
-        server = require('https').createServer(options, app);
-    } else {
-        server = require('http').createServer(app);
-    }
+    const options = {
+        pfx: SSL_PFX_FILE ? readFileSync(SSL_PFX_FILE) : undefined,
+        passphrase: enableHttps ? SSL_PFX_PASSPHRASE: undefined
+    };
 
+    const server = http.createServer(options, app);
     server.listen(PORT);
 
     app.get('/', (req, res) => res.send('BEST agent hub running!'));
