@@ -51,7 +51,10 @@ export default (config: FrontendConfig): Router => {
 
     router.get('/projects', async (req, res): Promise<void> => {
         try {
+            await db.migrate()
+            
             const projects = await db.fetchProjects()
+
             res.send({
                 projects
             })
@@ -65,10 +68,13 @@ export default (config: FrontendConfig): Router => {
         const { since } = req.query
 
         try {
+            await db.migrate()
+
             let parsedSince: Date | undefined;
             if (since && since.length > 0) {
                 parsedSince = new Date(parseInt(since, 10))
             }
+            
             const snapshots = await db.fetchSnapshots(project, parsedSince)
 
             res.send({
