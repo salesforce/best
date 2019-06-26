@@ -1,0 +1,12 @@
+{
+  "extends": "../../../tsconfig.settings.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build"
+  },
+  "references": [
+    { "path": "../runner-remote" },
+    { "path": "../utils" },
+    { "path": "../types" }
+  ]
+}
