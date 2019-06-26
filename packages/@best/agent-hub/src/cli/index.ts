@@ -7,7 +7,7 @@ const SSL_PFX_PASSPHRASE = process.env.SSL_PFX_PASSPHRASE;
 const DEFAULT_CONFIG = getDefaultConfig(process.env.CONFIG);
 
 function getDefaultConfig(configAsJSON?: string): HubConfig {
-    const minimumConfig = { categories: [] };
+    const minimumConfig = { agents: [] };
     let resultConfig = {};
 
     if (configAsJSON) {

@@ -1,17 +1,18 @@
 import socketIO, * as SocketIO from 'socket.io';
 import BenchmarkJob from "./BenchmarkJob";
 import ObservableQueue from "./utils/ObservableQueue";
-import { AgentCategory, createAgentManager } from "./AgentManager";
+import { createAgentManager } from "./AgentManager";
 import { HubApplication } from "./HubApplication";
+import { AgentConfig } from "./Agent";
 
 export interface HubConfig {
-    categories: AgentCategory[],
+    agents: AgentConfig[],
 }
 
 function createHubApplication(config: HubConfig): HubApplication {
     const incomingQueue = new ObservableQueue<BenchmarkJob>();
 
-    const agentsManager = createAgentManager(config.categories);
+    const agentsManager = createAgentManager(config.agents);
 
     return new HubApplication(incomingQueue, agentsManager);
 }
