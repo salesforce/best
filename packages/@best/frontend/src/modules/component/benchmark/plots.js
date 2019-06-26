@@ -21,12 +21,12 @@ export function buildLayout(title, isFirst) {
     };
 }
 
-function buildLineTrend({ dates, values, name, commits }, showsVariation, comparison) {
+function buildLineTrend({ dates, values, name, commits }, showsVariation) {
     return {
         y: values,
         x: commits.map(commit => commit.slice(0, 7)),
         text: dates,
-        mode: comparison ? 'lines+markers' : 'lines',
+        mode: 'lines+markers',
         name,
         line: {
             shape: 'spline',
@@ -34,7 +34,9 @@ function buildLineTrend({ dates, values, name, commits }, showsVariation, compar
         },
         opacity: 0.8,
         type: 'scatter',
-        hoverinfo: 'text+y+x',
+        // TODO: format date better
+        hoveron: 'points+fills',
+        hovertemplate: '%{y}ms<br>%{text}<extra></extra>',
         fill: showsVariation ? 'none' : 'tozeroy'
     };
 }
@@ -53,15 +55,16 @@ function buildVarianceTrend({ dates, values, name, commits }) {
         fill: 'tonexty',
         fillcolor: name.includes('high') ? 'rgba(70, 0, 160, 0.08)' : 'transparent',
         showlegend: false,
-        hoverinfo: 'skip'
+        hoverinfo: 'skip',
+        hoveron: 'fills'
     };
 }
 
-function buildTrend(object, showsVariation, comparison) {
+function buildTrend(object, showsVariation) {
     if (object.type === 'filled') {
         return buildVarianceTrend(object);
     } else if (object.type === 'line') {
-        return buildLineTrend(object, showsVariation, comparison);
+        return buildLineTrend(object, showsVariation);
     }
 
     return {};
@@ -103,14 +106,14 @@ export function normalizeTitle(benchmarkName) {
     return parts.join(':');
 }
 
-export function buildTrends(benchmark, showsVariation = true, comparison = false) {
+export function buildTrends(benchmark, showsVariation = true) {
     let trends;
     if (showsVariation) {
         // create a combined dataset for graphing that has the low, high, and median values
         const combinedDatasets = buildCombinedValues(benchmark.metrics, benchmark);
         
         // for each metric and then for each of (median, low, high) create the trend layout
-        trends = combinedDatasets.flatMap(combined => combined.map(set => buildTrend(set, showsVariation, comparison)));
+        trends = combinedDatasets.flatMap(combined => combined.map(set => buildTrend(set, showsVariation)));
     } else {
         trends = benchmark.metrics.map(metric => buildLineTrend({ commits: benchmark.commits, keys: benchmark.commitDates, values: metric.durations, name: metric.name }, showsVariation));
     }

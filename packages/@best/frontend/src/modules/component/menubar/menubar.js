@@ -87,7 +87,9 @@ export default class ComponentMenubar extends LightningElement {
     }
 
     get isZoomed() {
-        if (this.viewZoom.hasOwnProperty('xaxis.range')) {
+        if (! this.viewZoom) {
+            return false;
+        } else if (this.viewZoom.hasOwnProperty('xaxis.range')) {
             return true;
         } else if (this.viewZoom.hasOwnProperty('xaxis.range[0]')) {
             return true;

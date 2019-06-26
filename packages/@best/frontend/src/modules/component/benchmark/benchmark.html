@@ -14,7 +14,7 @@
         </template>
         <div class="graph" lwc:dom="manual"></div>
         <template if:true={showingComparison}>
-            <component-modal onclose={closeModal} title="Comparison">
+            <component-modal onclose={closeModal} title={comparisonModalTitle}>
                 <template if:true={hasComparisonResults}>
                     <div class="comparison-graph" lwc:dom="manual"></div>
                 </template>

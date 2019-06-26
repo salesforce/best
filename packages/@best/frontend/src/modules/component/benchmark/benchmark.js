@@ -97,6 +97,10 @@ export default class ComponentBenchmark extends LightningElement {
         return this.comparing ? 'comparing container' : 'container';
     }
 
+    get comparisonModalTitle() {
+        return `Comparing on ${this.comparisonName}`
+    }
+
     // METHODS
 
     handleRelayout(update) {
