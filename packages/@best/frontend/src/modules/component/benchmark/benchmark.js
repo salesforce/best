@@ -1,5 +1,6 @@
 import { LightningElement, track, api, wire } from 'lwc';
-import { drawPlot, buildTrends, buildLayout, relayout, createAnnotation, removeAnnotation } from './plots';
+import { drawPlot, buildTrends, buildLayout, relayout, createAnnotation, removeAnnotation, createInconsistencyAnnotation } from './plots';
+import { findInconsistencies } from './utils';
 
 import { connectStore, store } from 'store/store';
 import { fetchComparison, comparisonChanged } from 'store/actions';
@@ -234,6 +235,15 @@ export default class ComponentBenchmark extends LightningElement {
         store.dispatch(comparisonChanged());
     }
 
+    displayAnnotationsForInconsistencies() {
+        findInconsistencies(this.benchmark, 'environmentHashes').forEach(x => {
+            this.currentLayout = createInconsistencyAnnotation(this.element, x)
+        })
+        findInconsistencies(this.benchmark, 'similarityHashes').forEach(x => {
+            this.currentLayout = createInconsistencyAnnotation(this.element, x)
+        })
+    }
+
     async renderedCallback() {
         if (!this.element) this.element = this.template.querySelector('.graph');
 
@@ -253,6 +263,8 @@ export default class ComponentBenchmark extends LightningElement {
         if (!this.hasSetInitialZoom) {
             this.hasSetInitialZoom = true;
             this.updateGraphZoom();
+
+            this.displayAnnotationsForInconsistencies();
         }
 
         // COMPARISON

@@ -166,6 +166,31 @@ export function createAnnotation(element, point) {
     return relayout(element, update);
 }
 
+export function createInconsistencyAnnotation(element, x) {
+    const annotation = {
+        x,
+        y: element.layout.yaxis.range[0],
+        xref: 'x',
+        yref: 'y',
+        showarrow: true,
+        arrowcolor: '#f00',
+        text: '⚠️',
+        arrowhead: 0,
+        ax: 0,
+        ay: element.layout.yaxis.range[0],
+        ayref: 'y'
+    }
+
+    const newIndex = (element.layout.annotations || []).length;
+
+    const update = {
+        [`annotations[${newIndex}]`]: annotation,
+        'yaxis.range': element.layout.yaxis.range // we don't want Plotly to change the yaxis bc of the annotation
+    }
+
+    return relayout(element, update);
+}
+
 export function removeAnnotation(element, commit) {
     element.layout.annotations.every((annotation, idx) => {
         if (annotation._commit === commit) {
