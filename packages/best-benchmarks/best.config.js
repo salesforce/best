@@ -13,6 +13,15 @@ module.exports = {
                 "options": { path: "/best" },
                 "remoteRunner": "@best/runner-headless"
             }
+        },
+        {
+            "runner": "@best/runner-hub",
+            "alias": "hub",
+            "config": {
+                "host": "http://localhost:6000",
+                "options": { path: "/hub" },
+                "remoteRunner": "chrome-73-headless"
+            }
         }
     ]
 };

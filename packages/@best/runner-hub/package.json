@@ -1,0 +1,16 @@
+{
+  "name": "@best/runner-hub",
+  "version": "4.0.0",
+  "description": "Best Runner (Hub)",
+  "keywords": [
+    "Best",
+    "Runner",
+    "Remote Hub",
+    "performance"
+  ],
+  "main": "build/index.js",
+  "dependencies": {
+    "socket.io-client": "~2.2.0",
+    "tar": "~4.4.10"
+  }
+}
