@@ -151,3 +151,24 @@ Example using the tool: (generate a client token for the hub using `password` as
 node bin/generate-client-token.js -s password -c --ttl "45 days"
 ```
 
+### Adding agents to the hub once started
+
+Once the hub has already started you can add agents by doing a post request to `/api/v1/agents`. Example:
+
+```bash
+curl -X POST \
+  http://localhost:6000/api/v1/agents \
+  -H 'authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6ImFnZW50IiwiaWF0IjoxNTYxNjE0MjM3LCJleHAiOjE1NzcxNjYyMzd9.IjdCBSPPIGSgpYHN8Pxhusaiv48T1t6rmxR2xzdp17M' \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+  -d '{
+	"host":"http://localhost:5000",
+	"options":{"path":"/best"},
+	"remoteRunner":"@best/runner-headless",
+	"remoteRunnerConfig":{},
+	"spec": {
+		"browser": "chrome",
+		"version": "76"
+	}
+}'
+```

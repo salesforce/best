@@ -38,6 +38,10 @@ export class HubApplication {
         });
     };
 
+    get agentManager() {
+        return this._agentManager;
+    }
+
     private attachEventListeners() {
         // @todo: rename the event to match each other
         this._agentManager.on('idle-agent', this.handleIdleAgent);
