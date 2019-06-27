@@ -83,9 +83,6 @@ export class Agent extends EventEmitter {
             jobSpec.version === this._config.spec.version;
 
         return jobHasSameSpec && this.status !== AgentStatus.Offline;
-
-        // return job.projectConfig.benchmarkRunner === this._config.category &&
-        //     this.status !== AgentStatus.Offline;
     }
 
     isIdle(): boolean {

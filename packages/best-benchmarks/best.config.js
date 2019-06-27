@@ -19,8 +19,16 @@ module.exports = {
             "alias": "hub",
             "config": {
                 "host": "http://localhost:6000",
-                "options": { path: "/hub" },
-                "remoteRunner": "chrome-73-headless"
+                "options": {
+                    path: "/hub",
+                    query: {
+                        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6ImNsaWVudCIsImlhdCI6MTU2MTYwNzI1OCwiZXhwIjoxNTY0MTk5MjU4fQ.BER-PIIlsf6NWNBctWrmS1YWB4QkI2aYiNp0BE6aASU'
+                    }
+                },
+                "spec": {
+                    "browser": "chrome",
+                    "version": "76"
+                }
             }
         }
     ]
