@@ -28,7 +28,6 @@ export function buildLayout(title, isFirst) {
             xanchor: 'right'
         },
         side: 'bottom',
-        // colorway: ['#DB5461', '#17BECF'],
         margin: {
             t: 0,
         }

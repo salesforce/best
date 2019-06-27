@@ -21,14 +21,15 @@ export default class ComponentBenchmark extends LightningElement {
     @track comparisonResults = {};
     @track comparisonName = null;
 
+    @api metric = 'all';
+
     @wire(connectStore, { store })
     storeChanged({ view }) {
         this.comparisonResults = view.comparison.results;
         this.viewComparisonCommits = view.comparison.commits;
         this.comparisonName = view.comparison.benchmarkName;
+        this.metric = view.metric;
     }
-
-    @api metric;
 
     _first;
     @api
@@ -264,7 +265,7 @@ export default class ComponentBenchmark extends LightningElement {
             this.hasSetInitialZoom = true;
             this.updateGraphZoom();
 
-            this.displayAnnotationsForInconsistencies();
+            // this.displayAnnotationsForInconsistencies();
         }
 
         // COMPARISON

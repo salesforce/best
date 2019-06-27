@@ -10,7 +10,6 @@ export default class ViewBenchmarks extends LightningElement {
 
     viewTiming;
     @track viewBenchmark;
-    @track viewMetric;
 
     @track viewZoom;
 
@@ -31,10 +30,6 @@ export default class ViewBenchmarks extends LightningElement {
                 isFirst: idx === 0
             }))
             this.allBenchmarks = benchmarks.items;
-        }
-
-        if (this.viewMetric !== view.metric) {
-            this.viewMetric = view.metric;
         }
 
         this.viewTiming = view.timing;
