@@ -8,7 +8,7 @@
         </template>
 
         <template for:each={visibleBenchmarks} for:item="benchmark" for:index="index">
-            <div key={benchmark.name} data-index={index} class="graph-wrapper">
+            <div key={benchmark.name} data-index={index} class="benchmark-wrapper">
                 <component-benchmark metric={viewMetric} benchmark={benchmark} first={benchmark.isFirst} zoom={viewZoom} onzoom={handleZoom}></component-benchmark>
             </div>
         </template>

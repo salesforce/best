@@ -24,6 +24,14 @@
     margin: 0 10px;
 }
 
+.container[data-first="true"] .graph-wrapper {
+    height: 460px;
+}
+
+.container[data-first="false"] .graph-wrapper {
+    height: 400px;
+}
+
 /*
  * We need to have this css here from the Plotly library because otherwise the shadow dom
  * restricts this css from applying to our graphs.

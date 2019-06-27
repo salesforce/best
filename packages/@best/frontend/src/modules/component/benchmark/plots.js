@@ -1,3 +1,8 @@
+const colorForName = (name) => {
+    const colors = {'first-paint': '#17BECF', 'duration': '#DB5461', 'runDuration': '#ccc'};
+    return colors[name] || '#000';
+}
+
 export function buildLayout(title, isFirst) {
     return {
         height: isFirst ? 400 * 1.15 : 400,
@@ -12,9 +17,18 @@ export function buildLayout(title, isFirst) {
             title: 'ms',
             zeroline: false
         },
-        showlegend: false,
+        showlegend: isFirst ? true : false,
+        legend: {
+            x: 1,
+            y: 1.02,
+            orientation: 'h',
+            traceorder: 'reversed',
+            itemclick: false,
+            itemdoubleclick: false,
+            xanchor: 'right'
+        },
         side: 'bottom',
-        colorway: ['#DB5461', '#17BECF'],
+        // colorway: ['#DB5461', '#17BECF'],
         margin: {
             t: 0,
         }
@@ -30,7 +44,8 @@ function buildLineTrend({ dates, values, name, commits }, showsVariation) {
         name,
         line: {
             shape: 'spline',
-            width: 2
+            width: 2,
+            color: colorForName(name)
         },
         opacity: 0.8,
         type: 'scatter',
