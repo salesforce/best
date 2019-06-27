@@ -9,13 +9,7 @@ export class AgentManager extends EventEmitter {
         super();
         this.agents = agents;
 
-        this.agents.forEach((agent: Agent) => {
-            agent.on('status-changed', ({ newValue }: { newValue: AgentStatus }) => {
-                if (newValue === AgentStatus.Idle) {
-                    this.emit('idle-agent', agent);
-                }
-            })
-        });
+        this.agents.forEach((agent: Agent) => this.addStatusChangeListener(agent));
     }
 
     getIdleAgentForJob(job: BenchmarkJob): Agent | null {
@@ -28,6 +22,20 @@ export class AgentManager extends EventEmitter {
     existAgentForJob(job: BenchmarkJob): boolean {
         return this.agents.some((agent: Agent) => agent.canRunJob(job));
     }
+
+    addAgent(agent: Agent) {
+        //@todo: Validate that agent is not repeated
+        this.agents.push(agent);
+        this.addStatusChangeListener(agent);
+    }
+
+    private addStatusChangeListener = (agent: Agent) => {
+        agent.on('status-changed', ({ newValue }: { newValue: AgentStatus }) => {
+            if (newValue === AgentStatus.Idle) {
+                this.emit('idle-agent', agent);
+            }
+        });
+    };
 }
 
 export function createAgentManager(agentsConfig: AgentConfig[]): AgentManager {

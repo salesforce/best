@@ -33,8 +33,10 @@ export function run(config?: HubConfig) {
     const server = http.createServer(options, app);
     server.listen(PORT);
 
+    app.use(express.json());
+
     app.get('/', (req, res) => res.send('BEST agent hub running!'));
     process.stdout.write(`Best agent hub listening in port ${PORT}... \n\n`);
 
-    runHub(server, config ? config : DEFAULT_CONFIG);
+    runHub(server, app, config ? config : DEFAULT_CONFIG);
 }
