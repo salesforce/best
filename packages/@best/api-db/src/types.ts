@@ -48,4 +48,8 @@ export class ApiDBAdapter {
     updateLastRelease(projectName: string, release: string | Date): Promise<boolean> {
         throw new Error('ApiDB.updateLastRelease() not implemented')
     }
+
+    migrate() {
+        throw new Error('ApiDB.migrate() not implemented')
+    }
 }

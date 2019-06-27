@@ -78,6 +78,16 @@ export const options: { [key: string]: Options } = {
         description: 'Generate a static HTML version of the results of the benchmrak or comparison',
         type: 'boolean',
     },
+    dbAdapter: {
+        default: undefined,
+        description: 'Override which database adapter is used. By default Best comes with `sql/sqlite` and `sql/postgres`',
+        type: 'string',
+    },
+    dbURI: {
+        default: undefined,
+        description: 'Provide a connection URI or path to be passed to the database adapter',
+        type: 'string',
+    },
     runner: {
         default: 'default',
         description:
@@ -99,7 +109,7 @@ export const options: { [key: string]: Options } = {
 };
 
 export function normalize(args: { [x: string]: any; _: string[]; $0: string }): CliConfig {
-    const { _, help, clearCache, clearResults, showConfigs, disableInteractive, gitIntegration, generateHTML, useHttp, externalStorage, runner, runnerConfig, config, projects, iterations, compareStats } = args;
+    const { _, help, clearCache, clearResults, showConfigs, disableInteractive, gitIntegration, generateHTML, useHttp, externalStorage, runner, runnerConfig, config, projects, iterations, compareStats, dbAdapter, dbURI } = args;
     return {
         _,
         help: Boolean(help),
@@ -116,6 +126,8 @@ export function normalize(args: { [x: string]: any; _: string[]; $0: string }): 
         config,
         projects: projects || [],
         iterations: iterations ? parseInt(iterations, 10): undefined,
-        compareStats
+        compareStats,
+        dbAdapter,
+        dbURI
     };
 }

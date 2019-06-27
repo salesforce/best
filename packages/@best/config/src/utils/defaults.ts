@@ -5,6 +5,10 @@ const defaultOptions = {
     gitIntegration: false,
     commentThreshold: 5,
     generateHTML: false,
+    apiDatabase: {
+        adapter: 'sql/sqlite',
+        uri: '<rootDir>/__benchmarks_results__/best.sqlite'
+    },
     cacheDirectory: cacheDirectory(),
     useHttp: false,
     openPages: false,
