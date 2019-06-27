@@ -11,9 +11,11 @@
   "dependencies": {
     "@best/runner-remote": "4.0.0",
     "@best/utils": "4.0.0",
-    "chalk": "~2.4.2",
+    "jsonwebtoken": "^8.5.1",
+    "@types/jsonwebtoken": "^8.3.2",
     "express": "~4.16.2",
     "socket.io": "~2.2.0",
-    "socket.io-file": "~2.0.31"
+    "socket.io-file": "~2.0.31",
+    "yargs": "^13.2.4"
   }
 }

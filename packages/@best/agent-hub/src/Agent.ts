@@ -132,7 +132,6 @@ export class Agent extends EventEmitter {
                 socket.on('load_benchmark', () => {
                     const uploader = new SocketIOFile(socket);
                     uploader.on('ready', () => {
-                        console.log(job.tarBundle);
                         uploader.upload(job.tarBundle);
                     });
 

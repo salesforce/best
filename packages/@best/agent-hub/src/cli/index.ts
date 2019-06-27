@@ -4,10 +4,13 @@ import { HubConfig, runHub } from '../hub-server';
 const PORT = process.env.PORT || 5000;
 const SSL_PFX_FILE = process.env.SSL_PFX_FILE;
 const SSL_PFX_PASSPHRASE = process.env.SSL_PFX_PASSPHRASE;
-const DEFAULT_CONFIG = getDefaultConfig(process.env.CONFIG);
+const DEFAULT_CONFIG = getDefaultConfig(
+    process.env.TOKEN_SECRET || 'secret',
+    process.env.CONFIG,
+);
 
-function getDefaultConfig(configAsJSON?: string): HubConfig {
-    const minimumConfig = { agents: [] };
+function getDefaultConfig(tokenSecret: string, configAsJSON?: string): HubConfig {
+    const minimumConfig = { tokenSecret, agents: [] };
     let resultConfig = {};
 
     if (configAsJSON) {

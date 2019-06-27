@@ -31,6 +31,25 @@ function getSocketConnection(host: string, options: any): Promise<SocketIOClient
                 resolve(socket);
             });
 
+            socket.once('connect_error', (err: any) => {
+                console.log(err);
+                reject(new Error('Error connecting to the hub'));
+            });
+
+            socket.once('connect_timeout', (err: any) => {
+                console.log(err);
+                reject(new Error('Timeout expired connecting to the hub'));
+            });
+
+            socket.once('error', (message: string) => {
+                if (message && message.indexOf('authentication error') >= 0) {
+                    reject(new Error('Error connecting to the hub: Invalid credentials'));
+                } else {
+                    console.log(message);
+                    reject(new Error(message));
+                }
+            });
+
             // @todo: this is the place to handle major connection issues.
         } else {
             const socket: SocketIOClient.Socket = hubServerConnectionPool.get(hubConnectionId)!;
@@ -43,12 +62,27 @@ function getSocketConnection(host: string, options: any): Promise<SocketIOClient
                 socket.once('connect', () => {
                     resolve(socket);
                 });
+
+                socket.once('connect_error', (err: any) => {
+                    console.log(err);
+                    reject(err);
+                });
+
+                socket.once('connect_timeout', (err: any) => {
+                    console.log(err);
+                    reject(new Error('Timeout expired connecting to the hub'));
+                });
+
+                socket.once('error', (err: any) => {
+                    console.log(err);
+                    reject(new Error('Timeout expired connecting to the hub'));
+                });
             }
         }
     });
 }
 
-class HubSocket extends EventEmitter {
+export class HubSocket extends EventEmitter {
     jobId: string;
     hubConnection: SocketIOClient.Socket;
     tarBundle: string = '';

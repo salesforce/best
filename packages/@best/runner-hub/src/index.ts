@@ -9,7 +9,7 @@ import {
 } from "@best/types";
 import { RunnerOutputStream } from "@best/console-stream";
 import { createTarBundle } from "./create-tar";
-import {createHubSocket} from "./HubSocket";
+import {createHubSocket, HubSocket} from "./HubSocket";
 
 function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, messager: RunnerOutputStream) : Promise<BenchmarkResultsSnapshot> {
     return new Promise(async (resolve, reject) => {
@@ -31,7 +31,14 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
         }
 
         // we need the socket dance here...
-        const hubSocket = await createHubSocket(host, options);
+        let hubSocket: HubSocket;
+        try {
+            hubSocket = await createHubSocket(host, options);
+        } catch (err) {
+            console.log(err);
+            reject(new Error("Couldn't connect to agent hub"));
+            return;
+        }
 
         hubSocket.on('running_benchmark_start', () => {
             messager.log(`Running benchmarks remotely...`);
