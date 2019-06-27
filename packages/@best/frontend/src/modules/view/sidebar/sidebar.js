@@ -37,6 +37,10 @@ export default class ViewSidebar extends LightningElement {
     selectProject(event) {
         const projectId = parseInt(event.target.dataset.id, 10);
         const project = this.projects.find(proj => proj.id === projectId);
-        store.dispatch(selectProject(project, true));
+        if (project) {
+            store.dispatch(selectProject(project, true));
+        } else {
+            console.error('error', this.projects, projectId, project);
+        }
     }
 }

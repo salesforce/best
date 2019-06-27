@@ -34,7 +34,6 @@ function buildLineTrend({ dates, values, name, commits }, showsVariation) {
         },
         opacity: 0.8,
         type: 'scatter',
-        // TODO: format date better
         hoveron: 'points+fills',
         hovertemplate: '%{y}ms<br>%{text}<extra></extra>',
         fill: showsVariation ? 'none' : 'tozeroy'

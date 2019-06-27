@@ -90,7 +90,7 @@ export default class ViewBenchmarks extends LightningElement {
 
         date = date || bench.commitDates[0];
 
-        return (new Date(date)).toLocaleDateString('default', { month: 'long', day: 'numeric' });
+        return date;
     }
 
     get endDate() {
@@ -108,6 +108,6 @@ export default class ViewBenchmarks extends LightningElement {
 
         date = date || bench.commitDates[bench.commitDates.length - 1];
 
-        return (new Date(date)).toLocaleDateString('default', { month: 'long', day: 'numeric' });
+        return date;
     }
 }
