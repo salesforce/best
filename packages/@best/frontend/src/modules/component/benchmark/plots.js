@@ -1,6 +1,19 @@
-const colorForName = (name) => {
-    const colors = {'first-paint': '#17BECF', 'duration': '#DB5461', 'runDuration': '#ccc'};
-    return colors[name] || '#000';
+const colorForName = (name, fill) => {
+    const normalizedName = name.replace(/-(low|high)/, '')
+
+    const colors = {
+        "script": ['#241E4E', 'rgba(36, 30, 78, 0.08)'],
+        "aggregate": ['#FF1E4E', 'rgba(255, 30, 78, 0.08)'],
+        "paint": ['#17BECF', 'rgba(23, 190, 207, 0.15)'],
+        "layout": ['#27D046', 'rgba(39, 208, 70, 0.08)'],
+        "system": ['#9DA39A', 'rgba(157, 163, 154, 0.08)'],
+        "idle": ['#54494B', 'rgba(84, 73, 75, 0.08)'],
+        'first-paint': ['#17BECF', 'rgba(23, 190, 207, 0.15)'], 'duration': ['#FF1E4E', 'rgba(255, 30, 78, 0.08)'] // old metrics
+    }
+
+    const colorIndex = fill ? 0 : 1;
+
+    return colors[normalizedName][colorIndex];
 }
 
 export function buildLayout(title, isFirst) {
@@ -44,7 +57,7 @@ function buildLineTrend({ dates, values, name, commits }, showsVariation) {
         line: {
             shape: 'spline',
             width: 2,
-            color: colorForName(name)
+            color: colorForName(name, true)
         },
         opacity: 0.8,
         type: 'scatter',
@@ -66,7 +79,7 @@ function buildVarianceTrend({ dates, values, name, commits }) {
             color: 'transparent'
         },
         fill: 'tonexty',
-        fillcolor: name.includes('high') ? 'rgba(70, 0, 160, 0.08)' : 'transparent',
+        fillcolor: name.includes('high') ? colorForName(name, false) : 'transparent',
         showlegend: false,
         hoverinfo: 'skip',
         hoveron: 'fills'
