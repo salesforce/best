@@ -9,7 +9,7 @@ export default class SQLiteDatabase extends SQLDatabase {
 
     constructor(config: ApiDatabaseConfig) {
         super()
-        this.dbPromise = sqlite.open(config.path, { verbose: true })
+        this.dbPromise = sqlite.open(config.uri, { verbose: true })
     }
 
     async query(text: string, params: any[]): Promise<SQLQueryResult> {

@@ -13,7 +13,7 @@ Inside your `best.config.js` you need to have the following:
 {
     apiDatabase: {
         adapter: 'sql/sqlite',
-        path: 'PATH_TO_SQLITE_DB'
+        uri: 'PATH_TO_SQLITE_DB'
     }
 }
 ```
@@ -28,7 +28,7 @@ Inside your `best.config.js` you need to have the following:
 {
     apiDatabase: {
         adapter: 'sql/postgres',
-        path: 'postgresql://dbuser:secretpassword@database.server.com:3211/mydb
+        uri: 'postgresql://dbuser:secretpassword@database.server.com:3211/mydb
     }
 }
 ```

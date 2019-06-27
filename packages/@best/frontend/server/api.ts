@@ -7,8 +7,6 @@ export default (config: FrontendConfig): Router => {
     const db = loadDbFromConfig(config);
     const router = Router()
 
-    if (! db) { return router; }
-
     router.get('/info/:commit', async (req, res): Promise<void> => {
         const { commit } = req.params;
 

@@ -10,9 +10,8 @@ function req(id: string) {
     return r.default || r;
 }
 
-export const loadDbFromConfig = (globalConfig: FrozenGlobalConfig | FrontendConfig): ApiDBAdapter | undefined => {
+export const loadDbFromConfig = (globalConfig: FrozenGlobalConfig | FrontendConfig): ApiDBAdapter => {
     const config = globalConfig.apiDatabase;
-    if (! config) { return; }
 
     if (LOCAL_ADAPTERS.includes(config.adapter)) {
         const localAdapter: typeof ApiDBAdapter = req(path.resolve(__dirname, config.adapter));

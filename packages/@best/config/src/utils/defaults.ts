@@ -7,7 +7,7 @@ const defaultOptions = {
     generateHTML: false,
     apiDatabase: {
         adapter: 'sql/sqlite',
-        path: '<rootDir>/__benchmarks_results__/best.sqlite'
+        uri: '<rootDir>/__benchmarks_results__/best.sqlite'
     },
     cacheDirectory: cacheDirectory(),
     useHttp: false,

@@ -23,7 +23,7 @@ export interface RunnerConfig {
 
 export interface ApiDatabaseConfig {
     adapter: string;
-    path: string;
+    uri: string;
 }
 
 export interface FrontendConfig {
@@ -49,7 +49,9 @@ export interface CliConfig {
     projects: string[],
     iterations?: number,
     compareStats: string[] | undefined,
-    generateHTML: boolean | undefined
+    generateHTML: boolean | undefined,
+    dbAdapter: string | undefined,
+    dbURI: string | undefined
 }
 
 export interface NormalizedConfig {
@@ -61,7 +63,7 @@ export interface NormalizedConfig {
     generateHTML: boolean,
     useHttp: boolean,
     externalStorage?: string,
-    apiDatabase: ApiDatabaseConfig | false,
+    apiDatabase: ApiDatabaseConfig,
     commentThreshold: number,
     isInteractive?: boolean,
     openPages: boolean,
@@ -97,7 +99,7 @@ export interface GlobalConfig {
     nonFlagArgs: string[];
     isInteractive?: boolean;
     gitInfo: GitConfig;
-    apiDatabase: ApiDatabaseConfig | false;
+    apiDatabase: ApiDatabaseConfig;
     commentThreshold: number;
     externalStorage?: string;
 }

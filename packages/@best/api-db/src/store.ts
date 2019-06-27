@@ -56,8 +56,6 @@ const generateSnapshots = (runSettings: RunSettings, benchmarks: StatsNode[], gr
 export const saveBenchmarkSummaryInDB = async (benchmarkResults: BenchmarkResultsSnapshot[], globalConfig: FrozenGlobalConfig) => {
     const db = loadDbFromConfig(globalConfig);
 
-    if (! db) { return; }
-
     await db.migrate()
 
     return Promise.all(

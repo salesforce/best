@@ -76,13 +76,20 @@ function setCliOptionOverrides(initialOptions: UserConfig, argsCLI: CliConfig): 
                 case 'generateHTML':
                     options.generateHTML = Boolean(argsCLI[key]);
                     break;
+                case 'dbAdapter':
+                    if (argsCLI[key] !== undefined) {
+                        options.apiDatabase ={ adapter: argsCLI[key], uri: argsCLI['dbURI'] }
+                    }
+                    break;
+                case 'dbURI':
+                    break
                 default:
                     options[key] = argsCLI[key];
                     break;
             }
             return options;
         }, {});
-
+    
     return { ...initialOptions, ...argvToOptions };
 }
 function normalizeObjectPathPatterns(options: { [key: string]: any }, rootDir: string) {
