@@ -40,7 +40,7 @@ export default class ViewSidebar extends LightningElement {
         if (project) {
             store.dispatch(selectProject(project, true));
         } else {
-            console.error('error', this.projects, projectId, project);
+            throw new Error(`sidebar couldn't select project`, this.projects, projectId, project);
         }
     }
 }

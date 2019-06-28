@@ -12,7 +12,7 @@ export async function fetchSnapshots(project, timing) {
     return getMocked().snapshots[project.id][timing];
 }
 
-export async function fetchCommitInfo(commit) {
+export async function fetchCommitInfo() {
     return {
         reason: 'Not connected to server.'
     }

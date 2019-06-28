@@ -92,6 +92,8 @@ function loadViewFromQuery() {
 
         return view;
     }
+
+    return undefined;
 }
 
 export const loadState = () => {
