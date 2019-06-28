@@ -4,12 +4,21 @@ import path from 'path';
 
 import { buildBenchmark } from '../index';
 
+const GLOBAL_CONFIG = {
+    gitInfo: {
+        lastCommit: { hash: 'commit-hash-asdf' },
+        localChanges: false,
+        gitBranch: 'test',
+        repo: { owner: 'salesforce', repo: 'best' }
+    }
+};
+
 const TEMP_DIR_PREFIX = 'best-test-';
 const ROOT_DIR_PREFIX = 'best-root-test-';
 const MOCK_MESSAGER = {
     onBenchmarkBuildStart() {},
     onBenchmarkBuildEnd() {},
-    logState() {}
+    log() {}
 };
 const projectName = 'test';
 const rootDir = roorDir();
@@ -24,38 +33,40 @@ function roorDir() {
 
 describe('buildBenchmark', () => {
     test('generating index.js and index.html', async () => {
-        const cacheDirectory = tempDir();
+        const benchmarkOutput = tempDir();
+        const hash = GLOBAL_CONFIG.gitInfo.lastCommit.hash;
         await buildBenchmark(
             path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
             {
-                cacheDirectory,
+                benchmarkOutput,
                 projectName,
                 rootDir
             },
-            {},
+            GLOBAL_CONFIG,
             MOCK_MESSAGER,
         );
 
-        expect(fs.statSync(`${cacheDirectory}/${projectName}/single-file`).isDirectory()).toBe(true);
-        expect(fs.statSync(`${cacheDirectory}/${projectName}/single-file/single-file.html`).isFile()).toBe(true);
-        expect(fs.statSync(`${cacheDirectory}/${projectName}/single-file/single-file.js`).isFile()).toBe(true);
+        expect(fs.statSync(`${benchmarkOutput}/${projectName}/single-file_${hash}/artifacts`).isDirectory()).toBe(true);
+        expect(fs.statSync(`${benchmarkOutput}/${projectName}/single-file_${hash}/artifacts/single-file.html`).isFile()).toBe(true);
+        expect(fs.statSync(`${benchmarkOutput}/${projectName}/single-file_${hash}/artifacts/single-file.js`).isFile()).toBe(true);
     });
 
     test('build output', async () => {
+        const hash = GLOBAL_CONFIG.gitInfo.lastCommit.hash;
         const { benchmarkName, benchmarkEntry, benchmarkFolder, benchmarkSignature } = await buildBenchmark(
             path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
             {
-                cacheDirectory: tempDir(),
+                benchmarkOutput: tempDir(),
                 projectName,
                 rootDir
             },
-            {},
+            GLOBAL_CONFIG,
             MOCK_MESSAGER,
         );
-            console.log(benchmarkFolder);
+
         expect(benchmarkName).toBe('single-file');
-        expect(benchmarkFolder.endsWith('single-file')).toBe(true);
-        expect(benchmarkEntry.endsWith('single-file/single-file.html')).toBe(true);
+        expect(benchmarkFolder.endsWith(`single-file_${hash}`)).toBe(true);
+        expect(benchmarkEntry.endsWith(`single-file_${hash}/artifacts/single-file.html`)).toBe(true);
         expect(typeof benchmarkSignature).toBe('string');
     });
 
@@ -63,17 +74,17 @@ describe('buildBenchmark', () => {
         const messager = {
             onBenchmarkBuildStart: jest.fn(),
             onBenchmarkBuildEnd: jest.fn(),
-            logState: jest.fn
+            log: jest.fn
         };
 
         await buildBenchmark(
             path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
             {
-                cacheDirectory: tempDir(),
+                benchmarkOutput: tempDir(),
                 projectName,
                 rootDir
             },
-            {},
+            GLOBAL_CONFIG,
             messager,
         );
 
@@ -104,12 +115,12 @@ describe('buildBenchmark', () => {
         await buildBenchmark(
             path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
             {
-                cacheDirectory: tempDir(),
+                benchmarkOutput: tempDir(),
                 projectName,
                 plugins: [['build-plugin-opts', PLUGIN_OPTIONS]],
                 rootDir
             },
-            {},
+            GLOBAL_CONFIG,
             MOCK_MESSAGER,
         );
     });
@@ -143,12 +154,12 @@ describe('buildBenchmark', () => {
         await buildBenchmark(
             path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js'),
             {
-                cacheDirectory: tempDir(),
+                benchmarkOutput: tempDir(),
                 projectName,
                 plugins: ['build-plugin-hooks'],
                 rootDir
             },
-            {},
+            GLOBAL_CONFIG,
             MOCK_MESSAGER,
         );
 
