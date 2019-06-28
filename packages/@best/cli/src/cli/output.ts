@@ -172,7 +172,7 @@ export default class Output {
         const flattenedTables = Object.keys(tables).reduce((groups, projectName): string[] => {
             const stringifiedTables = tables[projectName].map(t => t.toString() + '\n');
             const colorProjectName = chalk.bold.dim(projectName);
-            groups.push(`\nProject: ${colorProjectName} \n`);
+            groups.push(`\nProject: ${colorProjectName}\n`);
             groups.push(...stringifiedTables);
             return groups;
         }, <string[]>[])
@@ -186,8 +186,8 @@ export default class Output {
     generateComparisonTable(baseCommit: string, targetCommit: string, stats: ResultComparison) {
         const benchmark = stats.name.replace('.benchmark', '');
         const table = new Table({
-            head: [`Benchmark: ${benchmark}`, /*'metric',*/ `base (${baseCommit})`, `target (${targetCommit})`, 'trend'],
-            style: {head: ['bgBlue', 'white']},
+            head: [`Benchmark: ${benchmark}`, `base (${baseCommit})`, `target (${targetCommit})`, 'trend'],
+            style: {head: ['bgBlue', 'white']}
         });
 
         this.generateComparisonRows(table, stats);
