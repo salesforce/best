@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`component-button has correct class with override flavor 1`] = `
+<component-button>
+  #shadow-root(open)
+    <button
+      class="close default"
+      role="button"
+    >
+      <slot />
+    </button>
+</component-button>
+`;
+
+exports[`component-button has correct class with override flavor and size 1`] = `
+<component-button>
+  #shadow-root(open)
+    <button
+      class="close small"
+      role="button"
+    >
+      <slot />
+    </button>
+</component-button>
+`;
+
+exports[`component-button has correct class with override size 1`] = `
+<component-button>
+  #shadow-root(open)
+    <button
+      class="primary small"
+      role="button"
+    >
+      <slot />
+    </button>
+</component-button>
+`;
+
+exports[`component-button has correct default class 1`] = `
+<component-button>
+  #shadow-root(open)
+    <button
+      class="primary default"
+      role="button"
+    >
+      <slot />
+    </button>
+</component-button>
+`;

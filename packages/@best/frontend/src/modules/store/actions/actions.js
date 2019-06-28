@@ -116,8 +116,9 @@ export function selectProject(project, shouldResetView) {
         
         if (shouldResetView) { dispatch(resetView()) }
 
-        dispatch(fetchBenchmarks(project));
-        return dispatch({ type: PROJECT_SELECTED, id: project.id });
+        dispatch({ type: PROJECT_SELECTED, id: project.id });
+        
+        return dispatch(fetchBenchmarks(project));
     };
 }
 

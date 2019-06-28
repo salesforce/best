@@ -92,8 +92,6 @@ function loadViewFromQuery() {
 
         return view;
     }
-
-    return {};
 }
 
 export const loadState = () => {
@@ -122,7 +120,7 @@ export const loadState = () => {
     return state;
 }
 
-const saveState = ({ projects: { selectedProjectId }, view }) => {
+export const saveState = ({ projects: { selectedProjectId }, view }) => {
     try {
         updateProjectsPathIfNeeded(selectedProjectId);
     } catch (err) {

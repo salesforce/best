@@ -30,6 +30,66 @@ const mockFetchProjects = () => {
     return { expectedAction, response }
 }
 
+const mockSelectProject = () => {
+    const projectId = 1
+
+    const projects = {
+        items: [{
+            id: projectId,
+            name: 'Hello'
+        }],
+        selectedProjectId: undefined
+    }
+
+    const response = [{
+        id: 1,
+        projectId,
+        name: 'bench-1',
+        commit: 'aaaaaaa',
+        commitDate: '2019-06-21 17:23:24',
+        metrics: [{'name': 'metric-a', 'duration': 5, 'stdDeviation': 1}],
+        environmentHash: 'asdf',
+        similarityHash: 'asdf'
+    }]
+
+    const transformedResponse = [{
+        commitDates: ['June 21'],
+        commits: ['aaaaaaa'],
+        environmentHashes: ['asdf'],
+        similarityHashes: ['asdf'],
+        metrics: [{'name': 'metric-a', 'durations': [5], 'stdDeviations': [1]}],
+        name: 'bench-1'
+    }]
+
+    fetchMock.getOnce(/snapshots/, {
+        body: { snapshots: response },
+        headers: { 'content-type': 'application/json' }
+    })
+
+    const benchmarksReceived = {
+        type: types.BENCHMARKS_RECEIVED,
+        snapshots: response,
+        benchmarks: transformedResponse
+    }
+
+    const clearBenchmarks = {
+        type: types.CLEAR_BENCHMARKS
+    }
+
+    const resetView = {
+        type: types.VIEW_RESET
+    }
+
+    const projectSelected = {
+        type: types.PROJECT_SELECTED,
+        id: projectId
+    }
+
+    const expectedActions = [clearBenchmarks, resetView, projectSelected, benchmarksReceived]
+
+    return { expectedActions, projects, projectId }
+}
+
 describe('projects actions', () => {
     afterEach(() => {
         fetchMock.restore()
@@ -54,6 +114,12 @@ describe('projects actions', () => {
     })
 
     describe('selectProject', () => {
-        
+        it('should dispatch: clearBenchmarks, resetView, benchmarksReceived, and projectSelected', async () => {
+            const { expectedActions, projects, projectId } = mockSelectProject();
+
+            const store = mockStore({ projects, view: { timing: 'all' } })
+            await store.dispatch(actions.selectProject({ id: projectId }, true))
+            expect(store.getActions()).toEqual(expectedActions)
+        })
     })
 })
