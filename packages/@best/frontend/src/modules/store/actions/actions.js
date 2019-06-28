@@ -20,7 +20,7 @@ function normalizeCommit(commit) {
 }
 
 function shouldFetchProjects(state) {
-    return !state.projects.length;
+    return !state.projects.items.length;
 }
 
 function projectsReceived(projects) {
@@ -37,8 +37,10 @@ function fetchProjects() {
 export function fetchProjectsIfNeeded() {
     return (dispatch, getState) => {
         if (shouldFetchProjects(getState())) {
-            dispatch(fetchProjects());
+            return dispatch(fetchProjects());
         }
+
+        return Promise.resolve()
     };
 }
 
@@ -109,13 +111,13 @@ export function fetchComparison(benchmarkName, commits) {
 }
 
 export function selectProject(project, shouldResetView) {
-    return (dispatch) => {
+    return async (dispatch) => {
         dispatch(clearBenchmarks());
         
         if (shouldResetView) { dispatch(resetView()) }
 
         dispatch(fetchBenchmarks(project));
-        dispatch({ type: PROJECT_SELECTED, id: project.id });
+        return dispatch({ type: PROJECT_SELECTED, id: project.id });
     };
 }
 
@@ -141,7 +143,9 @@ function fetchCommitInfo(commit) {
 export function fetchCommitInfoIfNeeded(commit) {
     return (dispatch, getState) => {
         if (shouldFetchCommitInfo(getState(), commit)) {
-            dispatch(fetchCommitInfo(commit));
+            return dispatch(fetchCommitInfo(commit));
         }
+
+        return Promise.resolve()
     }
 }

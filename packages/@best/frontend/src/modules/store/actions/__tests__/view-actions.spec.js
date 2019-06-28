@@ -41,6 +41,19 @@ describe('view actions', () => {
         })
     })
 
+    describe('comparisonChanged', () => {
+        it('should create an action for the comparison changing', () => {
+            const comparison = { commits: ['a', 'b'], results: {}, benchmarkName: 'test' }
+            
+            const expectedAction = {
+                type: types.VIEW_COMPARISON_CHANGED,
+                comparison
+            }
+
+            expect(actions.comparisonChanged(comparison)).toEqual(expectedAction)
+        })
+    })
+
     describe('resetView', () => {
         it('should create an action for view resetting', () => {
             const expectedAction = {

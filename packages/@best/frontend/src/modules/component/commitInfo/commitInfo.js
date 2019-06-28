@@ -18,7 +18,7 @@ export default class ComponentCommitInfo extends LightningElement {
     }
 
     get hasError() {
-        return this.commitInfo.hasOwnProperty('reason');
+        return this.commitInfo.hasOwnProperty('error');
     }
 
     get hasCommitInfo() {
