@@ -8,7 +8,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "test": "jest --config ./scripts/jest/base.config.js",
+    "test": "jest --config ./scripts/jest/root.config.js",
     "clean": "lerna run clean && lerna clean --yes && rimraf -g packages/**/build && rimraf packages/**/tsconfig.tsbuildinfo && rimraf -g packages/**/dist && rimraf -g packages/**/node_modules",
     "lint": "eslint packages/ --ext=js,ts",
     "prettier": "prettier --write '**/*.{js,md}'",
