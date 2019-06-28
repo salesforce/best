@@ -15,7 +15,7 @@ jobs:
 
       - run: yarn install --frozen-lockfile
       - run: yarn lint
-      - run: yarn test -i
+      - run: yarn test
 
       - save_cache:
           paths:
