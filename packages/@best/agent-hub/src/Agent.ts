@@ -37,6 +37,10 @@ export class Agent extends EventEmitter {
         return this._status;
     }
 
+    get host() {
+        return this._config.host;
+    }
+
     set status(value: AgentStatus) {
         if (value !== this._status) {
             const oldValue = this._status;

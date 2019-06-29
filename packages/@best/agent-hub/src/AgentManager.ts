@@ -36,6 +36,14 @@ export class AgentManager extends EventEmitter {
             }
         });
     };
+
+    getAgent(agentHost: string) {
+        let i: number = 0;
+
+        while (i < this.agents.length && this.agents[i].host !== agentHost) i++;
+
+        return i < this.agents.length ? this.agents[i] : null;
+    }
 }
 
 export function createAgentManager(agentsConfig: AgentConfig[]): AgentManager {
