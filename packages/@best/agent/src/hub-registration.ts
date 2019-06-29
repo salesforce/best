@@ -34,6 +34,7 @@ async function pingHub(hubHost: string, hubToken: string, agentHost: string): Pr
 }
 
 async function connectToHub(hubConfig: HubConfig): Promise<boolean> {
+    console.log('Trying to register in hub: ', hubConfig.hub.host);
     const response = await axios.post(
         `${hubConfig.hub.host}/api/v1/agents`,
         hubConfig.agentConfig,
@@ -44,32 +45,37 @@ async function connectToHub(hubConfig: HubConfig): Promise<boolean> {
         }
     );
 
+    if (response.status === 201) {
+        console.log('Successfully registered with hub: ', hubConfig.hub.host);
+    }
+
     return response.status === 201;
 }
 
 export async function registerWithHub(hubConfig: HubConfig) {
-    let connectedToHub = false;
-
+    let keepPing = true;
     try {
-        console.log('Trying to register in hub: ', hubConfig.hub.host);
         const agentStatus = await pingHub(hubConfig.hub.host, hubConfig.hub.authToken, hubConfig.agentConfig.host);
 
-        if (agentStatus === 'disconnected') {
-            connectedToHub = await connectToHub(hubConfig);
-        }
+        if (agentStatus !== 'connected') {
+            keepPing = await connectToHub(hubConfig);
 
-        if (connectedToHub) {
-            setTimeout(registerWithHub.bind(null, hubConfig), hubConfig.hub.pingTimeout);
-        } else {
-            console.log('Error registering to hub, suspending hub registration.');
+            if (!keepPing) {
+                console.log('Error connecting to hub, suspending hub registration.');
+            }
         }
     } catch (error) {
         console.log('Error connecting the hub: ', error.message);
+
         if (error.response && error.response.status === 403) {
+            keepPing = false;
             console.log('Invalid auth credentials, suspending registration with hub');
         } else {
             console.log(`Retrying in ${hubConfig.hub.pingTimeout} ms`);
-            setTimeout(registerWithHub.bind(null, hubConfig), hubConfig.hub.pingTimeout);
         }
+    }
+
+    if (keepPing) {
+        setTimeout(registerWithHub.bind(null, hubConfig), hubConfig.hub.pingTimeout);
     }
 }
