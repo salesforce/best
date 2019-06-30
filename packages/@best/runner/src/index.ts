@@ -30,11 +30,16 @@ export async function runBenchmark(benchmarkBuild: BuildConfig, runnerLogStream:
 }
 
 export async function runBenchmarks(benchmarksBuilds: BuildConfig[], messager: RunnerOutputStream): Promise<BenchmarkResultsSnapshot[]> {
-    const results = [];
-    for (const benchmarkBuild of benchmarksBuilds) {
-        const benchmarkResults = await runBenchmark(benchmarkBuild, messager);
-        results.push(benchmarkResults);
-    }
+    const promises = benchmarksBuilds.map((build: BuildConfig) => {
+        return runBenchmark(build, messager);
+    });
+    return await Promise.all(promises);
 
-    return results;
+    // const results = [];
+    // for (const benchmarkBuild of benchmarksBuilds) {
+    //     const benchmarkResults = await runBenchmark(benchmarkBuild, messager);
+    //     results.push(benchmarkResults);
+    // }
+    //
+    // return results;
 }
