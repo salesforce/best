@@ -1,41 +1,52 @@
 :host {
-    background: #000;
+    /* background: #def1fa; */
+}
+
+.brand a {
+    text-decoration: none;
 }
 
 .brand h1 {
     font-size: 64px;
-    color: #ff00a8;
+    color: #2d353d;
     font-weight: bold;
     text-align: center;
+    /* text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35); */
 }
 
 section {
     margin-top: 55px;
-    color: #fff;
+    color: #2d353d;
 }
 
 h3 {
     margin: 0;
     margin-left: 24px;
     margin-bottom: 8px;
-    font-weight: normal;
+    /* font-weight: normal; */
     text-transform: uppercase;
 }
 
 .item {
-    background: #4a4a4a;
-    padding: 12px 24px;
+    /* background: #4a4a4a; */
+    padding: 8px 16px;
     cursor: pointer;
+
+    margin: 8px;
+    border-radius: 4px;
+    font-size: 1.2rem;
 }
 
 .item:hover {
-    background: #555;
+    /* background: #555; */
 }
 
 .item.selected {
-    background: #00a3ff;
+    /* background: #00a3ff; */
+    color: rgb(20, 72, 167);
+    /* font-weight: bold; */
 }
 
 .item.selected:hover {
-    background: #39b8ff;
+    /* background: #39b8ff; */
 }

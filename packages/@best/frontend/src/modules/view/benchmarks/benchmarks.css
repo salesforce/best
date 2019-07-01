@@ -1,3 +1,11 @@
+:host {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.175);
+    z-index: 1;
+    margin: 20px 20px 0 0;
+    border-radius: 6px 6px 0 0;
+    background: #fff;
+}
+
 .benchmark-wrapper {
     position: relative;
 }

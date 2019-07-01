@@ -19,7 +19,7 @@ export abstract class SQLDatabase {
     abstract query(text: string, params: any[]): Promise<SQLQueryResult>
 
     fetchProjects(): Promise<SQLQueryResult> {
-        return this.query('SELECT * FROM projects', [])
+        return this.query('SELECT * FROM projects ORDER BY created_at', [])
     }
 
     fetchSnapshots(projectId: number, since: Date | undefined): Promise<SQLQueryResult> {
