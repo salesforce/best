@@ -8,7 +8,7 @@
             <template if:true={hasCommitInfo}>
                 <template if:true={hasError}>
                     <div class="error no-good">
-                        <p class="title">Error!</p>
+                        <p class="title">Not Available</p>
                         <p class="message">Could not find commit info for <span class="commit">{commit}</span>.</p>
                         <p class="message">Either the GitHub integration is not enabled or the commit is not in GitHub yet.</p>
                     </div>
@@ -23,12 +23,6 @@
                         <a target="_blank" href={commitInfo.url}>View commit on GitHub</a>
                     </section>
                 </template>
-            </template>
-            <template if:false={hasCommitInfo}>
-                <div class="loading no-good">
-                    <p class="title">Loading&hellip;</p>
-                    <p class="message">Looking for info for <span class="commit">{commit}</span>.</p>
-                </div>
             </template>
         </div>
     </div>
