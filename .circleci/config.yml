@@ -15,7 +15,8 @@ jobs:
 
       - run: yarn install --frozen-lockfile
       - run: yarn lint
-      - run: yarn test
+      # - run: yarn test
+      - run: node --expose-gc ./node_modules/.bin/jest --logHeapUsage --config ./scripts/jest/root.config.js
 
       - save_cache:
           paths:
