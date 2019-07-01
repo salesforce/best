@@ -46,7 +46,11 @@ export const options: { [key: string]: Options } = {
         description: 'Disabled interactivity on TTI',
         type: 'boolean',
     },
-
+    runInBatch: {
+        default: undefined,
+        description: 'Run jobs in batches',
+        type: 'boolean',
+    },
     showConfigs: {
         default: undefined,
         description: 'Displays calculated globalConfig and project configs',
@@ -109,7 +113,8 @@ export const options: { [key: string]: Options } = {
 };
 
 export function normalize(args: { [x: string]: any; _: string[]; $0: string }): CliConfig {
-    const { _, help, clearCache, clearResults, showConfigs, disableInteractive, gitIntegration, generateHTML, useHttp, externalStorage, runner, runnerConfig, config, projects, iterations, compareStats, dbAdapter, dbURI } = args;
+    const { _, help, clearCache, clearResults, showConfigs, disableInteractive, gitIntegration, generateHTML, useHttp, externalStorage, runner, runnerConfig, config, projects, iterations, compareStats, dbAdapter, dbURI, runInBatch } = args;
+
     return {
         _,
         help: Boolean(help),
@@ -118,6 +123,7 @@ export function normalize(args: { [x: string]: any; _: string[]; $0: string }): 
         useHttp: Boolean(useHttp),
         showConfigs: Boolean(showConfigs),
         disableInteractive,
+        runInBatch,
         gitIntegration,
         generateHTML,
         externalStorage,

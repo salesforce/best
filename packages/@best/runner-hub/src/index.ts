@@ -3,13 +3,14 @@ import fs from "fs";
 import {
     BenchmarkInfo,
     BenchmarkResultsSnapshot,
-    BenchmarkResultsState, BenchmarkRuntimeConfig,
+    BenchmarkResultsState, BenchmarkRuntimeConfig, BuildConfig,
     FrozenGlobalConfig,
     FrozenProjectConfig
 } from "@best/types";
 import { RunnerOutputStream } from "@best/console-stream";
 import { createTarBundle } from "./create-tar";
 import {createHubSocket, HubSocket} from "./HubSocket";
+import AbstractRunner from "@best/runner-abstract";
 
 function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, messager: RunnerOutputStream) : Promise<BenchmarkResultsSnapshot> {
     return new Promise(async (resolve, reject) => {
@@ -90,8 +91,16 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
     });
 }
 
-export class Runner {
+export class Runner extends AbstractRunner {
     run(benchmarkInfo: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerOutputStream): Promise<BenchmarkResultsSnapshot> {
         return proxifyRunner(benchmarkInfo, projectConfig, globalConfig, runnerLogStream);
+    }
+
+    async runBenchmarksInBatch(benchmarksBuilds: BuildConfig[], messager: RunnerOutputStream): Promise<BenchmarkResultsSnapshot[]> {
+        const promises = benchmarksBuilds.map((build: BuildConfig) => {
+            return this.run(build, build.projectConfig, build.globalConfig, messager);
+        });
+
+        return await Promise.all(promises);
     }
 }

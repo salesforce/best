@@ -66,6 +66,7 @@ export interface NormalizedConfig {
     apiDatabase: ApiDatabaseConfig,
     commentThreshold: number,
     isInteractive?: boolean,
+    runInBatch?: boolean;
     openPages: boolean,
     moduleDirectories: string[],
     moduleFileExtensions: string[],
@@ -122,6 +123,7 @@ export interface ProjectConfig {
     plugins: ProjectConfigPlugin[];
     rootDir: string;
     testMatch: string[];
+    runInBatch?: boolean;
     testPathIgnorePatterns: string[];
     samplesQuantileThreshold: number;
 }
