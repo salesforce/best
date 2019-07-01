@@ -15,7 +15,7 @@ jobs:
 
       - run: yarn install --frozen-lockfile
       - run: yarn lint
-      - run: yarn test --runInBand
+      - run: yarn test --maxWorkers=2
 
       - save_cache:
           paths:
