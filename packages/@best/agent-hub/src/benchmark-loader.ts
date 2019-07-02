@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import SocketIOFile from "socket.io-file";
 import path from "path";
 import { cacheDirectory } from '@best/utils';
@@ -13,39 +14,38 @@ const LOADER_CONFIG = {
     overwrite: true,
 };
 
+function generateUUID() : string {
+    return crypto.randomBytes(8).toString("hex");
+}
+
 const UPLOAD_START_TIMEOUT = 5000;
 
 export async function loadBenchmarkJob(job: BenchmarkJob): Promise<BenchmarkJob> {
     return new Promise(async (resolve, reject) => {
         const socket = job.socketConnection;
         let uploaderTimeout: any = null;
-        const uploader = new SocketIOFile(socket, LOADER_CONFIG);
-
-        const errorListener = (err: any) => {
-            uploader.removeListener('complete', completeListener);
-            uploader.removeListener('error', errorListener);
-
-            reject(err);
-        };
-
-        const completeListener = (info: any) => {
-            if (info.data['jobId'] === job.jobId) {
-                uploader.removeListener('complete', completeListener);
-                uploader.removeListener('error', errorListener);
-                // set the job file, move from the incoming queue to the ready queue
-                job.tarBundle = info.uploadDir;
-
-                resolve(job);
+        const loaderOverriddenConfig = Object.assign(
+            {},
+            LOADER_CONFIG,
+            {
+                uploadDir: path.join(LOADER_CONFIG.uploadDir, generateUUID())
             }
-        };
+        );
+        const uploader = new SocketIOFile(socket, loaderOverriddenConfig);
 
         uploader.on('start', (info: any) => {
             if (info.data['jobId'] === job.jobId) {
                 clearTimeout(uploaderTimeout)
             }
         });
-        uploader.on('complete', completeListener);
-        uploader.on('error', errorListener);
+        uploader.on('complete', (info: any) => {
+            if (info.data['jobId'] === job.jobId) {
+                job.tarBundle = info.uploadDir;
+
+                resolve(job);
+            }
+        });
+        uploader.on('error', (err: any) => reject(err));
 
         socket.emit('load_benchmark', job.jobId);
         uploaderTimeout = setTimeout(() => {
