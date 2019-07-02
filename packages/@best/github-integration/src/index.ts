@@ -38,6 +38,10 @@ function generatePercentages(stats: ResultComparison, rows: number[] = []): numb
 }
 
 function calculateAverageChange(result: BenchmarkComparison) {
+    if (result.comparisons.length === 0) {
+        return 0;
+    }
+    
     const flattenedValues = result.comparisons.reduce((all, node): number[] => {
         return [...all, ...generatePercentages(node)]
     }, <number[]>[])
