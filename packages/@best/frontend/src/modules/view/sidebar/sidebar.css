@@ -1,5 +1,12 @@
 :host {
-    /* background: #def1fa; */
+    position: -webkit-sticky; /* Safari */  
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+.brand h1, section {
+    color: #ffffff;
 }
 
 .brand a {
@@ -8,45 +15,33 @@
 
 .brand h1 {
     font-size: 64px;
-    color: #2d353d;
     font-weight: bold;
     text-align: center;
-    /* text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35); */
 }
 
 section {
     margin-top: 55px;
-    color: #2d353d;
 }
 
 h3 {
     margin: 0;
-    margin-left: 24px;
     margin-bottom: 8px;
+    padding-left: 24px;
     /* font-weight: normal; */
     text-transform: uppercase;
 }
 
 .item {
-    /* background: #4a4a4a; */
-    padding: 8px 16px;
+    padding: 16px 24px;
     cursor: pointer;
 
-    margin: 8px;
-    border-radius: 4px;
     font-size: 1.2rem;
 }
 
 .item:hover {
-    /* background: #555; */
+    background: #7d95a7;
 }
 
 .item.selected {
-    /* background: #00a3ff; */
-    color: rgb(20, 72, 167);
-    /* font-weight: bold; */
-}
-
-.item.selected:hover {
-    /* background: #39b8ff; */
+    background: #0b2331;
 }
