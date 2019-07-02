@@ -1,13 +1,9 @@
-common:
-  - &container_config:
-    working_directory: ~/best
-    docker:
-      - image: circleci/node:10.16.0-stretch-browsers
-
 version: 2.1
 jobs:
   build_and_test:
-    <<: *container_config # See common
+    working_directory: ~/best
+    docker:
+      - image: circleci/node:10.16.0-stretch-browsers
     steps:
       - checkout
 
@@ -33,7 +29,9 @@ jobs:
           paths: ./*
 
   perf_and_compare:
-    <<: *container_config # See common
+    working_directory: ~/best
+    docker:
+      - image: circleci/node:10.16.0-stretch-browsers
     environment:
       - CUSTOM_BASH_ENV: ~/.bashrc
       - CIRCLE_ENV_BROKEN: $CIRCLE_SHA1
