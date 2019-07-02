@@ -11,7 +11,7 @@ export default class ComponentMenubar extends LightningElement {
     @track viewTiming;
     @track viewBenchmark;
     @track viewMetric;
-    @track viewZoom;
+    @track viewZoom = {};
 
     @wire(connectStore, { store })
     storeChange({ benchmarks, view }) {
@@ -87,15 +87,7 @@ export default class ComponentMenubar extends LightningElement {
     }
 
     get isZoomed() {
-        if (! this.viewZoom) {
-            return false;
-        } else if (this.viewZoom.hasOwnProperty('xaxis.range')) {
-            return true;
-        } else if (this.viewZoom.hasOwnProperty('xaxis.range[0]')) {
-            return true;
-        }
-
-        return false;
+        return this.viewZoom.hasOwnProperty('xaxis.range') || this.viewZoom.hasOwnProperty('xaxis.range[0]');
     }
 
     zoomUpdated() {

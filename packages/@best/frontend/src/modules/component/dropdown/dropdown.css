@@ -4,8 +4,10 @@
     overflow: visible;
     text-align: left;
     min-width: 200px;
+    max-width: 360px;
     margin: 0 20px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
 }
 
 .control.open {
@@ -44,11 +46,13 @@
     border: 1px solid #8c8c8c;
     border-radius: 3px;
     padding: 10px 14px;
+    padding-right: 44px; /* icon padding */
     position: relative;
 }
 
 .selected img {
-    float: right;
+    position: absolute;
+    right: 14px;
     margin-top: 5px;
 }
 

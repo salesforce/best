@@ -1,8 +1,8 @@
 import { buildCustomElementConstructor, register } from 'lwc';
 import { registerWireService } from '@lwc/wire-service';
 
-import MyApp from 'my/app';
+import App from 'view/app';
 
 registerWireService(register);
 
-customElements.define('my-app', buildCustomElementConstructor(MyApp));
+customElements.define('view-app', buildCustomElementConstructor(App));
