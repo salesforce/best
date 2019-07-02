@@ -31,4 +31,8 @@ export default class BenchmarkJob {
         this._tarBundleInfo = value;
     }
 
+    get spec() {
+        return this.projectConfig.benchmarkRunnerConfig.spec || {};
+    }
+
 }

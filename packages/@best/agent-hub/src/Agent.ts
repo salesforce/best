@@ -6,6 +6,11 @@ import SocketIOFile from "@best/runner-remote/build/file-uploader";
 import { BenchmarkResultsSnapshot, BenchmarkResultsState, BenchmarkRuntimeConfig } from "@best/types";
 import { loadBenchmarkJob } from "./benchmark-loader";
 
+export interface Spec {
+    browser: string,
+    version: string,
+}
+
 export interface AgentConfig {
     host: string,
     options: {
@@ -80,11 +85,9 @@ export class Agent extends EventEmitter {
             });
     }
 
-    canRunJob(job: BenchmarkJob): boolean {
-        const jobRunnerConfig = job.projectConfig.benchmarkRunnerConfig;
-        const jobSpec = jobRunnerConfig.spec || {};
-        const jobHasSameSpec = jobSpec.browser == this._config.spec.browser &&
-            jobSpec.version === this._config.spec.version;
+    canRunJob(spec: Spec): boolean {
+        const jobHasSameSpec = spec.browser == this._config.spec.browser &&
+            spec.version === this._config.spec.version;
 
         return jobHasSameSpec && this.status !== AgentStatus.Offline;
     }

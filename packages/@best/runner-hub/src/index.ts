@@ -11,6 +11,7 @@ import { RunnerOutputStream } from "@best/console-stream";
 import { createTarBundle } from "./create-tar";
 import {createHubSocket, HubSocket} from "./HubSocket";
 import AbstractRunner from "@best/runner-abstract";
+import socketIO from "socket.io-client";
 
 function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, messager: RunnerOutputStream) : Promise<BenchmarkResultsSnapshot> {
     return new Promise(async (resolve, reject) => {
@@ -97,10 +98,75 @@ export class Runner extends AbstractRunner {
     }
 
     async runBenchmarksInBatch(benchmarksBuilds: BuildConfig[], messager: RunnerOutputStream): Promise<BenchmarkResultsSnapshot[]> {
-        const promises = benchmarksBuilds.map((build: BuildConfig) => {
-            return this.run(build, build.projectConfig, build.globalConfig, messager);
-        });
+        let resolved = false;
+        const { projectConfig } = benchmarksBuilds[0];
+        const { host, options, spec } = projectConfig.benchmarkRunnerConfig;
 
-        return await Promise.all(promises);
+        return new Promise(async (resolve, reject) => {
+            let currentJob = 0;
+            const jobs = benchmarksBuilds.map((build) => {
+                const { benchmarkName, benchmarkEntry, benchmarkFolder, benchmarkSignature, projectConfig, globalConfig } = build;
+                const benchmarkInfo: BenchmarkInfo = { benchmarkName, benchmarkEntry, benchmarkFolder, benchmarkSignature };
+
+                return { benchmarkInfo, projectConfig, globalConfig };
+            });
+
+            const jobResults: Promise<BenchmarkResultsSnapshot>[] = [];
+
+            const socket = socketIO(host, options);
+
+            socket.on('connect', () => {
+                socket.on('disconnect', (reason: string) => {
+                    if (!resolved) {
+                        // if (reason === 'io server disconnect') {
+                            reject(new Error('Connection terminated'));
+                        // }
+                    }
+                });
+
+                socket.on('error', (err: any) => {
+                    console.log('Error in connection to agent > ', err);
+                    reject(err);
+                });
+
+                socket.emit('connect-client', spec, jobs.length);
+
+                socket.on('new-job', () => {
+                    if (currentJob < jobs.length) {
+                        // @todo: lets go for the happy path, but if this fails, then we need to cancel other requests
+                        const jobInQueue = jobs[currentJob++];
+                        const jobRun = this.run(jobInQueue.benchmarkInfo, jobInQueue.projectConfig, jobInQueue.globalConfig, messager);
+                        jobResults.push(jobRun);
+
+                        jobRun
+                            .catch((reason => {
+                                resolved = true;
+                                socket.disconnect();
+                                reject(reason);
+                            }));
+
+                        if (currentJob === jobs.length) {
+                            Promise.all(jobResults)
+                                .then((results) => {
+                                    resolved = true;
+                                    console.log('disconnecting client');
+                                    socket.disconnect();
+                                    resolve(results);
+                                })
+                                .catch((reason) => {
+                                    resolved = true;
+                                    socket.disconnect();
+                                    reject(reason);
+                                });
+                        }
+                    }
+                });
+            });
+        });
+        // const promises = benchmarksBuilds.map((build: BuildConfig) => {
+        //     return this.run(build, build.projectConfig, build.globalConfig, messager);
+        // });
+        //
+        // return await Promise.all(promises);
     }
 }

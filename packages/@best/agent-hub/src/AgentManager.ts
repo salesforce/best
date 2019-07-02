@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { Agent, AgentConfig, AgentStatus } from "./Agent";
+import {Agent, AgentConfig, AgentStatus, Spec} from "./Agent";
 import BenchmarkJob from "./BenchmarkJob";
 
 export class AgentManager extends EventEmitter {
@@ -14,13 +14,21 @@ export class AgentManager extends EventEmitter {
 
     getIdleAgentForJob(job: BenchmarkJob): Agent | null {
         // @todo: organize Agents by category.
-        const idleAgentsForJob = this.agents.filter(agent => agent.isIdle() && agent.canRunJob(job));
+        const idleAgentsForJob = this.agents.filter(agent => agent.isIdle() && agent.canRunJob(job.spec));
 
         return idleAgentsForJob.length ? idleAgentsForJob[0] : null;
     }
 
-    existAgentForJob(job: BenchmarkJob): boolean {
-        return this.agents.some((agent: Agent) => agent.canRunJob(job));
+    existAgentWithSpec(spec: Spec): boolean {
+        return this.agents.some((agent: Agent) => agent.canRunJob(spec));
+    }
+
+    getIdleAgentsWithSpec(spec: Spec): Agent[] {
+        return this.agents.filter(agent => agent.isIdle() && agent.canRunJob(spec));
+    }
+
+    getAgentsForSpec(spec: Spec): Agent[] {
+        return this.agents.filter((agent: Agent) => agent.canRunJob(spec))
     }
 
     addAgent(agent: Agent) {
