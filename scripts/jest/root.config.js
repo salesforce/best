@@ -29,8 +29,8 @@ module.exports = {
         '<rootDir>/packages/@best/regex-util',
         '<rootDir>/packages/@best/frontend',
         '<rootDir>/packages/@best/agent',
+        '<rootDir>/packages/@best/config',
         // '<rootDir>/packages/@best/builder',
-        // '<rootDir>/packages/@best/config',
         // '<rootDir>/packages/@best/runner-headless',
         // '<rootDir>/packages/@best/cli',
     ]
