@@ -1,5 +1,5 @@
 import { compareBenchmarkStats } from '@best/compare';
-import { beginBenchmarkComparisonCheck, pushBenchmarkComparisonCheck, updateLatestRelease } from '@best/github-integration';
+import { beginBenchmarkComparisonCheck, completeBenchmarkComparisonCheck, failedBenchmarkComparisonCheck, updateLatestRelease } from '@best/github-integration';
 import { runBest } from './run_best';
 import git from 'simple-git/promise';
 import { FrozenProjectConfig, FrozenGlobalConfig, BenchmarkComparison } from '@best/types';
@@ -98,7 +98,7 @@ export async function runCompare(globalConfig: FrozenGlobalConfig, configs: Froz
         const compareResults = await compareBenchmarkStats(baseCommit, compareCommit, projectNames, storageProvider);
 
         if (gitIntegration && gitHubInstallation && check) {
-            await pushBenchmarkComparisonCheck(gitHubInstallation, check, compareResults, globalConfig);
+            await completeBenchmarkComparisonCheck(gitHubInstallation, check, compareResults, globalConfig);
         }
 
         if (gitIntegration) {
@@ -107,6 +107,10 @@ export async function runCompare(globalConfig: FrozenGlobalConfig, configs: Froz
 
         return compareResults;
     } catch (err) {
-        console.error('ugh', err);
+        if (gitIntegration && gitHubInstallation && check) {
+            await failedBenchmarkComparisonCheck(gitHubInstallation, check, err, globalConfig);
+        }
+
+        throw err;
     }
 }

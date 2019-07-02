@@ -98,7 +98,24 @@ export async function beginBenchmarkComparisonCheck(targetCommit: string, { gitI
     return { check, gitHubInstallation }
 }
 
-export async function pushBenchmarkComparisonCheck(gitHubInstallation: Octokit, check: Octokit.ChecksCreateResponse, comparison: BenchmarkComparison, globalConfig: FrozenGlobalConfig) {
+export async function failedBenchmarkComparisonCheck(gitHubInstallation: Octokit, check: Octokit.ChecksCreateResponse, error: string, globalConfig: FrozenGlobalConfig) {
+    const { repo: { repo, owner }  } = globalConfig.gitInfo;
+    const now = (new Date()).toISOString();
+
+    await gitHubInstallation.checks.update({
+        owner,
+        repo,
+        check_run_id: check.id,
+        completed_at: now,
+        conclusion: 'failure',
+        output: {
+            title: 'Best Performance',
+            summary: error
+        }
+    })
+}
+
+export async function completeBenchmarkComparisonCheck(gitHubInstallation: Octokit, check: Octokit.ChecksCreateResponse, comparison: BenchmarkComparison, globalConfig: FrozenGlobalConfig) {
     const { repo: { repo, owner }  } = globalConfig.gitInfo;
     const body = generateComparisonComment(comparison);
     const now = (new Date()).toISOString();
