@@ -66,8 +66,8 @@ export async function compareBenchmarkStats(baseCommit: string, targetCommit: st
     }[] = await Promise.all(projectNames.map(async (name) => {
         return {
             name,
-            base: await storageProvider.getAllBenchmarkStatsPerCommit(projectNames, baseCommit),
-            target: await storageProvider.getAllBenchmarkStatsPerCommit(projectNames, targetCommit)
+            base: await storageProvider.getAllBenchmarkStatsPerCommit(name, baseCommit),
+            target: await storageProvider.getAllBenchmarkStatsPerCommit(name, targetCommit)
         }
     }))
 
