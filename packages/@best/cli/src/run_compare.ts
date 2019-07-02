@@ -108,7 +108,7 @@ export async function runCompare(globalConfig: FrozenGlobalConfig, configs: Froz
         return compareResults;
     } catch (err) {
         if (gitIntegration && gitHubInstallation && check) {
-            await failedBenchmarkComparisonCheck(gitHubInstallation, check, err, globalConfig);
+            await failedBenchmarkComparisonCheck(gitHubInstallation, check, err.toString(), globalConfig);
         }
 
         throw err;
