@@ -8,7 +8,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "test": "jest --config ./scripts/jest/base.config.js",
+    "test": "jest --config ./scripts/jest/root.config.js",
     "clean": "lerna run clean && lerna clean --yes && rimraf -g packages/**/build && rimraf packages/**/tsconfig.tsbuildinfo && rimraf -g packages/**/dist && rimraf -g packages/**/node_modules",
     "lint": "eslint packages/ --ext=js,ts",
     "prettier": "prettier --write '**/*.{js,md}'",
@@ -17,7 +17,8 @@
     "release": "yarn prepare && lerna publish -m 'chore(release): publish %s' --exact --force-publish=* && yarn changelog",
     "changelog": "yarn changelog:generate && yarn changelog:publish",
     "changelog:generate": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-    "changelog:publish": "git add CHANGELOG.md && git commit -m 'docs(changelog): publish release changelog' && git push"
+    "changelog:publish": "git add CHANGELOG.md && git commit -m 'docs(changelog): publish release changelog' && git push",
+    "perf": "cd packages/best-benchmarks/ && yarn start --externalStorage=@best/store-aws"
   },
   "husky": {
     "hooks": {
@@ -25,6 +26,7 @@
     }
   },
   "devDependencies": {
+    "@babel/preset-typescript": "~7.3.3",
     "@commitlint/cli": "^8.0.0",
     "@commitlint/config-conventional": "^8.0.0",
     "@types/express": "^4.17.0",
@@ -51,7 +53,6 @@
     "lerna": "^3.15.0",
     "prettier": "^1.17.1",
     "rimraf": "^2.6.3",
-    "ts-jest": "^24.0.2",
     "typescript": "^3.5.1"
   },
   "config": {

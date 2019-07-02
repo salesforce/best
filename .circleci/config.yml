@@ -1,11 +1,15 @@
-version: 2
-jobs:
-  build_and_test:
+version: 2.1
+
+executors:
+  best-executor:
+    docker:
+      - image: circleci/node:10.16.0-stretch-browsers
     working_directory: ~/best
 
-    docker:
-      - image: circleci/node:10.15.1-stretch-browsers
-
+jobs:
+  build_and_test:
+    executor: best-executor
+    
     steps:
       - checkout
 
@@ -26,22 +30,23 @@ jobs:
             - examples/*/node_modules
           key: yarn-v3-{{ checksum "yarn.lock" }}
 
+      - persist_to_workspace:
+          root: .
+          paths: ./*
+
   perf_and_compare:
-    working_directory: ~/best
-
-    docker:
-      - image: circleci/node:10.15.1-stretch-browsers
-
+    executor: best-executor
+    
     environment:
       - CUSTOM_BASH_ENV: ~/.bashrc
       - CIRCLE_ENV_BROKEN: $CIRCLE_SHA1
       - GIT_APP_CERT_PATH: ~/best/git_app.pem
 
     steps:
+      - attach_workspace:
+          at: .
+      
       - checkout
-      - restore_cache:
-          keys:
-          - yarn-v3-{{ checksum "yarn.lock" }}
 
       - run:
           name: Setup dynamic environment variables
@@ -57,20 +62,14 @@ jobs:
           name: Decode PEM as environment variable
           command: echo -e "$GIT_APP_CERT" | base64 -d >> ~/best/git_app.pem
 
-      - run: yarn install
-
-      - run: yarn build:examples
-
       - run:
-          name: Performance Test - Example project
+          name: Run BEST Benchmarks
           command: yarn perf
-
       - run:
-          name: Comparing perf examples
-          command: best --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --externalStorage=@best/store-aws --gitIntegration
+          name: Compare BEST Benchmarks
+          command: yarn perf --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --gitIntegration
 
 workflows:
-  version: 2
   main_workflow:
     jobs:
       - build_and_test

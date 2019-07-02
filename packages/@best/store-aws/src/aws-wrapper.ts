@@ -55,7 +55,7 @@ export class S3 {
         return this.getObjectsInFolder(projectName, BENCHMARKS, commit);
     }
 
-    getObjectsInFolder(...args: string[]):Promise<string[]> {
+    getObjectsInFolder(...args: string[]): Promise<string[]> {
         return new Promise((resolve, reject) => {
             const opts = {
                 Bucket: this.bucket,

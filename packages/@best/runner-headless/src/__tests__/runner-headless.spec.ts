@@ -12,7 +12,14 @@ const PROJECT_CONFIG = {
     benchmarkIterations: 1,
 };
 
-const GLOBAL_CONFIG = {};
+const GLOBAL_CONFIG = {
+    gitInfo: {
+        lastCommit: { hash: 'commit-hash-asdf' },
+        localChanges: false,
+        gitBranch: 'test',
+        repo: { owner: 'salesforce', repo: 'best' }
+    }
+};
 
 const MOCK_MESSAGER = {
     onBenchmarkStart() {},
@@ -101,23 +108,23 @@ describe('messager', () => {
     test('alls hooks are called in the proper order', async () => {
         const calls = [];
         const messager = {
-            onBenchmarkStart(name) {
-                calls.push(['start', name]);
+            onBenchmarkStart(entry) {
+                calls.push(['start', entry]);
             },
             updateBenchmarkProgress() {
                 calls.push(['update']);
             },
-            onBenchmarkEnd(name) {
-                calls.push(['end', name]);
+            onBenchmarkEnd(entry) {
+                calls.push(['end', entry]);
             },
         };
 
         await runner.run(BENCHMARK_CONFIG, PROJECT_CONFIG, GLOBAL_CONFIG, messager);
 
         expect(calls).toEqual([
-            ['start', BENCHMARK_CONFIG.benchmarkName],
+            ['start', BENCHMARK_CONFIG.benchmarkEntry],
             ['update'],
-            ['end', BENCHMARK_CONFIG.benchmarkName],
+            ['end', BENCHMARK_CONFIG.benchmarkEntry],
         ]);
     });
 });

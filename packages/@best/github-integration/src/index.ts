@@ -42,6 +42,10 @@ function calculateAverageChange(result: BenchmarkComparison) {
         return [...all, ...generatePercentages(node)]
     }, <number[]>[])
 
+    if (flattenedValues.length === 0) {
+        return 0;
+    }
+
     const sum = flattenedValues.reduce((previous, current) => current += previous);
     const avg = sum / flattenedValues.length;
 
@@ -98,7 +102,25 @@ export async function beginBenchmarkComparisonCheck(targetCommit: string, { gitI
     return { check, gitHubInstallation }
 }
 
-export async function pushBenchmarkComparisonCheck(gitHubInstallation: Octokit, check: Octokit.ChecksCreateResponse, comparison: BenchmarkComparison, globalConfig: FrozenGlobalConfig) {
+export async function failedBenchmarkComparisonCheck(gitHubInstallation: Octokit, check: Octokit.ChecksCreateResponse, error: string, globalConfig: FrozenGlobalConfig) {
+    const { repo: { repo, owner }  } = globalConfig.gitInfo;
+    const now = (new Date()).toISOString();
+    const failureComment = 'Best failed with the following error:\n\n```' + error + '```';
+
+    await gitHubInstallation.checks.update({
+        owner,
+        repo,
+        check_run_id: check.id,
+        completed_at: now,
+        conclusion: 'failure',
+        output: {
+            title: 'Best Performance',
+            summary: failureComment
+        }
+    })
+}
+
+export async function completeBenchmarkComparisonCheck(gitHubInstallation: Octokit, check: Octokit.ChecksCreateResponse, comparison: BenchmarkComparison, globalConfig: FrozenGlobalConfig) {
     const { repo: { repo, owner }  } = globalConfig.gitInfo;
     const body = generateComparisonComment(comparison);
     const now = (new Date()).toISOString();

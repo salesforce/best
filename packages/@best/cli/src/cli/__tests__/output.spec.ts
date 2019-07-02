@@ -5,6 +5,7 @@ import Output from '../output';
 import comparison from './fixtures/comparison1';
 import { PassThrough } from 'stream';
 import chalk from 'chalk';
+import ansiRegex from 'ansi-regex';
 
 describe('Output', () => {
     describe('compare', () => {
@@ -18,7 +19,7 @@ describe('Output', () => {
             const output = new Output({}, outputStream);
             output.compare(comparison);
 
-            const actual = stream.read().toString();
+            const actual = stream.read().toString().replace(ansiRegex(), '');
             const expected = fs.readFileSync(path.resolve(__dirname, 'fixtures/comparison1-table.txt'), 'utf8');
 
             expect(actual.trim()).toEqual(expected.trim());

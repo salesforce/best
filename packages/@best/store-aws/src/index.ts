@@ -2,6 +2,7 @@ import { S3, AWS_TEXT } from './aws-wrapper';
 import fs from 'fs';
 import chalk from 'chalk';
 import fetch from 'node-fetch';
+import { BenchmarkResultsSnapshot, FrozenGlobalConfig } from '@best/types';
 
 const INIT_RUNNING_TEXT = chalk.bold.dim('\nPushing to AWS(S3)...');
 let S3_INSTANCE: S3;
@@ -18,11 +19,11 @@ export function initialize(/* config */) {
 }
 
 export async function storeBenchmarkResults(
-    fileMap: any,
-    { benchmarkName, benchmarkSignature, projectConfig } : { benchmarkName:string, benchmarkSignature: string, projectConfig: any },
-    globalConfig: any,
+    fileMap: { [key: string]: string },
+    { benchmarkInfo: { benchmarkName, benchmarkSignature }, projectConfig } : BenchmarkResultsSnapshot,
+    globalConfig: FrozenGlobalConfig,
 ) {
-    const { gitCommit, gitBranch, gitLocalChanges } = globalConfig;
+    const { gitInfo: { localChanges: gitLocalChanges, branch: gitBranch, lastCommit: { hash: gitCommit } } } = globalConfig;
     const { projectName } = projectConfig;
 
     // Replace slashes with underscores so we prevent ambiguous URLs

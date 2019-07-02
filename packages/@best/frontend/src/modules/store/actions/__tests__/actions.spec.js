@@ -1,5 +1,5 @@
 import * as types from 'store/shared'
-import * as actions from 'store/actions'
+import { benchmarksChanged, metricsChanged, zoomChanged, resetView } from 'store/actions'
 
 describe('view actions', () => {
     describe('benchmarksChanged', () => {
@@ -11,7 +11,7 @@ describe('view actions', () => {
                 benchmark
             }
     
-            expect(actions.benchmarksChanged(benchmark)).toEqual(expectedAction)
+            expect(benchmarksChanged(benchmark)).toEqual(expectedAction)
         })
     })
 
@@ -24,7 +24,7 @@ describe('view actions', () => {
                 metric
             }
     
-            expect(actions.metricsChanged(metric)).toEqual(expectedAction)
+            expect(metricsChanged(metric)).toEqual(expectedAction)
         })
     })
 
@@ -37,7 +37,7 @@ describe('view actions', () => {
                 zoom
             }
     
-            expect(actions.zoomChanged(zoom)).toEqual(expectedAction)
+            expect(zoomChanged(zoom)).toEqual(expectedAction)
         })
     })
 
@@ -47,7 +47,7 @@ describe('view actions', () => {
                 type: types.VIEW_RESET
             }
     
-            expect(actions.resetView()).toEqual(expectedAction)
+            expect(resetView()).toEqual(expectedAction)
         })
     })
 })
