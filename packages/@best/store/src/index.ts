@@ -9,7 +9,7 @@ function formatJSON(json: any) {
     return stringify(json, { indent: 2, maxLength: 90 });
 }
 
-function getStoredFileMapping(benchmarkFolder: string, artifactsFolder: string) {
+function getStoredFileMapping(benchmarkFolder: string, artifactsFolder: string): { [key: string]: string } {
     const WHITELIST = ['.js', '.html', '.css', '.json'];
 
     const currentFiles = fs.readdirSync(benchmarkFolder);
