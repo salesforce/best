@@ -13,17 +13,11 @@ function generateUUID() : string {
     return crypto.randomBytes(16).toString("hex");
 }
 
-// const hubServerConnectionPool = new Map<string, SocketIOClient.Socket>();
-const socketPool = new WeakMap<SocketIOClient.Socket, number>();
-
 function getSocketConnection(host: string, options: any): Promise<SocketIOClient.Socket> {
     return new Promise<SocketIOClient.Socket>((resolve, reject) => {
         const socket: SocketIOClient.Socket = socketIO(host, options);
 
         socket.once('connect', () => {
-            socketPool.set(socket, 1);
-            // hubServerConnectionPool.set(hubConnectionId, socket);
-
             resolve(socket);
         });
 
@@ -45,70 +39,6 @@ function getSocketConnection(host: string, options: any): Promise<SocketIOClient
                 reject(new Error(message));
             }
         });
-
-
-
-        // // @todo: we should also include the options here since the same host can have different connection options.
-        // const hubConnectionId = host;
-        //
-        // if (!hubServerConnectionPool.has(hubConnectionId)) {
-        //     const socket: SocketIOClient.Socket = socketIO(host, options);
-        //
-        //     socket.once('connect', () => {
-        //         socketPool.set(socket, 1);
-        //         hubServerConnectionPool.set(hubConnectionId, socket);
-        //
-        //         resolve(socket);
-        //     });
-        //
-        //     socket.once('connect_error', (err: any) => {
-        //         console.log(err);
-        //         reject(new Error('Error connecting to the hub'));
-        //     });
-        //
-        //     socket.once('connect_timeout', (err: any) => {
-        //         console.log(err);
-        //         reject(new Error('Timeout expired connecting to the hub'));
-        //     });
-        //
-        //     socket.once('error', (message: string) => {
-        //         if (message && message.indexOf('authentication error') >= 0) {
-        //             reject(new Error('Error connecting to the hub: Invalid credentials'));
-        //         } else {
-        //             console.log(message);
-        //             reject(new Error(message));
-        //         }
-        //     });
-        //
-        //     // @todo: this is the place to handle major connection issues.
-        // } else {
-        //     const socket: SocketIOClient.Socket = hubServerConnectionPool.get(hubConnectionId)!;
-        //
-        //     if (socket.connected) {
-        //         resolve(socket);
-        //     } else {
-        //         socket.connect();
-        //
-        //         socket.once('connect', () => {
-        //             resolve(socket);
-        //         });
-        //
-        //         socket.once('connect_error', (err: any) => {
-        //             console.log(err);
-        //             reject(err);
-        //         });
-        //
-        //         socket.once('connect_timeout', (err: any) => {
-        //             console.log(err);
-        //             reject(new Error('Timeout expired connecting to the hub'));
-        //         });
-        //
-        //         socket.once('error', (err: any) => {
-        //             console.log(err);
-        //             reject(new Error('Timeout expired connecting to the hub'));
-        //         });
-        //     }
-        // }
     });
 }
 
@@ -116,7 +46,6 @@ export class HubSocket extends EventEmitter {
     jobId: string;
     hubConnection: SocketIOClient.Socket;
     tarBundle: string = '';
-    disconnectingSocket: boolean = false;
 
     constructor(jobId: string, hubServerSocket : SocketIOClient.Socket) {
         super();
@@ -150,21 +79,11 @@ export class HubSocket extends EventEmitter {
     }
 
     disconnect() {
-        // @todo: dont use globals
-        // const numberOfClientsOnSocket = socketPool.get(this.hubConnection) || 1;
-        //
-        // if (numberOfClientsOnSocket === 1) {
-        //     // disconnect the socket;
-             this.disconnectingSocket = true;
-            this.hubConnection.disconnect();
-        // }
-        //
-        // socketPool.set(this.hubConnection, numberOfClientsOnSocket - 1);
+        this.hubConnection.disconnect();
     }
 
     initializeHubProxy() {
         this.hubConnection.on('load_benchmark', (jobId: string) => {
-            console.log('hub asking for', jobId, 'i have', this.jobId);
             if (jobId === this.jobId) {
                 const uploader = new SocketIOFile(this.hubConnection);
                 uploader.on('ready', () => {

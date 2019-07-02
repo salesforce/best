@@ -48,7 +48,7 @@ export class HubApplication {
 
             if (!this._agentManager.existAgentWithSpec(spec)) {
                 // there is no agent to run this job
-                socket.emit('cancel', 'There is no agent in the hub that match the specs to run client benchmarks.');
+                socket.emit('hub-cancel', 'There is no agent in the hub that match the specs to run client benchmarks.');
                 socket.disconnect(true);
             } else {
                 socket.on('disconnect', () => {

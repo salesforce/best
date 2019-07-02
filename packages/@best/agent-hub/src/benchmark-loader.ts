@@ -40,7 +40,6 @@ export async function loadBenchmarkJob(job: BenchmarkJob): Promise<BenchmarkJob>
         };
 
         uploader.on('start', (info: any) => {
-            console.log(info.data);
             if (info.data['jobId'] === job.jobId) {
                 clearTimeout(uploaderTimeout)
             }
