@@ -14,7 +14,7 @@ jobs:
       - checkout
 
       - restore_cache:
-        keys:
+          keys:
           - yarn-v3-{{ checksum "yarn.lock" }}
 
       - run: yarn install --frozen-lockfile
@@ -22,17 +22,17 @@ jobs:
       - run: yarn test
 
       - save_cache:
-        paths:
-          - ~/.cache/yarn
-          - yarn.lock
-          - node_modules
-          - packages/*/node_modules
-          - examples/*/node_modules
-        key: yarn-v3-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+            - yarn.lock
+            - node_modules
+            - packages/*/node_modules
+            - examples/*/node_modules
+          key: yarn-v3-{{ checksum "yarn.lock" }}
 
       - persist_to_workspace:
-        root: .
-        paths: ./*
+          root: .
+          paths: ./*
 
   perf_and_compare:
     executor: best-executor
@@ -44,27 +44,30 @@ jobs:
 
     steps:
       - attach_workspace:
-        at: .
+          at: .
       
       - checkout
 
       - run:
-        name: Setup BEST variables
-        command: |
-          echo '
-          export PULL_REQUEST=${CIRCLE_PULL_REQUEST}
-          export REPO_NAME=${CIRCLE_PROJECT_REPONAME}
-          export TARGET_COMMIT=${CIRCLE_SHA1}
-          export BASE_COMMIT=`git rev-parse origin/master`' >> $BASH_ENV
-          
-          echo -e "$GIT_APP_CERT" | base64 -d >> ~/best/git_app.pem
+          name: Setup dynamic environment variables
+          command:
+              echo '
+              export PATH=./node_modules/.bin:$PATH
+              export PULL_REQUEST=${CIRCLE_PULL_REQUEST}
+              export REPO_NAME=${CIRCLE_PROJECT_REPONAME}
+              export TARGET_COMMIT=${CIRCLE_SHA1}
+              export BASE_COMMIT=`git rev-parse origin/master`' >> $BASH_ENV
 
       - run:
-        name: Run BEST Benchmarks
-        command: yarn perf
+          name: Decode PEM as environment variable
+          command: echo -e "$GIT_APP_CERT" | base64 -d >> ~/best/git_app.pem
+
       - run:
-        name: Run BEST Benchmarks
-        command: yarn perf --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --gitIntegration
+          name: Run BEST Benchmarks
+          command: yarn perf
+      - run:
+          name: Compare BEST Benchmarks
+          command: yarn perf --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --gitIntegration
 
 workflows:
   main_workflow:
