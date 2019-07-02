@@ -3,5 +3,6 @@
   "version": "4.0.0",
   "description": "Best Types for Typescript",
   "keywords": ["Best"],
-  "types": "build/index.d.ts"
+  "types": "build/index.d.ts",
+  "main":"build/index.js"
 }

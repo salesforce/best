@@ -1,17 +1,5 @@
 module.exports = {
     rootDir: '../..',
-    preset: 'ts-jest',
-    globals: {
-        'ts-jest': {
-            // The tsconfig location has to be specified otherwise, it will not transform the javascript
-            // files.
-            tsConfig: '<rootDir>/tsconfig.settings.json',
-
-            // By default ts-jest reports typescript compilation errors. Let's disable for now diagnostic
-            // reporting since some of the packages doesn't pass the typescript compilation.
-            diagnostics: false,
-        },
-    },
 
     // Global mono-repo code coverage threshold.
     coverageThreshold: {
@@ -29,9 +17,9 @@ module.exports = {
         '<rootDir>/packages/@best/regex-util',
         '<rootDir>/packages/@best/frontend',
         '<rootDir>/packages/@best/agent',
-        // '<rootDir>/packages/@best/config',
-        // '<rootDir>/packages/@best/builder',
-        // '<rootDir>/packages/@best/runner-headless',
-        // '<rootDir>/packages/@best/cli',
+        '<rootDir>/packages/@best/config',
+        '<rootDir>/packages/@best/builder',
+        '<rootDir>/packages/@best/runner-headless',
+        '<rootDir>/packages/@best/cli',
     ]
 };
