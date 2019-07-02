@@ -25,7 +25,7 @@
     }
   },
   "devDependencies": {
-    "@babel/preset-typescript":"~7.3.3",
+    "@babel/preset-typescript": "~7.3.3",
     "@commitlint/cli": "^8.0.0",
     "@commitlint/config-conventional": "^8.0.0",
     "@types/express": "^4.17.0",
@@ -52,8 +52,7 @@
     "lerna": "^3.15.0",
     "prettier": "^1.17.1",
     "rimraf": "^2.6.3",
-    "typescript": "^3.5.1",
-    "weak": "^1.0.1"
+    "typescript": "^3.5.1"
   },
   "config": {
     "commitizen": {
