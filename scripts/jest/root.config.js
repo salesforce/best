@@ -26,7 +26,7 @@ module.exports = {
         '<rootDir>/packages/@best/agent',
         '<rootDir>/packages/@best/utils',
         '<rootDir>/packages/@best/regex-util',
-        // '<rootDir>/packages/@best/builder',
+        '<rootDir>/packages/@best/builder',
         '<rootDir>/packages/@best/config',
         '<rootDir>/packages/@best/console-stream',
         // '<rootDir>/packages/@best/github-integration',
