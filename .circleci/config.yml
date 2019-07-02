@@ -59,15 +59,13 @@ jobs:
 
       - run: yarn install
 
-      - run: yarn build:examples
-
       - run:
-          name: Performance Test - Example project
+          name: Performance Test
           command: yarn perf
 
       - run:
-          name: Comparing perf examples
-          command: best --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --externalStorage=@best/store-aws --gitIntegration
+          name: Comparing Performance
+          command: yarn perf --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --gitIntegration
 
 workflows:
   version: 2

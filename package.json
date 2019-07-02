@@ -17,7 +17,8 @@
     "release": "yarn prepare && lerna publish -m 'chore(release): publish %s' --exact --force-publish=* && yarn changelog",
     "changelog": "yarn changelog:generate && yarn changelog:publish",
     "changelog:generate": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-    "changelog:publish": "git add CHANGELOG.md && git commit -m 'docs(changelog): publish release changelog' && git push"
+    "changelog:publish": "git add CHANGELOG.md && git commit -m 'docs(changelog): publish release changelog' && git push",
+    "perf": "cd packages/best-benchmarks/ && yarn start --externalStorage=@best/store-aws"
   },
   "husky": {
     "hooks": {
