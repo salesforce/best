@@ -1,9 +1,15 @@
 version: 2.1
-jobs:
-  build_and_test:
-    working_directory: ~/best
+
+executors:
+  best-executor:
     docker:
       - image: circleci/node:10.16.0-stretch-browsers
+    working_directory: ~/best
+
+jobs:
+  build_and_test:
+    executor: best-executor
+    
     steps:
       - checkout
 
@@ -29,9 +35,8 @@ jobs:
           paths: ./*
 
   perf_and_compare:
-    working_directory: ~/best
-    docker:
-      - image: circleci/node:10.16.0-stretch-browsers
+    executor: best-executor
+    
     environment:
       - CUSTOM_BASH_ENV: ~/.bashrc
       - CIRCLE_ENV_BROKEN: $CIRCLE_SHA1
@@ -43,9 +48,9 @@ jobs:
       
       - checkout
 
-      - restore_cache:
-          keys:
-          - yarn-v3-{{ checksum "yarn.lock" }}
+      # - restore_cache:
+      #     keys:
+      #     - yarn-v3-{{ checksum "yarn.lock" }}
 
       - run:
           name: Setup dynamic environment variables
@@ -61,7 +66,7 @@ jobs:
           name: Decode PEM as environment variable
           command: echo -e "$GIT_APP_CERT" | base64 -d >> ~/best/git_app.pem
 
-      - run: yarn install --frozen-lockfile
+      # - run: yarn install --frozen-lockfile
       - run: yarn perf
       - run:
           name: Comparing Performance

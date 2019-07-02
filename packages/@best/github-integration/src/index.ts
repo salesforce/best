@@ -105,7 +105,7 @@ export async function beginBenchmarkComparisonCheck(targetCommit: string, { gitI
 export async function failedBenchmarkComparisonCheck(gitHubInstallation: Octokit, check: Octokit.ChecksCreateResponse, error: string, globalConfig: FrozenGlobalConfig) {
     const { repo: { repo, owner }  } = globalConfig.gitInfo;
     const now = (new Date()).toISOString();
-    const failureComment = 'Best failed with the following error:\n```' + error + '```';
+    const failureComment = 'Best failed with the following error:\n\n```' + error + '```';
 
     await gitHubInstallation.checks.update({
         owner,
