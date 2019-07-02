@@ -1,5 +1,5 @@
 import * as types from 'store/shared'
-import { benchmarksChanged, metricsChanged, zoomChanged, resetView } from 'store/actions'
+import { benchmarksChanged, metricsChanged, zoomChanged, resetView, comparisonChanged } from 'store/actions'
 
 describe('view actions', () => {
     describe('benchmarksChanged', () => {
@@ -50,7 +50,7 @@ describe('view actions', () => {
                 comparison
             }
 
-            expect(actions.comparisonChanged(comparison)).toEqual(expectedAction)
+            expect(comparisonChanged(comparison)).toEqual(expectedAction)
         })
     })
 
