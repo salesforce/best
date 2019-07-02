@@ -7,10 +7,10 @@ import base64 from 'base-64';
 import GitHubApi from '@octokit/rest';
 
 // -- Env & config ----------------------------------------------------------------------
-const GITHUB_USER_TOKEN = process.env.GITHUB_USER_TOKEN;
-const GITHUB_APP_ID = process.env.GITHUB_APP_ID;
-const GITHUB_APP_CERTIFICATE_PATH = process.env.GITHUB_APP_CERTIFICATE_PATH;
-const GITHUB_APP_CERTIFICATE_BASE64 = process.env.GITHUB_APP_CERTIFICATE_BASE64;
+const GITHUB_USER_TOKEN = process.env.GIT_USER_TOKEN;
+const GITHUB_APP_ID = process.env.GIT_APP_ID;
+const GITHUB_APP_CERTIFICATE_PATH = process.env.GIT_APP_CERT_PATH;
+const GITHUB_APP_CERTIFICATE_BASE64 = process.env.GIT_APP_CERT_BASE64;
 
 const GITHUB_APP_CERTIFICATE = normalizeCert({
     cert: process.env.GITHUB_APP_CERTIFICATE,
