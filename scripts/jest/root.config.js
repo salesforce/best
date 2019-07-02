@@ -24,14 +24,14 @@ module.exports = {
 
     projects: [
         '<rootDir>/packages/@best/agent',
+        '<rootDir>/packages/@best/utils',
+        '<rootDir>/packages/@best/regex-util',
         '<rootDir>/packages/@best/builder',
-        '<rootDir>/packages/@best/cli',
         '<rootDir>/packages/@best/config',
         '<rootDir>/packages/@best/console-stream',
-        '<rootDir>/packages/@best/frontend',
-        '<rootDir>/packages/@best/github-integration',
-        '<rootDir>/packages/@best/regex-util',
-        '<rootDir>/packages/@best/runner-headless',
-        '<rootDir>/packages/@best/utils',
+        // '<rootDir>/packages/@best/frontend',
+        // '<rootDir>/packages/@best/github-integration',
+        // '<rootDir>/packages/@best/runner-headless',
+        // '<rootDir>/packages/@best/cli',
     ]
 };

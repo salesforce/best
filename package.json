@@ -52,7 +52,8 @@
     "prettier": "^1.17.1",
     "rimraf": "^2.6.3",
     "ts-jest": "^24.0.2",
-    "typescript": "^3.5.1"
+    "typescript": "^3.5.1",
+    "weak": "^1.0.1"
   },
   "config": {
     "commitizen": {

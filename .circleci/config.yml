@@ -15,8 +15,8 @@ jobs:
 
       - run: yarn install --frozen-lockfile
       - run: yarn lint
-      # - run: yarn test
-      - run: node --expose-gc ./node_modules/.bin/jest --logHeapUsage --config ./scripts/jest/root.config.js --maxWorkers=2
+      - run: yarn test
+      # - run: node --expose-gc ./node_modules/.bin/jest --logHeapUsage --config ./scripts/jest/root.config.js --maxWorkers=2
 
       - save_cache:
           paths:
