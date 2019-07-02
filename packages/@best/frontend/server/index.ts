@@ -1,5 +1,4 @@
 import express from 'express'
-import helmet from 'helmet'
 import compression from 'compression'
 import * as path from 'path'
 import { FrontendConfig } from '@best/types';
@@ -17,7 +16,6 @@ export const Frontend = (config: FrontendConfig): express.Application => {
 
     const app: express.Application = express()
 
-    app.use(helmet())
     app.use(compression())
 
     // API

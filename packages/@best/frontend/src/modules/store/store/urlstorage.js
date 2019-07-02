@@ -46,13 +46,18 @@ function loadProjectFromPath() {
 function updateViewQueryIfNeeded(view) {
     const friendlyView = {
         ...view,
-        zoom: friendlyZoom(view.zoom)
+        zoom: friendlyZoom(view.zoom),
+        comparison: view.comparison.commits
+    }
+
+    if (view.comparison.benchmarkName) {
+        friendlyView.comparisonBenchmark = view.comparison.benchmarkName;
     }
     
-    const newQuery = queryString.stringify(friendlyView);
+    const newQuery = queryString.stringify(friendlyView, { arrayFormat: 'comma' });
 
     if (window.location.hash !== `#${newQuery}`) {
-        window.location.hash = queryString.stringify(friendlyView);
+        window.location.hash = newQuery;
     }
 }
 
@@ -74,20 +79,21 @@ function loadViewFromQuery() {
     const hash = window.location.hash;
     if (hash.length > 0) {
         const query = hash.slice(1);
-        const parsedQuery = queryString.parse(query);
+        const parsedQuery = queryString.parse(query, { arrayFormat: 'comma' });
 
         // TODO: ensure this is not going to be an issue for security
         const view = {
             benchmark: parsedQuery.benchmark,
             timing: parsedQuery.timing,
             metric: parsedQuery.metric,
-            zoom: loadFriendlyZoom(parsedQuery.zoom)
+            zoom: loadFriendlyZoom(parsedQuery.zoom),
+            comparison: { commits: parsedQuery.comparison || [], results: {}, benchmarkName: parsedQuery.comparisonBenchmark }
         }
 
         return view;
     }
 
-    return {};
+    return undefined;
 }
 
 export const loadState = () => {
@@ -116,7 +122,7 @@ export const loadState = () => {
     return state;
 }
 
-const saveState = ({ projects: { selectedProjectId }, view }) => {
+export const saveState = ({ projects: { selectedProjectId }, view }) => {
     try {
         updateProjectsPathIfNeeded(selectedProjectId);
     } catch (err) {

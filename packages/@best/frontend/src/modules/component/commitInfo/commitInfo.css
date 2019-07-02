@@ -4,10 +4,14 @@
 
 .commit-info {
     position: absolute;
-    z-index: 1;
+    z-index: 3;
     margin-top: -30px;
     display: inline-block;
     min-width: 400px;
+}
+
+.commit-info.hidden {
+    display: none;
 }
 
 .container {
@@ -47,7 +51,7 @@
 
 .info .user {
     display: flex;
-    flex-direction: horizontal;
+    flex-direction: row;
     align-items: center;
     position: relative;
 }

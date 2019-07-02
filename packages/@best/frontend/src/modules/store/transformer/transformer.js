@@ -30,6 +30,19 @@ const mergeMetrics = (snap, accumulator) => {
     })
 }
 
+const normalizeDates = (dates) => {
+    return dates.map(d => (new Date(d)).toLocaleDateString('default', { month: 'long', day: 'numeric' }));
+}
+
+const normalizeBenchmark = (benchmark) => {
+    return Object.keys(benchmark).reduce((normalized, key) => {
+        if (key === 'commitDates') {
+            normalized[key] = normalizeDates(normalized[key]);
+        }
+        return normalized;
+    }, benchmark);
+}
+
 export const snapshotsToBenchmarks = (snapshots) => {
     const benchesByKeys = snapshots.reduce((acc, snap) => ({
         ...acc,
@@ -45,7 +58,7 @@ export const snapshotsToBenchmarks = (snapshots) => {
 
     const benchmarks = Object.keys(benchesByKeys).map(key => ({
         name: key,
-        ...benchesByKeys[key]
+        ...normalizeBenchmark(benchesByKeys[key])
     }))
 
     return benchmarks

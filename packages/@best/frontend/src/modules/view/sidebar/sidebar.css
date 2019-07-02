@@ -1,41 +1,47 @@
 :host {
-    background: #000;
+    position: -webkit-sticky; /* Safari */  
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+.brand h1, section {
+    color: #ffffff;
+}
+
+.brand a {
+    text-decoration: none;
 }
 
 .brand h1 {
     font-size: 64px;
-    color: #ff00a8;
     font-weight: bold;
     text-align: center;
 }
 
 section {
     margin-top: 55px;
-    color: #fff;
 }
 
 h3 {
     margin: 0;
-    margin-left: 24px;
     margin-bottom: 8px;
-    font-weight: normal;
+    padding-left: 24px;
+    /* font-weight: normal; */
     text-transform: uppercase;
 }
 
 .item {
-    background: #4a4a4a;
-    padding: 12px 24px;
+    padding: 16px 24px;
     cursor: pointer;
+
+    font-size: 1.2rem;
 }
 
 .item:hover {
-    background: #555;
+    background: #7d95a7;
 }
 
 .item.selected {
-    background: #00a3ff;
-}
-
-.item.selected:hover {
-    background: #39b8ff;
+    background: #0b2331;
 }

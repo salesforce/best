@@ -1,3 +1,37 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    position: relative;
+    margin: 0 50px;
+    margin-bottom: 5px;
+
+    z-index: 1;
+}
+
+.title {
+    margin: 0;
+    text-align: center;
+    font-weight: normal;
+}
+
+.compare-actions {
+    position: absolute;
+    right: 0;
+}
+
+.compare-actions > * {
+    margin: 0 10px;
+}
+
+.container[data-first="true"] .graph-wrapper {
+    height: 460px;
+}
+
+.container[data-first="false"] .graph-wrapper {
+    height: 400px;
+}
 
 /*
  * We need to have this css here from the Plotly library because otherwise the shadow dom
@@ -5,25 +39,8 @@
 */
 
 .js-plotly-plot .plotly, .js-plotly-plot .plotly div {
-    font-family:'Open Sans', verdana, arial, sans-serif;
     margin:0;
     padding:0;
-}
-
-.js-plotly-plot .plotly input, .js-plotly-plot .plotly button {
-    font-family:'Open Sans', verdana, arial, sans-serif;
-}
-
-.js-plotly-plot .plotly input:focus,.js-plotly-plot .plotly button:focus {
-    outline:none;
-}
-
-.js-plotly-plot .plotly a {
-    text-decoration:none;
-}
-
-.js-plotly-plot .plotly a:hover {
-    text-decoration:none;
 }
 
 .js-plotly-plot .plotly .crisp {
@@ -125,71 +142,6 @@
     cursor:ne-resize;
 }
 
-.js-plotly-plot .plotly .modebar {
-    position:absolute;
-    top:2px;
-    right:2px;
-    z-index:1001;
-    background:rgba(255,255,255,0.7);
-}
-
-.js-plotly-plot .plotly .modebar--hover {
-    opacity:0;
-    -webkit-transition:opacity 0.3s ease 0s;
-    -moz-transition:opacity 0.3s ease 0s;
-    -ms-transition:opacity 0.3s ease 0s;
-    -o-transition:opacity 0.3s ease 0s;
-    transition:opacity 0.3s ease 0s;
-}
-
-.js-plotly-plot .plotly:hover .modebar--hover {
-    opacity:1;
-}
-
-.js-plotly-plot .plotly .modebar-group {
-    float:left;
-    display:inline-block;
-    box-sizing:border-box;
-    margin-left:8px;
-    position:relative;
-    vertical-align:middle;
-    white-space:nowrap;
-}
-
-.js-plotly-plot .plotly .modebar-group:first-child {
-    margin-left:0px;
-}
-
-.js-plotly-plot .plotly .modebar-btn {
-    position:relative;
-    font-size:16px;
-    padding:3px 4px;
-    cursor:pointer;
-    line-height:normal;
-    box-sizing:border-box;
-}
-
-.js-plotly-plot .plotly .modebar-btn svg {
-    position:relative;
-    top:2px;
-}
-
-.js-plotly-plot .plotly .modebar-btn path {
-    fill:rgba(0,31,95,0.3);
-}
-
-.js-plotly-plot .plotly .modebar-btn.active path,.js-plotly-plot .plotly .modebar-btn:hover path {
-    fill:rgba(0,22,72,0.5);
-}
-
-.js-plotly-plot .plotly .modebar-btn.modebar-btn--logo {
-    padding:3px 1px;
-}
-
-.js-plotly-plot .plotly .modebar-btn.modebar-btn--logo path {
-    fill:#447adb !important;
-}
-
 .js-plotly-plot .plotly [data-title]:before,.js-plotly-plot .plotly [data-title]:after {
     position:absolute;
     -webkit-transform:translate3d(0, 0, 0);
@@ -246,48 +198,4 @@
 .js-plotly-plot .plotly .select-outline-2 {
     stroke:black;
     stroke-dasharray:2px 2px;
-}
-
-.plotly-notifier {
-    font-family:'Open Sans';
-    position:fixed;
-    top:50px;
-    right:20px;
-    z-index:10000;
-    font-size:10pt;
-    max-width:180px;
-}
-
-.plotly-notifier p {
-    margin:0;
-}
-
-.plotly-notifier .notifier-note {
-    min-width:180px;
-    max-width:250px;
-    border:1px solid #fff;
-    z-index:3000;
-    margin:0;
-    background-color:#8c97af;
-    background-color:rgba(140,151,175,0.9);
-    color:#fff;
-    padding:10px;
-}
-
-.plotly-notifier .notifier-close {
-    color:#fff;
-    opacity:0.8;
-    float:right;
-    padding:0 5px;
-    background:none;
-    border:none;
-    font-size:20px;
-    font-weight:bold;
-    line-height:20px;
-}
-
-.plotly-notifier .notifier-close:hover {
-    color:#444;
-    text-decoration:none;
-    cursor:pointer;
 }

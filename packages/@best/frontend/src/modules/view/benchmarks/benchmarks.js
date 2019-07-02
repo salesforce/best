@@ -7,19 +7,11 @@ export default class ViewBenchmarks extends LightningElement {
     allBenchmarks = [];
 
     @track visibleBenchmarks = [];
-    needsRelayoutOfBenchmarks = false;
 
     viewTiming;
     @track viewBenchmark;
-    @track viewMetric;
 
     @track viewZoom;
-    hasSetInitialZoom = false;
-
-    @track currentPoints = {};
-
-    recentHoverData = [];
-    cacheQuerySelectorGraph = [];
 
     @wire(connectStore, { store })
     storeChange({ benchmarks, view }) {
@@ -28,7 +20,6 @@ export default class ViewBenchmarks extends LightningElement {
             this.viewBenchmark !== view.benchmark ||
             this.viewTiming !== view.timing
         ) {
-            this.needsRelayoutOfBenchmarks = true;
             if (view.benchmark === 'all') {
                 this.visibleBenchmarks = benchmarks.items;
             } else {
@@ -36,15 +27,9 @@ export default class ViewBenchmarks extends LightningElement {
             }
             this.visibleBenchmarks = this.visibleBenchmarks.map((bench, idx) => ({
                 ...bench,
-                selectedPoints: [],
                 isFirst: idx === 0
             }))
             this.allBenchmarks = benchmarks.items;
-        }
-
-        if (this.viewMetric !== view.metric) {
-            this.viewMetric = view.metric;
-            this.needsRelayoutOfBenchmarks = true;
         }
 
         this.viewTiming = view.timing;
@@ -54,5 +39,70 @@ export default class ViewBenchmarks extends LightningElement {
 
     handleZoom(event) {
         store.dispatch(zoomChanged(event.detail.update));
+    }
+
+    get hasStats() {
+        return this.visibleBenchmarks.length > 0;
+    }
+
+    get numberOfBenchmarks() {
+        return this.visibleBenchmarks.length;
+    }
+
+    get numberOfCommits() {
+        const zoom = this.zoom;
+        if (zoom) {
+            const normalizedZoom = [Math.ceil(zoom[0]), Math.floor(zoom[1])]
+            return (normalizedZoom[1] - normalizedZoom[0]) + 1;
+        }
+
+        const commitCounts = this.visibleBenchmarks.map(bench => bench.commits.length);
+        return Math.max(...commitCounts);
+    }
+
+    get zoom() {
+        if (this.viewZoom.hasOwnProperty('xaxis.range')) {
+            return this.viewZoom['xaxis.range'];
+        } else if (this.viewZoom.hasOwnProperty('xaxis.range[0]')) {
+            return [this.viewZoom['xaxis.range[0]'], this.viewZoom['xaxis.range[1]']];
+        }
+
+        return false;
+    }
+
+    get startDate() {
+        const zoom = this.zoom;
+        const bench = this.visibleBenchmarks[0];
+        if (! bench) {
+            return '';
+        }
+        
+        let date;
+        if (zoom) {
+            const beginIndex = Math.ceil(zoom[0]);
+            date = bench.commitDates[beginIndex];
+        }
+
+        date = date || bench.commitDates[0];
+
+        return date;
+    }
+
+    get endDate() {
+        const zoom = this.zoom;
+        const bench = this.visibleBenchmarks[0];
+        if (! bench) {
+            return '';
+        }
+        
+        let date;
+        if (zoom) {
+            const endIndex = Math.floor(zoom[1]);
+            date = bench.commitDates[endIndex];
+        }
+
+        date = date || bench.commitDates[bench.commitDates.length - 1];
+
+        return date;
     }
 }

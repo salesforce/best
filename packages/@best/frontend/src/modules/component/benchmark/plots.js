@@ -1,7 +1,24 @@
+const colorForName = (name, fill) => {
+    const normalizedName = name.replace(/-(low|high)/, '')
+
+    const colors = {
+        "script": ['#241E4E', 'rgba(36, 30, 78, 0.08)'],
+        "aggregate": ['#FF1E4E', 'rgba(255, 30, 78, 0.08)'],
+        "paint": ['#17BECF', 'rgba(23, 190, 207, 0.15)'],
+        "layout": ['#27D046', 'rgba(39, 208, 70, 0.08)'],
+        "system": ['#9DA39A', 'rgba(157, 163, 154, 0.08)'],
+        "idle": ['#54494B', 'rgba(84, 73, 75, 0.08)'],
+        'first-paint': ['#17BECF', 'rgba(23, 190, 207, 0.15)'], 'duration': ['#FF1E4E', 'rgba(255, 30, 78, 0.08)'] // old metrics
+    }
+
+    const colorIndex = fill ? 0 : 1;
+
+    return colors[normalizedName][colorIndex];
+}
+
 export function buildLayout(title, isFirst) {
     return {
         height: isFirst ? 400 * 1.15 : 400,
-        title,
         xaxis: {
             title: 'Commits',
             fixedrange: isFirst ? false : true,
@@ -13,9 +30,20 @@ export function buildLayout(title, isFirst) {
             title: 'ms',
             zeroline: false
         },
-        showlegend: false,
+        showlegend: isFirst ? true : false,
+        legend: {
+            x: 1,
+            y: 1.02,
+            orientation: 'h',
+            traceorder: 'reversed',
+            itemclick: false,
+            itemdoubleclick: false,
+            xanchor: 'right'
+        },
         side: 'bottom',
-        colorway: ['#e7a4b6', '#17BECF']
+        margin: {
+            t: 0,
+        }
     };
 }
 
@@ -24,15 +52,17 @@ function buildLineTrend({ dates, values, name, commits }, showsVariation) {
         y: values,
         x: commits.map(commit => commit.slice(0, 7)),
         text: dates,
-        mode: 'lines',
+        mode: 'lines+markers',
         name,
         line: {
             shape: 'spline',
-            width: 3
+            width: 2,
+            color: colorForName(name, true)
         },
         opacity: 0.8,
         type: 'scatter',
-        hoverinfo: 'text+y+x',
+        hoveron: 'points+fills',
+        hovertemplate: '%{y}ms<br>%{text}<extra></extra>',
         fill: showsVariation ? 'none' : 'tozeroy'
     };
 }
@@ -49,10 +79,10 @@ function buildVarianceTrend({ dates, values, name, commits }) {
             color: 'transparent'
         },
         fill: 'tonexty',
-        fillcolor: name.includes('high') ? 'rgba(0, 0, 50, 0.1)' : 'transparent',
-        // fillcolor: 'rgba(0, 0, 50, 0.1)',
+        fillcolor: name.includes('high') ? colorForName(name, false) : 'transparent',
         showlegend: false,
-        hoverinfo: 'skip'
+        hoverinfo: 'skip',
+        hoveron: 'fills'
     };
 }
 
@@ -123,7 +153,8 @@ export async function drawPlot(element, trends, layout) {
         displayModeBar: false,
         scrollZoom: false,
         showTips: false,
-        responsive: true
+        responsive: true,
+        doubleClick: false
     });
 
     return element.layout;
@@ -148,6 +179,7 @@ export function createAnnotation(element, point) {
         ax: 0,
         ay: point.yaxis.range[1],
         ayref: 'y',
+        _commit: point.x
     }
 
     const newIndex = (element.layout.annotations || []).length;
@@ -160,8 +192,39 @@ export function createAnnotation(element, point) {
     return relayout(element, update);
 }
 
-export function removeAnnotation(element, idx) {
-    window.Plotly.relayout(element, `annotations[${idx}]`, 'remove');
+export function createInconsistencyAnnotation(element, x) {
+    const annotation = {
+        x,
+        y: element.layout.yaxis.range[0],
+        xref: 'x',
+        yref: 'y',
+        showarrow: true,
+        arrowcolor: '#f00',
+        text: '⚠️',
+        arrowhead: 0,
+        ax: 0,
+        ay: element.layout.yaxis.range[0],
+        ayref: 'y'
+    }
+
+    const newIndex = (element.layout.annotations || []).length;
+
+    const update = {
+        [`annotations[${newIndex}]`]: annotation,
+        'yaxis.range': element.layout.yaxis.range // we don't want Plotly to change the yaxis bc of the annotation
+    }
+
+    return relayout(element, update);
+}
+
+export function removeAnnotation(element, commit) {
+    element.layout.annotations.every((annotation, idx) => {
+        if (annotation._commit === commit) {
+            window.Plotly.relayout(element, `annotations[${idx}]`, 'remove');
+            return false
+        }
+        return true;
+    })
 
     return element.layout;
 }

@@ -1,4 +1,5 @@
-import { Router } from 'express'
+import { Router, RequestHandler } from 'express'
+import apicache from 'apicache'
 import { loadDbFromConfig } from '@best/api-db'
 import { GithubApplicationFactory } from '@best/github-integration'
 import { FrontendConfig } from '@best/types';
@@ -7,7 +8,11 @@ export default (config: FrontendConfig): Router => {
     const db = loadDbFromConfig(config);
     const router = Router()
 
-    router.get('/info/:commit', async (req, res): Promise<void> => {
+    let cache = apicache.middleware;
+    const onlyStatus200: RequestHandler = (req, res): boolean => res.statusCode === 200;
+    const cacheSuccesses = cache('2 minutes', onlyStatus200);
+
+    router.get('/info/:commit', cacheSuccesses, async (req, res): Promise<void> => {
         const { commit } = req.params;
 
         if (config.githubConfig) {
@@ -47,7 +52,7 @@ export default (config: FrontendConfig): Router => {
         }
     })
 
-    router.get('/projects', async (req, res): Promise<void> => {
+    router.get('/projects', cacheSuccesses, async (req, res): Promise<void> => {
         try {
             await db.migrate()
             
@@ -61,7 +66,7 @@ export default (config: FrontendConfig): Router => {
         }
     })
 
-    router.get('/:project/snapshots', async (req, res): Promise<void> => {
+    router.get('/:project/snapshots', cacheSuccesses, async (req, res): Promise<void> => {
         const { project } = req.params
         const { since } = req.query
 

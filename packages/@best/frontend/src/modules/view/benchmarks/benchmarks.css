@@ -1,3 +1,14 @@
-.graph-wrapper {
+:host {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.175);
+    z-index: 1;
+    background: #fff;
+}
+
+.benchmark-wrapper {
     position: relative;
+}
+
+.stats {
+    text-align: center;
+    color: #444;
 }

@@ -1,0 +1,41 @@
+button {
+    position: relative;
+    font: inherit;
+    
+    border-radius: 3px;
+
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all .1s ease;
+    outline: none;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+button.primary {
+    background: rgb(0, 163, 255);
+    box-shadow: 0 5px 8px rgba(0, 163, 255, 0.12);
+    color: #fff;
+}
+
+button.default {
+    padding: 10px 14px;
+}
+
+button.small {
+    padding: 8px 12px;
+    font-size: 85%;
+}
+
+button.close {
+    background: rgb(62, 63, 66);
+    box-shadow: 0 5px 8px rgba(62, 63, 66, 0.14);
+    color: #fff;
+}

@@ -7,6 +7,7 @@ import {
     VIEW_BENCHMARKS_CHANGED,
     VIEW_METRICS_CHANGED,
     VIEW_ZOOM_CHANGED,
+    VIEW_COMPARISON_CHANGED,
     VIEW_RESET,
     COMMIT_INFO_RECEIVED
 } from 'store/shared';
@@ -36,18 +37,21 @@ export function projects(
 
 export function benchmarks(
     state = {
-        items: []
+        items: [],
+        snapshots: []
     },
     action
 ) {
     switch (action.type) {
         case CLEAR_BENCHMARKS:
             return {
-                items: []
+                items: [],
+                snapshots: []
             };
         case BENCHMARKS_RECEIVED:
             return {
-                items: action.benchmarks
+                items: action.benchmarks,
+                snapshots: action.snapshots
             };
         default:
             return state;
@@ -59,7 +63,8 @@ export function view(
         timing: 'last-release',
         benchmark: 'all',
         metric: 'all',
-        zoom: {} // this goes directly to/from plotly
+        zoom: {}, // this goes directly to/from plotly,
+        comparison: { commits: [], results: {}, benchmarkName: null }
     },
     action
 ) {
@@ -84,13 +89,13 @@ export function view(
                 ...state,
                 zoom: action.zoom
             }
-        case VIEW_RESET:
+        case VIEW_COMPARISON_CHANGED:
             return {
-                timing: 'last-release',
-                benchmark: 'all',
-                metric: 'all',
-                zoom: {}
+                ...state,
+                comparison: action.comparison || { commits: [], results: {}, benchmarkName: null }
             }
+        case VIEW_RESET:
+            return view(undefined, {}) // returns default state
         default:
             return state
     }
