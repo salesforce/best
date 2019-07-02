@@ -11,6 +11,10 @@ const PULL_REQUEST_URL = process.env.PULL_REQUEST;
 // then it creates a flat list of all of the percentages of change
 function generatePercentages(stats: ResultComparison, rows: number[] = []): number[] {
     if (stats.type === "project" || stats.type === "group") {
+        if (stats.comparisons.length === 0) {
+            return rows;
+        }
+
         return stats.comparisons.reduce((allRows, node: ResultComparison) => {
             if (node.type === "project" || node.type === "group") {
                 generatePercentages(node, rows);
@@ -41,7 +45,7 @@ function calculateAverageChange(result: BenchmarkComparison) {
     if (result.comparisons.length === 0) {
         return 0;
     }
-    
+
     const flattenedValues = result.comparisons.reduce((all, node): number[] => {
         return [...all, ...generatePercentages(node)]
     }, <number[]>[])

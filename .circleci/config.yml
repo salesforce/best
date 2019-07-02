@@ -1,11 +1,13 @@
-version: 2
-jobs:
-  build_and_test:
+common:
+  - &container_config:
     working_directory: ~/best
-
     docker:
       - image: circleci/node:10.16.0-stretch-browsers
 
+version: 2.1
+jobs:
+  build_and_test:
+    <<: *container_config # See common
     steps:
       - checkout
 
@@ -26,19 +28,23 @@ jobs:
             - examples/*/node_modules
           key: yarn-v3-{{ checksum "yarn.lock" }}
 
+      - persist_to_workspace:
+          root: .
+          paths: ./*
+
   perf_and_compare:
-    working_directory: ~/best
-
-    docker:
-      - image: circleci/node:10.16.0-stretch-browsers
-
+    <<: *container_config # See common
     environment:
       - CUSTOM_BASH_ENV: ~/.bashrc
       - CIRCLE_ENV_BROKEN: $CIRCLE_SHA1
       - GIT_APP_CERT_PATH: ~/best/git_app.pem
 
     steps:
+      - attach_workspace:
+          at: .
+      
       - checkout
+
       - restore_cache:
           keys:
           - yarn-v3-{{ checksum "yarn.lock" }}
@@ -57,18 +63,13 @@ jobs:
           name: Decode PEM as environment variable
           command: echo -e "$GIT_APP_CERT" | base64 -d >> ~/best/git_app.pem
 
-      - run: yarn install
-
-      - run:
-          name: Performance Test
-          command: yarn perf
-
+      - run: yarn install --frozen-lockfile
+      - run: yarn perf
       - run:
           name: Comparing Performance
           command: yarn perf --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --gitIntegration
 
 workflows:
-  version: 2
   main_workflow:
     jobs:
       - build_and_test
