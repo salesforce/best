@@ -29,8 +29,8 @@ module.exports = {
         '<rootDir>/packages/@best/builder',
         '<rootDir>/packages/@best/config',
         '<rootDir>/packages/@best/console-stream',
+        '<rootDir>/packages/@best/github-integration',
         // '<rootDir>/packages/@best/frontend',
-        // '<rootDir>/packages/@best/github-integration',
         // '<rootDir>/packages/@best/runner-headless',
         // '<rootDir>/packages/@best/cli',
     ]
