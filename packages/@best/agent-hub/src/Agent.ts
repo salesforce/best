@@ -68,7 +68,7 @@ export class Agent extends EventEmitter {
             await loadBenchmarkJob(job);
         } catch (err) {
             console.log('Error while uploading file to the hub', err);
-            job.socketConnection.emit('benchmark_error', job.jobId, err);
+            job.socketConnection.emit('benchmark_error', err);
             this.status = AgentStatus.Idle;
             return ;
         }
@@ -145,18 +145,18 @@ export class Agent extends EventEmitter {
                 });
 
                 socket.on('running_benchmark_start', () => {
-                    job.socketConnection.emit('running_benchmark_start', job.jobId);
+                    job.socketConnection.emit('running_benchmark_start');
                 });
 
                 socket.on('running_benchmark_update', ({ state, opts }: { state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig }) => {
-                    job.socketConnection.emit('running_benchmark_update', job.jobId, { state, opts });
+                    job.socketConnection.emit('running_benchmark_update', { state, opts });
                 });
                 socket.on('running_benchmark_end', () => {
-                    job.socketConnection.emit('running_benchmark_end', job.jobId);
+                    job.socketConnection.emit('running_benchmark_end');
                 });
 
                 socket.on('benchmark_enqueued', ({ pending }: { pending: number }) => {
-                    job.socketConnection.emit('benchmark_enqueued', job.jobId, { pending });
+                    job.socketConnection.emit('benchmark_enqueued', { pending });
                 });
 
                 // @todo: this should put the runner in a weird state and dont allow any new job until we can confirm the connection is valid.
@@ -164,14 +164,14 @@ export class Agent extends EventEmitter {
                     if (!resolved) {
                         resolved = true;
                         const err = new Error(reason);
-                        job.socketConnection.emit('benchmark_error', job.jobId, reason);
+                        job.socketConnection.emit('benchmark_error', reason);
                         reject(err);
                     }
                 });
 
                 socket.on('error', (err: any) => {
                     resolved = true;
-                    job.socketConnection.emit('benchmark_error', job.jobId, err instanceof Error ? err.message : err);
+                    job.socketConnection.emit('benchmark_error', err instanceof Error ? err.message : err);
                     socket.disconnect();
                     reject(err);
                 });
@@ -179,14 +179,14 @@ export class Agent extends EventEmitter {
                 socket.on('benchmark_error', (err: any) => {
                     resolved = true;
                     console.log(err);
-                    job.socketConnection.emit('benchmark_error', job.jobId, err);
+                    job.socketConnection.emit('benchmark_error', err);
                     socket.disconnect();
                     reject(new Error('Benchmark couldn\'t finish running. '));
                 });
 
                 socket.on('benchmark_results', (result: BenchmarkResultsSnapshot) => {
                     resolved = true;
-                    job.socketConnection.emit('benchmark_results', job.jobId, result);
+                    job.socketConnection.emit('benchmark_results', result);
                     socket.disconnect();
                     resolve(result);
                 });

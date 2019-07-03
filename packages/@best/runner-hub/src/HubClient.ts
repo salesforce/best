@@ -1,3 +1,6 @@
+import fs from "fs";
+import path from "path";
+import socketIO from "socket.io-client";
 import {
     BenchmarkInfo,
     BenchmarkResultsSnapshot,
@@ -7,11 +10,8 @@ import {
     FrozenProjectConfig
 } from "@best/types";
 import { RunnerOutputStream } from "@best/console-stream";
-import socketIO from "socket.io-client";
-import path from "path";
-import {createTarBundle} from "./create-tar";
-import fs from "fs";
-import {createHubSocket, HubSocket} from "./HubSocket";
+import { createTarBundle } from "./create-tar";
+import SocketIOFile from "./file-uploader";
 
 interface HubRun {
     cancelRun: Function;
@@ -20,7 +20,7 @@ interface HubRun {
 
 function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, messager: RunnerOutputStream) : HubRun {
     let cancelledRun = false;
-    let hubConnection: HubSocket | null = null;
+    let hubConnection: SocketIOClient.Socket | null = null;
     const cancelRun = () => {
         if (hubConnection === null) {
             cancelledRun = true;
@@ -34,8 +34,6 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
         const { host, options, remoteRunner } = projectConfig.benchmarkRunnerConfig;
         const bundleDirname = path.dirname(benchmarkEntry);
 
-        // @todo: not needed since the hub will already have a config.
-        // @todo: add specs here in the runner config.
         const remoteProjectConfig = Object.assign({}, projectConfig, {
             benchmarkRunner: remoteRunner,
         });
@@ -44,71 +42,73 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
         await createTarBundle(bundleDirname, benchmarkName);
 
         if (!fs.existsSync(tarBundle)) {
-            return reject(new Error('Benchmark artifact not found (${tarBundle})'));
+            return reject(new Error(`Benchmark artifact not found (${tarBundle})`));
         }
 
-        // we need the socket dance here...
-        let hubSocket: HubSocket;
-        try {
-            hubSocket = await createHubSocket(host, options);
-        } catch (err) {
-            console.log(err);
-            reject(new Error("Couldn't connect to agent hub"));
-            return;
-        }
+        const socket = socketIO(host, options);
 
-        if (cancelledRun) {
-            hubSocket.disconnect();
-            reject();
-            return ;
-        }
-
-        hubConnection = hubSocket;
-
-        hubSocket.on('running_benchmark_start', () => {
-            messager.log(`Running benchmarks remotely...`);
-            messager.onBenchmarkStart(benchmarkEntry);
-        });
-
-        hubSocket.on('running_benchmark_update', (state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) => {
-            messager.updateBenchmarkProgress(state, opts);
-        });
-        hubSocket.on('running_benchmark_end', () => {
-            messager.onBenchmarkEnd(benchmarkEntry);
-        });
-
-        hubSocket.on('benchmark_enqueued', (pending: number) => {
-            messager.log(`Queued in agent. Pending tasks: ${pending}`);
-        });
-
-        hubSocket.on('disconnect', (reason: string) => {
-            if (reason === 'io server disconnect') {
-                reject(new Error('Connection terminated'));
+        socket.on('connect', () => {
+            if (cancelledRun) {
+                socket.disconnect();
+                reject();
+                return ;
             }
-        });
+            hubConnection = socket;
 
-        hubSocket.on('error', (err: any) => {
-            console.log('Error in connection to agent > ', err);
-            reject(err);
-        });
+            socket.on('load_benchmark', () => {
+                const uploader = new SocketIOFile(socket);
+                uploader.on('ready', () => {
+                    uploader.upload(tarBundle);
+                });
 
-        hubSocket.on('benchmark_error', (err: any) => {
-            hubSocket.disconnect();
-            console.log(err);
-            reject(new Error('Benchmark couldn\'t finish running. '));
-        });
+                uploader.on('error', (err) => {
+                    reject(err);
+                });
+            });
 
-        hubSocket.on('benchmark_results', (result: BenchmarkResultsSnapshot) => {
-            hubSocket.disconnect();
-            resolve(result);
-        });
+            socket.on('running_benchmark_start', () => {
+                messager.log(`Running benchmarks remotely...`);
+                messager.onBenchmarkStart(benchmarkEntry);
+            });
 
-        hubSocket.runBenchmark({
-            benchmarkName,
-            benchmarkSignature,
-            tarBundle,
-            projectConfig: remoteProjectConfig,
-            globalConfig,
+            socket.on('running_benchmark_update', ({ state, opts }: { state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig }) => {
+                messager.updateBenchmarkProgress(state, opts);
+            });
+            socket.on('running_benchmark_end', () => {
+                messager.onBenchmarkEnd(benchmarkEntry);
+            });
+
+            socket.on('benchmark_enqueued', ({ pending }: { pending: number }) => {
+                messager.log(`Queued in agent. Pending tasks: ${pending}`);
+            });
+
+            socket.on('disconnect', (reason: string) => {
+                if (reason === 'io server disconnect') {
+                    reject(new Error('Connection terminated'));
+                }
+            });
+
+            socket.on('error', (err: any) => {
+                console.log('Error in connection to agent > ', err);
+                reject(err);
+            });
+
+            socket.on('benchmark_error', (err: any) => {
+                console.log(err);
+                reject(new Error('Benchmark couldn\'t finish running. '));
+            });
+
+            socket.on('benchmark_results', (result: BenchmarkResultsSnapshot) => {
+                socket.disconnect();
+                resolve(result);
+            });
+
+            socket.emit('benchmark_task', {
+                benchmarkName,
+                benchmarkSignature,
+                projectConfig: remoteProjectConfig,
+                globalConfig,
+            });
         });
 
         return true;
@@ -117,6 +117,12 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
     return {
         cancelRun,
         result
+    }
+}
+
+function cancelRunningJobs(jobRuns: HubRun[]) {
+    for (let i = jobRuns.length - 1; i > 0; i--) {
+        jobRuns[i].cancelRun();
     }
 }
 
@@ -137,7 +143,7 @@ export class HubClient {
                 socket.on('disconnect', (reason: string) => {
                     if (!resolved) {
                         resolved = true;
-                        reject(new Error('Connection terminated'));
+                        reject(new Error('Connection terminated: ' + reason));
                     }
                 });
 
@@ -164,9 +170,7 @@ export class HubClient {
                             .catch((reason => {
                                 if (!resolved) {
                                     resolved = true;
-                                    for (let i = currentJob - 1; i > 0; i--) {
-                                        jobRuns[i].cancelRun();
-                                    }
+                                    cancelRunningJobs(jobRuns);
                                     socket.disconnect();
                                     reject(reason);
                                 }
@@ -182,9 +186,7 @@ export class HubClient {
                                 })
                                 .catch((reason) => {
                                     resolved = true;
-                                    for (let i = currentJob - 1; i > 0; i--) {
-                                        jobRuns[i].cancelRun();
-                                    }
+                                    cancelRunningJobs(jobRuns);
                                     socket.disconnect();
                                     reject(reason);
                                 });

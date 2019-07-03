@@ -8,14 +8,11 @@ export default class BenchmarkJob {
     public globalConfig: FrozenGlobalConfig;
     public socketConnection: SocketIO.Socket;
     private _tarBundleInfo: string = '';
-    public jobId: string;
 
-    // @todo: too many parameters in this constructor
     constructor(
-        { jobId, benchmarkName, benchmarkSignature, projectConfig, globalConfig, socket }:
-        { jobId: string, benchmarkName: string, benchmarkSignature: string, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, socket: SocketIO.Socket }
+        { benchmarkName, benchmarkSignature, projectConfig, globalConfig, socket }:
+        { benchmarkName: string, benchmarkSignature: string, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, socket: SocketIO.Socket }
     ) {
-        this.jobId = jobId;
         this.benchmarkName = benchmarkName;
         this.benchmarkSignature = benchmarkSignature;
         this.projectConfig = projectConfig;

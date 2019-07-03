@@ -33,21 +33,15 @@ export async function loadBenchmarkJob(job: BenchmarkJob): Promise<BenchmarkJob>
         );
         const uploader = new SocketIOFile(socket, loaderOverriddenConfig);
 
-        uploader.on('start', (info: any) => {
-            if (info.data['jobId'] === job.jobId) {
-                clearTimeout(uploaderTimeout)
-            }
-        });
+        uploader.on('start', () => clearTimeout(uploaderTimeout));
         uploader.on('complete', (info: any) => {
-            if (info.data['jobId'] === job.jobId) {
-                job.tarBundle = info.uploadDir;
+            job.tarBundle = info.uploadDir;
 
-                resolve(job);
-            }
+            resolve(job);
         });
         uploader.on('error', (err: any) => reject(err));
 
-        socket.emit('load_benchmark', job.jobId);
+        socket.emit('load_benchmark');
         uploaderTimeout = setTimeout(() => {
 
             reject(new Error(`Timed out waiting upload to start. Waited for ${UPLOAD_START_TIMEOUT}ms`));
