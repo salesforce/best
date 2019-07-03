@@ -59,8 +59,7 @@ async function getBenchmarkTests(projectConfigs: FrozenProjectConfig[], globalCo
 
 async function buildBundleBenchmarks(benchmarksTests: { config: FrozenProjectConfig; matches: string[] }[], globalConfig: FrozenGlobalConfig, messager: BuildOutputStream) {
     const benchmarkBuilds: BuildConfig[] = [];
-    // @dval: We don't parallelize here for now since this wouldn't give us much,
-    // Unless we do proper spawning on threads
+    // We wait for each project to run before starting the next batch
     for (const benchmarkTest of benchmarksTests) {
         const { matches, config } = benchmarkTest;
         const result = await buildBenchmarks(matches, config, globalConfig, messager);
