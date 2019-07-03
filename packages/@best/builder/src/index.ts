@@ -8,7 +8,7 @@ const DEFAULT_FARM_OPTS = {
     maxConcurrentCallsPerWorker: 1,
 };
 
-interface ChildMessage { type: string, benchmarkPath: string, message: string };
+interface ChildMessage { type: string, benchmarkPath: string, message: string }
 
 export async function buildBenchmarks(benchmarks: string[], projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, buildLogStream: BuildOutputStream): Promise<BuildConfig[]> {
     const opts = {
