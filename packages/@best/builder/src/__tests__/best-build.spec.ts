@@ -2,7 +2,7 @@ import os from 'os';
 import fs from 'fs';
 import path from 'path';
 
-import { buildBenchmark } from '../index';
+import { buildBenchmark } from '../build-benchmark';
 
 const GLOBAL_CONFIG = {
     gitInfo: {

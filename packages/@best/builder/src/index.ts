@@ -1,96 +1,56 @@
-import fs from 'fs';
-import { rollup, ModuleFormat } from 'rollup';
-import path from 'path';
-import crypto from 'crypto';
-import mkdirp from "mkdirp";
-import benchmarkRollup from './rollup-plugin-benchmark-import';
-import generateHtml from './html-templating';
-import { FrozenGlobalConfig, FrozenProjectConfig, ProjectConfigPlugin, BuildConfig } from '@best/types';
-import { BuildOutputStream } from "@best/console-stream"
+import { FrozenGlobalConfig, FrozenProjectConfig, BuildConfig } from '@best/types';
+import { BuildOutputStream } from "@best/console-stream";
+import { isCI } from '@best/utils';
+import workerFarm from "worker-farm";
 
-const BASE_ROLLUP_OUTPUT = { format: 'iife' as ModuleFormat };
-const ROLLUP_CACHE = new Map();
+const DEFAULT_FARM_OPTS = {
+    maxConcurrentWorkers: isCI ? 2 : require('os').cpus().length,
+    maxConcurrentCallsPerWorker: 1,
+};
 
-function md5(data: string) {
-    return crypto.createHash('md5').update(data).digest('hex');
-}
-
-// Handles default exports for both ES5 and ES6 syntax
-function req(id: string) {
-    const r = require(id);
-    return r.default || r;
-}
-
-function addResolverPlugins(plugins: ProjectConfigPlugin[]): any[] {
-    if (!plugins) {
-        return [];
-    }
-
-    return plugins.map((plugin: ProjectConfigPlugin) => {
-        if (typeof plugin === 'string') {
-            return req(plugin)();
-        } else if (Array.isArray(plugin)) {
-            return req(plugin[0])(plugin[1]);
-        } else {
-            throw new Error('Invalid plugin config');
-        }
-    });
-}
-
-export async function buildBenchmark(entry: string, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, buildLogStream: BuildOutputStream): Promise<BuildConfig> {
-    buildLogStream.onBenchmarkBuildStart(entry);
-
-    const { gitInfo: { lastCommit: { hash: gitHash }, localChanges } } = globalConfig;
-    const { projectName, benchmarkOutput, rootDir } = projectConfig;
-    const ext = path.extname(entry);
-    const benchmarkName = path.basename(entry, ext);
-    const benchmarkJSFileName = benchmarkName + ext;
-    const benchmarkProjectFolder = path.join(benchmarkOutput, projectName);
-
-    const rollupInputOpts = {
-        input: entry,
-        plugins: [benchmarkRollup(), ...addResolverPlugins(projectConfig.plugins)],
-        cache: ROLLUP_CACHE.get(projectName)
-    };
-
-    buildLogStream.log('Bundling benchmark files...');
-    const bundle = await rollup(rollupInputOpts);
-    ROLLUP_CACHE.set(projectName, bundle.cache);
-
-    buildLogStream.log('Generating benchmark artifacts...');
-    const rollupOutputOpts = { ...BASE_ROLLUP_OUTPUT };
-    const { output } = await bundle.generate(rollupOutputOpts);
-    const benchmarkSource = output[0].code; // We don't do code splitting so the first one will be the one we want
-
-    // Benchmark artifacts vars
-    const benchmarkSignature = md5(benchmarkSource);
-    const benchmarkSnapshotName = localChanges ? `${benchmarkName}_local_${benchmarkSignature.slice(0, 10)}` : `${benchmarkName}_${gitHash}`;
-    const benchmarkFolder = path.join(benchmarkProjectFolder, benchmarkSnapshotName);
-    const benchmarkArtifactsFolder = path.join(benchmarkFolder, 'artifacts');
-    const benchmarkEntry = path.join(benchmarkArtifactsFolder, `${benchmarkName}.html`);
-    const htmlTemplate = generateHtml({ benchmarkName, benchmarkJs: `./${benchmarkJSFileName}` });
-
-    mkdirp.sync(benchmarkArtifactsFolder);
-    fs.writeFileSync(benchmarkEntry, htmlTemplate, 'utf-8');
-    fs.writeFileSync(path.join(benchmarkArtifactsFolder, benchmarkJSFileName), benchmarkSource, 'utf-8');
-
-    buildLogStream.onBenchmarkBuildEnd(entry);
-
-    return {
-        benchmarkName,
-        benchmarkFolder: path.relative(rootDir, benchmarkFolder),
-        benchmarkEntry: path.relative(rootDir, benchmarkEntry),
-        benchmarkSignature,
-        projectConfig,
-        globalConfig,
-    };
-}
+interface ChildMessage { type: string, benchmarkPath: string, message: string }
 
 export async function buildBenchmarks(benchmarks: string[], projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, buildLogStream: BuildOutputStream): Promise<BuildConfig[]> {
-    const benchBuild = [];
-    for (const benchmark of benchmarks) {
-        const build = await buildBenchmark(benchmark, projectConfig, globalConfig, buildLogStream);
-        benchBuild.push(build);
-    }
-    return benchBuild;
+    const opts = {
+        ...DEFAULT_FARM_OPTS,
+        onChild: (child: NodeJS.Process) => {
+            child.on("message", (message: ChildMessage) => {
+                if (message.type === 'messager.onBenchmarkBuildStart') {
+                    buildLogStream.onBenchmarkBuildStart(message.benchmarkPath);
+                } else if (message.type === 'messager.log') {
+                    buildLogStream.log(message.message);
+                } else if (message.type === 'messager.onBenchmarkBuildEnd') {
+                    buildLogStream.onBenchmarkBuildEnd(message.benchmarkPath);
+                }
+            })
+        }
+    };
+
+    const workers = workerFarm(opts, require.resolve('./build-benchmark-worker'));
+    const jobs = benchmarks.length;
+    let jobsCompleted = 0;
+    const benchBuild: BuildConfig[] = [];
+
+    return new Promise((resolve, reject) => {
+        benchmarks.forEach(benchmark => {
+            const buildInfo = {
+                benchmark,
+                projectConfig,
+                globalConfig
+            };
+
+            workers(buildInfo, (err: any, result: BuildConfig) => {
+                if (err) {
+                    return reject(err);
+                }
+
+                benchBuild.push(result);
+
+                if (++jobsCompleted === jobs) {
+                    workerFarm.end(workers);
+                    resolve(benchBuild);
+                }
+            });
+        });
+    });
 }
