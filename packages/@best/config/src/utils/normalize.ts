@@ -67,6 +67,9 @@ function setCliOptionOverrides(initialOptions: UserConfig, argsCLI: CliConfig): 
                 case 'iterations':
                     options.benchmarkIterations = argsCLI[key];
                     break;
+                case 'runInBatch':
+                    options.runInBatch = !!argsCLI[key];
+                    break;
                 case 'compareStats':
                     options.compareStats = argsCLI.compareStats && argsCLI.compareStats.filter(Boolean);
                     break;

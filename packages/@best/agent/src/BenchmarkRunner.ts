@@ -12,6 +12,9 @@ import {
     BenchmarkRuntimeConfig
 } from "@best/types";
 
+// Maximum time before the agent becomes idle after a job is cancelled (client disconnected)
+const CANCEL_TIMEOUT = 30000;
+
 export enum RunnerStatus {
     IDLE = 1,
     RUNNING,
@@ -63,6 +66,7 @@ export default class BenchmarkRunner extends EventEmitter {
     public _status: RunnerStatus = RunnerStatus.IDLE;
     public runningTask: BenchmarkTask | null = null;
     public runningWasCancelled = false;
+    private cancelledTimeout: any = null;
     private _log: Function = () => {};
 
     get status() {
@@ -82,6 +86,9 @@ export default class BenchmarkRunner extends EventEmitter {
         if (this.runningTask === task) {
             this._log('Running was cancelled.');
             this.runningWasCancelled = true;
+            this.cancelledTimeout = setTimeout(() => {
+                this.status = RunnerStatus.IDLE;
+            }, CANCEL_TIMEOUT)
         }
     }
 
@@ -149,5 +156,6 @@ export default class BenchmarkRunner extends EventEmitter {
         this.runningWasCancelled = false;
         this.runningTask = null;
         this.status = RunnerStatus.IDLE;
+        clearTimeout(this.cancelledTimeout);
     }
 }

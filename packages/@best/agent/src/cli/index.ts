@@ -1,9 +1,12 @@
 import express from 'express';
-import { runAgent } from '../agent-service';
 import { readFileSync } from 'fs';
+import { runAgent } from '../agent-service';
+import { registerWithHub, HubConfig } from "../hub-registration";
+
 const PORT = process.env.PORT || 5000;
 const SSL_PFX_FILE = process.env.SSL_PFX_FILE;
 const SSL_PFX_PASSPHRASE = process.env.SSL_PFX_PASSPHRASE;
+const hubRegistrationConfig: HubConfig = process.env.HUB_CONFIG ? JSON.parse(process.env.HUB_CONFIG) : null;
 
 export function run() {
     const app = express();
@@ -22,4 +25,8 @@ export function run() {
     process.stdout.write(`Best agent listening in port ${PORT}... \n\n`);
 
     runAgent(server);
+
+    if (hubRegistrationConfig) {
+        registerWithHub(hubRegistrationConfig);
+    }
 }
