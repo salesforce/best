@@ -36,8 +36,11 @@ function addAgentToHub(agentManager: AgentManager, req: Request, res: Response) 
     };
 
     const agent = new Agent(agentConfig);
+    agent.status = AgentStatus.Offline;
 
     agentManager.addAgent(agent);
+
+    agent.status = AgentStatus.Idle;
 
     console.log('Added agent with host and spec: ', agentConfig.host, JSON.stringify(agentConfig.spec));
 
