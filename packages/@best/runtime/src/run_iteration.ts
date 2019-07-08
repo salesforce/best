@@ -27,6 +27,15 @@ function endMeasure(markName: string) {
     performance.clearMeasures(markName);
 }
 
+function getPaintTime() {
+    const start = performance.timeOrigin;
+    const paintMetrics = performance.getEntriesByType('paint');
+    const firstPaint = paintMetrics.find((m: { name: string, startTime: number }) => m.name === 'first-contentful-paint');
+    const firstPaintDuration = firstPaint ? firstPaint.startTime - start : -1;
+
+    return formatTime(firstPaintDuration);
+}
+
 const executeBenchmark = async (benchmarkNode: RuntimeNodeRunner, markName: string, { useMacroTaskAfterBenchmark }: { useMacroTaskAfterBenchmark: boolean } ) => {
     // Force garbage collection before executing an iteration (--js-flags=--expose-gc)
     _forceGC();
@@ -41,6 +50,7 @@ const executeBenchmark = async (benchmarkNode: RuntimeNodeRunner, markName: stri
             try {
                 await benchmarkNode.fn();
                 benchmarkNode.metrics.script = formatTime(time() - benchmarkNode.startedAt);
+                benchmarkNode.metrics.paint = getPaintTime();
 
                 if (useMacroTaskAfterBenchmark) {
                     withMacroTask(async () => {

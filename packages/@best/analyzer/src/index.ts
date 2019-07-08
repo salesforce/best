@@ -24,7 +24,7 @@ function collectResults(resultNode: BenchmarkResultNode, collector: AllBenchmark
     const { name } = resultNode;
     let collectorNode = collector[name];
     if (!collectorNode) {
-        collectorNode = collector[name] = { script: [], aggregate: [] };
+        collectorNode = collector[name] = { script: [], aggregate: [], paint: [] };
     }
 
     if (resultNode.aggregate > 0 && collectorNode.aggregate) {
