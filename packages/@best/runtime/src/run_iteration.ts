@@ -27,13 +27,15 @@ function endMeasure(markName: string) {
     performance.clearMeasures(markName);
 }
 
-function getPaintTime() {
+function updatePaintTime(benchmarkNode: RuntimeNodeRunner) {
     const start = performance.timeOrigin;
     const paintMetrics = performance.getEntriesByType('paint');
     const firstPaint = paintMetrics.find((m: { name: string, startTime: number }) => m.name === 'first-contentful-paint');
-    const firstPaintDuration = firstPaint ? firstPaint.startTime - start : -1;
 
-    return formatTime(firstPaintDuration);
+    if (firstPaint) {
+        const firstPaintDuration = firstPaint.startTime - start;
+        benchmarkNode.metrics.paint = formatTime(firstPaintDuration);
+    }
 }
 
 const executeBenchmark = async (benchmarkNode: RuntimeNodeRunner, markName: string, { useMacroTaskAfterBenchmark }: { useMacroTaskAfterBenchmark: boolean } ) => {
@@ -50,7 +52,7 @@ const executeBenchmark = async (benchmarkNode: RuntimeNodeRunner, markName: stri
             try {
                 await benchmarkNode.fn();
                 benchmarkNode.metrics.script = formatTime(time() - benchmarkNode.startedAt);
-                benchmarkNode.metrics.paint = getPaintTime();
+                updatePaintTime(benchmarkNode);
 
                 if (useMacroTaskAfterBenchmark) {
                     withMacroTask(async () => {

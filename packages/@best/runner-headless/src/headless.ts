@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+import puppeteer, { CDPSession } from 'puppeteer';
 
 const BROWSER_ARGS = [
     '--no-sandbox',
@@ -19,6 +19,7 @@ export default class HeadlessBrowser {
     browser?: puppeteer.Browser;
     page?: puppeteer.Page;
     pageError?: Error;
+    client?: CDPSession;
 
     constructor(url: string) {
         this.pageUrl = url;
@@ -27,15 +28,36 @@ export default class HeadlessBrowser {
     async initialize() {
         this.browser = await puppeteer.launch(PUPPETEER_OPTIONS);
         this.page = await this.browser.newPage();
+        this.client = await this.page.target().createCDPSession();
+        await this.client.send('Performance.enable');
         this.page.on('pageerror', (error: Error) => this.pageError = error);
         await this.page.goto(this.pageUrl);
         this.checkForErrors();
     }
+    
     checkForErrors() {
         const pageError = this.pageError;
         if (pageError) {
             pageError.message = 'Benchmark parse error.\n' + pageError.message;
             throw pageError;
+        }
+    }
+
+    async getNativePerformance() {
+        if (this.page && this.client) {
+            console.log("\n==== performance.getEntries() ====\n");
+            console.log( await this.page.evaluate( () => JSON.stringify(performance.getEntries(), null, "  ") ) );
+
+            console.log("\n==== performance.toJSON() ====\n");
+            console.log( await this.page.evaluate( () => JSON.stringify(performance.toJSON(), null, "  ") ) );
+
+            console.log("\n==== page.metrics() ====\n");
+            const perf = await this.page.metrics();
+            console.log( JSON.stringify(perf, null, "  ") );
+
+            console.log("\n==== Devtools: Performance.getMetrics ====\n");
+            let performanceMetrics: any = await this.client.send('Performance.getMetrics');
+            console.log( performanceMetrics.metrics );
         }
     }
 
@@ -56,6 +78,8 @@ export default class HeadlessBrowser {
         if (this.page) {
             result = await this.page.evaluate(fn, payload);
             this.checkForErrors();
+            console.log(JSON.stringify(result))
+            await this.getNativePerformance();
         }
 
         return result;
