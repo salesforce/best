@@ -12,6 +12,6 @@
   "dependencies": {
     "@best/messager": "0.7.1",
     "socket.io-client": "~2.0.4",
-    "tar": "~4.2.0"
+    "tar": "~4.4.2"
   }
 }
