@@ -2,40 +2,10 @@ import Octokit from '@octokit/rest';
 import { isCI } from '@best/utils';
 import { loadDbFromConfig } from '@best/api-db';
 import GithubApplicationFactory from './git-app';
-import { generateComparisonComment } from './comment';
-import { FrozenGlobalConfig, BenchmarkComparison, ResultComparison, BenchmarkMetricNames } from '@best/types';
+import { generateComparisonComment, generatePercentages } from './analyze';
+import { FrozenGlobalConfig, BenchmarkComparison } from '@best/types';
 
 const PULL_REQUEST_URL = process.env.PULL_REQUEST;
-
-// this takes all the results and recursively goes through them
-// then it creates a flat list of all of the percentages of change
-function generatePercentages(stats: ResultComparison, rows: number[] = []): number[] {
-    if (stats.type === "project" || stats.type === "group") {
-        return stats.comparisons.reduce((allRows, node: ResultComparison) => {
-            if (node.type === "project" || node.type === "group") {
-                generatePercentages(node, rows);
-            } else if (node.type === "benchmark") {
-                Object.keys(node.metrics).forEach(metricName => {
-                    const metrics = node.metrics[metricName as BenchmarkMetricNames];
-
-                    if (metrics) {
-                        const { baseStats, targetStats } = metrics;
-                        const baseMed = baseStats.median;
-                        const targetMed = targetStats.median;
-            
-                        const percentage = Math.abs((baseMed - targetMed) / baseMed * 100);
-                        const relativeTrend = targetMed - baseMed;
-            
-                        allRows.push(Math.sign(relativeTrend) * percentage);
-                    }
-                })
-            }
-            return allRows;
-        }, rows);
-    }
-
-    return rows;
-}
 
 function calculateAverageChange(result: BenchmarkComparison) {
     const flattenedValues = result.comparisons.reduce((all, node): number[] => {
@@ -81,10 +51,6 @@ export async function beginBenchmarkComparisonCheck(targetCommit: string, { gitI
         return {};
     }
 
-    if (PULL_REQUEST_URL === undefined) {
-        throw new Error('PULL_REQUEST_URL enviroment variable is needed');
-    }
-
     const { repo: { repo, owner } } = gitInfo;
     const app = GithubApplicationFactory();
     const gitHubInstallation = await app.authenticateAsAppAndInstallation({ repo, owner });
@@ -122,8 +88,9 @@ export async function failedBenchmarkComparisonCheck(gitHubInstallation: Octokit
 
 export async function completeBenchmarkComparisonCheck(gitHubInstallation: Octokit, check: Octokit.ChecksCreateResponse, comparison: BenchmarkComparison, globalConfig: FrozenGlobalConfig) {
     const { repo: { repo, owner }  } = globalConfig.gitInfo;
-    const body = generateComparisonComment(comparison);
+    const comparisonComment = generateComparisonComment(comparison);
     const now = (new Date()).toISOString();
+    const { baseCommit, targetCommit } = comparison;
 
     await gitHubInstallation.checks.update({
         owner,
@@ -133,7 +100,8 @@ export async function completeBenchmarkComparisonCheck(gitHubInstallation: Octok
         conclusion: 'success',
         output: {
             title: 'Best Performance',
-            summary: body
+            summary: `Base commit: \`${baseCommit}\` | Target commit: \`${targetCommit}\``,
+            text: comparisonComment
         }
     })
 

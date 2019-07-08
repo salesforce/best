@@ -18,19 +18,14 @@ function padding(n: number) {
         : '';
 }
 
-function generateDetailsMarkdown(baseCommit: string, targetCommit: string, tables: GroupedTables) {
+function generateDetailsMarkdown(tables: GroupedTables) {
     const flattenedTables = Object.keys(tables).reduce((groups, projectName): json2md.DataObject[] => {
         groups.push({ h2: `*${projectName}*` });
         groups.push(...tables[projectName]);
         return groups;
     }, <json2md.DataObject[]>[])
 
-    return json2md([
-        {
-            p: `Base commit: \`${baseCommit}\` | Target commit: \`${targetCommit}\``,
-        },
-        ...flattenedTables
-    ]);
+    return json2md(flattenedTables);
 }
 
 function generateRows(stats: ResultComparison, name = '', initialRows: string[][] = []) {
@@ -100,5 +95,35 @@ export function generateComparisonComment(result: BenchmarkComparison) {
         return tables;
     }, <GroupedTables>{})
 
-    return generateDetailsMarkdown(baseCommit, targetCommit, tables);
+    return generateDetailsMarkdown(tables);
+}
+
+// this takes all the results and recursively goes through them
+// then it creates a flat list of all of the percentages of change
+export function generatePercentages(stats: ResultComparison, rows: number[] = []): number[] {
+    if (stats.type === "project" || stats.type === "group") {
+        return stats.comparisons.reduce((allRows, node: ResultComparison) => {
+            if (node.type === "project" || node.type === "group") {
+                generatePercentages(node, rows);
+            } else if (node.type === "benchmark") {
+                Object.keys(node.metrics).forEach(metricName => {
+                    const metrics = node.metrics[metricName as BenchmarkMetricNames];
+
+                    if (metrics) {
+                        const { baseStats, targetStats } = metrics;
+                        const baseMed = baseStats.median;
+                        const targetMed = targetStats.median;
+            
+                        const percentage = Math.abs((baseMed - targetMed) / baseMed * 100);
+                        const relativeTrend = targetMed - baseMed;
+            
+                        allRows.push(Math.sign(relativeTrend) * percentage);
+                    }
+                })
+            }
+            return allRows;
+        }, rows);
+    }
+
+    return rows;
 }
