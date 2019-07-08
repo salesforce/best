@@ -1,5 +1,3 @@
-Base commit: `abcdef0` | Target commit: `1234567`
-
 ## *project-foo*
 
 bar | base (`abcdef0`) | target (`1234567`) | trend
