@@ -1,5 +1,7 @@
+import path from 'path';
 import puppeteer from 'puppeteer';
 import { parseTrace, removeTrace, mergeTracedMetrics } from './trace'
+import { FrozenProjectConfig } from '@best/types';
 
 const BROWSER_ARGS = [
     '--no-sandbox',
@@ -17,12 +19,16 @@ const PUPPETEER_OPTIONS = { args: BROWSER_ARGS };
 
 export default class HeadlessBrowser {
     pageUrl: string;
+    projectConfig: FrozenProjectConfig;
+    tracePath: string;
     browser?: puppeteer.Browser;
     page?: puppeteer.Page;
     pageError?: Error;
 
-    constructor(url: string) {
+    constructor(url: string, projectConfig: FrozenProjectConfig) {
         this.pageUrl = url;
+        this.projectConfig = projectConfig;
+        this.tracePath = path.resolve(projectConfig.cacheDirectory, 'trace.json');
     }
 
     async initialize() {
@@ -43,7 +49,7 @@ export default class HeadlessBrowser {
 
     async processTrace(result: any) {
         if (this.page) {
-            const traces = await parseTrace('trace.json');
+            const traces = await parseTrace(this.tracePath);
             mergeTracedMetrics(result, traces);
         }
 
@@ -51,7 +57,7 @@ export default class HeadlessBrowser {
     }
 
     async close() {
-        await removeTrace('trace.json');
+        await removeTrace(this.tracePath);
 
         if (this.browser) {
             return this.browser.close();
@@ -67,8 +73,7 @@ export default class HeadlessBrowser {
     async evaluate(fn: any, payload: any) {
         let result;
         if (this.page) {
-            // TODO: store this inside benchmark_results
-            await this.page.tracing.start({ path: 'trace.json' })
+            await this.page.tracing.start({ path: this.tracePath })
             result = await this.page.evaluate(fn, payload);
             await this.page.tracing.stop()
             this.checkForErrors();
