@@ -1,4 +1,5 @@
-import puppeteer, { CDPSession } from 'puppeteer';
+import puppeteer from 'puppeteer';
+import { parseTrace, removeTrace, mergeTracedMetrics } from './trace'
 
 const BROWSER_ARGS = [
     '--no-sandbox',
@@ -19,7 +20,6 @@ export default class HeadlessBrowser {
     browser?: puppeteer.Browser;
     page?: puppeteer.Page;
     pageError?: Error;
-    client?: CDPSession;
 
     constructor(url: string) {
         this.pageUrl = url;
@@ -28,8 +28,6 @@ export default class HeadlessBrowser {
     async initialize() {
         this.browser = await puppeteer.launch(PUPPETEER_OPTIONS);
         this.page = await this.browser.newPage();
-        this.client = await this.page.target().createCDPSession();
-        await this.client.send('Performance.enable');
         this.page.on('pageerror', (error: Error) => this.pageError = error);
         await this.page.goto(this.pageUrl);
         this.checkForErrors();
@@ -43,25 +41,18 @@ export default class HeadlessBrowser {
         }
     }
 
-    async getNativePerformance() {
-        if (this.page && this.client) {
-            console.log("\n==== performance.getEntries() ====\n");
-            console.log( await this.page.evaluate( () => JSON.stringify(performance.getEntries(), null, "  ") ) );
-
-            console.log("\n==== performance.toJSON() ====\n");
-            console.log( await this.page.evaluate( () => JSON.stringify(performance.toJSON(), null, "  ") ) );
-
-            console.log("\n==== page.metrics() ====\n");
-            const perf = await this.page.metrics();
-            console.log( JSON.stringify(perf, null, "  ") );
-
-            console.log("\n==== Devtools: Performance.getMetrics ====\n");
-            let performanceMetrics: any = await this.client.send('Performance.getMetrics');
-            console.log( performanceMetrics.metrics );
+    async processTrace(result: any) {
+        if (this.page) {
+            const traces = await parseTrace('trace.json');
+            mergeTracedMetrics(result, traces);
         }
+
+        return result;
     }
 
-    close() {
+    async close() {
+        await removeTrace('trace.json');
+
         if (this.browser) {
             return this.browser.close();
         }
@@ -76,10 +67,12 @@ export default class HeadlessBrowser {
     async evaluate(fn: any, payload: any) {
         let result;
         if (this.page) {
+            // TODO: store this inside benchmark_results
+            await this.page.tracing.start({ path: 'trace.json' })
             result = await this.page.evaluate(fn, payload);
+            await this.page.tracing.stop()
             this.checkForErrors();
-            console.log(JSON.stringify(result))
-            await this.getNativePerformance();
+            result = await this.processTrace(result);
         }
 
         return result;

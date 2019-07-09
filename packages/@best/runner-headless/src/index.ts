@@ -29,7 +29,7 @@ export default class Runner extends AbstractRunner {
             throw e;
         } finally {
             runnerLogStream.onBenchmarkEnd(benchmarkEntry);
-            browser.close();
+            await browser.close();
             terminate();
         }
     }

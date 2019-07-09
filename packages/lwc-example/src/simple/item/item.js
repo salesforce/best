@@ -1,8 +1,9 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, api } from 'lwc';
 
-const ITEMS = Array.apply(null, Array(1000)).map((k, i) => i);
+const ITEMS = Array.apply(null, Array(10000)).map((k, i) => i);
 
 export default class SimpleItem extends LightningElement {
-    @track test = 'benchmark';
+    @api title = 'benchmark';
+    @api flavor;
     items = ITEMS;
 }

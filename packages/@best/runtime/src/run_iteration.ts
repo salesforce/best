@@ -1,6 +1,12 @@
 import { raf, time, nextTick, withMacroTask, formatTime } from './utils/timers';
 import { HOOKS } from './constants';
 
+export enum MeasureType {
+    Execute = "execute",
+    Before = "before",
+    After = "after"
+}
+
 declare var window: any;
 
 const _initHandlers = () =>
@@ -17,25 +23,15 @@ const _initHooks = (hooks: RuntimeHook[]) =>
 
 const _forceGC = () => window.gc && window.gc();
 
-function startMeasure(markName: string) {
-    performance.mark(markName);
+function startMeasure(markName: string, type: MeasureType) {
+    performance.mark(`BEST/${type}/${markName}`);
 }
 
-function endMeasure(markName: string) {
-    performance.measure(markName, markName);
-    performance.clearMarks(markName);
-    performance.clearMeasures(markName);
-}
-
-function updatePaintTime(benchmarkNode: RuntimeNodeRunner) {
-    const start = performance.timeOrigin;
-    const paintMetrics = performance.getEntriesByType('paint');
-    const firstPaint = paintMetrics.find((m: { name: string, startTime: number }) => m.name === 'first-contentful-paint');
-
-    if (firstPaint) {
-        const firstPaintDuration = firstPaint.startTime - start;
-        benchmarkNode.metrics.paint = formatTime(firstPaintDuration);
-    }
+function endMeasure(markName: string, type: MeasureType) {
+    const eventName = `BEST/${type}/${markName}`
+    performance.measure(eventName, eventName);
+    performance.clearMarks(eventName);
+    performance.clearMeasures(eventName);
 }
 
 const executeBenchmark = async (benchmarkNode: RuntimeNodeRunner, markName: string, { useMacroTaskAfterBenchmark }: { useMacroTaskAfterBenchmark: boolean } ) => {
@@ -45,36 +41,27 @@ const executeBenchmark = async (benchmarkNode: RuntimeNodeRunner, markName: stri
         raf(async () => {
             benchmarkNode.startedAt = formatTime(time());
 
-            if (process.env.NODE_ENV !== 'production') {
-                startMeasure(markName);
-            }
+            startMeasure(markName, MeasureType.Execute);
 
             try {
                 await benchmarkNode.fn();
                 benchmarkNode.metrics.script = formatTime(time() - benchmarkNode.startedAt);
-                updatePaintTime(benchmarkNode);
 
                 if (useMacroTaskAfterBenchmark) {
                     withMacroTask(async () => {
                         await nextTick();
                         benchmarkNode.aggregate = formatTime(time() - benchmarkNode.startedAt);
-                        if (process.env.NODE_ENV !== 'production') {
-                            endMeasure(markName);
-                        }
+                        endMeasure(markName, MeasureType.Execute);
                         resolve();
                     })();
                 } else {
                     benchmarkNode.aggregate = formatTime(time() - benchmarkNode.startedAt);
-                    if (process.env.NODE_ENV !== 'production') {
-                        endMeasure(markName);
-                    }
+                    endMeasure(markName, MeasureType.Execute);
                     resolve();
                 }
             } catch (e) {
                 benchmarkNode.aggregate = -1;
-                if (process.env.NODE_ENV !== 'production') {
-                    endMeasure(markName);
-                }
+                endMeasure(markName, MeasureType.Execute);
                 reject();
             }
         });
@@ -114,13 +101,13 @@ export const runBenchmarkIteration = async (node: RuntimeNode, opts: { useMacroT
         // -- Before ----
         const markName = run.parent.name;
         if (process.env.NODE_ENV !== 'production') {
-            startMeasure(`before_${markName}`);
+            startMeasure(markName, MeasureType.Before);
         }
         for (const hook of hookHandlers[HOOKS.BEFORE]) {
             await hook();
         }
         if (process.env.NODE_ENV !== 'production') {
-            endMeasure(`before_${markName}`);
+            endMeasure(markName, MeasureType.Before);
         }
 
         // -- Run ----
@@ -130,13 +117,13 @@ export const runBenchmarkIteration = async (node: RuntimeNode, opts: { useMacroT
 
         // -- After ----
         if (process.env.NODE_ENV !== 'production') {
-            startMeasure(`after_${markName}`);
+            startMeasure(markName, MeasureType.After);
         }
         for (const hook of hookHandlers[HOOKS.AFTER]) {
             await hook();
         }
         if (process.env.NODE_ENV !== 'production') {
-            endMeasure(`after_${markName}`);
+            endMeasure(markName, MeasureType.After);
         }
     }
 
