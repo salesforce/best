@@ -1,10 +1,10 @@
 import { raf, time, nextTick, withMacroTask, formatTime } from './utils/timers';
 import { HOOKS } from './constants';
 
-export enum MeasureType {
-    Execute = "execute",
-    Before = "before",
-    After = "after"
+export enum BenchmarkMeasureType {
+    Execute = "BEST/execute",
+    Before = "BEST/before",
+    After = "BEST/after"
 }
 
 declare var window: any;
@@ -23,12 +23,12 @@ const _initHooks = (hooks: RuntimeHook[]) =>
 
 const _forceGC = () => window.gc && window.gc();
 
-function startMeasure(markName: string, type: MeasureType) {
-    performance.mark(`BEST/${type}/${markName}`);
+function startMeasure(markName: string, type: BenchmarkMeasureType) {
+    performance.mark(`${type}/${markName}`);
 }
 
-function endMeasure(markName: string, type: MeasureType) {
-    const eventName = `BEST/${type}/${markName}`
+function endMeasure(markName: string, type: BenchmarkMeasureType) {
+    const eventName = `${type}/${markName}`
     performance.measure(eventName, eventName);
     performance.clearMarks(eventName);
     performance.clearMeasures(eventName);
@@ -41,7 +41,7 @@ const executeBenchmark = async (benchmarkNode: RuntimeNodeRunner, markName: stri
         raf(async () => {
             benchmarkNode.startedAt = formatTime(time());
 
-            startMeasure(markName, MeasureType.Execute);
+            startMeasure(markName, BenchmarkMeasureType.Execute);
 
             try {
                 await benchmarkNode.fn();
@@ -51,17 +51,17 @@ const executeBenchmark = async (benchmarkNode: RuntimeNodeRunner, markName: stri
                     withMacroTask(async () => {
                         await nextTick();
                         benchmarkNode.aggregate = formatTime(time() - benchmarkNode.startedAt);
-                        endMeasure(markName, MeasureType.Execute);
+                        endMeasure(markName, BenchmarkMeasureType.Execute);
                         resolve();
                     })();
                 } else {
                     benchmarkNode.aggregate = formatTime(time() - benchmarkNode.startedAt);
-                    endMeasure(markName, MeasureType.Execute);
+                    endMeasure(markName, BenchmarkMeasureType.Execute);
                     resolve();
                 }
             } catch (e) {
                 benchmarkNode.aggregate = -1;
-                endMeasure(markName, MeasureType.Execute);
+                endMeasure(markName, BenchmarkMeasureType.Execute);
                 reject();
             }
         });
@@ -101,13 +101,13 @@ export const runBenchmarkIteration = async (node: RuntimeNode, opts: { useMacroT
         // -- Before ----
         const markName = run.parent.name;
         if (process.env.NODE_ENV !== 'production') {
-            startMeasure(markName, MeasureType.Before);
+            startMeasure(markName, BenchmarkMeasureType.Before);
         }
         for (const hook of hookHandlers[HOOKS.BEFORE]) {
             await hook();
         }
         if (process.env.NODE_ENV !== 'production') {
-            endMeasure(markName, MeasureType.Before);
+            endMeasure(markName, BenchmarkMeasureType.Before);
         }
 
         // -- Run ----
@@ -117,13 +117,13 @@ export const runBenchmarkIteration = async (node: RuntimeNode, opts: { useMacroT
 
         // -- After ----
         if (process.env.NODE_ENV !== 'production') {
-            startMeasure(markName, MeasureType.After);
+            startMeasure(markName, BenchmarkMeasureType.After);
         }
         for (const hook of hookHandlers[HOOKS.AFTER]) {
             await hook();
         }
         if (process.env.NODE_ENV !== 'production') {
-            endMeasure(markName, MeasureType.After);
+            endMeasure(markName, BenchmarkMeasureType.After);
         }
     }
 
