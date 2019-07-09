@@ -28,7 +28,7 @@ export default class HeadlessBrowser {
     constructor(url: string, projectConfig: FrozenProjectConfig) {
         this.pageUrl = url;
         this.projectConfig = projectConfig;
-        this.tracePath = path.resolve(projectConfig.cacheDirectory, 'trace.json');
+        this.tracePath = path.resolve(projectConfig.benchmarkOutput, 'trace.json');
     }
 
     async initialize() {
