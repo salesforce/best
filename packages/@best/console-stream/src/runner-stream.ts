@@ -31,7 +31,6 @@ const STATE_ANSI = {
     QUEUED: chalk.reset.inverse.gray.bold(`  ${State.QUEUED}  `),
     ERROR: chalk.reset.inverse.redBright.bold(`  ${State.ERROR}   `),
     DONE: chalk.reset.inverse.green.bold(`   ${State.DONE}   `),
-
 };
 
 const INIT_MSG = '\n Running benchmarks... \n\n';
