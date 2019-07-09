@@ -6,6 +6,12 @@
     background: rgb(25, 78, 128);
 }
 
+.box {
+    width: 100px;
+    height: 100px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
 .clean {
     background: #0ed83a;
 }
