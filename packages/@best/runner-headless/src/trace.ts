@@ -23,14 +23,6 @@ const hasDurationPhased = (event: { ph: string }): boolean => {
     return isBeginPhase(event) || isEndPhase(event);
 }
 
-export const removeTrace = async (tracePath: string): Promise<void> => {
-    const fileExists = await asyncExists(tracePath);
-
-    if (fileExists) {
-        await asyncUnlink(tracePath);
-    }
-}
-
 const sumPairedMetrics = (events: any[]): number => {
     let duration = 0;
 
@@ -118,4 +110,12 @@ export const mergeTracedMetrics = (benchmarkResults: BenchmarkResults, parsedTra
     benchmarkResults.results.forEach(node => {
         mergeTracedMetricsIntoResultNode(node, parsedTrace);
     })
+}
+
+export const removeTrace = async (tracePath: string): Promise<void> => {
+    const fileExists = await asyncExists(tracePath);
+
+    if (fileExists) {
+        await asyncUnlink(tracePath);
+    }
 }
