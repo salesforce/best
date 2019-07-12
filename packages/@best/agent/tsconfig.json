@@ -5,6 +5,7 @@
     "outDir": "build"
   },
   "references": [
+    { "path": "../agent-frontend" },
     { "path": "../runner" },
     { "path": "../utils" },
     { "path": "../types" }

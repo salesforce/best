@@ -28,18 +28,18 @@ function initializeForwarder(socket: SocketIO.Socket, logger: Function): RunnerO
         onBenchmarkStart(benchmarkPath: string) {
             if (socket.connected) {
                 logger(`STATUS: running_benchmark ${benchmarkPath}`);
-                socket.emit('running_benchmark_start', benchmarkPath);
+                socket.emit('running_benchmark_start', { entry: benchmarkPath });
             }
         },
         onBenchmarkEnd(benchmarkPath: string) {
             if (socket.connected) {
                 logger(`STATUS: finished_benchmark ${benchmarkPath}`);
-                socket.emit('running_benchmark_end', benchmarkPath);
+                socket.emit('running_benchmark_end', { entry: benchmarkPath });
             }
         },
         onBenchmarkError(benchmarkPath: string) {
             if (socket.connected) {
-                socket.emit('running_benchmark_error', benchmarkPath);
+                socket.emit('running_benchmark_error', { entry: benchmarkPath });
             }
         },
         updateBenchmarkProgress(state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) {

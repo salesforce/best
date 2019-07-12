@@ -144,15 +144,16 @@ export class Agent extends EventEmitter {
                     });
                 });
 
-                socket.on('running_benchmark_start', () => {
-                    job.socketConnection.emit('running_benchmark_start');
+                socket.on('running_benchmark_start', ({ entry }: { entry: string }) => {
+                    job.socketConnection.emit('running_benchmark_start', { entry });
                 });
 
                 socket.on('running_benchmark_update', ({ state, opts }: { state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig }) => {
                     job.socketConnection.emit('running_benchmark_update', { state, opts });
                 });
-                socket.on('running_benchmark_end', () => {
-                    job.socketConnection.emit('running_benchmark_end');
+                
+                socket.on('running_benchmark_end', ({ entry }: { entry: string }) => {
+                    job.socketConnection.emit('running_benchmark_end', { entry });
                 });
 
                 socket.on('benchmark_enqueued', ({ pending }: { pending: number }) => {

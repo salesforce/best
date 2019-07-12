@@ -1,0 +1,5 @@
+<template>
+    <template for:each={agents} for:item="agent">
+        <component-agent key={agent.id} host={agent.host} name={agent.name}></component-agent>
+    </template>
+</template>
