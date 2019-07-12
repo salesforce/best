@@ -1,7 +1,17 @@
 <template>
-    <template if:true={hasJob}>
-        <div>
-            <h2>{statusText}: {name} - {executedIterations}</h2>
+    <div class="job">
+        <div class="info">
+            <span class={statusClass}>{statusText}</span>
+            <h2 class="name">{name}</h2>
         </div>
-    </template>
+        <div class="stats">
+            <template if:true={isRunning}>
+                    <progress value={progressValue} max="100"></progress><span class="estimate">{estimatedText}</span>
+            </template>
+            <template if:true={isCompleted}>
+                <p>{statsText}</p>
+            </template>
+        </div>
+    </div>
+
 </template>

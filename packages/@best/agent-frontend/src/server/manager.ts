@@ -8,7 +8,7 @@ const proxifyWithAfter = (object: any, method: string, fn: Function) => {
     }
 }
 
-const FRONTEND_EVENTS = ['benchmark_task', 'running_benchmark_start', 'running_benchmark_update', 'running_benchmark_end', 'benchmark_results']
+const FRONTEND_EVENTS = ['benchmark_task', 'running_benchmark_start', 'running_benchmark_update', 'running_benchmark_end', 'benchmark_results', 'client_disconnect']
 
 export default class Manager {
     private frontends: socketIO.Socket[] = [];
@@ -30,6 +30,10 @@ export default class Manager {
         client.use((event, next) => {
             this.notifyFrontends(client.id, event[0], event[1]);
             next();
+        })
+
+        client.on('disconnect', () => {
+            this.notifyFrontends(client.id, 'client_disconnect', {});
         })
     }
 

@@ -1,0 +1,52 @@
+.job {
+    display: grid;
+    grid-template-columns: auto 200px;
+    margin: 10px 0;
+}
+
+.info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.info h2 {
+    display: inline-block;
+    margin: 0;
+}
+
+.stats {
+    text-align: right;
+}
+
+.stats p {
+    margin: 0;
+}
+
+.status {
+    border-radius: 4px;
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 80%;
+    margin-right: 20px;
+}
+
+.status.queued {
+    background: #cccccc;
+    color: #252525;
+}
+
+.status.running {
+    background: #adcff0;
+    color: #032546;
+}
+
+.status.completed {
+    background: #a0dfb5;
+    color: #063b18;
+}
+
+.status.cancelled {
+    background: #ebcd8c;
+    color: #614700;
+}

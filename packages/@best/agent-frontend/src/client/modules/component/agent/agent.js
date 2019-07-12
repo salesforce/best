@@ -11,24 +11,37 @@ export default class ComponentAgent extends LightningElement {
     connectedCallback() {
         const socket = connect(this.host, { path: '/best', query: { frontend: true } });
 
-        socket.on('connect', (message) => {
+        socket.on('connect', message => {
             console.log('[connect]', message)
         })
-        socket.on('disconnect', (message) => {
+        socket.on('disconnect', message => {
             console.log('[disconnect]', message)
         })
-        socket.on('error', (message) => {
+        socket.on('error', message => {
             console.log('[error]', message)
         })
 
-        socket.on('benchmark_task', (message) => {
-            this.jobs.push({
+        socket.on('client_disconnect', message => {
+            this.jobs = this.jobs.map(job => {
+                if (job.socketId === message.socketId && job.status !== 'COMPLETED') {
+                    return {
+                        ...job,
+                        status: 'CANCELLED'
+                    }
+                }
+
+                return job;
+            })
+        })
+
+        socket.on('benchmark_task', message => {
+            this.jobs.unshift({
                 ...message,
                 status: 'QUEUED'
             });
         })
         
-        socket.on('running_benchmark_start', (message) => {
+        socket.on('running_benchmark_start', message => {
             this.jobs = this.jobs.map(job => {
                 if (job.socketId === message.socketId) {
                     return {
@@ -41,11 +54,12 @@ export default class ComponentAgent extends LightningElement {
             })
         })
 
-        socket.on('running_benchmark_update', (message) => {
+        socket.on('running_benchmark_update', message => {
             this.jobs = this.jobs.map(job => {
                 if (job.socketId === message.socketId) {
                     return {
                         ...job,
+                        status: 'RUNNING',
                         args: {
                             ...job.args,
                             ...message.args
@@ -57,8 +71,17 @@ export default class ComponentAgent extends LightningElement {
             })
         })
 
-        socket.on('running_benchmark_end', (message) => {
-            this.jobs = this.jobs.filter(j => j.socketId !== message.socketId);
+        socket.on('running_benchmark_end', message => {
+            this.jobs = this.jobs.map(job => {
+                if (job.socketId === message.socketId) {
+                    return {
+                        ...job,
+                        status: 'COMPLETED'
+                    }
+                }
+
+                return job;
+            })
         })
     }
 }
