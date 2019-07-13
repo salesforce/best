@@ -21,19 +21,6 @@ export default class ComponentAgent extends LightningElement {
             console.log('[error]', message)
         })
 
-        socket.on('client_disconnect', message => {
-            this.jobs = this.jobs.map(job => {
-                if (job.socketId === message.socketId && job.status !== 'COMPLETED') {
-                    return {
-                        ...job,
-                        status: 'CANCELLED'
-                    }
-                }
-
-                return job;
-            })
-        })
-
         socket.on('benchmark_task', message => {
             this.jobs.unshift({
                 ...message,
@@ -43,7 +30,7 @@ export default class ComponentAgent extends LightningElement {
         
         socket.on('running_benchmark_start', message => {
             this.jobs = this.jobs.map(job => {
-                if (job.socketId === message.socketId) {
+                if (job.jobId === message.jobId) {
                     return {
                         ...job,
                         status: 'RUNNING'
@@ -56,13 +43,13 @@ export default class ComponentAgent extends LightningElement {
 
         socket.on('running_benchmark_update', message => {
             this.jobs = this.jobs.map(job => {
-                if (job.socketId === message.socketId) {
+                if (job.jobId === message.jobId) {
                     return {
                         ...job,
                         status: 'RUNNING',
-                        args: {
-                            ...job.args,
-                            ...message.args
+                        packet: {
+                            ...job.packet,
+                            ...message.packet
                         }
                     }
                 }
@@ -73,10 +60,23 @@ export default class ComponentAgent extends LightningElement {
 
         socket.on('running_benchmark_end', message => {
             this.jobs = this.jobs.map(job => {
-                if (job.socketId === message.socketId) {
+                if (job.jobId === message.jobId) {
                     return {
                         ...job,
                         status: 'COMPLETED'
+                    }
+                }
+
+                return job;
+            })
+        })
+
+        socket.on('benchmark_cancel', message => {
+            this.jobs = this.jobs.map(job => {
+                if (job.jobId === message.jobId && job.status !== 'COMPLETED') {
+                    return {
+                        ...job,
+                        status: 'CANCELLED'
                     }
                 }
 

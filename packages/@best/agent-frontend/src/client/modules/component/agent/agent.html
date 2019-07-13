@@ -5,7 +5,7 @@
         </header>
         <div class="jobs">
             <template for:each={jobs} for:item="job">
-                <component-job key={job.socketId} job={job}></component-job>
+                <component-job key={job.jobId} job={job}></component-job>
             </template>
         </div>
     </div>

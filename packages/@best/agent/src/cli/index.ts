@@ -2,7 +2,7 @@ import express from 'express';
 import { readFileSync } from 'fs';
 import { runAgent } from '../agent-service';
 import { registerWithHub, HubConfig } from '../hub-registration';
-import { serveFrontend, attachMiddleware } from '@best/agent-frontend';
+import { serveFrontend } from '@best/agent-frontend';
 
 const PORT = process.env.PORT || 5000;
 const SSL_PFX_FILE = process.env.SSL_PFX_FILE;
@@ -26,8 +26,7 @@ export function run() {
     // app.get('/', (req, res) => res.send('BEST agent running!'));
     process.stdout.write(`Best agent listening in port ${PORT}...\n`);
 
-    const socketServer = runAgent(server);
-    attachMiddleware(socketServer);
+    runAgent(server);
 
     if (hubRegistrationConfig) {
         registerWithHub(hubRegistrationConfig);

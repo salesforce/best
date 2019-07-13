@@ -1,11 +1,11 @@
 {
     "extends": "../../../tsconfig.settings.json",
     "compilerOptions": {
-      "rootDir": "src/server",
-      "outDir": "build"
+      "rootDir": "src",
+      "outDir": "build",
+      "experimentalDecorators": true
     },
     "references": [
-      { "path": "../agent-logger" }
     ]
   }
   

@@ -4,7 +4,7 @@ export default class ComponentJob extends LightningElement {
     @api job = {};
 
     get name() {
-        return this.job.args.benchmarkName;
+        return this.job.packet.benchmarkName;
     }
 
     get statusText() {
@@ -16,7 +16,7 @@ export default class ComponentJob extends LightningElement {
     }
 
     get executedIterations() {
-        return this.job.args.state ? this.job.args.state.executedIterations : 0;
+        return this.job.packet.state ? this.job.packet.state.executedIterations : 0;
     }
 
     get isRunning() {
@@ -54,10 +54,10 @@ export default class ComponentJob extends LightningElement {
 
     get runningStats() {
         if (this.job.status === 'COMPLETED') {
-            return { runtime: Math.ceil(this.job.args.state.executedTime / 1000), executedIterations: this.job.args.state.executedIterations };
-        } else if (this.job.args.state && this.job.args.opts) {
-            const { executedIterations, executedTime } = this.job.args.state;
-            const { iterations, maxDuration } = this.job.args.opts;
+            return { runtime: Math.ceil(this.job.packet.state.executedTime / 1000), executedIterations: this.job.packet.state.executedIterations };
+        } else if (this.job.packet.state && this.job.packet.opts) {
+            const { executedIterations, executedTime } = this.job.packet.state;
+            const { iterations, maxDuration } = this.job.packet.opts;
             const avgIteration = executedTime / executedIterations;
             const runtime = parseInt((executedTime / 1000) + '', 10);
             const estimated = iterations ? Math.round(iterations * avgIteration / 1000) + 1 : maxDuration / 1000;

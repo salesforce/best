@@ -5,6 +5,7 @@
     { "path": "./packages/@best/agent" },
     { "path": "./packages/@best/agent-hub" },
     { "path": "./packages/@best/agent-frontend" },
+    { "path": "./packages/@best/agent-logger" },
     { "path": "./packages/@best/analyzer" },
     { "path": "./packages/@best/builder" },
     { "path": "./packages/@best/cli" },

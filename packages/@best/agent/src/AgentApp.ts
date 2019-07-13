@@ -3,14 +3,17 @@ import ObservableQueue from "./utils/ObservableQueue";
 import BenchmarkRunner, { RunnerStatus } from "./BenchmarkRunner";
 import BenchmarkTask from "./BenchmarkTask";
 import { BuildConfig } from "@best/types";
+import AgentLogger from '@best/agent-logger';
 
 export class AgentApp {
     private queue: ObservableQueue<BenchmarkTask>;
     private runner: BenchmarkRunner;
+    private logger: AgentLogger;
 
-    constructor(queue: ObservableQueue<BenchmarkTask>, runner: BenchmarkRunner) {
+    constructor(queue: ObservableQueue<BenchmarkTask>, runner: BenchmarkRunner, logger: AgentLogger) {
         this.queue = queue;
         this.runner = runner;
+        this.logger = logger;
 
         this.initializeHandlers();
     }
@@ -23,6 +26,7 @@ export class AgentApp {
     handleIncomingConnection(socket: SocketIO.Socket) {
         socket.on('benchmark_task', (data: BuildConfig) => {
             const task = new BenchmarkTask(data, socket);
+            this.logger.event(socket.id, 'benchmark_task', data, false);
 
             socket.on('disconnect', () => {
                 this.queue.remove(task);
@@ -39,6 +43,7 @@ export class AgentApp {
             this.runner.run(task);
         } else {
             task.socketConnection.emit('benchmark_enqueued', { pending: this.queue.size });
+            this.logger.event(task.socketConnection.id, 'benchmark_enqueued', { pending: this.queue.size });
         }
     }
 

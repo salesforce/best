@@ -1,17 +1,24 @@
 import socketIO from 'socket.io';
+import AgentLogger from '@best/agent-logger';
 
-const proxifyWithAfter = (object: any, method: string, fn: Function) => {
-    const orig = object[method]
-    object[method] = function (...args: any[]) {
-        fn.apply(this, args)
-        return orig.apply(this, args)
-    }
-}
+// const proxifyWithAfter = (object: any, method: string, fn: Function) => {
+//     const orig = object[method]
+//     object[method] = function (...args: any[]) {
+//         fn.apply(this, args)
+//         return orig.apply(this, args)
+//     }
+// }
 
-const FRONTEND_EVENTS = ['benchmark_task', 'running_benchmark_start', 'running_benchmark_update', 'running_benchmark_end', 'benchmark_results', 'client_disconnect']
+const FRONTEND_EVENTS = ['benchmark_task', 'running_benchmark_start', 'running_benchmark_update', 'running_benchmark_end', 'benchmark_results', 'benchmark_cancel']
 
 export default class Manager {
     private frontends: socketIO.Socket[] = [];
+    private logger: AgentLogger;
+
+    constructor(logger: AgentLogger) {
+        this.logger = logger;
+        this.attachListeners();
+    }
 
     addFrontend(socket: socketIO.Socket) {
         const index = this.frontends.length;
@@ -22,29 +29,21 @@ export default class Manager {
         })
     }
 
-    attachListeners(client: socketIO.Socket) {
-        proxifyWithAfter(client, 'emit', (name: string, args: any) => {
-            this.notifyFrontends(client.id, name, args);
-        })
-    
-        client.use((event, next) => {
-            this.notifyFrontends(client.id, event[0], event[1]);
-            next();
-        })
+    private attachListeners() {
+        // proxifyWithAfter(client, 'emit', (name: string, packet: any) => {
+        //     this.notifyFrontends(client.id, name, packet);
+        // })
 
-        client.on('disconnect', () => {
-            this.notifyFrontends(client.id, 'client_disconnect', {});
+        FRONTEND_EVENTS.forEach(e => {
+            this.logger.on(e, (packet: any) => {
+                this.notifyFrontends(e, packet);
+            })
         })
     }
 
-    private notifyFrontends(socketId: any, name: string, args: any) {
-        if (!FRONTEND_EVENTS.includes(name)) { return; }
-
+    private notifyFrontends(name: string, packet: any) {
         this.frontends.forEach(frontend => {
-            frontend.emit(name, {
-                socketId,
-                args
-            })
+            frontend.emit(name, packet)
         })
     }
 }
