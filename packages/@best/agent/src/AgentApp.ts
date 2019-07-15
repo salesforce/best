@@ -26,7 +26,7 @@ export class AgentApp {
     handleIncomingConnection(socket: SocketIO.Socket) {
         socket.on('benchmark_task', (data: BuildConfig) => {
             const task = new BenchmarkTask(data, socket);
-            this.logger.event(socket.id, 'benchmark_task', data, false);
+            this.logger.event(socket.id, 'benchmark_task', { benchmarkName: data.benchmarkName }, false);
 
             socket.on('disconnect', () => {
                 this.queue.remove(task);

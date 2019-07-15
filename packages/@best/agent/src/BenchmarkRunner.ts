@@ -111,7 +111,7 @@ export default class BenchmarkRunner extends EventEmitter {
         this.runningTask = task;
 
         // @todo: just to be safe, add timeout in cancel so it waits for the runner to finish or dismiss the run assuming something went wrong
-        loadBenchmarkJob(task.socketConnection)
+        loadBenchmarkJob(task.socketConnection, this.logger)
             .then(extractBenchmarkTarFile(task))
             .then(() => this.runBenchmark(task))
             .then(({ error, results }: {error: any, results: any}) => {
