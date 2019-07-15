@@ -7,7 +7,6 @@ export default class ComponentAgent extends LightningElement {
     @api host = '';
     @api name = '';
 
-
     connectedCallback() {
         const socket = connect(this.host, { path: '/best', query: { frontend: true } });
 
@@ -83,5 +82,9 @@ export default class ComponentAgent extends LightningElement {
                 return job;
             })
         })
+    }
+
+    get hasJobs() {
+        return this.jobs.length > 0;
     }
 }

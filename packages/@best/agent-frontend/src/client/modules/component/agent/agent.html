@@ -3,10 +3,17 @@
         <header>
             <h2>{name}</h2>
         </header>
-        <div class="jobs">
-            <template for:each={jobs} for:item="job">
-                <component-job key={job.jobId} job={job}></component-job>
-            </template>
-        </div>
+        <template if:true={hasJobs}>
+            <div class="jobs">
+                <template for:each={jobs} for:item="job">
+                    <component-job key={job.jobId} job={job}></component-job>
+                </template>
+            </div>
+        </template>
+        <template if:false={hasJobs}>
+            <div class="no-jobs">
+                <p>This agent currently has no jobs running.</p>
+            </div>
+        </template>
     </div>
 </template>
