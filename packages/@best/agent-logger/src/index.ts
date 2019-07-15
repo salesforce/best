@@ -6,10 +6,12 @@ const THROTTLE_WAIT = 500;
 
 export default class AgentLogger extends EventEmitter {
     private agentId: string;
+    private outputStream: NodeJS.WriteStream;
 
-    constructor(agentId: string) {
+    constructor(agentId: string, outputStream: NodeJS.WriteStream = process.stdout) {
         super();
         this.agentId = agentId;
+        this.outputStream = outputStream;
     }
 
     // This function logs the event to the console, but does not emit the event
@@ -55,6 +57,6 @@ export default class AgentLogger extends EventEmitter {
     }
 
     private write(message: string) {
-        process.stdout.write(message + '\n');
+        this.outputStream.write(message + '\n');
     }
 }
