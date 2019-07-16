@@ -1,6 +1,12 @@
 import { raf, time, nextTick, withMacroTask, formatTime } from './utils/timers';
 import { HOOKS } from './constants';
 
+export enum BenchmarkMeasureType {
+    Execute = "BEST/execute",
+    Before = "BEST/before",
+    After = "BEST/after"
+}
+
 declare var window: any;
 
 const _initHandlers = () =>
@@ -17,14 +23,15 @@ const _initHooks = (hooks: RuntimeHook[]) =>
 
 const _forceGC = () => window.gc && window.gc();
 
-function startMeasure(markName: string) {
-    performance.mark(markName);
+function startMeasure(markName: string, type: BenchmarkMeasureType) {
+    performance.mark(`${type}/${markName}`);
 }
 
-function endMeasure(markName: string) {
-    performance.measure(markName, markName);
-    performance.clearMarks(markName);
-    performance.clearMeasures(markName);
+function endMeasure(markName: string, type: BenchmarkMeasureType) {
+    const eventName = `${type}/${markName}`
+    performance.measure(eventName, eventName);
+    performance.clearMarks(eventName);
+    performance.clearMeasures(eventName);
 }
 
 const executeBenchmark = async (benchmarkNode: RuntimeNodeRunner, markName: string, { useMacroTaskAfterBenchmark }: { useMacroTaskAfterBenchmark: boolean } ) => {
@@ -34,9 +41,7 @@ const executeBenchmark = async (benchmarkNode: RuntimeNodeRunner, markName: stri
         raf(async () => {
             benchmarkNode.startedAt = formatTime(time());
 
-            if (process.env.NODE_ENV !== 'production') {
-                startMeasure(markName);
-            }
+            startMeasure(markName, BenchmarkMeasureType.Execute);
 
             try {
                 await benchmarkNode.fn();
@@ -46,23 +51,17 @@ const executeBenchmark = async (benchmarkNode: RuntimeNodeRunner, markName: stri
                     withMacroTask(async () => {
                         await nextTick();
                         benchmarkNode.aggregate = formatTime(time() - benchmarkNode.startedAt);
-                        if (process.env.NODE_ENV !== 'production') {
-                            endMeasure(markName);
-                        }
+                        endMeasure(markName, BenchmarkMeasureType.Execute);
                         resolve();
                     })();
                 } else {
                     benchmarkNode.aggregate = formatTime(time() - benchmarkNode.startedAt);
-                    if (process.env.NODE_ENV !== 'production') {
-                        endMeasure(markName);
-                    }
+                    endMeasure(markName, BenchmarkMeasureType.Execute);
                     resolve();
                 }
             } catch (e) {
                 benchmarkNode.aggregate = -1;
-                if (process.env.NODE_ENV !== 'production') {
-                    endMeasure(markName);
-                }
+                endMeasure(markName, BenchmarkMeasureType.Execute);
                 reject();
             }
         });
@@ -102,13 +101,13 @@ export const runBenchmarkIteration = async (node: RuntimeNode, opts: { useMacroT
         // -- Before ----
         const markName = run.parent.name;
         if (process.env.NODE_ENV !== 'production') {
-            startMeasure(`before_${markName}`);
+            startMeasure(markName, BenchmarkMeasureType.Before);
         }
         for (const hook of hookHandlers[HOOKS.BEFORE]) {
             await hook();
         }
         if (process.env.NODE_ENV !== 'production') {
-            endMeasure(`before_${markName}`);
+            endMeasure(markName, BenchmarkMeasureType.Before);
         }
 
         // -- Run ----
@@ -118,13 +117,13 @@ export const runBenchmarkIteration = async (node: RuntimeNode, opts: { useMacroT
 
         // -- After ----
         if (process.env.NODE_ENV !== 'production') {
-            startMeasure(`after_${markName}`);
+            startMeasure(markName, BenchmarkMeasureType.After);
         }
         for (const hook of hookHandlers[HOOKS.AFTER]) {
             await hook();
         }
         if (process.env.NODE_ENV !== 'production') {
-            endMeasure(`after_${markName}`);
+            endMeasure(markName, BenchmarkMeasureType.After);
         }
     }
 

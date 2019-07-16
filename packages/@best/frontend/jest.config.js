@@ -7,6 +7,6 @@ module.exports = {
     preset: '@lwc/jest-preset',
     moduleNameMapper: {
         "^component-emitter$": "component-emitter",
-        "^(component|my|view|store)(.+)$": "<rootDir>/src/modules/$1$2$2"
+        "^(component|view|store)(.+)$": "<rootDir>/src/modules/$1$2$2"
     }
 }

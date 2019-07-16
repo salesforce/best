@@ -1,5 +1,12 @@
-import * as path from 'path';
+import os from 'os';
+import fs from 'fs';
+import path from 'path';
 import Runner from '../index';
+
+const TEMP_DIR_PREFIX = 'best-test-';
+function tempDir() {
+    return fs.mkdtempSync(path.join(os.tmpdir(), TEMP_DIR_PREFIX));
+}
 
 const runner = new Runner();
 
@@ -10,6 +17,7 @@ const BENCHMARK_CONFIG = {
 
 const PROJECT_CONFIG = {
     benchmarkIterations: 1,
+    benchmarkOutput: tempDir()
 };
 
 const GLOBAL_CONFIG = {
@@ -47,6 +55,7 @@ describe('run', () => {
             BENCHMARK_CONFIG,
             {
                 benchmarkIterations: iterations,
+                benchmarkOutput: tempDir()
             },
             GLOBAL_CONFIG,
             MOCK_MESSAGER,
@@ -71,6 +80,7 @@ describe('run', () => {
             {
                 benchmarkMaxDuration: -1,
                 benchmarkMinIterations: minIterations,
+                benchmarkOutput: tempDir()
             },
             GLOBAL_CONFIG,
             MOCK_MESSAGER,

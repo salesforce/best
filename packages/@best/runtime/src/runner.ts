@@ -11,7 +11,7 @@ function collectNodeResults(node: RuntimeNode): BenchmarkResultNode {
 
     if (run) {
         resultNode.aggregate = run.aggregate;
-        (resultNode as BenchmarkResultBenchmarkNode).metrics = { script: run.metrics.script };
+        (resultNode as BenchmarkResultBenchmarkNode).metrics = run.metrics;
     } else if (children) {
         (resultNode as BenchmarkResultGroupNode).nodes = children.map((c: RuntimeNode) => collectNodeResults(c));
     }

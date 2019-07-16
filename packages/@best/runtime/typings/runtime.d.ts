@@ -1,4 +1,3 @@
-
 type NodeTypes = "group" | "benchmark" | "run";
 
 interface RuntimeHook {

@@ -1668,7 +1668,7 @@
     rollup-plugin-replace "^2.1.0"
     terser "^3.17.0"
 
-"@lwc/engine@1.0.0":
+"@lwc/engine@1.0.0", "@lwc/engine@~1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@lwc/engine/-/engine-1.0.0.tgz#19d9ae3972476ec63f75fd0a695e3f767fde6ae2"
   integrity sha512-Vu0Zk4ElhrGs4rNc+m/1zbJlzZq++0ixMhF+NI+qe1HL3w7bKgbpbSETSmiStGbtmRpbVG0fkKH94VfzU2UtTQ==
@@ -1731,7 +1731,7 @@
   dependencies:
     fast-glob "~2.2.6"
 
-"@lwc/rollup-plugin@^1.0.0":
+"@lwc/rollup-plugin@^1.0.0", "@lwc/rollup-plugin@~1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@lwc/rollup-plugin/-/rollup-plugin-1.0.0.tgz#b808db4841265ea4ac6606f03eb2aa3fd3189c5a"
   integrity sha512-t7Vmts9rbfx/2nGFa1y1OhiM2vZkb0mChzoctPTK72bgbpemwJtjmLY2JCYtPydpDaclDsfYqW6nEWZZuPKpdg==
@@ -11115,7 +11115,7 @@ rollup-plugin-node-resolve@^5.0.3:
     resolve "^1.11.0"
     rollup-pluginutils "^2.8.0"
 
-rollup-plugin-replace@^2.1.0, rollup-plugin-replace@^2.2.0:
+rollup-plugin-replace@^2.1.0, rollup-plugin-replace@^2.2.0, rollup-plugin-replace@~2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/rollup-plugin-replace/-/rollup-plugin-replace-2.2.0.tgz#f41ae5372e11e7a217cde349c8b5d5fd115e70e3"
   integrity sha512-/5bxtUPkDHyBJAKketb4NfaeZjL5yLZdeUihSfbF2PQMz+rSTEb8ARKoOl3UBT4m7/X+QOXJo3sLTcq+yMMYTA==

@@ -5,7 +5,6 @@
     "outDir": "build"
   },
   "references": [
-    { "path": "../types" },
     { "path": "../runner-abstract" },
     { "path": "../types" }
   ]

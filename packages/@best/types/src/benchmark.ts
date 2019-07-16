@@ -12,6 +12,11 @@ export interface BenchmarkRuntimeConfig {
     iterateOnClient: boolean;
 }
 
+export enum BenchmarkMeasureType {
+    Execute = "BEST/execute",
+    Before = "BEST/before",
+    After = "BEST/after"
+}
 
 export type BenchmarkMetricNames = "script" | "aggregate" | "paint" | "layout" | "system" | "idle";
 

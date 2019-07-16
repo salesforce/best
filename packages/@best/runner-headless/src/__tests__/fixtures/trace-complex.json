@@ -1,0 +1,20 @@
+{
+    "traceEvents": [
+        { "name": "BEST/execute/foo", "ph": "B", "ts": 1000 },
+        { "name": "BEST/execute/foo", "ph": "e", "ts": 25000 },
+        { "name": "Paint", "ph": "X", "dur": 50000, "ts": 24000 },
+        { "name": "Paint", "ph": "X", "dur": 1000, "ts": 26000 },
+        { "name": "Layout", "ph": "b", "ts": 2000 },
+        { "name": "Layout", "ph": "E", "ts": 22000 },
+        { "name": "BEST/execute/bar", "ph": "b", "ts": 27000 },
+        { "name": "BEST/execute/bar", "ph": "e", "ts": 60000 },
+        { "name": "Layout", "ph": "B", "ts": 27500 },
+        { "name": "Layout", "ph": "E", "ts": 30000 },
+        { "name": "Layout", "ph": "B", "ts": 32000 },
+        { "name": "Layout", "ph": "E", "ts": 40000 },
+        { "name": "Paint", "ph": "X", "dur": 30000, "ts": 31000 },
+        { "name": "Paint", "ph": "X", "dur": 10000, "ts": 31500 },
+        { "name": "Paint", "ph": "X", "dur": 10000, "ts": 50000 },
+        { "name": "Randomness", "ph": "i", "ts": 4100 }
+    ]
+}

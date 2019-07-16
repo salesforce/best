@@ -14,7 +14,7 @@ export default class Runner extends AbstractRunner {
         const runtimeOptions = this.getRuntimeOptions(projectConfig);
         const state = this.initializeBenchmarkState();
         const { url, terminate } = await this.initializeServer(benchmarkEntry, useHttp);
-        const browser = new HeadlessBrowser(url);
+        const browser = new HeadlessBrowser(url, projectConfig);
 
         try {
             await browser.initialize();
@@ -23,13 +23,12 @@ export default class Runner extends AbstractRunner {
             const version = await browser.version();
             const environment = await this.getEnvironment({ version }, projectConfig, globalConfig);
             return { results, environment, benchmarkInfo, projectConfig };
-
         } catch (e) {
             runnerLogStream.onBenchmarkError(benchmarkEntry);
             throw e;
         } finally {
             runnerLogStream.onBenchmarkEnd(benchmarkEntry);
-            browser.close();
+            await browser.close();
             terminate();
         }
     }
