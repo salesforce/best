@@ -15,6 +15,7 @@
     "prepare": "yarn build",
     "build": "tsc -b",
     "build:docs": "cd docs && yarn build",
+    "watch:docs": "cd docs && yarn watch",
     "release": "yarn prepare && lerna publish -m 'chore(release): publish %s' --exact --force-publish=* && yarn changelog",
     "changelog": "yarn changelog:generate && yarn changelog:publish",
     "changelog:generate": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
