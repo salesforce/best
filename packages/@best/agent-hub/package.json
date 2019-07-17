@@ -9,6 +9,7 @@
   ],
   "main": "build/cli/index.js",
   "dependencies": {
+    "@best/agent-logger": "4.0.0",
     "@best/runner-remote": "4.0.0",
     "@best/utils": "4.0.0",
     "jsonwebtoken": "^8.5.1",

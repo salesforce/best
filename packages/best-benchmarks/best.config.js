@@ -18,11 +18,11 @@ module.exports = {
             "runner": "@best/runner-hub",
             "alias": "hub",
             "config": {
-                "host": "http://localhost:6000",
+                "host": "http://localhost:5555",
                 "options": {
                     path: "/hub",
                     query: {
-                        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6ImNsaWVudCIsImlhdCI6MTU2MTYwNzI1OCwiZXhwIjoxNTY0MTk5MjU4fQ.BER-PIIlsf6NWNBctWrmS1YWB4QkI2aYiNp0BE6aASU'
+                        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6ImNsaWVudCIsImlhdCI6MTU2MzI5NjkyMywiZXhwIjoxNTY1ODg4OTIzfQ.3TN91ySnte8_dhJ1Iabe4fUcOvS7lp9J700YywCMC5Q"
                     }
                 },
                 "spec": {

@@ -130,7 +130,7 @@ export default class BenchmarkRunner extends EventEmitter {
         let error;
 
         try {
-            this.logger.info(task.socketConnection.id, 'benchmark running', benchmarkName);
+            this.logger.info(task.socketConnection.id, 'benchmark start', benchmarkName);
 
             results = await runBenchmark(task.config, messenger);
 

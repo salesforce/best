@@ -53,6 +53,7 @@ async function connectToHub(hubConfig: HubConfig): Promise<boolean> {
 }
 
 export async function registerWithHub(hubConfig: HubConfig) {
+    const pingTimeout = hubConfig.hub.pingTimeout || 180000;
     let keepPing = true;
     try {
         const agentStatus = await pingHub(hubConfig.hub.host, hubConfig.hub.authToken, hubConfig.agentConfig.host);
@@ -71,11 +72,11 @@ export async function registerWithHub(hubConfig: HubConfig) {
             keepPing = false;
             console.log('Invalid auth credentials, suspending registration with hub');
         } else {
-            console.log(`Retrying in ${hubConfig.hub.pingTimeout} ms`);
+            console.log(`Retrying in ${pingTimeout} ms`);
         }
     }
 
     if (keepPing) {
-        setTimeout(registerWithHub.bind(null, hubConfig), hubConfig.hub.pingTimeout);
+        setTimeout(registerWithHub.bind(null, hubConfig), pingTimeout);
     }
 }

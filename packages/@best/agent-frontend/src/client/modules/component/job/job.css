@@ -11,10 +11,11 @@
     z-index: 1;
 }
 
-.status.queued { background: #cccccc; color: #252525; }
+.status.added, .status.queued { background: #cccccc; color: #252525; }
 .status.running { background: #adcff0; color: #032546; }
 .status.completed { background: #a0dfb5; color: #063b18; }
 .status.cancelled { background: #ebcd8c; color: #614700; }
+.status.error { background: #eb8c8c; color: #610000; }
 
 main {
     display: grid;

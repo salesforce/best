@@ -10,7 +10,7 @@ import { Server } from "http";
 export function runAgent(server: Server) {
     const socketServer = socketIO(server, { path: '/best' });
 
-    const logger = new AgentLogger('Agent 5000');
+    const logger = new AgentLogger('Agent ' + (process.env.PORT || 5000));
     const taskQueue = new ObservableQueue<BenchmarkTask>();
     const taskRunner = new BenchmarkRunner(logger);
     const agentApp = new AgentApp(taskQueue, taskRunner, logger);

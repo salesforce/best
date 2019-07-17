@@ -5,6 +5,9 @@ import socketIO from "socket.io-client";
 import SocketIOFile from "@best/runner-remote/build/file-uploader";
 import { BenchmarkResultsSnapshot, BenchmarkResultsState, BenchmarkRuntimeConfig } from "@best/types";
 import { loadBenchmarkJob } from "./benchmark-loader";
+import AgentLogger from '@best/agent-logger';
+
+const AGENT_CONNECTION_ERROR = 'Agent running job became offline.';
 
 export interface Spec {
     browser: string,
@@ -29,13 +32,16 @@ export enum AgentStatus {
     RunningJob,
     Offline
 }
+
 export class Agent extends EventEmitter {
     private _status: AgentStatus = AgentStatus.Idle;
     private _config: AgentConfig;
+    private _logger: AgentLogger;
 
-    constructor(config: AgentConfig) {
+    constructor(config: AgentConfig, logger: AgentLogger) {
         super();
         this._config = config;
+        this._logger = logger;
     }
 
     get status() {
@@ -68,6 +74,7 @@ export class Agent extends EventEmitter {
             await loadBenchmarkJob(job);
         } catch (err) {
             console.log('Error while uploading file to the hub', err);
+            this._logger.event(job.socketConnection.id, 'benchmark error', err, false, this.host);
             job.socketConnection.emit('benchmark_error', err);
             this.status = AgentStatus.Idle;
             return ;
@@ -79,9 +86,14 @@ export class Agent extends EventEmitter {
                 // @todo: move to success queue
                 this.status = AgentStatus.Idle;
             })
-            .catch(() => {
+            .catch((err) => {
                 // @todo: move to failures queue
-                this.status = AgentStatus.Idle;
+                if (err.message === AGENT_CONNECTION_ERROR) {
+                    this.status = AgentStatus.Offline;
+                    // TODO: in this case, we need to re-run the job on a different agent (if we have one)
+                } else {
+                    this.status = AgentStatus.Idle;
+                }
             });
     }
 
@@ -118,17 +130,24 @@ export class Agent extends EventEmitter {
             let resolved: boolean = false;
 
             job.socketConnection.on('disconnect', () => {
+                if (!resolved) { // it is not yet resolved then the job has been cancelled 
+                    this._logger.event(job.socketConnection.id, 'benchmark cancel');
+                }
+
                 resolved = true;
                 socket.disconnect();
                 reject(new Error('Connection terminated'));
             });
 
-            socket.on('connect_error', function() {
+            socket.on('connect_error', () => {
                 console.log("Connection error with hub: ", [self._config.host, self._config.options]);
                 self.status = AgentStatus.Offline;
                 // this is a special case that we need to handle with care, right now the job is scheduled to run in this hub
                 // which is offline, but, is not the job fault, it can run in another agent. Note: can be solved if we add a new queue, and retry in another queue.
-                reject(new Error('Agent running job became offline.'));
+                socket.disconnect();
+                job.socketConnection.emit('benchmark_error', 'Error connecting to agent');
+                this._logger.event(job.socketConnection.id, 'benchmark error', 'Error connecting to agent', true, socket.id)
+                reject(new Error(AGENT_CONNECTION_ERROR));
                 // @todo: add a retry logic?
             });
 
@@ -146,18 +165,22 @@ export class Agent extends EventEmitter {
 
                 socket.on('running_benchmark_start', ({ entry }: { entry: string }) => {
                     job.socketConnection.emit('running_benchmark_start', { entry });
+                    this._logger.event(job.socketConnection.id, 'benchmark start', { entry }, true, this.host);
                 });
 
                 socket.on('running_benchmark_update', ({ state, opts }: { state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig }) => {
                     job.socketConnection.emit('running_benchmark_update', { state, opts });
+                    this._logger.throttle(job.socketConnection.id, 'benchmark update', { state, opts }, false, this.host);
                 });
                 
                 socket.on('running_benchmark_end', ({ entry }: { entry: string }) => {
                     job.socketConnection.emit('running_benchmark_end', { entry });
+                    this._logger.event(job.socketConnection.id, 'benchmark end', { entry }, true, this.host);
                 });
 
                 socket.on('benchmark_enqueued', ({ pending }: { pending: number }) => {
                     job.socketConnection.emit('benchmark_enqueued', { pending });
+                    this._logger.event(job.socketConnection.id, 'benchmark queued', { pending }, true, this.host);
                 });
 
                 // @todo: this should put the runner in a weird state and dont allow any new job until we can confirm the connection is valid.
@@ -166,13 +189,16 @@ export class Agent extends EventEmitter {
                         resolved = true;
                         const err = new Error(reason);
                         job.socketConnection.emit('benchmark_error', reason);
+                        this._logger.event(job.socketConnection.id, 'benchmark error', reason, true, this.host);
                         reject(err);
                     }
                 });
 
                 socket.on('error', (err: any) => {
                     resolved = true;
-                    job.socketConnection.emit('benchmark_error', err instanceof Error ? err.message : err);
+                    const reason = err instanceof Error ? err.message : err
+                    job.socketConnection.emit('benchmark_error', reason);
+                    this._logger.event(job.socketConnection.id, 'benchmark error', reason, true, this.host);
                     socket.disconnect();
                     reject(err);
                 });
@@ -181,6 +207,7 @@ export class Agent extends EventEmitter {
                     resolved = true;
                     console.log(err);
                     job.socketConnection.emit('benchmark_error', err);
+                    this._logger.event(job.socketConnection.id, 'benchmark error', err, true, this.host);
                     socket.disconnect();
                     reject(new Error('Benchmark couldn\'t finish running. '));
                 });
@@ -188,6 +215,7 @@ export class Agent extends EventEmitter {
                 socket.on('benchmark_results', (result: BenchmarkResultsSnapshot) => {
                     resolved = true;
                     job.socketConnection.emit('benchmark_results', result);
+                    this._logger.event(job.socketConnection.id, 'benchmark results', { resultCount: result.results.length }, false, this.host);
                     socket.disconnect();
                     resolve(result);
                 });

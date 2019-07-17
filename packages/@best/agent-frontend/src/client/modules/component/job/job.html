@@ -1,13 +1,16 @@
 <template>
     <div class="job">
-        <span class={statusClass}>{statusText}</span>
+        <span class={statusClass}>{job.status}</span>
         <main>
             <div class="info">
-                <h2 class="name">{name}</h2>
+                <h2 class="name">{job.name}</h2>
             </div>
             <div class="stats">
                 <template if:true={isRunning}>
-                    <progress value={progressValue} max="100"></progress><span class="estimate">{estimatedText}</span>
+                    <progress value={job.progressValue} max="100"></progress>
+                    <template if:true={hasEstimate}>
+                        <span class="estimate">{estimatedText}</span>
+                    </template>
                 </template>
                 <template if:true={isCompleted}>
                     <p>{statsText}</p>

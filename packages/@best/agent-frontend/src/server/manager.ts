@@ -9,7 +9,7 @@ import AgentLogger from '@best/agent-logger';
 //     }
 // }
 
-const FRONTEND_EVENTS = ['benchmark_task', 'running_benchmark_start', 'running_benchmark_update', 'running_benchmark_end', 'benchmark_results', 'benchmark_cancel']
+const FRONTEND_EVENTS = ['benchmark added', 'benchmark start', 'benchmark update', 'benchmark end', 'benchmark error', 'benchmark results', 'benchmark queued', 'benchmark cancel']
 
 export default class Manager {
     private frontends: socketIO.Socket[] = [];

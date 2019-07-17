@@ -1,0 +1,15 @@
+.container {
+    width: 800px;
+    margin: 40px auto;
+}
+
+header {
+    box-sizing: border-box;
+}
+
+.no-jobs {
+    text-align: center;
+    background: rgb(255, 249, 199);
+    border-radius: 4px;
+    padding: 8px 0;
+}
