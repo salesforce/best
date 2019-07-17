@@ -14,6 +14,8 @@
     "prettier": "prettier --write '**/*.{js,md}'",
     "prepare": "yarn build",
     "build": "tsc -b",
+    "build:docs": "cd docs && yarn build",
+    "watch:docs": "cd docs && yarn watch",
     "release": "yarn prepare && lerna publish -m 'chore(release): publish %s' --exact --force-publish=* && yarn changelog",
     "changelog": "yarn changelog:generate && yarn changelog:publish",
     "changelog:generate": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
@@ -53,7 +55,8 @@
     "lerna": "^3.15.0",
     "prettier": "^1.17.1",
     "rimraf": "^2.6.3",
-    "typescript": "^3.5.1"
+    "typescript": "^3.5.1",
+    "cross-env": "^5.2.0"
   },
   "config": {
     "commitizen": {
@@ -62,6 +65,7 @@
   },
   "workspaces": [
     "packages/@best/*",
-    "packages/*"
+    "packages/*",
+    "docs"
   ]
 }
