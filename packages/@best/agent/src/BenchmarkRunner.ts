@@ -4,9 +4,8 @@ import { runBenchmark } from '@best/runner';
 import BenchmarkTask from "./BenchmarkTask";
 import { loadBenchmarkJob } from "./benchmark-loader";
 import { x as extractTar } from 'tar';
-import * as SocketIO from "socket.io";
 import { RunnerOutputStream } from "@best/console-stream";
-import AgentLogger from '@best/agent-logger';
+import AgentLogger, { loggedSocket, LoggedSocket } from '@best/agent-logger';
 import {
     BenchmarkResultsSnapshot,
     BenchmarkResultsState,
@@ -22,32 +21,28 @@ export enum RunnerStatus {
 }
 
 // @todo: make a Runner Stream, and add an interface type instead of the class.
-function initializeForwarder(socket: SocketIO.Socket, logger: AgentLogger): RunnerOutputStream {
+function initializeForwarder(socket: LoggedSocket): RunnerOutputStream {
     return {
         init() {},
         finish() {},
         onBenchmarkStart(benchmarkPath: string) {
-            if (socket.connected) {
+            if (socket.rawSocket.connected) {
                 socket.emit('running_benchmark_start', { entry: benchmarkPath });
-                logger.event(socket.id, 'running_benchmark_start', { entry: benchmarkPath })
             }
         },
         onBenchmarkEnd(benchmarkPath: string) {
-            if (socket.connected) {
+            if (socket.rawSocket.connected) {
                 socket.emit('running_benchmark_end', { entry: benchmarkPath });
-                logger.event(socket.id, 'running_benchmark_end', { entry: benchmarkPath })
             }
         },
         onBenchmarkError(benchmarkPath: string) {
-            if (socket.connected) {
+            if (socket.rawSocket.connected) {
                 socket.emit('running_benchmark_error', { entry: benchmarkPath });
-                logger.event(socket.id, 'running_benchmark_error', { entry: benchmarkPath });
             }
         },
         updateBenchmarkProgress(state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) {
-            if (socket.connected) {
+            if (socket.rawSocket.connected) {
                 socket.emit('running_benchmark_update', { state, opts });
-                logger.throttle(socket.id, 'running_benchmark_update', { state, opts }, false);
             }
         },
     } as RunnerOutputStream;
@@ -124,7 +119,8 @@ export default class BenchmarkRunner extends EventEmitter {
 
     private async runBenchmark(task: BenchmarkTask) {
         const { benchmarkName } = task;
-        const messenger = initializeForwarder(task.socketConnection, this.logger);
+        const taskSocket = loggedSocket(task.socketConnection, this.logger);
+        const messenger = initializeForwarder(taskSocket);
 
         let results;
         let error;
@@ -149,10 +145,9 @@ export default class BenchmarkRunner extends EventEmitter {
 
             if (err) {
                 this.runningTask!.socketConnection.emit('benchmark_error', err.toString());
-                this.logger.event(this.runningTask!.socketConnection.id, 'benchmark_error', { err });
             } else {
                 this.runningTask!.socketConnection.emit('benchmark_results', results);
-                this.logger.event(this.runningTask!.socketConnection.id, 'benchmark_results', results, false);
+                this.logger.event(this.runningTask!.socketConnection.id, 'benchmark results', { resultCount: results!.results.length }, false);
             }
         }
 

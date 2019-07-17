@@ -26,7 +26,7 @@ export class AgentApp {
     handleIncomingConnection(socket: SocketIO.Socket) {
         socket.on('benchmark_task', (data: BuildConfig) => {
             const task = new BenchmarkTask(data, socket);
-            this.logger.event(socket.id, 'benchmark_task', { benchmarkName: data.benchmarkName }, false);
+            this.logger.event(socket.id, 'benchmark added', { benchmarkName: data.benchmarkName }, false);
 
             socket.on('disconnect', () => {
                 this.queue.remove(task);
@@ -43,7 +43,7 @@ export class AgentApp {
             this.runner.run(task);
         } else {
             task.socketConnection.emit('benchmark_enqueued', { pending: this.queue.size });
-            this.logger.event(task.socketConnection.id, 'benchmark_enqueued', { pending: this.queue.size });
+            this.logger.event(task.socketConnection.id, 'benchmark queued', { pending: this.queue.size });
         }
     }
 

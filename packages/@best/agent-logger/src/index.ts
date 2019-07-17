@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import chalk from 'chalk';
-export { loggedSocket } from './socket';
+export { loggedSocket, LoggedSocket } from './socket';
 
 const THROTTLE_WAIT = 750;
 

@@ -1,7 +1,7 @@
 import AgentLogger from './index';
 import { sanitize } from './utils/sanitize';
 
-interface LoggedSocket {
+export interface LoggedSocket {
     rawSocket: SocketIO.Socket;
     on(event: string, listener: (...args: any[]) => void): void;
     once(event: string, listener: (...args: any[]) => void): void;
