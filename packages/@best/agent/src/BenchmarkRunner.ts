@@ -136,8 +136,7 @@ export default class BenchmarkRunner extends EventEmitter {
 
             this.logger.info(task.socketConnection.id, 'benchmark completed', benchmarkName);
         } catch (err) {
-            this.logger.info(task.socketConnection.id, 'benchmark error', benchmarkName);
-            process.stderr.write(err + '\n');
+            this.logger.error(task.socketConnection.id, 'benchmark error', err);
             error = err;
         }
 

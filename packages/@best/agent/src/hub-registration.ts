@@ -53,7 +53,7 @@ async function connectToHub(hubConfig: HubConfig): Promise<boolean> {
 }
 
 export async function registerWithHub(hubConfig: HubConfig) {
-    const pingTimeout = hubConfig.hub.pingTimeout || 180000;
+    const pingTimeout = hubConfig.hub.pingTimeout || 30000;
     let keepPing = true;
     try {
         const agentStatus = await pingHub(hubConfig.hub.host, hubConfig.hub.authToken, hubConfig.agentConfig.host);
