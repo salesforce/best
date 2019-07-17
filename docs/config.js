@@ -7,7 +7,7 @@ module.exports = {
         ],
     },
     blog: {
-        latest: 'welcome_to_lwc'
+        latest: 'welcome_to_best'
         // pages are discovered and ordered automatically
     },
 };

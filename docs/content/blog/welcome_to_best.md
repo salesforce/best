@@ -1,5 +1,5 @@
 ---
-title: Welcome to LWC
+title: Welcome to Best
 subtitle: Its finally here!
 author: LWC Team
 created_at: May 26, 2019

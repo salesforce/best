@@ -5,14 +5,12 @@ title: Installation
 # Installation
 
 ::: tip
-If you aren't familiar with build tools but want to explore Lightning Web Components, start coding in the [Playground](install#playground), which requires no installation.
+If you aren't familiar with build tools but want to explore Best...
 :::
 
-## Lightning Web Components CLI
+## Best CLI
 
-To install Lightning Web Components and the Lightning Web Components CLI, use the open source `lwc-create-app` tool.
-
-The CLI steps you through a simple build setup for an app.
+Foo Bar
 
 ```bash
 npx lwc-create-app my-app
