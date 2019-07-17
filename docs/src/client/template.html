@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-141013557-1"></script>
+		<script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-141013557-1');</script>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+		<meta name="author" content="Salesforce">
+		<meta name="keywords" content="Web,Components,LWC,WC,Javascript,HTML,ShadowDOM,IE11">
+		<meta name="description" content="Lightning Web Components">
+		<meta name="apple-mobile-web-app-title" content="Lightning Web Components">
+		<link rel="manifest" href="/assets/site.webmanifest">
+		<meta name="application-name" content="Lightning Web Components">
+		<meta name="theme-color" content="#ffffff">
+
+		<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon-16x16.png">
+		<link rel="mask-icon" href="/assets/images/safari-pinned-tab.svg" color="#5bbad5">
+		<link rel="icon" href="/assets/images/logo.svg">
+
+		<title>{{TITLE}}</title>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+		{{HEADER_STYLES}}
+		{{HEADER_SCRIPTS}}
+	</head>
+
+	<body class="wrapper">
+		<header class="header">
+			<a href="https://github.com/salesforce/lwc" class="github-corner" aria-label="View source on GitHub" target="_blank"
+				rel="noopener">
+				<svg style="position:absolute;top:0;border:0;right:0" width="65" height="65" fill="#16325c" aria-hidden="true"
+					color="#fff" viewBox="0 0 250 250">
+					<path d="M0 0l115 115h15l12 27 108 108V0z" />
+					<path style="transform-origin:130px 106px" fill="currentColor"
+						d="M128 109c-14-9-9-19-9-19 3-7 2-11 2-11-2-7 2-3 2-3 4 5 3 11 3 11-3 11 5 15 8 16" class="octo-arm" />
+					<path fill="currentColor"
+						d="M115 115s4 2 5 0l14-13c3-3 6-4 8-3-8-11-14-25 2-41 5-5 10-7 16-7 0-2 3-7 11-11 0 0 5 3 8 16a59 59 0 0 1 21 22c14 2 16 7 16 7-3 8-9 11-11 12 0 5-2 11-7 16-16 16-30 10-40 1 0 3-1 7-5 11l-12 12c-1 1 1 5 1 5z"
+						class="octo-body" /></svg>
+			</a>
+			<div class="content-wrapper">
+				<a class="logo" href="/" aria-label="Lightning Web Components home page">
+					<div class="icon-logo">
+						<svg viewBox="0 0 64 64"><path fill="#00a1e0" d="M23 6h22l-8 18h11L20 58l6-26H16l7-26z"/><path fill="#032e61" d="M20 60a2 2 0 0 1-1.95-2.45L23.5 34H16a2 2 0 0 1-1.93-2.52l7-26A2 2 0 0 1 23 4h22a2 2 0 0 1 1.83 2.81L40.08 22H48a2 2 0 0 1 1.54 3.27l-28 34A2 2 0 0 1 20 60zm-1.4-30H26a2 2 0 0 1 1.95 2.45l-4.1 17.72L43.76 26H37a2 2 0 0 1-1.83-2.81L41.92 8h-17.4z"/><path fill="#fff" d="M26 26a2 2 0 0 1-1.93-2.53l3-11a2 2 0 1 1 3.86 1.05l-3 11A2 2 0 0 1 26 26z"/></svg>
+					</div>
+
+					<h1 class="title">Lightning Web Components</h1>
+				</a>
+				<input class="menu-btn" type="checkbox" id="menu-btn" />
+				<label class="menu-icon" for="menu-btn"><span class="navicon"></span></label>
+				<div class="search-box">
+					<input class="search-input" type="search" placeholder="Search">
+				</div>
+				<ul class="menu">
+					{{NAVBAR}}
+				</ul>
+			</div>
+		</header>
+
+		<main class="content {{PAGE_CLASSES}}">
+			{{SIDEBAR}}
+			<article class="container">
+				<a class="nav-trigger" id="nav-trigger">
+					<svg viewBox="0 0 64 64" style="width: 35px; height: 35px;">
+						<path fill="#00a1e0" d="M23 6h22l-8 18h11L20 58l6-26H16l7-26z" />
+						<path fill="#032e61" d="M20 60a2 2 0 0 1-1.95-2.45L23.5 34H16a2 2 0 0 1-1.93-2.52l7-26A2 2 0 0 1 23 4h22a2 2 0 0 1 1.83 2.81L40.08 22H48a2 2 0 0 1 1.54 3.27l-28 34A2 2 0 0 1 20 60zm-1.4-30H26a2 2 0 0 1 1.95 2.45l-4.1 17.72L43.76 26H37a2 2 0 0 1-1.83-2.81L41.92 8h-17.4z" />
+						<path fill="#fff" d="M26 26a2 2 0 0 1-1.93-2.53l3-11a2 2 0 1 1 3.86 1.05l-3 11A2 2 0 0 1 26 26z" />
+					</svg>
+				</a>
+				<script>
+					(function () {
+						var nav = document.getElementById('nav');
+						var navTrigger = document.getElementById('nav-trigger');
+						function toggleNav(e) {
+							nav.classList.toggle("open");
+							navTrigger.classList.toggle("open");
+						}
+						if (nav && navTrigger) {
+							nav.addEventListener('click', function (e) {
+								if (e.target.closest('.active')) {
+									toggleNav();
+								}
+							}, false);
+							navTrigger.addEventListener('click', toggleNav, false);
+						}
+					}());
+				</script>
+				{{BODY}}
+			</article>
+		</main>
+
+		<footer class="footer">
+			<div class="content-wrapper flex-wrapper">
+
+				<div class="copyright">
+					<a href="https://engineering.salesforce.com" target="_blank" rel="noopener">
+						<img src="/assets/images/salesforce.svg" alt="Salesforce logo" class="footer-sfdc-logo">
+					</a>
+					<p>
+						Copyright &copy; 2019 Salesforce.com, Inc.
+						<br>
+						Source code licensed under <a href="https://github.com/salesforce/lwc/blob/master/LICENSE" target="_blank" rel="noopener">MIT License</a>
+						<br>
+						<a href="https://www.salesforce.com/company/privacy/" target="_blank" rel="noopener">Privacy Policy</a>
+					</p>
+				</div>
+				<div class="sf-links links">
+					<h4>Salesforce</h4>
+					<ul>
+						<li><a href="https://opensource.salesforce.com/" target="_blank" rel="noopener">Open Source</a></li>
+						<li><a href="https://engineering.salesforce.com/" target="_blank" rel="noopener">Engineering</a></li>
+						<li><a href="http://salesforce.com/dreamjob" target="_blank" rel="noopener">Careers</a></li>
+					</ul>
+				</div>
+				<div class="social-links links">
+					<h4>Social</h4>
+					<ul>
+						<li><a href="#blog">Blog</a></li>
+						<li><a href="https://twitter.com/SalesforceEng" target="_blank" rel="noopener">Twitter</a></li>
+						<li><a href="https://github.com/salesforce/lwc" target="_blank" rel="noopener">GitHub</a></li>
+					</ul>
+				</div>
+			</div>
+		</footer>
+
+		<div style="display:none">
+			{{BOTTOM_RUNTIME_PLACEHOLDER}}
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+		<script> docsearch({
+			apiKey: '7516f3ee8b04d26793bb02abba4a6027',
+			indexName: 'lwc',
+			inputSelector: '.search-input',
+		});
+		</script>
+	</body>
+</html>
+

@@ -1,0 +1,13 @@
+{
+    "background_color": "#fff",
+    "display": "standalone",
+    "icons": [{
+        "src": "images/logo.png",
+        "type": "image/png",
+        "sizes": "512x512"
+    }],
+    "name": "Lightning Web Components",
+    "short_name": "LWC",
+    "start_url": "/",
+    "theme_color": "#fff"
+}
