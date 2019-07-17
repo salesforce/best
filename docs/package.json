@@ -3,12 +3,7 @@
   "version": "4.0.0",
   "private": true,
   "scripts": {
-    "format": "prettier --write '{src,scripts}/**/*.{js,css,json}'",
-    "lint": "eslint src/ scripts/",
     "test:links": "node scripts/verify-doc-links",
-    "test:unit": "jest -c jest.config.js",
-    "test:wdio": "wdio wdio.config.js",
-    "test": "yarn test:links && yarn test:unit",
     "clean": "rm -rf dist/",
     "build:assets": "node scripts/generate-assets",
     "build:home": "node scripts/generate-homepage.js",

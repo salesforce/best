@@ -14,7 +14,7 @@ const PAGE_STYLESHEETS = [
     '/assets/css/normalize.css',
     '/assets/css/main.css',
     '/assets/css/docs.css',
-    // '/assets/css/blog.css',
+    '/assets/css/blog.css',
     '/assets/css/prismjs/themes/prism.css',
 ];
 

@@ -10,7 +10,7 @@ const buildNavBar = require('./utils/buildNavbar');
 // -- Global Config ---------------------------------------------------------------------
 const { SRC_DIR, DIST_DIR } = require('./config');
 const EMPTY_STRING = '';
-const TITLE = 'Lightning Web Components foundation - OSS Documentation';
+const TITLE = 'BestJS';
 
 // -- Helpers ---------------------------------------------------------------------------
 function buildHomePage(template) {

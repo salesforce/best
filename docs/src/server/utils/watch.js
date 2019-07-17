@@ -4,8 +4,6 @@ const watch = require('watch');
 const buildDocumentation = require('../../../scripts/build-documentation');
 const buildAssets = require('../../../scripts/build-assets');
 const buildBlog = require('../../../scripts/build-blog');
-const buildTutorial = require('../../../scripts/build-tutorial');
-const buildCommunities = require('../../../scripts/build-community');
 const buildHome = require('../../../scripts/build-homepage');
 
 async function watchDirectory(dir, opts = { interval: 1 }, onChange) {
@@ -48,15 +46,7 @@ module.exports = function watchDocChanges(app) {
                 blog: async () => {
                     await buildBlog();
                     reload();
-                },
-                tutorial: async () => {
-                    await buildTutorial();
-                    reload();
-                },
-                communities: async () => {
-                    await buildCommunities();
-                    reload();
-                },
+                }
             };
 
             // Watch Asssets
@@ -75,13 +65,6 @@ module.exports = function watchDocChanges(app) {
 
             // Watch blog
             watchDirectory('content/blog', opts, update.blog);
-
-            // Watch community
-            watchDirectory('content/community', opts, update.communities);
-
-            // Watch tutorial
-            watchDirectory('content/tutorial', opts, update.tutorial);
-            watchDirectory('src/client/modules/tutorial', opts, update.tutorial);
         })
         .catch(function(err) {
             console.error('Reload could not start, could not start server/sample app', err);
