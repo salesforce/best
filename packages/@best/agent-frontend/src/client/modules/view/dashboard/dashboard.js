@@ -65,15 +65,15 @@ export default class ViewDashboard extends LightningElement {
     // SOCKET
 
     socketConnect() {
-        console.log('[connect]')
+        // console.log('[connect]')
     }
 
-    socketDisconnect(event) {
-        console.log('[disconnect]', event)
+    socketDisconnect() {
+        // console.log('[disconnect]', event)
     }
 
-    socketError(event) {
-        console.log('[error]', event)
+    socketError() {
+        // console.log('[error]', event)
     }
 
     // BENCHMARK
