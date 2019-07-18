@@ -8,6 +8,7 @@ module.exports = {
             'continuous-integration',
             'github-integration',
             'frontend',
+            'configuration'
         ],
     },
     blog: {
