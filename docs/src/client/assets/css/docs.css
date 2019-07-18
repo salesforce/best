@@ -150,9 +150,14 @@ blockquote *:last-child {
     margin-bottom: 0;
 }
 
+img {
+    max-width: 100%;
+}
+
 .custom-block.important,
 .custom-block.note,
 .custom-block.tip,
+.custom-block.todo,
 .custom-block.example {
     padding: 1rem 1.5rem;
     margin-bottom: 2.5rem;

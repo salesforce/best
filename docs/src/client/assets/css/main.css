@@ -719,6 +719,33 @@ section.hero {
     margin: 0 auto;
 }
 
+.home .feature {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 2rem 0;
+}
+
+.home .feature:nth-child(odd) {
+    flex-direction: row-reverse;
+}
+
+.home .feature img {
+    flex-shrink: 0;
+}
+
+.home .feature .info h4 {
+    margin-top: 0;
+}
+
+.home .feature:nth-child(even) .info {
+    margin-left: 2rem;
+}
+
+.home .feature:nth-child(odd) .info {
+    margin-right: 2rem;
+}
+
 .home section {
     padding: 1rem;
 }
@@ -769,6 +796,10 @@ h3.benefitsHeading {
 @media screen and (min-width: 48em) {
     .home .learn {
         max-width: 600px;
+    }
+
+    .home .feature img {
+        max-width: 45%;
     }
 
     h2.title {

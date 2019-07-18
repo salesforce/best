@@ -39,6 +39,7 @@ module.exports = (markdown = {}) => {
                 { type: 'note', defaultTitle: 'Note' },
                 { type: 'tip', defaultTitle: 'Tip' },
                 { type: 'example', defaultTitle: 'Example' },
+                { type: 'todo', defaultTitle: 'Todo' },
             ],
         ])
         .end()

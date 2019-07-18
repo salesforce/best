@@ -30,43 +30,67 @@ $ npm run watch</code>
 </section>
 
 <section class="flex-wrapper content-wrapper">
-		<div class="card">
-			<h4>Lightning Fast</h4>
-			<p>Lean, 7kb runtime optimized for performance, with minimal boilerplate code.</p>
-		</div>
+	<div class="card card-shade">
+		<h4>Easy to Write</h4>
+		<p>Benchmarks are easy to write with a simple set of primitives so you don't have to worry about any domain specific knowledge.</p>
+	</div>
 
-		<div class="card secondCard">
-			<h4>Standards-Based</h4>
-			<p>Lightning Web Components uses standard HTML, modern JavaScript (ES6+), and the best of native Web Components.</p>
-		</div>
+	<div class="card card-shade">
+		<h4>Anywhere and Anytime</h4>
+		<p>You can run, compare, and diff any change both locally and on dedicated hardward. This lets you compare any versions you want in whichever browser you desire.</p>
+	</div>
 
-		<div class="card">
-			<h4>Easy to Learn</h4>
-			<p>Leave abstractions behind and build custom elements with HTML, JavaScript, and CSS.</p>
-		</div>
+	<div class="card card-shade">
+		<h4>Simple Automation</h4>
+		<p>Best allows you to setup one set of dedicated machines so that no teams have to maintain any of their own infastructure.</p>
+	</div>
 </section>
 
 <section class="shade">
 	<div class="learn">
-		<h3>Get Started with Lightning Web Components</h3>
-		<p>Lightning web components are custom elements built using HTML and modern JavaScript. Ready to learn more? Check out the Developer Guide and write code in the Playground. You’ll be up and running in no time.</p>
+		<h3>Getting Started with Best</h3>
+		<p>Best allows you to write benchmarks in the same way you write unit tests. This allows you to integrate Best into your CI workflow to create a consistent picture of your code's performance over time. Ready to jump in? Check out the Developer Guide to read about how to get started!</p>
 		<a href="/guide/introduction"><button class="brand">Learn More</button></a>
 	</div>
 </section>
+
 <section class="content-wrapper">
-	<h3 class="benefitsHeading">Build Lightning Web Components Anywhere</h3>
-	<div class="flex-wrapper">
-		<div class="card card-shade">
-			<h4>Learn Once, Build Anywhere</h4>
-			<p>Create fast, versatile web components and apps using the stack and tools your team prefers.</p>
+	<h3 class="benefitsHeading">Why Use Best?</h3>
+	<div class="feature">
+		<img src="/assets/images/lwc_example_terminal.png">
+		<div class="info">
+			<h4>Expressive Metrics</h4>
+			<p>Best comes packed with ability to measure all the types of metrics you might want to know. You can learn more about the following metrics <a href="#">here</a>.</p>
+			<ul>
+				<li><code>aggregate</code>: The total time your benchmark took to run.</li>
+				<li><code>script</code>: The time it took to evaluate your benchmark code.</li>
+				<li><code>paint</code>: If you benchmark involves the DOM, we can measure how much time the browser spent on painting.</li>
+				<li><code>layout</code>: If you benchmark involves the DOM, we can measure how much time the browser spent on layouts.</li>
+			</ul>
 		</div>
-		<div class="card card-shade">
-			<h4>Drive the Roadmap, Define the Future</h4>
-			<p>Shape the framework through your pull requests and help push native Web Components forward.</p>
+	</div>
+	<div class="feature">
+		<img src="/assets/images/lwc_example_terminal.png">
+		<div class="info">
+			<h4>GitHub Integration</h4>
+			<p>If your team uses GitHub then you can easily create a GitHub App so that you can integrate Best into your Pull Request workflow.</p>
+			<p>Best comes with a built-in GitHub bot that can create Checks and comment when a pull request is causing significant performance regression. If you want to learn more, check out <a href="#">Integration Best with GitHub</a>.</p>
 		</div>
-		<div class="card card-shade">
-			<h4>Web Standards Based, Enterprise Inspired</h4>
-			<p>Use the latest web standards to build robust components that run in modern browsers and IE 11.</p>
+	</div>
+	<div class="feature">
+		<img src="/assets/images/lwc_example_terminal.png">
+		<div class="info">
+			<h4>Reproducible Results</h4>
+			<p>Best is designed to run on dedicated hardware, this means that you are running your benchmarks in the same environment everytime. We encourage you do this so that your results are not effected by an inconsistent environment which can be a false flag for performance changes.</p>
+			<p>The Best Hub and Agent model works great for implemeneting this, if you want to learn more take a look at <a href="#">Setting Up a Best Hub</a>.</p>
+		</div>
+	</div>
+	<div class="feature">
+		<img src="/assets/images/frontend_example.png">
+		<div class="info">
+			<h4>The Best Frontend</h4>
+			<p>Best comes built-in with a frontend dashboard that allows you to monitor your benchmarks over the time with each commit. This allows you to pinpoint which commits causes improvements or regressions to your performance.</p>
+			<p>The frontend allows you to view all your projects and benchmarks in one place. If this seems like something you want, you can read through <a href="/guide/frontend">Enabling The Best Frontend</a>.</p>
 		</div>
 	</div>
 </section>
