@@ -13,6 +13,10 @@ Before we can run your benchmarks, we have compile them into an artifact that ca
 
 We inject the runtime at build time and this is what allows us to actually measure your code's performance in the browser.
 
+::: todo
+Add diagram showing: code + benchmarks + runtime = artifact bundle
+:::
+
 These artifacts are stored over time so that we can always go back and re-run them on whatever machines we want to capture an accurate representation of your code's performance over time.
 
 ### Running Locally
