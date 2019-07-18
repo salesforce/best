@@ -154,6 +154,15 @@ img {
     max-width: 100%;
 }
 
+p code, li code {
+    font-family: monospace, monospace;
+    font-size: 0.9em;
+    background-color: rgba(206, 206, 206, 0.3);
+    padding: 0.3rem 0.5rem;
+    color: #333;
+    border-radius: 3px;
+}
+
 .custom-block.important,
 .custom-block.note,
 .custom-block.tip,
@@ -184,15 +193,6 @@ div.custom-block p {
 .custom-block.important {
     background-color: var(--important-background);
     border-color: var(--important-border);
-}
-
-p code {
-    font-family: monospace, monospace;
-    font-size: 0.9em;
-    background-color: rgba(206, 206, 206, 0.3);
-    padding: 0.3rem;
-    color: #333;
-    border-radius: 2px;
 }
 
 .custom-block.important p a {
@@ -240,9 +240,7 @@ p code {
 }
 
 /* ======================================================== */
-
 /* CODE */
-
 /* ======================================================== */
 
 div[class*='language-'] {

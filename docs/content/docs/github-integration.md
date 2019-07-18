@@ -24,6 +24,13 @@ You can set either `GIT_APP_CERT_PATH` or `GIT_APP_CERT_BASE64` for Best to get 
 
 We encourage you to set these environment variables in your CI so that when you run Best through your CI the GitHub integration will run automatically.
 
+## Usage
+Best will activate the GitHub integration when you pass the `--gitIntegration` flag in the command line. This will tell Best to create a GitHub Check and then possibly comment if there is a significant performance change.
+
+::: note
+The `--gitIntegration` command only works together with the `--compareStats` command, as the GitHub integration is meant for when you are compraing two different versions of code against the same benchmarks.
+:::
+
 ## Configuration
 By default, Best will leave a comment on the Pull Request when the average performance across your benchmarks changes by more than `5%`, however you are welcome to configure that number by adding the following in your `best.config.js`:
 ```js
