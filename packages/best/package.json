@@ -1,6 +1,6 @@
 {
   "name": "best",
-  "version": "4.0.0",
+  "version": "4.0.0-alpha.0",
   "description": "Best",
   "keywords": [
     "Best",
@@ -12,8 +12,8 @@
     "best-agent-hub": "./bin/best-agent-hub.js"
   },
   "dependencies": {
-    "@best/agent": "4.0.0",
-    "@best/cli": "4.0.0",
-    "@best/agent-hub": "4.0.0"
+    "@best/agent": "4.0.0-alpha.0",
+    "@best/agent-hub": "4.0.0-alpha.0",
+    "@best/cli": "4.0.0-alpha.0"
   }
 }

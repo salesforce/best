@@ -1,7 +1,7 @@
 {
     "name": "@best/api-db",
     "description": "Best Api Database",
-    "version": "4.0.0",
+    "version": "4.0.0-alpha.0",
     "dependencies": {
         "pg": "^7.11.0",
         "sqlite": "^3.0.3"

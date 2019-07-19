@@ -1,6 +1,6 @@
 {
   "name": "@best/agent-hub",
-  "version": "4.0.0",
+  "version": "4.0.0-alpha.0",
   "description": "Best Agent Hub",
   "keywords": [
     "Best",
@@ -9,12 +9,12 @@
   ],
   "main": "build/cli/index.js",
   "dependencies": {
-    "@best/agent-logger": "4.0.0",
-    "@best/runner-remote": "4.0.0",
-    "@best/utils": "4.0.0",
-    "jsonwebtoken": "^8.5.1",
+    "@best/agent-logger": "4.0.0-alpha.0",
+    "@best/runner-remote": "4.0.0-alpha.0",
+    "@best/utils": "4.0.0-alpha.0",
     "@types/jsonwebtoken": "^8.3.2",
     "express": "~4.16.2",
+    "jsonwebtoken": "^8.5.1",
     "socket.io": "~2.2.0",
     "socket.io-file": "~2.0.31",
     "yargs": "^13.2.4"

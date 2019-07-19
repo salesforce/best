@@ -1,12 +1,12 @@
 {
   "name": "perf-benchmarks",
-  "version": "4.0.0",
+  "version": "4.0.0-alpha.0",
   "private": true,
   "scripts": {
-      "start": "best",
-      "remote": "best"
+    "start": "best",
+    "remote": "best"
   },
   "dependencies": {
-    "best": "4.0.0"
+    "best": "4.0.0-alpha.0"
   }
 }

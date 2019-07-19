@@ -1,15 +1,15 @@
 {
-  "version": "4.0.0",
-  "commands": {
-    "publish": {
-      "forcePublish": "*"
-    }
-  },
+  "version": "4.0.0-alpha.0",
   "exact": true,
   "npmClient": "yarn",
   "useWorkspaces": true,
   "packages": [
     "packages/@best/*",
     "packages/best"
-  ]
+  ],
+  "command": {
+    "publish": {
+      "forcePublish": "*"
+    }
+  }
 }

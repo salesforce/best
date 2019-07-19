@@ -1,6 +1,6 @@
 {
   "name": "@best/agent",
-  "version": "4.0.0",
+  "version": "4.0.0-alpha.0",
   "description": "Best Agent",
   "keywords": [
     "Best",
@@ -8,10 +8,10 @@
   ],
   "main": "build/cli/index.js",
   "dependencies": {
-    "@best/agent-frontend": "4.0.0",
-    "@best/agent-logger": "4.0.0",
-    "@best/runner": "4.0.0",
-    "@best/utils": "4.0.0",
+    "@best/agent-frontend": "4.0.0-alpha.0",
+    "@best/agent-logger": "4.0.0-alpha.0",
+    "@best/runner": "4.0.0-alpha.0",
+    "@best/utils": "4.0.0-alpha.0",
     "axios": "~0.19.0",
     "express": "~4.16.2",
     "socket.io": "~2.2.0",
