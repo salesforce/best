@@ -1,6 +1,10 @@
 {
     "name": "@best/agent-logger",
-    "version": "4.0.0",
+    "license" : "MIT",
+  "publishConfig": {
+        "access": "public"
+    },
+  "version": "4.0.0",
     "description": "Best Agent Logger",
     "main": "build/index.js",
     "dependencies": {
@@ -10,4 +14,3 @@
       "build/**/*.js"
     ]
   }
-  

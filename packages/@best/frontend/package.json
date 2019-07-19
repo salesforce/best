@@ -1,6 +1,10 @@
 {
     "name": "@best/frontend",
-    "version": "4.0.0",
+    "license" : "MIT",
+  "publishConfig": {
+        "access": "public"
+    },
+  "version": "4.0.0",
     "main": "build/index.js",
     "types": "build/index.d.ts",
     "dependencies": {

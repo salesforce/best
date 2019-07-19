@@ -1,5 +1,9 @@
 {
   "name": "@best/store-aws",
+  "license" : "MIT",
+  "publishConfig": {
+        "access": "public"
+    },
   "version": "4.0.0",
   "description": "Best Store AWS",
   "keywords": [

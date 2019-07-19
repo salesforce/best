@@ -1,5 +1,9 @@
 {
   "name": "@best/types",
+  "license" : "MIT",
+  "publishConfig": {
+        "access": "public"
+    },
   "version": "4.0.0",
   "description": "Best Types for Typescript",
   "keywords": ["Best"],
