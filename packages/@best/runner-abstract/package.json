@@ -1,10 +1,10 @@
 {
   "name": "@best/runner-abstract",
-  "license" : "MIT",
+  "license": "MIT",
   "publishConfig": {
-        "access": "public"
-    },
-  "version": "4.0.0",
+    "access": "public"
+  },
+  "version": "4.0.0-alpha1",
   "description": "Best Runner (Abstract)",
   "keywords": [
     "Best",
@@ -14,7 +14,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@best/utils": "4.0.0",
+    "@best/utils": "4.0.0-alpha1",
     "express": "~4.16.2"
   },
   "files": [

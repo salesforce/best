@@ -1,10 +1,10 @@
 {
   "name": "@best/runtime",
-  "license" : "MIT",
+  "license": "MIT",
   "publishConfig": {
-        "access": "public"
-    },
-  "version": "4.0.0",
+    "access": "public"
+  },
+  "version": "4.0.0-alpha1",
   "description": "Best Runtime",
   "keywords": [
     "Best",

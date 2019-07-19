@@ -1,10 +1,10 @@
 {
   "name": "@best/config",
-  "license" : "MIT",
+  "license": "MIT",
   "publishConfig": {
-        "access": "public"
-    },
-  "version": "4.0.0",
+    "access": "public"
+  },
+  "version": "4.0.0-alpha1",
   "description": "Best config",
   "keywords": [
     "Best",
@@ -13,8 +13,8 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@best/regex-util": "4.0.0",
-    "@best/utils": "4.0.0",
+    "@best/regex-util": "4.0.0-alpha1",
+    "@best/utils": "4.0.0-alpha1",
     "chalk": "~2.4.2",
     "simple-git": "~1.113.0"
   },

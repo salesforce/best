@@ -1,16 +1,16 @@
 {
-    "name": "@best/agent-logger",
-    "license" : "MIT",
+  "name": "@best/agent-logger",
+  "license": "MIT",
   "publishConfig": {
-        "access": "public"
-    },
-  "version": "4.0.0",
-    "description": "Best Agent Logger",
-    "main": "build/index.js",
-    "dependencies": {
-      "chalk": "^2.4.2"
-    },
-    "files": [
-      "build/**/*.js"
-    ]
-  }
+    "access": "public"
+  },
+  "version": "4.0.0-alpha1",
+  "description": "Best Agent Logger",
+  "main": "build/index.js",
+  "dependencies": {
+    "chalk": "^2.4.2"
+  },
+  "files": [
+    "build/**/*.js"
+  ]
+}

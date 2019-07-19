@@ -1,11 +1,11 @@
 {
     "name": "@best/api-db",
     "description": "Best Api Database",
-    "license" : "MIT",
-  "publishConfig": {
+    "license": "MIT",
+    "publishConfig": {
         "access": "public"
     },
-  "version": "4.0.0",
+    "version": "4.0.0-alpha1",
     "dependencies": {
         "pg": "^7.11.0",
         "sqlite": "^3.0.3"

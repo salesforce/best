@@ -1,10 +1,10 @@
 {
   "name": "@best/store-fs",
-  "license" : "MIT",
+  "license": "MIT",
   "publishConfig": {
-        "access": "public"
-    },
-  "version": "4.0.0",
+    "access": "public"
+  },
+  "version": "4.0.0-alpha1",
   "description": "Best Store - File System",
   "keywords": [
     "Best",
@@ -12,7 +12,7 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@best/types": "4.0.0",
+    "@best/types": "4.0.0-alpha1",
     "chalk": "~2.4.2",
     "globby": "~9.2.0"
   },

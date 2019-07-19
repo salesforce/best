@@ -1,10 +1,10 @@
 {
   "name": "@best/runner-hub",
-  "license" : "MIT",
+  "license": "MIT",
   "publishConfig": {
-        "access": "public"
-    },
-  "version": "4.0.0",
+    "access": "public"
+  },
+  "version": "4.0.0-alpha1",
   "description": "Best Runner (Hub)",
   "keywords": [
     "Best",
