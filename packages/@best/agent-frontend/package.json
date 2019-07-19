@@ -13,24 +13,14 @@
         "husky": "^2.3",
         "lint-staged": "^8.1.5"
     },
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
-    },
-    "lint-staged": {
-        "**/modules/**/*.js": [
-            "eslint"
-        ],
-        "*": [
-            "git add"
-        ]
-    },
     "scripts": {
         "build": "lwc-services build -m production",
         "build:development": "lwc-services build",
-        "lint": "eslint ./src/**/*.js",
         "serve": "lwc-services serve",
         "watch": "lwc-services watch"
-    }
+    },
+    "files": [
+        "build/**/*.js",
+        "dist/**/*.js"
+    ]
 }

@@ -12,5 +12,8 @@
   "dependencies": {
     "@best/utils": "4.0.0",
     "express": "~4.16.2"
-  }
+  },
+  "files": [
+    "build/**/*.js"
+  ]
 }

@@ -8,5 +8,8 @@
   ],
   "dependencies": {
     "chalk": "~2.4.2"
-  }
+  },
+  "files": [
+    "dist/**/*.js"
+  ]
 }

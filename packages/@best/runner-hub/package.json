@@ -12,5 +12,8 @@
   "dependencies": {
     "socket.io-client": "~2.2.0",
     "tar": "~4.4.10"
-  }
+  },
+  "files": [
+    "build/**/*.js"
+  ]
 }

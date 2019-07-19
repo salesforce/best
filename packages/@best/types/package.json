@@ -4,5 +4,8 @@
   "description": "Best Types for Typescript",
   "keywords": ["Best"],
   "types": "build/index.d.ts",
-  "main":"build/index.js"
+  "main":"build/index.js",
+  "files": [
+    "build/**/*.js"
+  ]
 }

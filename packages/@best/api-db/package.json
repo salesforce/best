@@ -1,5 +1,6 @@
 {
     "name": "@best/api-db",
+    "description": "Best Api Database",
     "version": "4.0.0",
     "dependencies": {
         "pg": "^7.11.0",
@@ -8,5 +9,8 @@
     "devDependencies": {
         "@types/pg": "^7.4.14"
     },
-    "main": "build/index.js"
+    "main": "build/index.js",
+    "files": [
+        "build/**/*.js"
+    ]
 }

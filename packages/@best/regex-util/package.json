@@ -6,5 +6,8 @@
     "Best",
     "performance"
   ],
-  "main": "build/index.js"
+  "main": "build/index.js",
+  "files": [
+    "build/**/*.js"
+  ]
 }

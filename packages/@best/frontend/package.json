@@ -35,49 +35,15 @@
     "engines": {
         "node": ">=10.0.0"
     },
-    "prettier": {
-        "printWidth": 120,
-        "tabWidth": 4,
-        "trailingComma": "all",
-        "singleQuote": true,
-        "overrides": [
-            {
-                "files": "**/*.html",
-                "options": {
-                    "parser": "lwc"
-                }
-            }
-        ]
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
-    },
-    "lint-staged": {
-        "**/*.{css,html,js,json,md,yaml,yml}": [
-            "prettier --write"
-        ],
-        "**/modules/**": [
-            "eslint --fix"
-        ],
-        "*": [
-            "git add"
-        ]
-    },
     "scripts": {
-        "test:unit": "lwc-services test",
-        "test:unit:coverage": "lwc-services test --coverage",
-        "test:unit:debug": "lwc-services test --debug",
-        "test:unit:watch": "lwc-services test --watch",
-        "lint": "eslint src/ server/ --ext .js,.ts",
-        "prettier": "prettier --write '**/*.{css,html,js,ts,json,md,yaml,yml}'",
-        "prettier:verify": "prettier --list-different '**/*.{css,html,js,ts,json,md,yaml,yml}'",
         "lwc:build": "lwc-services build",
         "lwc:serve": "lwc-services build && lwc-services serve",
         "lwc:watch": "lwc-services watch --webpack=webpack.config.js",
-        "api:migrate": "node-pg-migrate -m server/migrations",
         "api:watch": "nodemon --watch server -e ts --exec 'NODE_ENV=development ts-node server/serve.ts'",
         "watch": "concurrently 'yarn lwc:watch' 'yarn api:watch'"
-    }
+    },
+    "files": [
+        "build/**/*.js",
+        "dist/**/*.js"
+    ]
 }

@@ -13,5 +13,8 @@
   },
   "devDependencies": {
     "@types/systeminformation": "^3.23.1"
-  }
+  },
+  "files": [
+    "build/**/*.js"
+  ]
 }

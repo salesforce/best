@@ -35,5 +35,9 @@
   },
   "devDependencies": {
     "ansi-regex": "^4.1.0"
-  }
+  },
+  "files": [
+    "build/**/*.js",
+    "bin/"
+  ]
 }

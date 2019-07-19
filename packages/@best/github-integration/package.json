@@ -16,5 +16,8 @@
     "expand-tilde": "~2.0.2",
     "json2md": "~1.5.11",
     "jsonwebtoken": "8.1.0"
-  }
+  },
+  "files": [
+    "build/**/*.js"
+  ]
 }
