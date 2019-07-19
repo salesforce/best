@@ -1,0 +1,12 @@
+{
+    "name": "@best/agent-logger",
+    "version": "4.0.0",
+    "description": "Best Agent Logger",
+    "main": "build/index.js",
+    "dependencies": {
+      "chalk": "^2.4.2",
+      "memoizee": "0.4.14",
+      "@types/memoizee": "0.4.2"
+    }
+  }
+  

@@ -4,8 +4,8 @@ import { runBenchmark } from '@best/runner';
 import BenchmarkTask from "./BenchmarkTask";
 import { loadBenchmarkJob } from "./benchmark-loader";
 import { x as extractTar } from 'tar';
-import * as SocketIO from "socket.io";
 import { RunnerOutputStream } from "@best/console-stream";
+import AgentLogger, { loggedSocket, LoggedSocket } from '@best/agent-logger';
 import {
     BenchmarkResultsSnapshot,
     BenchmarkResultsState,
@@ -21,30 +21,28 @@ export enum RunnerStatus {
 }
 
 // @todo: make a Runner Stream, and add an interface type instead of the class.
-function initializeForwarder(socket: SocketIO.Socket, logger: Function): RunnerOutputStream {
+function initializeForwarder(socket: LoggedSocket): RunnerOutputStream {
     return {
         init() {},
         finish() {},
         onBenchmarkStart(benchmarkPath: string) {
-            if (socket.connected) {
-                logger(`STATUS: running_benchmark ${benchmarkPath}`);
-                socket.emit('running_benchmark_start', benchmarkPath);
+            if (socket.rawSocket.connected) {
+                socket.emit('running_benchmark_start', { entry: benchmarkPath });
             }
         },
         onBenchmarkEnd(benchmarkPath: string) {
-            if (socket.connected) {
-                logger(`STATUS: finished_benchmark ${benchmarkPath}`);
-                socket.emit('running_benchmark_end', benchmarkPath);
+            if (socket.rawSocket.connected) {
+                socket.emit('running_benchmark_end', { entry: benchmarkPath });
             }
         },
         onBenchmarkError(benchmarkPath: string) {
-            if (socket.connected) {
-                socket.emit('running_benchmark_error', benchmarkPath);
+            if (socket.rawSocket.connected) {
+                socket.emit('running_benchmark_error', { entry: benchmarkPath });
             }
         },
         updateBenchmarkProgress(state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) {
-            if (socket.connected) {
-                socket.emit('running_benchmark_update', {state, opts});
+            if (socket.rawSocket.connected) {
+                socket.emit('running_benchmark_update', { state, opts });
             }
         },
     } as RunnerOutputStream;
@@ -67,7 +65,13 @@ export default class BenchmarkRunner extends EventEmitter {
     public runningTask: BenchmarkTask | null = null;
     public runningWasCancelled = false;
     private cancelledTimeout: any = null;
-    private _log: Function = () => {};
+
+    private logger: AgentLogger;
+
+    constructor(logger: AgentLogger) {
+        super();
+        this.logger = logger;
+    }
 
     get status() {
         return this._status;
@@ -84,7 +88,7 @@ export default class BenchmarkRunner extends EventEmitter {
 
     cancelRun(task: BenchmarkTask) {
         if (this.runningTask === task) {
-            this._log('Running was cancelled.');
+            this.logger.event(task.socketConnection.id, 'benchmark_cancel');
             this.runningWasCancelled = true;
             this.cancelledTimeout = setTimeout(() => {
                 this.status = RunnerStatus.IDLE;
@@ -100,14 +104,9 @@ export default class BenchmarkRunner extends EventEmitter {
         this.status = RunnerStatus.RUNNING;
         this.runningWasCancelled = false;
         this.runningTask = task;
-        this._log = (msg: string) => {
-            if (!this.runningWasCancelled) {
-                process.stdout.write(`Task[${task.socketConnection.id}] - ${msg}\n`);
-            }
-        };
 
         // @todo: just to be safe, add timeout in cancel so it waits for the runner to finish or dismiss the run assuming something went wrong
-        loadBenchmarkJob(task.socketConnection)
+        loadBenchmarkJob(task.socketConnection, this.logger)
             .then(extractBenchmarkTarFile(task))
             .then(() => this.runBenchmark(task))
             .then(({ error, results }: {error: any, results: any}) => {
@@ -120,20 +119,20 @@ export default class BenchmarkRunner extends EventEmitter {
 
     private async runBenchmark(task: BenchmarkTask) {
         const { benchmarkName } = task;
-        const messenger = initializeForwarder(task.socketConnection, this._log);
+        const taskSocket = loggedSocket(task.socketConnection, this.logger);
+        const messenger = initializeForwarder(taskSocket);
 
         let results;
         let error;
 
         try {
-            this._log(`Running benchmark ${benchmarkName}`);
+            this.logger.info(task.socketConnection.id, 'benchmark start', benchmarkName);
 
             results = await runBenchmark(task.config, messenger);
 
-            this._log(`Benchmark ${benchmarkName} completed successfully`);
+            this.logger.info(task.socketConnection.id, 'benchmark completed', benchmarkName);
         } catch (err) {
-            this._log(`Something went wrong while running ${benchmarkName}`);
-            process.stderr.write(err + '\n');
+            this.logger.error(task.socketConnection.id, 'benchmark error', err);
             error = err;
         }
 
@@ -142,14 +141,13 @@ export default class BenchmarkRunner extends EventEmitter {
 
     private afterRunBenchmark(err: any, results: BenchmarkResultsSnapshot | null) {
         if (!this.runningWasCancelled) {
-            this._log(`Sending results to client`);
+            this.logger.info(this.runningTask!.socketConnection.id, 'sending results');
 
             if (err) {
-                this._log(`Sending error`);
                 this.runningTask!.socketConnection.emit('benchmark_error', err.toString());
             } else {
-                this._log(`Sending results`);
                 this.runningTask!.socketConnection.emit('benchmark_results', results);
+                this.logger.event(this.runningTask!.socketConnection.id, 'benchmark results', { resultCount: results!.results.length }, false);
             }
         }
 

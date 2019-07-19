@@ -1,4 +1,6 @@
 import path from 'path';
+import fs from 'fs';
+import os from 'os';
 import puppeteer from 'puppeteer';
 import { parseTrace, removeTrace, mergeTracedMetrics } from './trace'
 import { FrozenProjectConfig } from '@best/types';
@@ -17,6 +19,11 @@ const BROWSER_ARGS = [
 
 const PUPPETEER_OPTIONS = { args: BROWSER_ARGS };
 
+function tempDir() {
+    const TEMP_DIR_PREFIX = 'runner-headless-temp';
+    return fs.mkdtempSync(path.join(os.tmpdir(), TEMP_DIR_PREFIX));
+}
+
 export default class HeadlessBrowser {
     pageUrl: string;
     projectConfig: FrozenProjectConfig;
@@ -28,7 +35,7 @@ export default class HeadlessBrowser {
     constructor(url: string, projectConfig: FrozenProjectConfig) {
         this.pageUrl = url;
         this.projectConfig = projectConfig;
-        this.tracePath = path.resolve(projectConfig.benchmarkOutput, 'trace.json');
+        this.tracePath = path.resolve(tempDir(), 'trace.json');
     }
 
     async initialize() {

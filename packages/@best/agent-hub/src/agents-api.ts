@@ -2,6 +2,7 @@ import {Application, NextFunction, Request, Response} from "express";
 import * as jwt from "jsonwebtoken";
 import {AgentManager} from "./AgentManager";
 import {Agent, AgentStatus} from "./Agent";
+import AgentLogger from "@best/agent-logger";
 
 function authenticateAgentApi(tokenSecret: string, req: Request, res: Response, next: NextFunction) {
     if (req.path.startsWith('/api/v1')) {
@@ -25,7 +26,7 @@ function authenticateAgentApi(tokenSecret: string, req: Request, res: Response, 
     }
 }
 
-function addAgentToHub(agentManager: AgentManager, req: Request, res: Response) {
+function addAgentToHub(agentManager: AgentManager, logger: AgentLogger, req: Request, res: Response) {
     // @todo: validate payload.
     const agentConfig = {
         host: req.body.host,
@@ -35,14 +36,14 @@ function addAgentToHub(agentManager: AgentManager, req: Request, res: Response) 
         remoteRunnerConfig: req.body.remoteRunnerConfig
     };
 
-    const agent = new Agent(agentConfig);
+    const agent = new Agent(agentConfig, logger);
     agent.status = AgentStatus.Offline;
 
     agentManager.addAgent(agent);
 
     agent.status = AgentStatus.Idle;
 
-    console.log('Added agent with host and spec: ', agentConfig.host, JSON.stringify(agentConfig.spec));
+    logger.info('', 'agent added', [agentConfig.host, agentConfig.spec]);
 
     return res.status(201).send({
         success: 'true',
@@ -63,9 +64,9 @@ function pingByAgent(agentManager: AgentManager, req: Request, res: Response) {
     });
 }
 
-export function configureAgentsApi(app: Application, agentManager: AgentManager, tokenSecret: string) {
+export function configureAgentsApi(app: Application, agentManager: AgentManager, logger: AgentLogger, tokenSecret: string) {
     app.use(authenticateAgentApi.bind(null, tokenSecret));
 
-    app.post('/api/v1/agents', addAgentToHub.bind(null, agentManager));
+    app.post('/api/v1/agents', addAgentToHub.bind(null, agentManager, logger));
     app.get('/api/v1/agent-ping', pingByAgent.bind(null, agentManager));
 }

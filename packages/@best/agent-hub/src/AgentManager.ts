@@ -1,6 +1,7 @@
 import { EventEmitter } from "events";
 import {Agent, AgentConfig, AgentStatus, Spec} from "./Agent";
 import BenchmarkJob from "./BenchmarkJob";
+import AgentLogger from "@best/agent-logger";
 
 export class AgentManager extends EventEmitter {
     private agents: Agent[] = [];
@@ -54,8 +55,8 @@ export class AgentManager extends EventEmitter {
     }
 }
 
-export function createAgentManager(agentsConfig: AgentConfig[]): AgentManager {
-    const agents: Agent[] = agentsConfig.map((agentConfig: AgentConfig) => new Agent(agentConfig));
+export function createAgentManager(agentsConfig: AgentConfig[], logger: AgentLogger): AgentManager {
+    const agents: Agent[] = agentsConfig.map((agentConfig: AgentConfig) => new Agent(agentConfig, logger));
 
     return new AgentManager(agents);
 }
