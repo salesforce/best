@@ -21,7 +21,8 @@
     "jsonwebtoken": "^8.5.1",
     "socket.io": "~2.2.0",
     "socket.io-file": "~2.0.31",
-    "yargs": "^13.2.4"
+    "yargs": "^13.2.4",
+    "https-proxy-agent": "2.2.2"
   },
   "files": [
     "build/**/*.js",
