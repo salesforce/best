@@ -682,15 +682,18 @@ section.hero {
         flex: 1 1 30%;
         padding: 80px 30px;
     }
+    
     .hero .left-content .description {
         font-size: 1.1rem;
     }
+
     .hero .center-content {
         display: flex;
         justify-content: center;
         align-content: center;
         align-items: center;
         flex: 1 1 30%;
+        margin: 2rem 0;
     }
 
     .hero .right-content {
