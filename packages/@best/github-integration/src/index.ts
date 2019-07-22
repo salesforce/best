@@ -140,8 +140,8 @@ export async function completeBenchmarkComparisonCheck(gitHubInstallation: Octok
     const averageChange = calculateAverageChange(comparison);
     const highThreshold = Math.abs(globalConfig.commentThreshold); // handle whether the threshold is positive or negative
     const lowThreshold = -1 * highThreshold;
-    const significantlyRegressed = averageChange < lowThreshold; // less than a negative is WORSE
-    const significantlyImproved = averageChange > highThreshold; // more than a positive is GOOD
+    const significantlyImproved = averageChange < lowThreshold; // less than a negative is GOOD (things got faster)
+    const significantlyRegressed = averageChange > highThreshold; // more than a positive is WORSE (things got slower)
 
     if ((significantlyRegressed || significantlyImproved) && PULL_REQUEST_URL !== undefined) {
         const prId: any = PULL_REQUEST_URL.split('/').pop();
