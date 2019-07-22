@@ -7,7 +7,7 @@ Now that you have a solid [understanding of Best](/guide/introduction), it's tim
 
 ## Installation
 First things first, let's install the Best CLI so that you can run your benchmarks.
-```
+```sh
 yarn add @best/cli -D
 ```
 This will install the `@best/cli` package in your `devDependencies`. This will give you access to the `best` command line tool inside your project.
@@ -78,7 +78,7 @@ If you want to further customize your Best setup, please read about [configurati
 We have now finally come to the part in this guide where you get to run Best for yourself!
 
 To run Best on your local machine is quite easy, simply invoke the `best` command:
-```
+```sh
 yarn best
 ```
 This should find your `best.config.js` and then go and find all of your benchmarks, build the artifacts, run them, and then analyze the results.

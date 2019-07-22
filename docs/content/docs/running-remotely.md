@@ -20,7 +20,7 @@ In order to provision a Best Agent your server will need access to [Puppeteer](h
 [![Deploy Best Agent](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/salesforce/best-heroku-deploy/tree/agent)
 
 Alternatively, you can install the `@best/cli` package, and then you can run the following command to start an agent:
-```
+```sh
 yarn best-agent
 ```
 
@@ -53,7 +53,7 @@ Provisioning a Best Hub is even easier than setting up an agent. The easiest way
 [![Deploy Best Hub](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/salesforce/best-heroku-deploy/tree/hub)
 
 Alternatively, you can install the `@best/cli` package, and then you can run the following command to start a hub:
-```
+```sh
 yarn best-agent-hub
 ```
 

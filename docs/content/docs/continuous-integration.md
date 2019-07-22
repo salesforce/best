@@ -23,7 +23,7 @@ There is no need to run Best in comparison mode since you do not have anything t
 ## Example in CircleCI
 If you want to see a full example you can look at Best's own CircleCI [`config.yml`](https://github.com/salesforce/best/blob/master/.circleci/config.yml). Take a look inside the `perf_and_compare` job to see how we are running Best. In short we have the following commands inside the configuration file.
 
-```
+```yml
 - run:
     name: Run BEST Benchmarks
     command: yarn perf
@@ -44,7 +44,7 @@ We **highly** encourage you to use a remote runner when running your benchmarks 
 The last thing to keep in mind when running Best in your CI workflow is that we encourage you to use an external storage provider to store the artifacts that Best generates. This means you do not have to re-build your benchmarks every time we run the comparison. We currently support storing the artifacts on AWS.
 
 To enable this pass the `--externalStorage`:
-```
+```sh
 best --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --externalStorage=@best/store-aws
 ```
 

@@ -22,7 +22,7 @@ The easiest way to get the frontend up and running is by clicking the button bel
 If you want to install the frontend yourself, you can do that by creating your own server that will host the frontend.
 
 In order to install the frontend simply add the package:
-```
+```sh
 yarn add @best/frontend
 ```
 
@@ -73,7 +73,7 @@ The easiest way to configure Best to use your hosted database is by adding the f
 
 ### CLI Arguments
 If you do not want to do this, you can also pass the following arguments to the cli command like so,
-```
+```sh
 best --dbAdapter=sql/postgres --dbURI=postgresql://localhost
 ```
 This will override any configuration you have in your `best.config.js` file.
