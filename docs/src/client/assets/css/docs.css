@@ -239,6 +239,11 @@ div.custom-block p {
     border-color: purple;
 }
 
+a[href*='heroku.com/deploy'] {
+    border-bottom: none;
+    background: none;
+}
+
 /* ======================================================== */
 /* CODE */
 /* ======================================================== */

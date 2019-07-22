@@ -16,9 +16,7 @@ In order for the frontend to work, you need to [configure](#configuring-apidatab
 ## Heroku Installation
 The easiest way to get the frontend up and running is by clicking the button below to create a Heroku deployment that will serve your frontend.
 
-::: todo
-We need to add the "Deploy to Heroku" button here...
-:::
+[![Deploy Best Frontend](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/salesforce/best-heroku-deploy/tree/frontend)
 
 ## Manual Installation
 If you want to install the frontend yourself, you can do that by creating your own server that will host the frontend.

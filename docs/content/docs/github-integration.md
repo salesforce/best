@@ -8,9 +8,12 @@ Best comes built-in with a GitHub Integration so you can insert Best into your P
 ## Installation
 In order to setup the integration you will need to create your own GitHub App that Best will use to interact with your repositories. GitHub has great documentation on [Creating a GitHub App](https://developer.github.com/apps/building-github-apps/creating-a-github-app/) that you should read in order to create your app. We encourage naming it something like `Best - Orgnaization Name`.
 
-::: todo
-We should give notes here about what permissions are required...
-:::
+You will need to grant your app the following permissions:
+- **Checks**: Read/Write
+- **Issues**: Read/Write
+- **Pull Requests**: Read/Write
+
+These are the permissions that Best currently needs, however in the future we may add functionality which will require more permissions.
 
 Once you have successfully created your GitHub App, given it the proper permissions, and enabled it on the repo you would like to use with Best, you will need to set the following environment variables for Best.
 

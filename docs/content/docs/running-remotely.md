@@ -13,17 +13,13 @@ While dedicated hardware can be expensive or hard to manage, we **strongly** rec
 :::
 
 ### Provisioning an Agent
-In order to provision a Best Agent you will need a server and the `@best/agent` package. Additionally, you will need to have access to [Puppeteer](https://github.com/GoogleChrome/puppeteer) so that we can run your benchmarks using the headless runner inside Google Chrome.
+In order to provision a Best Agent your server will need access to [Puppeteer](https://github.com/GoogleChrome/puppeteer) so that we can run your benchmarks using the headless runner inside Google Chrome. The easiest way to get an agent up and running is by clicking the button below which will create a Heroku app with everything you need.
 
-The easiest way to get an agent up and running is by clicking one of the buttons below which will create a Heroku app with everything you need.
+**Note:** If you want to use a hub, please provision your hub first and then come back and press the button to configure your agent to work with your hub.
 
-<button>Deploy to Heroku</button>
+[![Deploy Best Agent](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/salesforce/best-heroku-deploy/tree/agent)
 
-**Note:** If you want to use a hub, please provision your hub first and then come back and press the following button below to configure your agent to work with your hub.
-
-<button>Deploy to Heroku</button>
-
-Alternatively, once you have the `@best/agent` package installed, you can run the following command to start an agent:
+Alternatively, you can install the `@best/cli` package, and then you can run the following command to start an agent:
 ```
 yarn best-agent
 ```
@@ -52,13 +48,11 @@ module.exports = {
 If you have a lot of jobs that you want to run, or would like to run your benchmarks on multiple machines, then Best Hub is perfect you for. Best Hub allows you to create a single point of orchestration for your entire organization to access Best's agents.
 
 ### Provisioning a Hub
-Provisioning a Best Hub is even easier than setting up an agent. This time you will need `@best/agent-hub` package.
+Provisioning a Best Hub is even easier than setting up an agent. The easiest way to get a hub up and running is by clicking the button below which will create a Heroku app with everything you need.
 
-The easiest way to get a hub up and running is by clicking the button below which will create a Heroku app with everything you need.
+[![Deploy Best Hub](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/salesforce/best-heroku-deploy/tree/hub)
 
-<button>Deploy to Heroku</button>
-
-Alternatively, once you have the `@best/agent-hub` package installed, you can run the following command to start a hub:
+Alternatively, you can install the `@best/cli` package, and then you can run the following command to start a hub:
 ```
 yarn best-agent-hub
 ```
