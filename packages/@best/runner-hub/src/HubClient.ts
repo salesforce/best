@@ -12,6 +12,7 @@ import {
 import { RunnerOutputStream } from "@best/console-stream";
 import { createTarBundle } from "./create-tar";
 import SocketIOFile from "./file-uploader";
+import { proxifiedOptions } from './utils/proxy';
 
 interface HubRun {
     cancelRun: Function;
@@ -50,7 +51,7 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
             ...options
         }
 
-        const socket = socketIO(host, normalizedSocketOptions);
+        const socket = socketIO(host, proxifiedOptions(normalizedSocketOptions));
 
         socket.on('connect', () => {
             if (cancelledRun) {

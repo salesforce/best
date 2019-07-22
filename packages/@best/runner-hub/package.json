@@ -15,7 +15,8 @@
   "main": "build/index.js",
   "dependencies": {
     "socket.io-client": "~2.2.0",
-    "tar": "~4.4.10"
+    "tar": "~4.4.10",
+    "https-proxy-agent": "2.2.2"
   },
   "files": [
     "build/**/*.js"
