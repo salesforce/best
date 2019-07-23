@@ -36,7 +36,6 @@ module.exports = {
             alias: "remote-agent",
             config: {
                 host: "https://agent-url.herokuapp.com",
-                options: { path: "/best" },
                 remoteRunner: "@best/runner-headless"
             }
         },
@@ -111,7 +110,6 @@ module.exports = {
             config: {
                 host: "https://hub-url.herokuapp.com",
                 options: {
-                    path: "/hub",
                     query: { token: process.env.HUB_CLIENT_TOKEN }
                 },
                 spec: {
