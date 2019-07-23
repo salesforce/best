@@ -53,6 +53,11 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
 
         const socket = socketIO(host, proxifiedOptions(normalizedSocketOptions));
 
+        socket.on('connect_error', (err: any) => {
+            console.log('Error in connection to agent > ', err);
+            reject(err);
+        })
+
         socket.on('connect', () => {
             if (cancelledRun) {
                 socket.disconnect();
@@ -94,11 +99,6 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
                 }
             });
 
-            socket.on('error', (err: any) => {
-                console.log('Error in connection to agent > ', err);
-                reject(err);
-            });
-
             socket.on('benchmark_error', (err: any) => {
                 console.log(err);
                 reject(new Error('Benchmark couldn\'t finish running. '));
@@ -107,6 +107,11 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
             socket.on('benchmark_results', (result: BenchmarkResultsSnapshot) => {
                 socket.disconnect();
                 resolve(result);
+            });
+
+            socket.on('error', (err: any) => {
+                console.log('Error in connection to agent > ', err);
+                reject(err);
             });
 
             socket.emit('benchmark_task', {
@@ -148,20 +153,26 @@ export class HubClient {
                 ...options
             }
     
-            const socket = socketIO(host, normalizedSocketOptions);
+            const socket = socketIO(host, proxifiedOptions(normalizedSocketOptions));
+
+            socket.on('connect_error', (err: any) => {
+                console.log('Error in connection to agent > ', err);
+                resolved = true;
+                reject(err);
+            })
 
             socket.on('connect', () => {
+                socket.on('error', (err: any) => {
+                    console.log('Error in connection to agent > ', err);
+                    resolved = true;
+                    reject(err);
+                });
+
                 socket.on('disconnect', (reason: string) => {
                     if (!resolved) {
                         resolved = true;
                         reject(new Error('Connection terminated: ' + reason));
                     }
-                });
-
-                socket.on('error', (err: any) => {
-                    console.log('Error in connection to agent > ', err);
-                    resolved = true;
-                    reject(err);
                 });
 
                 socket.on('hub-cancel', (reason: string) => {

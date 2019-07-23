@@ -15,13 +15,14 @@ module.exports = {
         },
         {
             "runner": "@best/runner-hub",
-            "alias": "hub",
+            "alias": "heroku-hub",
             "config": {
-                "host": "http://localhost:5555",
+                "host": "https://bestv4-hub.herokuapp.com",
                 "options": {
                     query: {
-                        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6ImNsaWVudCIsImlhdCI6MTU2MzI5NjkyMywiZXhwIjoxNTY1ODg4OTIzfQ.3TN91ySnte8_dhJ1Iabe4fUcOvS7lp9J700YywCMC5Q"
-                    }
+                        token: process.env.HUB_TOKEN
+                    },
+                    proxy: "66.91.54.191:8080"
                 },
                 "spec": {
                     "browser": "chrome",

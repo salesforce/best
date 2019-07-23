@@ -7,7 +7,8 @@ export const proxifiedOptions = (options: any): SocketIOClient.ConnectOpts => {
             agent: new HttpsProxyAgent(options.proxy) as any,
             // TODO: figure out if we need these options
             // secure: true,
-            // rejectUnauthorized: false,
+            rejectUnauthorized: false,
+            // transports: ['websocket']
             // reconnect: true
         }
     }
