@@ -17,7 +17,7 @@ module.exports = {
             "runner": "@best/runner-hub",
             "alias": "heroku-hub",
             "config": {
-                "host": "https://bestv4-hub.herokuapp.com",
+                "host": "http://localhost:5555",
                 "options": {
                     query: {
                         token: process.env.HUB_TOKEN
