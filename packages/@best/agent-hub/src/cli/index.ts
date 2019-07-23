@@ -1,6 +1,8 @@
 import { readFileSync } from 'fs';
 import express from 'express';
 import { HubConfig, runHub } from '../hub-server';
+import { serveFrontend } from '@best/agent-frontend';
+
 const PORT = process.env.PORT || 5000;
 const SSL_PFX_FILE = process.env.SSL_PFX_FILE;
 const SSL_PFX_PASSPHRASE = process.env.SSL_PFX_PASSPHRASE;
@@ -22,6 +24,8 @@ function getDefaultConfig(tokenSecret: string, configAsJSON?: string): HubConfig
 
 export function run(config?: HubConfig) {
     const app = express();
+    serveFrontend(app);
+    
     const enableHttps = SSL_PFX_FILE && SSL_PFX_PASSPHRASE;
     const http = require(enableHttps ? 'https' : 'http');
 

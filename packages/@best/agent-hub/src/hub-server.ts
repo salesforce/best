@@ -23,7 +23,7 @@ function createHubApplication(config: HubConfig, logger: AgentLogger): HubApplic
 }
 
 export function runHub(server: any, app: Application, hubConfig: HubConfig) {
-    const socketServer: SocketIO.Server = socketIO(server, { path: '/hub' });
+    const socketServer: SocketIO.Server = socketIO(server, { path: '/best' });
     const logger = new AgentLogger();
     const hub: HubApplication = createHubApplication(hubConfig, logger);
 

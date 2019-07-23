@@ -29,7 +29,12 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
             return reject(new Error('Benchmark artifact not found (${tarBundle})'));
         }
 
-        const socket = socketIO(host, options);
+        const normalizedSocketOptions = {
+            path: '/best',
+            ...options
+        }
+
+        const socket = socketIO(host, normalizedSocketOptions);
 
         socket.on('connect', () => {
             socket.on('load_benchmark', () => {

@@ -12,6 +12,7 @@ const hubRegistrationConfig: HubConfig = process.env.HUB_CONFIG ? JSON.parse(pro
 export function run() {
     const app = express();
     serveFrontend(app);
+    
     const enableHttps = SSL_PFX_FILE && SSL_PFX_PASSPHRASE;
     const http = require(enableHttps ? 'https' : 'http');
 
