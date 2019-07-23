@@ -5,6 +5,11 @@ title: Configuration
 # Configuring Best
 Below you will find a detailed reference of all the command line arguments, as well as the options available to configure in your `best.config.js`.
 
+This guide is split into three section:
+- [Command Line Arguments](#command-line-argumemnts)
+- [Best Configuration File](#best-configuration-file)
+- [Environment Variables](#environment-variables)
+
 ## Command Line Argumemnts
 Here is a list of all of the arguments you can supply when running Best from the command line. If you pass one of these arguments it will override the same option in your config file.
 
@@ -39,10 +44,10 @@ Here is a list of all of the arguments you can supply when running Best from the
 `boolean` Displays calculated globalConfig and project configs.
 
 #### `--externalStorage`
-`string` This option allows to save the results in an arbitrary storage system. Pass the external storage adapter that you would like to use.
+`string` This option allows to save the results in an arbitrary storage system. Pass the external storage adapter that you would like to use. Currently Best supports AWS with the `@best/store-aws` adapter.
 
 #### `--compareStats`
-`array` Compares the benchmarks of two commits against each other. If --externalStorage is provided it will use that source, otherwise it will try to find the results on the file system.
+`array` Compares the benchmarks of two commits against each other. If `--externalStorage` is provided it will use that as its source, otherwise it will try to find the results on the file system.
 
 #### `--gitIntegration`
 `boolean` Integrates with GitHub, posting the results of the benchmark or comparison.
@@ -65,17 +70,14 @@ Here is a list of all of the arguments you can supply when running Best from the
 #### `--useHttp`
 `boolean` Runs benchmarks against a temporary HTTP server (instead of using the "file:" protocol).
 
-## Best Configuration
+## Best Configuration File
 Below are all of the support options that you can customize in your `best.config.js`:
 
 #### `projectName` (required)
 `string` Specify the name of your benchmarking project here.
 
-#### `gitIntegration`
-`boolean` Integrates with GitHub, posting the results of the benchmark or comparison.
-
 #### `externalStorage`
-` string` This option allows to save the results in an arbitrary storage system. Pass the external storage adapter that you would like to use. Currently Best supports AWS with the `@best/store-aws` adapter.
+`string` This option allows to save the results in an arbitrary storage system. Pass the external storage adapter that you would like to use. Currently Best supports AWS with the `@best/store-aws` adapter.
 
 #### `apiDatabase`
 `object` This option must be supplied in order to store your results in a database for use with the frontend. The configuration must specify an adapter and connection uri. Best currently supports either `sql/sqlite` or `sql/postgres` databases.
@@ -144,3 +146,42 @@ Below are all of the support options that you can customize in your `best.config
 
 #### `benchmarkIterations`
 `number` Explicitly set the number of times your benchmark should be run.
+
+## Environment Variables
+The following variables will be automatically picked up by Best if there are set as environment variables.
+
+#### `HTTP_PROXY`
+`string` If you need to access your hub through a proxy, you can set this variable when you are running the Best CLI. There are two things to note: 1) The proxy must support SSL, and 2) the format must be of the following `http://0.0.0.0:0000`.
+
+#### `HUB_CONFIG`
+`string` A JSON string containing the config an agent should use to connect to a hub. You can set this variable on an agent. You can read more in [Configuring Your Agents](/guide/running-remotely#configuring-your-agents).
+
+#### `TOKEN_SECRET`
+`string` A string containing the secret used by the hub to validate the client and agent tokens used to connect to the hub.
+
+#### `SSL_PFX_FILE`
+`string` The `.pfx` file that should be used if you want to enable SSL on your agent or hub. This should be used together with `SSL_PRX_PASSPHRASE`. You can set this on either an agent or hub.
+
+#### `SSL_PRX_PASSPHRASE`
+`string` The password to access the `.pfx` file given above.
+
+#### `GIT_APP_ID`
+`string` The application ID of your GitHub App used when the `--gitIntegration` flag is enabled. Read more in the [GitHub Integration](/guide/github-integration#installation) guide. This should be used together with one of the following two items.
+
+#### `GIT_APP_CERT_PATH`
+`string` The path to the private key from your GitHub application.
+
+#### `GIT_APP_CERT_BASE64`
+`string` The base64 encoded version of the private key from your GitHub application.
+
+#### `PULL_REQUEST`
+`string` This is required when using the GitHub integration if you want to enable comments on Pull Requests. Set this to the URL of the Pull Request realted to the CI workflow that is happening.
+
+#### `BASE_COMMIT`
+`string` The baseline commit to be used with `--compareStats`. A value for `TARGET_COMMIT` must be set as well. We recommend passing these [directly to the CLI](/guide/configuration#--comparestats) instead of as environment variables.
+
+#### `TARGET_COMMIT`
+`string` The target commit to be used with `--compareStats`. A value for `BASE_COMMIT` must be set as well. We recommend passing these [directly to the CLI](/guide/configuration#--comparestats) instead of as environment variables.
+
+#### `AWS_BUCKET_NAME`
+`string` The name of the AWS bucket to use when `--externalStorage=@best/store-aws` is provided.
