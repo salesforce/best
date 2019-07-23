@@ -21,8 +21,7 @@ module.exports = {
                 "options": {
                     query: {
                         token: process.env.HUB_TOKEN
-                    },
-                    proxy: "66.91.54.191:8080"
+                    }
                 },
                 "spec": {
                     "browser": "chrome",
