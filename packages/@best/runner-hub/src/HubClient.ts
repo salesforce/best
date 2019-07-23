@@ -31,7 +31,7 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
     };
 
     const result: Promise<BenchmarkResultsSnapshot> = new Promise(async (resolve, reject) => {
-        const { benchmarkName, benchmarkEntry, benchmarkSignature } = benchmarkEntryBundle;
+        const { benchmarkName, benchmarkEntry, benchmarkFolder, benchmarkSignature } = benchmarkEntryBundle;
         const { host, options, remoteRunner } = projectConfig.benchmarkRunnerConfig;
         const bundleDirname = path.dirname(benchmarkEntry);
 
@@ -116,6 +116,7 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
 
             socket.emit('benchmark_task', {
                 benchmarkName,
+                benchmarkFolder,
                 benchmarkSignature,
                 projectConfig: remoteProjectConfig,
                 globalConfig,
