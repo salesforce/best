@@ -25,9 +25,15 @@ function getStoredFileMapping(benchmarkFolder: string, artifactsFolder: string):
 export function storeBenchmarkResults(benchmarkResults: BenchmarkResultsSnapshot[], globalConfig: FrozenGlobalConfig) {
     return Promise.all(
         benchmarkResults.map(async (benchmarkResult: BenchmarkResultsSnapshot) => {
-            const { environment, results, stats, projectConfig } = benchmarkResult;
-            const { externalStorage } =  globalConfig;
-            const { benchmarkOutput: benchmarkFolder } = projectConfig;
+            const { environment, results, stats, projectConfig, benchmarkInfo: { benchmarkSignature, benchmarkName } } = benchmarkResult;
+            const { externalStorage, gitInfo: { lastCommit: { hash: gitHash }, localChanges } } = globalConfig;
+            const { benchmarkOutput, projectName } = projectConfig;
+
+            const benchmarkProjectFolder = path.join(benchmarkOutput, projectName);
+            const benchmarkSnapshotName = localChanges ? `${benchmarkName}_local_${benchmarkSignature.slice(0, 10)}` : `${benchmarkName}_${gitHash}`;
+            const benchmarkFolder = path.join(benchmarkProjectFolder, benchmarkSnapshotName);
+            console.log('> F', benchmarkFolder)
+            console.log('> OG f', benchmarkResult.benchmarkInfo.benchmarkFolder);
 
             const artifactsFolder = path.join(benchmarkFolder, 'artifacts');
 

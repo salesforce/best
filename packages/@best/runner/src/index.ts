@@ -59,7 +59,9 @@ export async function runBenchmarks(benchmarksBuilds: BuildConfig[], messager: R
     } else {
         const results = [];
         for (const benchmarkBuild of benchmarksBuilds) {
+            console.log('> b', benchmarkBuild.benchmarkFolder);
             const benchmarkResults = await runBenchmark(benchmarkBuild, messager);
+            console.log('> r', benchmarkResults.benchmarkInfo.benchmarkFolder)
             results.push(benchmarkResults);
         }
 
