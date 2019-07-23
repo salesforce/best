@@ -216,6 +216,7 @@ export class Agent extends EventEmitter {
 
                 socket.emit('benchmark_task', {
                     benchmarkName: job.benchmarkName,
+                    benchmarkFolder: job.benchmarkFolder,
                     benchmarkSignature: job.benchmarkSignature,
                     projectConfig: overriddenProjectConfig,
                     globalConfig: job.globalConfig,

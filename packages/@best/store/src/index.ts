@@ -28,6 +28,8 @@ export function storeBenchmarkResults(benchmarkResults: BenchmarkResultsSnapshot
             const { environment, results, stats, benchmarkInfo: { benchmarkFolder } } = benchmarkResult;
             const { externalStorage } = globalConfig;
 
+            console.log(benchmarkResult.benchmarkInfo)
+
             const artifactsFolder = path.join(benchmarkFolder, 'artifacts');
 
             // Environment
