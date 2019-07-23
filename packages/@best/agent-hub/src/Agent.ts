@@ -6,7 +6,7 @@ import SocketIOFile from "@best/runner-remote/build/file-uploader";
 import { BenchmarkResultsSnapshot, BenchmarkResultsState, BenchmarkRuntimeConfig } from "@best/types";
 import { loadBenchmarkJob } from "./benchmark-loader";
 import AgentLogger, { loggedSocket } from '@best/agent-logger';
-import { proxifiedOptions } from './utils/proxy';
+import { proxifiedSocketOptions } from '@best/utils';
 
 const AGENT_CONNECTION_ERROR = 'Agent running job became offline.';
 
@@ -128,7 +128,7 @@ export class Agent extends EventEmitter {
         );
 
         return new Promise(async (resolve, reject) => {
-            const socket = socketIO(self._config.host, proxifiedOptions(self._config));
+            const socket = socketIO(self._config.host, proxifiedSocketOptions(self._config));
             const jobSocket = loggedSocket(job.socketConnection, this._logger);
             let resolved: boolean = false;
 

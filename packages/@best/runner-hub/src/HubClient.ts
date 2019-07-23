@@ -12,7 +12,7 @@ import {
 import { RunnerOutputStream } from "@best/console-stream";
 import { createTarBundle } from "./create-tar";
 import SocketIOFile from "./file-uploader";
-import { proxifiedOptions } from './utils/proxy';
+import { proxifiedSocketOptions } from '@best/utils';
 
 interface HubRun {
     cancelRun: Function;
@@ -203,7 +203,6 @@ export class HubClient {
                             Promise.all(jobResults)
                                 .then((results) => {
                                     resolved = true;
-                                    console.log('disconnecting client');
                                     socket.disconnect();
                                     resolve(results);
                                 })
