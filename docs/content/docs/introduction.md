@@ -3,7 +3,7 @@ title: Understanding Best
 ---
 
 # Understanding Best
-Best came out of the need to have a tool that can consistently benchmark Javascript in the same way we can unit test our code. In persuit of this goal, Best follows an opinionated model of performance benchmarking. Read on to learn about how Best will help you ensure you have performant code, and most importantly, that it stays that way over time.
+Best came out of the need to have a tool that can consistently benchmark Javascript in the same way we can unit test our code. In pursuit of this goal, Best follows an opinionated model of performance benchmarking. Read on to learn about how Best will help you ensure you have performant code, and most importantly, that it stays that way over time.
 
 ## The "Best" Manifesto
 Once you have written your performance benchmarks, you pass them off to Best to process, run, and then analyze. This guide describes how that all happens.
@@ -27,9 +27,9 @@ This is ideal for local development, however the goal of Best is to create repro
 ### Best Agents
 Agents are the key aspect of Best which allow us to create reproducible results. By running Best Agents on dedicated hardware, we can ensure that how code is running in a consistent environment with extraneous variables that might effect the code's performance.
 
-Best Agents are quite simple in the sense that they essentially run a benchmark and then tell you how long it took. This allows us to have leave the building and analyizing to the client (either your local machine or the CI).
+Best Agents are quite simple in the sense that they essentially run a benchmark and then tell you how long it took. This allows us to have leave the building and analyzing to the client (either your local machine or the CI).
 
-A single Best Agent will have one environment that it can run code in, perhaps Chrome 74, and then you can have another agent running a different version of Chrome. This allows us to run our benchmarks in various environments while still maintaing the reproducibility of our results.
+A single Best Agent will have one environment that it can run code in, perhaps Chrome 74, and then you can have another agent running a different version of Chrome. This allows us to run our benchmarks in various environments while still maintaining the reproducibility of our results.
 
 ### Best Hubs
 Agents work great for running your code in a stable, isolated, and reproducible environment. However, once you begin to have a larger team or want to use Best across your organization, you need some sort of orchestration tool. This is where Best Hub comes in.
