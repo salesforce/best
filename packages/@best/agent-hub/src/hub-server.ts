@@ -7,7 +7,7 @@ import { createAgentManager } from "./AgentManager";
 import { HubApplication } from "./HubApplication";
 import { AgentConfig } from "./Agent";
 import { configureAgentsApi } from "./agents-api";
-import { attachMiddleware } from '@best/agent-frontend';
+import { attachMiddleware, serveFrontend } from '@best/agent-frontend';
 import AgentLogger from '@best/agent-logger';
 
 export interface HubConfig {
@@ -23,11 +23,12 @@ function createHubApplication(config: HubConfig, logger: AgentLogger): HubApplic
 }
 
 export function runHub(server: any, app: Application, hubConfig: HubConfig) {
-    const socketServer: SocketIO.Server = socketIO(server, { path: '/hub' });
+    const socketServer: SocketIO.Server = socketIO(server, { path: '/best' });
     const logger = new AgentLogger();
     const hub: HubApplication = createHubApplication(hubConfig, logger);
 
     configureAgentsApi(app, hub.agentManager, logger, hubConfig.tokenSecret);
+    serveFrontend(app);
 
     // Authentication middleware
     socketServer.use((socket, next) => {

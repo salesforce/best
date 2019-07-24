@@ -20,7 +20,6 @@
     "scripts": {
         "build": "lwc-services build -m production",
         "build:development": "lwc-services build",
-        "serve": "lwc-services serve",
         "watch": "lwc-services watch"
     },
     "files": [

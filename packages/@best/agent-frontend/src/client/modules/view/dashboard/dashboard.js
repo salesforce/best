@@ -4,7 +4,7 @@ import { connect } from 'store/socket';
 import { Job } from 'store/model';
 
 export default class ViewDashboard extends LightningElement {
-    config = { host: 'http://localhost:5555', path: '/hub', name: 'Hub 5555' };
+    config = { host: window.location.origin, path: '/best' };
 
     @track agents = [];
     allJobs = [];

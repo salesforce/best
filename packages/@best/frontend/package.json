@@ -40,8 +40,8 @@
         "node": ">=10.0.0"
     },
     "scripts": {
-        "lwc:build": "lwc-services build",
-        "lwc:serve": "lwc-services build && lwc-services serve",
+        "build": "lwc-services build -m production",
+        "build:development": "lwc-services build",
         "lwc:watch": "lwc-services watch --webpack=webpack.config.js",
         "api:watch": "nodemon --watch server -e ts --exec 'NODE_ENV=development ts-node server/serve.ts'",
         "watch": "concurrently 'yarn lwc:watch' 'yarn api:watch'"
