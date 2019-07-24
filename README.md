@@ -1,4 +1,4 @@
-<h2 align="center">🏆 Best Performance Benchmarks</h2>
+<h2 align="center">🏆 Best Performance Benchmarks 🏆</h2>
 
 [![npm version](https://badge.fury.io/js/best.svg)](https://badge.fury.io/js/best)
 
