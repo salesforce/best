@@ -1,57 +1,24 @@
-# Best
+<h2 align="center">🏆 Best Performance Benchmarks</h2>
+[![npm version](https://badge.fury.io/js/best.svg)](https://badge.fury.io/js/best)
 
-Delightful JavaScript performance benchmarking. It's like Jest but for benchmarking ;)
+Best allows you to write benchmarks in the same way you write unit tests. This allows you to integrate Best into your CI workflow to create a consistent picture of your code's performance over time.
 
-[![asciicast](https://asciinema.org/a/158780.png)](https://asciinema.org/a/158780)
+**Reproducible Results**: Best is designed to run on dedicated hardware, this means that you are running your benchmarks in the same environment everytime.
+
+**Expressive Metrics**: Best comes packed with ability to measure all the types of metrics you might want to know.
+
+**GitHub Integration**: If your team uses GitHub then you can easily create a GitHub App so that you can integrate Best into your Pull Request workflow.
+
+**The Best Frontend**: Best comes built-in with a frontend dashboard that allows you to monitor your benchmarks over the time with each commit.
 
 ## Getting Started
+Ready to jump in? Check out the [Developer Guide](https://best-docs.herokuapp.com) to read about how to get started!
 
-This is a work in progress. Feedback is welcome.
+## Demo
+[![asciicast](https://asciinema.org/a/158780.png)](https://asciinema.org/a/158780)
 
-### Instructions to give it a run:
+## Contributing
+To get setup to help contribute to Best, we have a [guide for that](.github/CONTRIBUTING.md) too.
 
-Install dependencies:
-
-```bash
-yarn install
-```
-
-Watch/build projects for development:
-
-```bash
-yarn watch
-```
-
-Go to the example repo:
-
-```bash
-cd examples/simple_benchmark/
-```
-
-Run the benchmark
-
-```bash
-yarn perf --interactions 3
-```
-
-Be delighted!
-
-### Example benchmark test
-
-You can find an example benchmark under `examples/simple_benchmark/src/simple-item/__benchmarks__`
-
-```javascript
-import Ctor from 'simple-item';
-import { createElement } from 'engine';
-
-benchmark('create_and_render', () => {
-    let element;
-    run(() => {
-        element = createElement('simple-item', { is: Ctor });
-        document.body.appendChild(element);
-    });
-    after(() => {
-        return element && element.parentElement.removeChild(element);
-    });
-});
-```
+## License
+This project is licensed under the [MIT license](LICENSE).
