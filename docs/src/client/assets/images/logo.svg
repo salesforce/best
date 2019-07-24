@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="576px" height="820px" viewBox="0 0 576 820" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 56.2 (81672) - https://sketch.com -->
+    <title>Frame 2</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="8.82352941%" x2="50%" y2="91.1764706%" id="linearGradient-1">
+            <stop stop-color="#5100B9" offset="0%"></stop>
+            <stop stop-color="#0134B3" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Frame-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linejoin="round">
+        <path d="M40,159.074348 L40,557.391304 C40,679.854348 139.27587,779.130435 261.73913,779.130435 L331.304348,779.130435 C444.163043,779.130435 535.652174,687.641304 535.652174,574.782609 C535.652174,471.658696 459.263043,386.373913 359.982609,372.430435 C413.034783,341.55 448.695652,284.069565 448.695652,218.26087 C448.695652,119.810217 368.884783,40 270.434783,40 L159.074348,40 C93.3115217,40 40,93.3113043 40,159.074348 Z" id="Path" stroke="url(#linearGradient-1)" stroke-width="80"></path>
+    </g>
+</svg>
