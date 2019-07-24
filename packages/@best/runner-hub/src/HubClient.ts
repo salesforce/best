@@ -51,7 +51,7 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
             ...options
         }
 
-        const socket = socketIO(host, proxifiedOptions(normalizedSocketOptions));
+        const socket = socketIO(host, proxifiedSocketOptions(normalizedSocketOptions));
 
         socket.on('connect_error', (err: any) => {
             console.log('Error in connection to agent > ', err);
@@ -154,7 +154,7 @@ export class HubClient {
                 ...options
             }
     
-            const socket = socketIO(host, proxifiedOptions(normalizedSocketOptions));
+            const socket = socketIO(host, proxifiedSocketOptions(normalizedSocketOptions));
 
             socket.on('connect_error', (err: any) => {
                 console.log('Error in connection to agent > ', err);
