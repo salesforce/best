@@ -1,4 +1,5 @@
 <h2 align="center">🏆 Best Performance Benchmarks</h2>
+
 [![npm version](https://badge.fury.io/js/best.svg)](https://badge.fury.io/js/best)
 
 Best allows you to write benchmarks in the same way you write unit tests. This allows you to integrate Best into your CI workflow to create a consistent picture of your code's performance over time.
