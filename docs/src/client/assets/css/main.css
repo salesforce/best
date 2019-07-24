@@ -616,11 +616,6 @@ section.hero {
     display: none;
 }
 
-.hero .left-content,
-.hero .right-content {
-    padding: 20px 30px;
-}
-
 .hero .left-content {
     text-align: center;
 }
@@ -665,10 +660,6 @@ section.hero {
 }
 
 @media (min-width: 65em) {
-    .home section.hero {
-        padding: 4rem;
-    }
-
     .hero .title {
         font-size: 2.5rem;
     }
@@ -677,8 +668,12 @@ section.hero {
         font-size: 1.2rem;
     }
 
+    .hero .left-content,
+    .hero .right-content {
+        padding: 20px 30px;
+    }
+
     .hero .left-content {
-        background-color: transparent;
         flex: 1 1 30%;
         padding: 80px 30px;
     }
@@ -723,9 +718,6 @@ section.hero {
 }
 
 .home .feature {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
     margin: 2rem 0;
 }
 
@@ -737,24 +729,17 @@ section.hero {
     flex-shrink: 0;
 }
 
+.home .feature .window-capture {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 .home .feature .info h4 {
     margin-top: 0;
 }
 
-.home .feature:nth-child(even) .info {
-    margin-left: 2rem;
-}
-
-.home .feature:nth-child(odd) .info {
-    margin-right: 2rem;
-}
-
 .home section {
     padding: 1rem;
-}
-
-.home section.hero {
-    padding: 0;
 }
 
 .home section.shade {
@@ -801,8 +786,22 @@ h3.benefitsHeading {
         max-width: 600px;
     }
 
+    .home .feature {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
     .home .feature img {
         max-width: 45%;
+    }
+
+    .home .feature:nth-child(even) .info {
+        margin-left: 2rem;
+    }
+    
+    .home .feature:nth-child(odd) .info {
+        margin-right: 2rem;
     }
 
     h2.title {
