@@ -1,4 +1,4 @@
-<h2 align="center">🏆 Best Performance Benchmarks 🏆</h2>
+<h1 align="center">🏆 Best Performance Benchmarks 🏆</h1>
 
 [![npm version](https://badge.fury.io/js/best.svg)](https://badge.fury.io/js/best)
 
@@ -13,7 +13,7 @@ Best allows you to write benchmarks in the same way you write unit tests. This a
 **The Best Frontend**: Best comes built-in with a frontend dashboard that allows you to monitor your benchmarks over the time with each commit.
 
 ## Getting Started
-Ready to jump in? Check out the [Developer Guide](https://best-docs.herokuapp.com) to read about how to get started!
+Ready to jump in? We recommend starting with [The "Best" Manifesto](https://best-docs.herokuapp.com/guide/introduction) first, and then once you have a solid understanding of how Best works, checking out the [Developer Guide](https://best-docs.herokuapp.com/guide/getting-started) to read about how to get started!
 
 ## Demo
 [![asciicast](https://asciinema.org/a/158780.png)](https://asciinema.org/a/158780)
