@@ -48,3 +48,13 @@ Once you have Best Hub running, you get to take full advantage of everything Bes
 Continuous integration is the best place to invoke Best. By integrating performance benchmarking next to your unit tests, you not only can ensure your code is working correctly, but you can be sure that your new changes are not negatively effecting performance.
 
 Additionally, since CI runs on all of your commits you can create consistent snapshots of your code's performance overtime.
+
+### Expressive Metrics
+Another key aspect of Best that helps you understand your code's performance is the set of metrics with which we measure your code.
+
+- `aggregate` The total time your benchmark took to run. If you were to only look at one metric it should be this one.
+- `script` The time it took to evaluate your benchmark code. This is useful to see if there is something in your code which is taking a long time to evaluate.
+- `paint` If you benchmark involves the DOM, we can measure how much time the browser spent on painting. This can be useful in making your UI codepaths more efficient.
+- `layout` If you benchmark involves the DOM, we can measure how much time the browser spent on layouts. By measuring the time the browser spends doing layouts, you can get a picture of how complex of DOM structure you are using.
+
+**Note:** The `paint` and `layout` metrics are only available when using `runner-headless` because we get these directly from Chrome Dev Tools tracing.

@@ -2,8 +2,6 @@
 /* Custom Properies */
 /* ======================================================= */
 :root {
-    --color-bg-hero: #e4f2f8;
-    --color-bg-hero-dark: #d5e8f0;
     --color-bg-section: #ffffff;
     --color-bg-section-shade: #f4f5f6;
     --color-bg-footer: #f7f7f7;
@@ -13,6 +11,7 @@
     --primary-color-blue: #02a0e0;
     --primary-color-darkblue: #16325c;
     --primary-color-blue-highlight: #def1fa;
+    --hero-background-gradient: linear-gradient(#5100B9, #0032B1);
     --spotlight-bg: #ffffff;
     --sidebar-width: 250px;
     --sidebar-width-full: 300px;
@@ -21,13 +20,11 @@
         0 1px 3px 0 rgba(0, 0, 0, 0.12);
     --trigger-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
     --nav-box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    --hover-box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 
     /* button colors */
-    --button-color: #ffffff;
-    --button-color-bg: #02a0e0;
-    --button-color-bg-active: #007aac;
-    --button-brand-color-bg: #ff6000;
-    --button-brand-color-bg-active: #df5400;
+    --button-color: rgb(42, 48, 73);
+    --button-color-bg: #C2CAE8;
 
     /* alert colors */
     --important-border: #e0002e;
@@ -145,6 +142,11 @@ button {
     padding: 0.5rem 3rem;
     color: var(--button-color);
     font-size: 1.4rem;
+    transition: box-shadow 0.1s ease-in-out, top 0.1s ease-in-out;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+    position: relative;
+    top: 0;
 }
 
 button + button {
@@ -158,20 +160,16 @@ button:visited {
     text-decoration: none;
 }
 
-button:active,
 button:hover,
 button:focus {
-    background-color: var(--button-color-bg-active);
+    box-shadow: var(--hover-box-shadow);
+    top: -1px;
 }
 
-button.brand {
-    background-color: var(--button-brand-color-bg);
-}
-
-button.brand:active,
-button.brand:hover,
-button.brand:focus {
-    background-color: var(--button-brand-color-bg-active);
+button:active {
+    box-shadow: none;
+    outline: none;
+    top: 0;
 }
 
 .card {
@@ -184,6 +182,7 @@ button.brand:focus {
     background-color: var(--color-bg-card);
     border-radius: 5px;
     padding: 1rem 2rem;
+    position: relative;
 }
 
 .flex-wrapper {
@@ -589,11 +588,16 @@ article h3 a {
 /* Hero */
 /* ======================================================== */
 section.hero {
-    background-color: var(--color-bg-hero);
+    background: var(--hero-background-gradient);
+    color: #fff;
 }
 
 .hero .flex-wrapper {
     flex-wrap: nowrap;
+}
+
+.hero .title, .hero .subtitle {
+    color: #ffffff;
 }
 
 .hero .title {
@@ -619,10 +623,6 @@ section.hero {
 
 .hero .left-content {
     text-align: center;
-}
-
-.hero .right-content {
-    background-color: var(--color-bg-hero-dark);
 }
 
 .hero .description {
