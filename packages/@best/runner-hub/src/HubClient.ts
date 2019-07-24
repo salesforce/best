@@ -12,6 +12,7 @@ import {
 import { RunnerOutputStream } from "@best/console-stream";
 import { createTarBundle } from "./create-tar";
 import SocketIOFile from "./file-uploader";
+import { proxifiedSocketOptions } from '@best/utils';
 
 interface HubRun {
     cancelRun: Function;
@@ -30,7 +31,7 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
     };
 
     const result: Promise<BenchmarkResultsSnapshot> = new Promise(async (resolve, reject) => {
-        const { benchmarkName, benchmarkEntry, benchmarkSignature } = benchmarkEntryBundle;
+        const { benchmarkName, benchmarkEntry, benchmarkFolder, benchmarkSignature } = benchmarkEntryBundle;
         const { host, options, remoteRunner } = projectConfig.benchmarkRunnerConfig;
         const bundleDirname = path.dirname(benchmarkEntry);
 
@@ -50,7 +51,12 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
             ...options
         }
 
-        const socket = socketIO(host, normalizedSocketOptions);
+        const socket = socketIO(host, proxifiedSocketOptions(normalizedSocketOptions));
+
+        socket.on('connect_error', (err: any) => {
+            console.log('Error in connection to agent > ', err);
+            reject(err);
+        })
 
         socket.on('connect', () => {
             if (cancelledRun) {
@@ -93,11 +99,6 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
                 }
             });
 
-            socket.on('error', (err: any) => {
-                console.log('Error in connection to agent > ', err);
-                reject(err);
-            });
-
             socket.on('benchmark_error', (err: any) => {
                 console.log(err);
                 reject(new Error('Benchmark couldn\'t finish running. '));
@@ -108,8 +109,14 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
                 resolve(result);
             });
 
+            socket.on('error', (err: any) => {
+                console.log('Error in connection to agent > ', err);
+                reject(err);
+            });
+
             socket.emit('benchmark_task', {
                 benchmarkName,
+                benchmarkFolder,
                 benchmarkSignature,
                 projectConfig: remoteProjectConfig,
                 globalConfig,
@@ -147,20 +154,26 @@ export class HubClient {
                 ...options
             }
     
-            const socket = socketIO(host, normalizedSocketOptions);
+            const socket = socketIO(host, proxifiedSocketOptions(normalizedSocketOptions));
+
+            socket.on('connect_error', (err: any) => {
+                console.log('Error in connection to agent > ', err);
+                resolved = true;
+                reject(err);
+            })
 
             socket.on('connect', () => {
+                socket.on('error', (err: any) => {
+                    console.log('Error in connection to agent > ', err);
+                    resolved = true;
+                    reject(err);
+                });
+
                 socket.on('disconnect', (reason: string) => {
                     if (!resolved) {
                         resolved = true;
                         reject(new Error('Connection terminated: ' + reason));
                     }
-                });
-
-                socket.on('error', (err: any) => {
-                    console.log('Error in connection to agent > ', err);
-                    resolved = true;
-                    reject(err);
                 });
 
                 socket.on('hub-cancel', (reason: string) => {
@@ -190,7 +203,6 @@ export class HubClient {
                             Promise.all(jobResults)
                                 .then((results) => {
                                     resolved = true;
-                                    console.log('disconnecting client');
                                     socket.disconnect();
                                     resolve(results);
                                 })

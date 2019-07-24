@@ -31,7 +31,7 @@ export default class Output {
      */
     report(results: BenchmarkResultsSnapshot[]) {
         results.forEach((result: BenchmarkResultsSnapshot) => {
-            const { benchmarkInfo: { benchmarkName, benchmarkFolder }, stats } = result;
+            const { benchmarkInfo: { benchmarkName }, stats, projectConfig: { benchmarkOutput: benchmarkFolder } } = result;
 
             // Stats table.
             this.writeStats(benchmarkName, benchmarkFolder, stats!);

@@ -6,6 +6,7 @@ import SocketIOFile from "@best/runner-remote/build/file-uploader";
 import { BenchmarkResultsSnapshot, BenchmarkResultsState, BenchmarkRuntimeConfig } from "@best/types";
 import { loadBenchmarkJob } from "./benchmark-loader";
 import AgentLogger, { loggedSocket } from '@best/agent-logger';
+import { proxifiedSocketOptions } from '@best/utils';
 
 const AGENT_CONNECTION_ERROR = 'Agent running job became offline.';
 
@@ -18,6 +19,7 @@ export interface AgentConfig {
     host: string,
     options: {
         path: string
+        proxy?: string
     },
     spec: {
         browser: string,
@@ -126,8 +128,7 @@ export class Agent extends EventEmitter {
         );
 
         return new Promise(async (resolve, reject) => {
-            const socket = socketIO(self._config.host, self._config.options);
-            // const socket = loggedSocket(, this._logger);
+            const socket = socketIO(self._config.host, proxifiedSocketOptions(self._config.options));
             const jobSocket = loggedSocket(job.socketConnection, this._logger);
             let resolved: boolean = false;
 
@@ -141,11 +142,13 @@ export class Agent extends EventEmitter {
                 reject(new Error('Connection terminated'));
             });
 
-            socket.on('connect_error', () => {
+            socket.on('connect_error', (err: any) => {
                 console.log("Connection error with hub: ", [self._config.host, self._config.options]);
+                console.log(err)
                 self.status = AgentStatus.Offline;
                 // this is a special case that we need to handle with care, right now the job is scheduled to run in this hub
                 // which is offline, but, is not the job fault, it can run in another agent. Note: can be solved if we add a new queue, and retry in another queue.
+                resolved = true;
                 socket.disconnect();
                 jobSocket.emit('benchmark_error', 'Error connecting to agent');
                 reject(new Error(AGENT_CONNECTION_ERROR));
@@ -215,6 +218,7 @@ export class Agent extends EventEmitter {
 
                 socket.emit('benchmark_task', {
                     benchmarkName: job.benchmarkName,
+                    benchmarkFolder: job.benchmarkFolder,
                     benchmarkSignature: job.benchmarkSignature,
                     projectConfig: overriddenProjectConfig,
                     globalConfig: job.globalConfig,

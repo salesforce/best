@@ -53,10 +53,9 @@ function extractBenchmarkTarFile(task: BenchmarkTask) {
         const benchmarkName = task.benchmarkName;
         const benchmarkDirname = path.dirname(uploadDir);
 
-        task.benchmarkFolder = benchmarkDirname;
         task.benchmarkEntry = path.join(benchmarkDirname, `${benchmarkName}.html`);
 
-        return extractTar({cwd: benchmarkDirname, file: uploadDir});
+        return extractTar({ cwd: benchmarkDirname, file: uploadDir });
     };
 }
 

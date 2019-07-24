@@ -25,8 +25,8 @@ function getStoredFileMapping(benchmarkFolder: string, artifactsFolder: string):
 export function storeBenchmarkResults(benchmarkResults: BenchmarkResultsSnapshot[], globalConfig: FrozenGlobalConfig) {
     return Promise.all(
         benchmarkResults.map(async (benchmarkResult: BenchmarkResultsSnapshot) => {
-            const { benchmarkInfo: { benchmarkFolder }, environment, results, stats } = benchmarkResult;
-            const { externalStorage } =  globalConfig;
+            const { environment, results, stats, benchmarkInfo: { benchmarkFolder } } = benchmarkResult;
+            const { externalStorage } = globalConfig;
 
             const artifactsFolder = path.join(benchmarkFolder, 'artifacts');
 
