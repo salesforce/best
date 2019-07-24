@@ -142,11 +142,13 @@ export class Agent extends EventEmitter {
                 reject(new Error('Connection terminated'));
             });
 
-            socket.on('connect_error', () => {
+            socket.on('connect_error', (err: any) => {
                 console.log("Connection error with hub: ", [self._config.host, self._config.options]);
+                console.log(err)
                 self.status = AgentStatus.Offline;
                 // this is a special case that we need to handle with care, right now the job is scheduled to run in this hub
                 // which is offline, but, is not the job fault, it can run in another agent. Note: can be solved if we add a new queue, and retry in another queue.
+                resolved = true;
                 socket.disconnect();
                 jobSocket.emit('benchmark_error', 'Error connecting to agent');
                 reject(new Error(AGENT_CONNECTION_ERROR));
