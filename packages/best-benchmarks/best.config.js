@@ -7,9 +7,9 @@ module.exports = {
         },
         {
             "runner": "@best/runner-remote",
-            "alias": "remote-agent",
+            "alias": "heroku-agent",
             "config": {
-                "host": "http://localhost:5000",
+                "host": "http://bestv4-agent.herokuapp.com",
                 "remoteRunner": "@best/runner-headless"
             }
         },
@@ -17,7 +17,7 @@ module.exports = {
             "runner": "@best/runner-hub",
             "alias": "heroku-hub",
             "config": {
-                "host": "http://localhost:5555",
+                "host": "http://bestv4-hub.herokuapp.com",
                 "options": {
                     query: {
                         token: process.env.HUB_TOKEN
