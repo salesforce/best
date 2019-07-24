@@ -128,7 +128,7 @@ export class Agent extends EventEmitter {
         );
 
         return new Promise(async (resolve, reject) => {
-            const socket = socketIO(self._config.host, proxifiedSocketOptions(self._config));
+            const socket = socketIO(self._config.host, proxifiedSocketOptions(self._config.options));
             const jobSocket = loggedSocket(job.socketConnection, this._logger);
             let resolved: boolean = false;
 
