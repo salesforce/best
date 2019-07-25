@@ -44,8 +44,6 @@ export function runHub(server: any, app: Application, hubConfig: HubConfig) {
                 return next(new Error('authentication error: invalid token'));
             }
 
-            logger.info(socket.id, 'auth-pass');
-
             next();
         });
     });
