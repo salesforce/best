@@ -189,6 +189,11 @@ button:active {
     display: block;
 }
 
+.window-capture {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 article {
     flex: 1;
     padding: 2rem;
@@ -732,11 +737,6 @@ section.hero {
 
 .home .feature img {
     flex-shrink: 0;
-}
-
-.home .feature .window-capture {
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .home .feature .info h4 {

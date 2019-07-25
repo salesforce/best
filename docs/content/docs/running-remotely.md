@@ -131,6 +131,4 @@ Both the hubs and the agents come built-in with a frontend that allows you to mo
 
 You can view the frontend simply by visiting the URL of your agent or hub in your browser of choice.
 
-::: todo
-Add screenshot of agent frontend.
-:::
+<img class="window-capture" src="/assets/images/agent_frontend.png" alt="Agent Frontend">
