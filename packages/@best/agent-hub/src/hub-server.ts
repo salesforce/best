@@ -33,22 +33,28 @@ export function runHub(server: any, app: Application, hubConfig: HubConfig) {
     // Authentication middleware
     socketServer.use((socket, next) => {
         const token = socket.handshake.query.token || '';
+        logger.info(socket.id, 'auth', socket.handshake.query);
 
         // TODO: add authentication specifically for frontend
         if (socket.handshake.query.frontend) return next();
 
         jwt.verify(token, hubConfig.tokenSecret, (err: Error, payload: any) => {
             if (err) {
+                logger.info(socket.id, 'auth-fail1');
                 return next(new Error('authentication error: ' + err.message));
             } else if (payload.scope !== 'client') {
+                logger.info(socket.id, 'auth-fail2');
                 return next(new Error('authentication error: invalid token'));
             }
+
+            logger.info(socket.id, 'auth-pass');
 
             next();
         });
     });
 
     socketServer.on('connect', (socket) => {
+        logger.info(socket.id, 'connect');
         if (!socket.handshake.query.frontend) hub.handleIncomingSocketConnection(socket);
     });
 
