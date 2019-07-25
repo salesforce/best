@@ -48,11 +48,7 @@ To enable this pass the `--externalStorage`:
 best --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --externalStorage=@best/store-aws
 ```
 
-You must also set the `AWS_BUCKET_NAME` environment variable so that Best knows where to look for your artifacts.
-
-::: todo
-We need to make a note of what type of permissions the bucket should have so that Best can read & write the artifacts.
-:::
+You must also set the `AWS_BUCKET_NAME` environment variable so that Best knows where to look for your artifacts. Additionally, you must make your bucket publically accessible so that Best can read and write into it.
 
 ::: important
 This is necessary if you want to use a [remote runner](/guide/running-remotely) to run your benchmarks.

@@ -83,9 +83,7 @@ yarn best
 ```
 This should find your `best.config.js` and then go and find all of your benchmarks, build the artifacts, run them, and then analyze the results.
 
-::: todo
-Add screenshot or video of what should happen when you run this command.
-:::
+[![asciicast](https://asciinema.org/a/158780.png)](https://asciinema.org/a/158780)
 
 While running Best locally is a great start, please read on about [running Best remotely](/guide/running-remotely) to get the most out of Best.
 
