@@ -446,6 +446,11 @@ article h3 a {
         box-shadow: inset 0 -4px 0 var(--primary-color-blue);
     }
 
+    .header .menu li.active a:hover {
+        background: transparent;
+        color: var(--primary-color-blue);
+    }
+
     .github-corner {
         display: block;
     }
