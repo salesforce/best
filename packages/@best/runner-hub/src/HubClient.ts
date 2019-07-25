@@ -56,7 +56,12 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
         socket.on('connect_error', (err: any) => {
             console.log('Error in connection to agent > ', err);
             reject(err);
-        })
+        });
+
+        socket.on('error', (err: any) => {
+            console.log('Error in connection to agent > ', err);
+            reject(err);
+        });
 
         socket.on('connect', () => {
             if (cancelledRun) {
@@ -109,11 +114,6 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
                 resolve(result);
             });
 
-            socket.on('error', (err: any) => {
-                console.log('Error in connection to agent > ', err);
-                reject(err);
-            });
-
             socket.emit('benchmark_task', {
                 benchmarkName,
                 benchmarkFolder,
@@ -160,15 +160,15 @@ export class HubClient {
                 console.log('Error in connection to agent > ', err);
                 resolved = true;
                 reject(err);
-            })
+            });
+
+            socket.on('error', (err: any) => {
+                console.log('Error in connection to agent > ', err);
+                resolved = true;
+                reject(err);
+            });
 
             socket.on('connect', () => {
-                socket.on('error', (err: any) => {
-                    console.log('Error in connection to agent > ', err);
-                    resolved = true;
-                    reject(err);
-                });
-
                 socket.on('disconnect', (reason: string) => {
                     if (!resolved) {
                         resolved = true;

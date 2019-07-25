@@ -25,7 +25,6 @@ export class HubApplication {
     }
 
     handleIncomingSocketConnection = (socket: SocketIO.Socket) => {
-        this._logger.info(socket.id, 'handle connect');
         // @todo: define the types for the data.
         // @todo: add timeout on waiting the benchmark task?
         socket.on('benchmark_task', (data: any) => {
