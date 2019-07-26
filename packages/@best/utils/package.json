@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "4.0.0-alpha1",
+  "version": "4.0.0-alpha2",
   "description": "Best Utils",
   "keywords": [
     "Best"
@@ -12,9 +12,9 @@
   "main": "build/index.js",
   "dependencies": {
     "chalk": "~2.4.2",
+    "https-proxy-agent": "2.2.2",
     "is-ci": "~2.0.0",
-    "systeminformation": "~4.9.2",
-    "https-proxy-agent": "2.2.2"
+    "systeminformation": "~4.9.2"
   },
   "devDependencies": {
     "@types/systeminformation": "^3.23.1"

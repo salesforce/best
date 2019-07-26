@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "4.0.0-alpha1",
+  "version": "4.0.0-alpha2",
   "description": "Best Runner (Hub)",
   "keywords": [
     "Best",
@@ -14,9 +14,9 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@best/console-stream": "4.0.0-alpha1",
-    "@best/types": "4.0.0-alpha1",
-    "@best/utils": "4.0.0-alpha1",
+    "@best/console-stream": "4.0.0-alpha2",
+    "@best/types": "4.0.0-alpha2",
+    "@best/utils": "4.0.0-alpha2",
     "socket.io-client": "~2.2.0",
     "tar": "~4.4.10"
   },

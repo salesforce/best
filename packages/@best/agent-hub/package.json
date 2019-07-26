@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "4.0.0-alpha1",
+  "version": "4.0.0-alpha2",
   "description": "Best Agent Hub",
   "keywords": [
     "Best",
@@ -13,9 +13,9 @@
   ],
   "main": "build/cli/index.js",
   "dependencies": {
-    "@best/agent-logger": "4.0.0-alpha1",
-    "@best/runner-remote": "4.0.0-alpha1",
-    "@best/utils": "4.0.0-alpha1",
+    "@best/agent-logger": "4.0.0-alpha2",
+    "@best/runner-remote": "4.0.0-alpha2",
+    "@best/utils": "4.0.0-alpha2",
     "@types/jsonwebtoken": "^8.3.2",
     "express": "~4.16.2",
     "jsonwebtoken": "^8.5.1",
