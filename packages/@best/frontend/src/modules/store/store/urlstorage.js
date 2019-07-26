@@ -20,6 +20,8 @@ function debounce(fn, duration) {
 }
 
 function updateProjectsPathIfNeeded(projectId) {
+    if (!projectId) return;
+    
     const newPath = `/${projectId}`;
 
     if (window.location.pathname !== newPath) {
