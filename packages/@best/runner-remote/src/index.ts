@@ -36,6 +36,16 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
 
         const socket = socketIO(host, normalizedSocketOptions);
 
+        socket.on('connect_error', (err: any) => {
+            console.log('Error in connection to agent > ', err);
+            reject(err);
+        });
+
+        socket.on('error', (err: any) => {
+            console.log('Error in connection to agent > ', err);
+            reject(err);
+        });
+
         socket.on('connect', () => {
             socket.on('load_benchmark', () => {
                 const uploader = new SocketIOFile(socket);
@@ -68,11 +78,6 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
                 if (reason === 'io server disconnect') {
                     reject(new Error('Connection terminated'));
                 }
-            });
-
-            socket.on('error', (err: any) => {
-                console.log('Error in connection to agent > ', err);
-                reject(err);
             });
 
             socket.on('benchmark_error', (err: any) => {
