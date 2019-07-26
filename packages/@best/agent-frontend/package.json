@@ -24,6 +24,6 @@
     },
     "files": [
         "build/**/*.js",
-        "dist/**/*.js"
+        "dist/**/*"
     ]
 }

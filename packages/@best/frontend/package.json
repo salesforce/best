@@ -10,6 +10,8 @@
     "dependencies": {
         "@best/api-db": "4.0.0-alpha2",
         "@best/github-integration": "4.0.0-alpha2",
+        "@best/config": "4.0.0-alpha2",
+        "@best/console-stream": "4.0.0-alpha2",
         "@best/types": "4.0.0-alpha2",
         "@lwc/compiler": "^1.0.0",
         "@lwc/engine": "^1.0.0",
@@ -50,6 +52,6 @@
     },
     "files": [
         "build/**/*.js",
-        "dist/**/*.js"
+        "dist/**/*"
     ]
 }
