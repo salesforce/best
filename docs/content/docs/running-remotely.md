@@ -28,7 +28,7 @@ yarn best-agent
 The last step in running your benchmarks remotely is to add the runner to your `best.config.js`:
 ```js
 module.exports = {
-    projectName: 'running my benchmarks remotely',
+    projectName: 'agent-running',
     runner: 'remote-agent',
     runners: [
         {
@@ -101,7 +101,7 @@ Again, now that we have configured the hub and the agents, we need to tell Best 
 
 ```js
 module.exports = {
-    projectName: 'running best on a hub',
+    projectName: 'hub-running',
     runner: 'hub',
     runners: [
         {
