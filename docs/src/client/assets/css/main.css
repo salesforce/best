@@ -233,6 +233,14 @@ article h3 a {
 }
 
 @media screen and (min-width: 48em) {
+    .card:first-child {
+        margin-left: 0;
+    }
+
+    .card:last-child {
+        margin-right: 0;
+    }
+
     article {
         padding-left: 4rem;
         padding-right: 2.3rem;
@@ -672,8 +680,8 @@ section.hero {
     padding: 0;
 }
 
-.home .learn {
-    margin: 0 auto;
+.home .getting-started .benchmark-example .language-js .language-js {
+    margin-bottom: 0;
 }
 
 .home .feature {
@@ -693,13 +701,12 @@ section.hero {
 }
 
 .home section {
-    padding: 1rem;
+    padding: 1rem 0;
 }
 
 .home section.shade {
     padding: 2rem;
     background: var(--color-bg-section-shade);
-    text-align: center;
 }
 
 .home section h3 {
@@ -736,6 +743,11 @@ h3.benefitsHeading {
 }
 
 @media screen and (min-width: 48em) {
+    .getting-started .content-wrapper {
+        display: flex;
+        justify-content: space-between;
+    }
+    
     .home .learn {
         max-width: 600px;
     }
