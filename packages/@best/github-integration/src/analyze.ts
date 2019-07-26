@@ -116,8 +116,11 @@ export function generatePercentages(stats: ResultComparison, rows: number[] = []
             
                         const percentage = Math.abs((baseMed - targetMed) / baseMed * 100);
                         const relativeTrend = targetMed - baseMed;
-            
-                        allRows.push(Math.sign(relativeTrend) * percentage);
+
+                        // only include percentage change when values are above 1ms.
+                        if (baseMed > 1 && targetMed > 1) {
+                            allRows.push(Math.sign(relativeTrend) * percentage);
+                        }
                     }
                 })
             }
