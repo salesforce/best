@@ -1,4 +1,13 @@
-# [](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha3...v) (2019-07-26)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha4...v) (2019-07-26)
+
+
+
+# [4.0.0-alpha4](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha3...v4.0.0-alpha4) (2019-07-26)
+
+
+### Bug Fixes
+
+* New Best Logos in Frontend ([#183](https://git.soma.salesforce.com/lwc/best/issues/183)) ([97e25dd](https://git.soma.salesforce.com/lwc/best/commits/97e25dd))
 
 
 
