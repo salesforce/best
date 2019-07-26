@@ -1,4 +1,13 @@
-# [](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha2...v) (2019-07-26)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha3...v) (2019-07-26)
+
+
+
+# [4.0.0-alpha3](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha2...v4.0.0-alpha3) (2019-07-26)
+
+
+### Bug Fixes
+
+* add forgotten dependencies ([#181](https://git.soma.salesforce.com/lwc/best/issues/181)) ([6c9f740](https://git.soma.salesforce.com/lwc/best/commits/6c9f740))
 
 
 
