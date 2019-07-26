@@ -18,7 +18,7 @@ Now that you have Best installed, you can start writing some benchmarks. We reco
 Let's now look at some examples of what a benchmark might look like. Your benchmarks should be in a file ending in `.benchmark.js`.
 
 ```js
-import fib from './fib';
+import fib from '../fib';
 
 describe('js-execution', () => {
     benchmark('fibonacci 15', () => {
@@ -46,11 +46,10 @@ describe('simple-item', () => {
         let element;
         run(() => {
             element = createElement('simple-item', { is: SimpleItem });
-            element.flavor = 'red'
+            element.flavor = 'red';
             document.body.appendChild(element);
         });
         after(() => {
-            element.flavor = 'clean'
             return element && element.parentElement.removeChild(element);
         });
     });
@@ -68,7 +67,7 @@ There is one last step before we can actually run these benchmarks, we have to c
 
 ```js
 module.exports = {
-    projectName: 'my first benchmarks'
+    projectName: 'my-benchmarks'
 }
 ```
 
@@ -77,7 +76,14 @@ If you want to further customize your Best setup, please read about [configurati
 ## Running Benchmarks Locally
 We have now finally come to the part in this guide where you get to run Best for yourself!
 
-To run Best on your local machine is quite easy, simply invoke the `best` command:
+By default Best is going to use Runner Headless (Chrome from Puppeteer) so we also need to install that as well:
+```sh
+yarn add @best/runner-headless -D
+```
+
+Now that we have all of our dependencies in place, we can begin to run Best.
+
+To run Best on your local machine, simply invoke the `best` command:
 ```sh
 yarn best
 ```
