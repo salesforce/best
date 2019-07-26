@@ -11,16 +11,9 @@
 
 .brand a {
     text-decoration: none;
-}
-
-.brand h1 {
-    font-size: 64px;
-    font-weight: bold;
+    display: block;
     text-align: center;
-}
-
-section {
-    margin-top: 55px;
+    margin: 3rem 0;
 }
 
 h3 {
