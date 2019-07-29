@@ -38,6 +38,8 @@ export const buildMockedDataFromApi = async (options: MockerOptions): Promise<{
 } | null> => {
     const db = loadDbFromConfig(options.config);
 
+    await db.migrate();
+
     const allProjects = await db.fetchProjects();
     const projects = allProjects.filter((proj): boolean => options.projectNames.includes(proj.name));
 

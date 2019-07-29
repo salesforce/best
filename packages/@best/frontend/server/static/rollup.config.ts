@@ -7,28 +7,29 @@ import replace from 'rollup-plugin-replace';
 import { terser } from 'rollup-plugin-terser';
 import { bestMocker, MockerOptions } from './mocker'
 import * as rollup from 'rollup';
+import { FrozenProjectConfig } from '@best/types';
 
-const rollupConfig: {
+export const buildRollupConfig = (projectConfig: FrozenProjectConfig): {
     inputOptions: (options: MockerOptions) => rollup.InputOptions;
     outputOptions: () => rollup.OutputOptions;
-} = {
-    inputOptions: (options): rollup.InputOptions => ({
-        input: path.resolve(__dirname, '../../src/index.js'),
-        plugins: [
-            bestMocker(options),
-            replace({
-                'process.env.NODE_ENV': JSON.stringify('production')
-            }),
-            lwc(),
-            resolve(),
-            commonjs(),
-            terser()
-        ]
-    }),
-    outputOptions: (): rollup.OutputOptions => ({
-        file: path.resolve(__dirname, '../../dist/static/bundle.js'),
-        format: 'iife'
-    })
+} => {
+    return {
+        inputOptions: (options): rollup.InputOptions => ({
+            input: path.resolve(__dirname, '../../src/index.js'),
+            plugins: [
+                bestMocker(options),
+                replace({
+                    'process.env.NODE_ENV': JSON.stringify('production')
+                }),
+                lwc(),
+                resolve(),
+                commonjs(),
+                terser()
+            ]
+        }),
+        outputOptions: (): rollup.OutputOptions => ({
+            file: path.resolve(projectConfig.benchmarkOutput, 'static/bundle.js'),
+            format: 'iife'
+        })
+    }
 }
-
-export default rollupConfig;

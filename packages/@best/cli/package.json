@@ -21,7 +21,6 @@
     "@best/compare": "4.0.0-alpha4",
     "@best/config": "4.0.0-alpha4",
     "@best/console-stream": "4.0.0-alpha4",
-    "@best/frontend": "4.0.0-alpha4",
     "@best/github-integration": "4.0.0-alpha4",
     "@best/runner": "4.0.0-alpha4",
     "@best/store": "4.0.0-alpha4",

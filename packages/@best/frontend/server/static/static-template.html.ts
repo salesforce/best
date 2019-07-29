@@ -18,6 +18,6 @@ export default `<!DOCTYPE html>
         <script src="bundle.js"></script>
     </head>
     <body>
-        <my-app></my-app>
+        <view-app></view-app>
     </body>
 </html>`
