@@ -94,3 +94,18 @@ This should find your `best.config.js` and then go and find all of your benchmar
 While running Best locally is a great start, please read on about [running Best remotely](/guide/running-remotely) to get the most out of Best.
 
 Lastly, if you want know more about the Best CLI, you can check out the [Command Line Arguments](/guide/configuration#command-line-argumemnts) section in the configuration documentation.
+
+## Benchmark Callbacks
+You can introduce the following callbacks to your benchmarks to help with setup and cleanup.
+
+### `beforeAll`
+This runs before all of the benchmarks in a file.
+
+### `before`
+This will run before each benchmark you run.
+
+### `after`
+This will run after each benchmark you run.
+
+### `afterAll`
+This runs after all of the benchmarks in a file.
