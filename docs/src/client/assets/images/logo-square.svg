@@ -1,16 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="820px" height="820px" viewBox="0 0 820 820" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 56.2 (81672) - https://sketch.com -->
-    <title>logo-square</title>
-    <desc>Created with Sketch.</desc>
-    <defs>
-        <linearGradient x1="50%" y1="8.82352941%" x2="50%" y2="91.1764706%" id="linearGradient-1">
-            <stop stop-color="#5100B9" offset="0%"></stop>
-            <stop stop-color="#0134B3" offset="100%"></stop>
-        </linearGradient>
-    </defs>
-    <g id="logo-square" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <rect fill="#FFFFFF" x="0" y="0" width="820" height="820"></rect>
-        <path d="M162,159.074348 L162,557.391304 C162,679.854348 261.27587,779.130435 383.73913,779.130435 L453.304348,779.130435 C566.163043,779.130435 657.652174,687.641304 657.652174,574.782609 C657.652174,471.658696 581.263043,386.373913 481.982609,372.430435 C535.034783,341.55 570.695652,284.069565 570.695652,218.26087 C570.695652,119.810217 490.884783,40 392.434783,40 L281.074348,40 C215.311522,40 162,93.3113043 162,159.074348 Z" id="Path" stroke="url(#linearGradient-1)" stroke-width="80" stroke-linejoin="round"></path>
-    </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="820" viewBox="0 0 820 820"><linearGradient id="a" x1="50%" x2="50%" y1="8.8%" y2="91.2%"><stop offset="0%" stop-color="#5100b9"/><stop offset="100%" stop-color="#0134b3"/></linearGradient><path fill="#fff" d="M0 0h820v820H0z"/><path fill="none" stroke="url(#a)" stroke-linejoin="round" stroke-width="80" d="M162 159v398.4A221.7 221.7 0 0 0 383.7 779h69.6A204.3 204.3 0 0 0 482 372.4 178.2 178.2 0 0 0 392.4 40H281A119 119 0 0 0 162 159z"/></svg>
