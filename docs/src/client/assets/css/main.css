@@ -701,7 +701,7 @@ section.hero {
 }
 
 .home section {
-    padding: 1rem 0;
+    padding: 1rem;
 }
 
 .home section.shade {
@@ -716,6 +716,10 @@ section.hero {
 .home section h4 {
     font-size: 1.4rem;
     margin: 1rem 0;
+}
+
+.home .benchmark-example {
+    margin-top: 2.5rem;
 }
 
 h3.benefitsHeading {
@@ -743,6 +747,14 @@ h3.benefitsHeading {
 }
 
 @media screen and (min-width: 48em) {
+    .home section {
+        padding: 1rem 0;
+    }
+
+    .home .benchmark-example {
+        margin-top: 0;
+    }
+
     .getting-started .content-wrapper {
         display: flex;
         justify-content: space-between;
