@@ -53,7 +53,7 @@ Here is a list of all of the arguments you can supply when running Best from the
 `boolean` Integrates with GitHub, posting the results of the benchmark or comparison.
 
 #### `--generateHTML`
-`boolean` Generate a static HTML version of the results of the benchmrak or comparison.
+`boolean` Generate a static HTML version of the results of the benchmrak or comparison. You will also need to include `@best/frontend` as a dependency.
 
 #### `--dbAdapter`
 `string` Override which database adapter is used. By default Best comes with `sql/sqlite` and `sql/postgres`. If you pass this option, then `--dbURI` is also required. This will override any options provided in `apiDatabase` in your config file.
