@@ -25,14 +25,14 @@ describe('js-execution', () => {
         run(() => {
             return fib(15);
         })
-    });
+    })
 
     benchmark('fibonacci 38', () => {
         run(() => {
             return fib(38);
         })
-    });
-});
+    })
+})
 ```
 
 This is a very simple example of what a benchmark might look like, now let's look at one that uses [Lightning Web Components](https://lwc.dev) which interacts with the DOM.
@@ -48,11 +48,11 @@ describe('simple-item', () => {
             element = createElement('simple-item', { is: SimpleItem });
             element.flavor = 'red';
             document.body.appendChild(element);
-        });
+        })
         after(() => {
             return element && element.parentElement.removeChild(element);
-        });
-    });
+        })
+    })
 })
 ```
 
