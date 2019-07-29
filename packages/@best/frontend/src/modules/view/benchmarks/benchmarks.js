@@ -4,8 +4,6 @@ import { connectStore, store } from 'store/store';
 import { zoomChanged } from 'store/actions';
 
 export default class ViewBenchmarks extends LightningElement {
-    allBenchmarks = [];
-
     @track visibleBenchmarks = [];
 
     viewTiming;
@@ -15,22 +13,16 @@ export default class ViewBenchmarks extends LightningElement {
 
     @wire(connectStore, { store })
     storeChange({ benchmarks, view }) {
-        if (
-            this.allBenchmarks.length !== benchmarks.items.length ||
-            this.viewBenchmark !== view.benchmark ||
-            this.viewTiming !== view.timing
-        ) {
-            if (view.benchmark === 'all') {
-                this.visibleBenchmarks = benchmarks.items;
-            } else {
-                this.visibleBenchmarks = benchmarks.items.filter(bench => bench.name === view.benchmark);
-            }
-            this.visibleBenchmarks = this.visibleBenchmarks.map((bench, idx) => ({
-                ...bench,
-                isFirst: idx === 0
-            }))
-            this.allBenchmarks = benchmarks.items;
+        if (view.benchmark === 'all') {
+            this.visibleBenchmarks = benchmarks.items;
+        } else {
+            this.visibleBenchmarks = benchmarks.items.filter(bench => bench.name === view.benchmark);
         }
+
+        this.visibleBenchmarks = this.visibleBenchmarks.map((bench, idx) => ({
+            ...bench,
+            isFirst: idx === 0
+        }))
 
         this.viewTiming = view.timing;
         this.viewBenchmark = view.benchmark;
