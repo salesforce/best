@@ -1,4 +1,3 @@
-
 import { getGitInfo } from "../utils/git"
 
 describe('config file resolution', () => {

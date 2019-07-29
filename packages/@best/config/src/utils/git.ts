@@ -26,7 +26,7 @@ function getBranch(git: SimpleGit.SimpleGit): Promise<string> {
 
 async function getRepository(git: SimpleGit.SimpleGit): Promise<{ owner: string, repo: string }> {
     const url = await git.listRemote(['--get-url']);
-    const matches = url.trim().match(/^.+[:/]([a-zA-Z]+)\/([a-zA-Z]+).git$/);
+    const matches = url.trim().match(/^.+[:/](.+)\/(.+).git$/);
     if (!matches) {
         throw new Error('Unable to parse git repo');
     }
