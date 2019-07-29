@@ -13,7 +13,7 @@ Best allows you to write benchmarks in the same way you write unit tests. This a
 **The Best Frontend**: Best comes built-in with a frontend dashboard that allows you to monitor your benchmarks over the time with each commit.
 
 ## Getting Started
-Ready to jump in? We recommend starting with [The "Best" Manifesto](https://best-docs.herokuapp.com/guide/introduction) first, and then once you have a solid understanding of how Best works, checking out the [Developer Guide](https://best-docs.herokuapp.com/guide/getting-started) to read about how to get started!
+Ready to jump in? We recommend starting with [The "Best" Manifesto][best introduction] first, and then once you have a solid understanding of how Best works, checking out the [Developer Guide][getting started] to read about how to get started!
 
 ## Demo
 [![asciicast](https://asciinema.org/a/158780.png)](https://asciinema.org/a/158780)
@@ -23,3 +23,6 @@ To get setup to help contribute to Best, we have a [guide for that](.github/CONT
 
 ## License
 This project is licensed under the [MIT license](LICENSE).
+
+[best introduction]: https://bestjs.dev/guide/introduction
+[getting started]: https://bestjs.dev/guide/getting-started
