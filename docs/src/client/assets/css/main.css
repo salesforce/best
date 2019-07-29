@@ -821,12 +821,15 @@ h3.benefitsHeading {
     background-color: #f6f4f4;
     z-index: 10;
 }
+
 .nav.open {
     margin-left: 0;
 }
+
 .home .nav-trigger {
     display: none;
 }
+
 .nav-trigger {
     position: fixed;
     display: flex;
@@ -842,15 +845,18 @@ h3.benefitsHeading {
     box-shadow: var(--trigger-box-shadow);
     z-index: 9;
 }
+
 .nav-trigger.open > svg {
     display: none;
 }
+
 .nav-trigger.open:after {
     content: 'X';
     font-weight: bold;
     color: var(--primary-color-darkblue);
     font-size: 1.7rem;
 }
+
 @media screen and (min-width: 48em) {
     .nav {
         display: block;
