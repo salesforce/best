@@ -77,7 +77,7 @@ Alternatively, you can configure your agents manually to talk to your hub. To do
     "hub": { // Hub Connection settings.
         "host": "https://hub-url.herokuapp.com",
         "authToken": process.env.HUB_AGENT_TOKEN,
-        "pingTimeout": 180000, // Optional: 180000ms (3 minutes) is the default ping timout.
+        "pingTimeout": 180000, // Optional: 180000ms (3 minutes) is the default ping timeout.
     },
     "agentConfig": {
          "spec": { // Only benchmarks with this spec can run in this agent.

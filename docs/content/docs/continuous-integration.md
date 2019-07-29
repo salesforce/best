@@ -37,7 +37,7 @@ Here we have a Yarn command called `perf` which is essentially an alias to the B
 Then, we run `best --compareStats` and pass a base commit which is the newest commit from master, and a target commit which is the newest commit from our PR. Lastly we pass the `--gitIntegration` flag so that Best will update the PR on GitHub.
 
 ::: tip
-We **highly** encourage you to use a remote runner when running your benchmarks because otherwise there is no way to guarentee reproducible results. Please check out the guide on [running remotely](/guide/running-remotely) to see how to do this.
+We **highly** encourage you to use a remote runner when running your benchmarks because otherwise there is no way to guarantee reproducible results. Please check out the guide on [running remotely](/guide/running-remotely) to see how to do this.
 :::
 
 ## External Storage
@@ -48,7 +48,7 @@ To enable this pass the `--externalStorage`:
 best --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --externalStorage=@best/store-aws
 ```
 
-You must also set the `AWS_BUCKET_NAME` environment variable so that Best knows where to look for your artifacts. Additionally, you must make your bucket publically accessible so that Best can read and write into it.
+You must also set the `AWS_BUCKET_NAME` environment variable so that Best knows where to look for your artifacts. Additionally, you must make your bucket publicly accessible so that Best can read and write into it.
 
 ::: important
 This is necessary if you want to use a [remote runner](/guide/running-remotely) to run your benchmarks.

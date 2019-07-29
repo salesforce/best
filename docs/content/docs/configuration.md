@@ -17,22 +17,22 @@ Here is a list of all of the arguments you can supply when running Best from the
 `boolean` Shows the help page.
 
 #### `--config, -c`
-`string` The path to a best config file specifying how to find and execute benchmark runs. If no rootDir is set in the config, the current directory is assumed to be the rootDir for the project. This can also be a JSON encoded value which Best will use as configuration.
+`string` The path to a Best config file specifying how to find and execute benchmark runs. If no `rootDir` is set in the config, the current directory is assumed to be the `rootDir` for the project. This can also be a JSON encoded value which Best will use as configuration.
 
 #### `--projects`
-`array` A list of projects to run. The arguments must be paths to best config files or a local repo with best configured.
+`array` A list of projects to run. The arguments must be paths to Best config files or a local repo with Best configured.
 
 #### `--iterations`
 `number` Define the number of iterations to run for all the benchmarks.
 
 #### `--clearCache`
-`boolean` Clears the configured Jest cache directory and then exits. Default directory can be found by calling jest.
+`boolean` Clears the configured [Jest](https://jestjs.io/) cache directory and then exits. Default directory can be found by calling Jest.
 
 #### `--showConfig`
 `boolean` Show the config before running Best.
 
 #### `--clearResults`
-`boolean` Clear all generated benchmarks from the `benchmarkOutput` folder.
+`boolean` Clear all generated benchmarks from the `benchmarkOutput` directory.
 
 #### `--disableInteractive`
 `boolean` Disabled interactivity on TTI.
@@ -41,7 +41,7 @@ Here is a list of all of the arguments you can supply when running Best from the
 `boolean` Run jobs in batches.
 
 #### `--showConfigs`
-`boolean` Displays calculated globalConfig and project configs.
+`boolean` Displays calculated `globalConfig` and project configs.
 
 #### `--externalStorage`
 `string` This option allows to save the results in an arbitrary storage system. Pass the external storage adapter that you would like to use. Currently Best supports AWS with the `@best/store-aws` adapter.
@@ -80,7 +80,7 @@ Below are all of the support options that you can customize in your `best.config
 `string` This option allows to save the results in an arbitrary storage system. Pass the external storage adapter that you would like to use. Currently Best supports AWS with the `@best/store-aws` adapter.
 
 #### `apiDatabase`
-`object` This option must be supplied in order to store your results in a database for use with the frontend. The configuration must specify an adapter and connection uri. Best currently supports either `sql/sqlite` or `sql/postgres` databases.
+`object` This option must be supplied in order to store your results in a database for use with the frontend. The configuration must specify an adapter and connection URI. Best currently supports either `sql/sqlite` or `sql/postgres` databases.
 ```js
 {
     apiDatabase: {
@@ -175,7 +175,7 @@ The following variables will be automatically picked up by Best if there are set
 `string` The base64 encoded version of the private key from your GitHub application.
 
 #### `PULL_REQUEST`
-`string` This is required when using the GitHub integration if you want to enable comments on Pull Requests. Set this to the URL of the Pull Request realted to the CI workflow that is happening.
+`string` This is required when using the GitHub integration if you want to enable comments on Pull Requests. Set this to the URL of the Pull Request related to the CI workflow that is happening.
 
 #### `BASE_COMMIT`
 `string` The baseline commit to be used with `--compareStats`. A value for `TARGET_COMMIT` must be set as well. We recommend passing these [directly to the CLI](/guide/configuration#--comparestats) instead of as environment variables.

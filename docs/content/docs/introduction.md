@@ -35,7 +35,7 @@ Agents work great for running your code in a stable, isolated, and reproducible 
 Best Hub allows any client to connect to a single endpoint, and then the hub handles connecting to agents to actually run your benchmarks. This means that you can have multiple agents running the same environment for parallelization or agents running different specs to test in separate environments.
 
 ::: tip
-The great thing about Best Hub is that once you have a hub running for your organization, each team does not have to worry about its own benchmarking infastrcture. They can all connect to the same hub!
+The great thing about Best Hub is that once you have a hub running for your organization, each team does not have to worry about its own benchmarking infrastructure. They can all connect to the same hub!
 :::
 
 Once you have Best Hub running, you get to take full advantage of everything Best has to offer. You can read more about this in [Running Remotely](/guide/running-remotely).

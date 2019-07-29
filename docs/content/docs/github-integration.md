@@ -6,7 +6,7 @@ title: GitHub Integration
 Best comes built-in with a GitHub Integration so you can insert Best into your Pull Request workflow. The integration provides the ability to use checks to ensure the performance benchmarks properly, as well as the ability to comment when performance improves or regresses.
 
 ## Installation
-In order to setup the integration you will need to create your own GitHub App that Best will use to interact with your repositories. GitHub has great documentation on [Creating a GitHub App](https://developer.github.com/apps/building-github-apps/creating-a-github-app/) that you should read in order to create your app. We encourage naming it something like `Best - Orgnaization Name`.
+In order to setup the integration you will need to create your own GitHub App that Best will use to interact with your repositories. GitHub has great documentation on [Creating a GitHub App](https://developer.github.com/apps/building-github-apps/creating-a-github-app/) that you should read in order to create your app. We encourage naming it something like `Best - Organization Name`.
 
 You will need to grant your app the following permissions:
 - **Checks**: Read/Write
@@ -33,7 +33,7 @@ Additionally, if you want to enable comments on Pull Requests you need to set th
 Best will activate the GitHub integration when you pass the `--gitIntegration` flag in the command line. This will tell Best to create a GitHub Check and then possibly comment if there is a significant performance change.
 
 ::: note
-The `--gitIntegration` command only works together with the `--compareStats` command, as the GitHub integration is meant for when you are compraing two different versions of code against the same benchmarks.
+The `--gitIntegration` command only works together with the `--compareStats` command, as the GitHub integration is meant for when you are comparing two different versions of code against the same benchmarks.
 :::
 
 ## Configuration

@@ -58,12 +58,12 @@ describe('simple-item', () => {
 
 Here we have also added an `after` block to clean up the DOM after our test. This ensures we are resetting the state properly in between each benchmark.
 
-As you can see, this pattern shuold be very familiar to you as it is quite similar to popular unit testing libraries. Additionally, these benchmarks should be very easy to read and understand allowing any developer on your team to write them.
+As you can see, this pattern should be very familiar to you as it is quite similar to popular unit testing libraries. Additionally, these benchmarks should be very easy to read and understand allowing any developer on your team to write them.
 
 We highly encourage benchmarking as much of your code as possible, just like unit testing, so that you do not get caught off guard and make a change that can negatively effect your code's performance.
 
 ## Best Configuration File
-There is one last step before we can actually run these benchmarks, we have to create a `best.config.js` file in your projects root directory. At the very minimum you have to supply a project name, but if you would like you can also specifiy different runners or plugins you would like Best to use.
+There is one last step before we can actually run these benchmarks, we have to create a `best.config.js` file in your projects root directory. At the very minimum you have to supply a project name, but if you would like you can also specify different runners or plugins you would like Best to use.
 
 ```js
 module.exports = {
