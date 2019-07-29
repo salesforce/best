@@ -102,9 +102,13 @@ export async function runCLI(argsCLI: CliConfig, projects: string[]) {
         output.report(results);
 
         if (argsCLI.generateHTML) {
-            const { buildStaticFrontend } = await import('@best/frontend');
-            const projectConfig = configs[0];
-            await buildStaticFrontend(results, globalConfig, projectConfig, process.stdout);
+            try {
+                const { buildStaticFrontend } = await import('@best/frontend');
+                const projectConfig = configs[0];
+                await buildStaticFrontend(results, globalConfig, projectConfig, process.stdout);
+            } catch (err) {
+                throw new Error('You pass the `--generateHTML` flag, but `@best/frontend` is not present. Make sure include it as a dependency.');
+            }
         }
     }
 
