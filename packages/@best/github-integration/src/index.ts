@@ -28,6 +28,8 @@ export async function updateLatestRelease(projectNames: string[], globalConfig: 
         
         const db = loadDbFromConfig(globalConfig);
 
+        await db.migrate();
+
         const app = GithubApplicationFactory();
         const gitHubInstallation = await app.authenticateAsAppAndInstallation({ repo, owner });
 
