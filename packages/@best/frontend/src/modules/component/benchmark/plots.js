@@ -171,7 +171,7 @@ export function createAnnotation(element, point) {
         x: point.x,
         y: point.yaxis.range[0],
         xref: 'x',
-        yref: 'y',
+        // yref: 'y',
         showarrow: true,
         arrowcolor: '#aaa',
         text: '',
@@ -225,6 +225,12 @@ export function removeAnnotation(element, commit) {
         }
         return true;
     })
+
+    if (!element.layout.annotations || element.layout.annotations.length === 0) {
+        window.Plotly.relayout(element, {
+            'yaxis.autorange': true
+        })
+    }
 
     return element.layout;
 }

@@ -4,7 +4,6 @@ import { connectStore, store } from 'store/store';
 import { selectProject } from 'store/actions';
 
 export default class ViewSidebar extends LightningElement {
-
     @track projects = [];
     @track selectedId;
 
@@ -13,7 +12,6 @@ export default class ViewSidebar extends LightningElement {
     @wire(connectStore, { store })
     storeChange({ projects }) {
         this.selectedId = projects.selectedProjectId;
-        this.needsLoadingFromURL = projects.needsLoadingFromURL;
 
         this.projects = projects.items.map(item => ({
             ...item,
