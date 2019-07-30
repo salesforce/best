@@ -30,7 +30,7 @@ function generateDetailsMarkdown(tables: GroupedTables) {
         return groups;
     }, <json2md.DataObject[]>[])
 
-    return json2md([{ h2: 'Full Results' }, ...flattenedTables]);
+    return json2md(flattenedTables);
 }
 
 function significantlyChangedRows(stats: ResultComparison, threshold: number, name = '', initialRows: SignificantlyChangedSummary = { improved: [], regressed: [] }) {
@@ -146,7 +146,9 @@ export function generateComparisonComment(result: BenchmarkComparison) {
         return tables;
     }, <GroupedTables>{})
 
-    return generateDetailsMarkdown(tables);
+    const tablesMarkdown = generateDetailsMarkdown(tables);
+
+    return `# Full Results\n\n${tablesMarkdown}`;
 }
 
 export function generateComparisonSummary(result: BenchmarkComparison, threshold: number) {
