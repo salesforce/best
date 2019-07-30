@@ -25,7 +25,7 @@ function padding(n: number) {
 
 function generateDetailsMarkdown(tables: GroupedTables) {
     const flattenedTables = Object.keys(tables).reduce((groups, projectName): json2md.DataObject[] => {
-        groups.push({ h3: `*${projectName}*` });
+        groups.push({ h2: `*${projectName}*` });
         groups.push(...tables[projectName]);
         return groups;
     }, <json2md.DataObject[]>[])
