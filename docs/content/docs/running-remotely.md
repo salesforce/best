@@ -19,7 +19,9 @@ In order to provision a Best Agent your server will need access to [Puppeteer](h
 
 [![Deploy Best Agent](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/salesforce/best-heroku-deploy/tree/agent)
 
-Alternatively, you can install the `@best/agent` package, and then you can run the following command to start an agent:
+Alternatively, you can install the `@best/agent` package. You will also probably need the `@best/runner-headless` package so you can use the headless Chrome runner.
+
+Once you have these installed, you can run the following command to start an agent:
 ```sh
 yarn best-agent
 ```
@@ -51,7 +53,9 @@ Provisioning a Best Hub is even easier than setting up an agent. The easiest way
 
 [![Deploy Best Hub](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/salesforce/best-heroku-deploy/tree/hub)
 
-Alternatively, you can install the `@best/agent-hub` package, and then you can run the following command to start a hub:
+Alternatively, you can install the `@best/agent-hub` package. You will also probably need the `@best/runner-headless` package again.
+
+Once you have installed these packages, you can run the following command to start a hub:
 ```sh
 yarn best-agent-hub
 ```
@@ -74,20 +78,20 @@ Alternatively, you can configure your agents manually to talk to your hub. To do
 
 ```js
 {
-    "hub": { // Hub Connection settings.
-        "host": "https://hub-url.herokuapp.com",
-        "authToken": process.env.HUB_AGENT_TOKEN,
-        "pingTimeout": 180000, // Optional: 180000ms (3 minutes) is the default ping timeout.
+    hub: {
+        host: "https://hub-url.herokuapp.com",
+        authToken: process.env.HUB_AGENT_TOKEN,
+        pingTimeout: 180000, // Optional: Default is 180000ms (3 minutes).
     },
-    "agentConfig": {
-         "spec": { // Only benchmarks with this spec can run in this agent.
-             "browser": "chrome",
-             "version": "75"
+    agentConfig: {
+         spec: { // Only benchmarks with this spec can run in this agent.
+             browser: "chrome",
+             version: "75"
          },
-         "host": "https://agent-url.herokuapp.com", // Required. Url used by the hub to connect to this agent.
-         "options": { path: "/best" }, // Connection Options
-         "remoteRunner": "@best/runner-headless", // Required. The runner which this agent will use when running the job. 
-         "remoteRunnerConfig": {}, // Required (may be an empty object). The Runner config for this agent.
+         host: "https://agent-url.herokuapp.com", // Required.
+         options: { path: "/best" }, // Connection Options
+         remoteRunner: "@best/runner-headless", // Required.
+         remoteRunnerConfig: {}, // Required (may be an empty object).
      }
 }
 ```
