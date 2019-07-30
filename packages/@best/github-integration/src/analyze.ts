@@ -25,12 +25,12 @@ function padding(n: number) {
 
 function generateDetailsMarkdown(tables: GroupedTables) {
     const flattenedTables = Object.keys(tables).reduce((groups, projectName): json2md.DataObject[] => {
-        groups.push({ h2: `*${projectName}*` });
+        groups.push({ h3: `*${projectName}*` });
         groups.push(...tables[projectName]);
         return groups;
     }, <json2md.DataObject[]>[])
 
-    return json2md(flattenedTables);
+    return json2md([{ h2: 'Full Results' }, ...flattenedTables]);
 }
 
 function significantlyChangedRows(stats: ResultComparison, threshold: number, name = '', initialRows: SignificantlyChangedSummary = { improved: [], regressed: [] }) {
@@ -210,6 +210,8 @@ export function generatePercentages(stats: ResultComparison, rows: number[] = []
                         // only include percentage change when values are above 1ms.
                         if (samplesComparison !== 0 && baseMed > 1 && targetMed > 1) {
                             allRows.push(Math.sign(relativeTrend) * percentage);
+                        } else {
+                            allRows.push(0); // otherwise we count it as zero
                         }
                     }
                 })

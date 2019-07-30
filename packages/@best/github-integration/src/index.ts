@@ -102,7 +102,7 @@ export async function completeBenchmarkComparisonCheck(gitHubInstallation: Octok
         completed_at: now,
         conclusion: 'success',
         output: {
-            title: 'Best Performance',
+            title: 'Best Summary',
             summary,
             text: comparisonComment
         }
