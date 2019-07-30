@@ -2,7 +2,7 @@ import Octokit from '@octokit/rest';
 import { isCI } from '@best/utils';
 import { loadDbFromConfig } from '@best/api-db';
 import GithubApplicationFactory from './git-app';
-import { generateComparisonComment, generatePercentages } from './analyze';
+import { generateComparisonComment, generatePercentages, generateComparisonSummary } from './analyze';
 import { FrozenGlobalConfig, BenchmarkComparison } from '@best/types';
 
 const PULL_REQUEST_URL = process.env.PULL_REQUEST;
@@ -89,8 +89,11 @@ export async function failedBenchmarkComparisonCheck(gitHubInstallation: Octokit
 export async function completeBenchmarkComparisonCheck(gitHubInstallation: Octokit, check: Octokit.ChecksCreateResponse, comparison: BenchmarkComparison, globalConfig: FrozenGlobalConfig) {
     const { repo: { repo, owner }  } = globalConfig.gitInfo;
     const comparisonComment = generateComparisonComment(comparison);
+    const comparisonSummary = generateComparisonSummary(comparison, globalConfig.commentThreshold);
     const now = (new Date()).toISOString();
     const { baseCommit, targetCommit } = comparison;
+
+    const summary = `Base commit: \`${baseCommit}\` | Target commit: \`${targetCommit}\`\n\n${comparisonSummary}`;
 
     await gitHubInstallation.checks.update({
         owner,
@@ -100,7 +103,7 @@ export async function completeBenchmarkComparisonCheck(gitHubInstallation: Octok
         conclusion: 'success',
         output: {
             title: 'Best Performance',
-            summary: `Base commit: \`${baseCommit}\` | Target commit: \`${targetCommit}\``,
+            summary,
             text: comparisonComment
         }
     })
