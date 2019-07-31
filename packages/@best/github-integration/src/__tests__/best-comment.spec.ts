@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import comparison1 from './fixtures/comparison1';
-import { generateComparisonComment } from '../../src/comment';
+import { generateComparisonComment } from '../../src/analyze';
 
 describe('generateComment', () => {
     test('fixtures/comparison1.js', () => {
