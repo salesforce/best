@@ -86,7 +86,7 @@ Alternatively, you can configure your agents manually to talk to your hub. To do
     agentConfig: {
          spec: { // Only benchmarks with this spec can run in this agent.
              browser: "chrome",
-             version: "75"
+             version: "76"
          },
          host: "https://agent-url.herokuapp.com", // Required.
          options: { path: "/best" }, // Connection Options
@@ -118,7 +118,7 @@ module.exports = {
                 },
                 spec: {
                     browser: "chrome",
-                    version: "75"
+                    version: "76"
                 }
             }
         }
