@@ -33,22 +33,20 @@ function generateDetailsMarkdown(tables: GroupedTables) {
     return json2md(flattenedTables);
 }
 
-function significantlyChangedRows(stats: ResultComparison, threshold: number, name = '', initialRows: SignificantlyChangedSummary = { improved: [], regressed: [] }) {
+function significantlyChangedRows(stats: ResultComparison, threshold: number, name: string = '', initialRows: SignificantlyChangedSummary = { improved: [], regressed: [] }) {
     const highThreshold = Math.abs(threshold); // handle whether the threshold is positive or negative
     const lowThreshold = -1 * highThreshold;
 
     if (stats.type === "project" || stats.type === "group") {
         return stats.comparisons.reduce((rows, node): SignificantlyChangedSummary => {
             if (node.type === "project" || node.type === "group") {
-                return significantlyChangedRows(node, threshold, node.name, initialRows);
+                return significantlyChangedRows(node, threshold, node.name, rows);
             } else if (node.type === "benchmark") {
                 // for the significantly changed summary, we only check for aggregate
                 const metrics = node.metrics.aggregate;
 
                 if (metrics) {
-                    const baseStats = metrics.baseStats;
-                    const targetStats = metrics.targetStats;
-                    const samplesComparison = metrics.samplesComparison;
+                    const { baseStats, targetStats, samplesComparison } = metrics;
 
                     const percentage = (Math.abs(baseStats.median - targetStats.median) / baseStats.median) * 100;
                     const relativeTrend = targetStats.median - baseStats.median;
@@ -79,11 +77,11 @@ function significantlyChangedRows(stats: ResultComparison, threshold: number, na
     }
 }
 
-function generateRows(stats: ResultComparison, name = '', initialRows: string[][] = []) {
+function generateRows(stats: ResultComparison, name: string = '', initialRows: string[][] = []) {
     if (stats.type === "project" || stats.type === "group") {
         return stats.comparisons.reduce((rows, node): string[][] => {
             if (node.type === "project" || node.type === "group") {
-                return generateRows(node, node.name, initialRows);
+                return generateRows(node, node.name, rows);
             } else if (node.type === "benchmark") {
                 // row with benchmark name
                 const emptyFields = Array.apply(null, Array(3)).map(() => '-');

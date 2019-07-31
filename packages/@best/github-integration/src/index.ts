@@ -125,7 +125,7 @@ export async function completeBenchmarkComparisonCheck(gitHubInstallation: Octok
             comment = `# 🥳 Performance Improvement\n\nBest has detected that there is a \`${Math.abs(averageChange).toFixed(1)}%\` performance improvement across your benchmarks.\n\nPlease [click here](${check.html_url}) to see more details.`
         }
 
-        if (comparisonSummary && comparisonSummary.length > 0) {
+        if (comparisonSummary.length) {
             comment += `<details><summary>Click to view significantly changed benchmarks</summary>\n\n${comparisonSummary}</details>`;
         }
 
