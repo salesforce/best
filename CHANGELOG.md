@@ -1,4 +1,21 @@
-# [](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha4...v) (2019-07-26)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha5...v) (2019-07-31)
+
+
+
+# [4.0.0-alpha5](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha4...v4.0.0-alpha5) (2019-07-31)
+
+
+### Bug Fixes
+
+* Frontend Graphs Not Resizing ([#191](https://git.soma.salesforce.com/lwc/best/issues/191)) ([aaf6473](https://git.soma.salesforce.com/lwc/best/commits/aaf6473))
+* less restrictive git remote parsing ([#188](https://git.soma.salesforce.com/lwc/best/issues/188)) ([5030a07](https://git.soma.salesforce.com/lwc/best/commits/5030a07)), closes [#185](https://git.soma.salesforce.com/lwc/best/issues/185)
+* update static frontend ([#190](https://git.soma.salesforce.com/lwc/best/issues/190)) ([c1e7ff0](https://git.soma.salesforce.com/lwc/best/commits/c1e7ff0)), closes [#187](https://git.soma.salesforce.com/lwc/best/issues/187)
+* updated logo ([#192](https://git.soma.salesforce.com/lwc/best/issues/192)) ([fc1db72](https://git.soma.salesforce.com/lwc/best/commits/fc1db72))
+
+
+### Features
+
+* Improving GitHub Checks ([#182](https://git.soma.salesforce.com/lwc/best/issues/182)) ([4596832](https://git.soma.salesforce.com/lwc/best/commits/4596832))
 
 
 
