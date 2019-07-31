@@ -42,7 +42,7 @@ function significantlyChangedRows(stats: ResultComparison, threshold: number, na
             if (node.type === "project" || node.type === "group") {
                 return significantlyChangedRows(node, threshold, node.name, initialRows);
             } else if (node.type === "benchmark") {
-                // for the significant changed summary, we only check for aggregate
+                // for the significantly changed summary, we only check for aggregate
                 const metrics = node.metrics.aggregate;
 
                 if (metrics) {

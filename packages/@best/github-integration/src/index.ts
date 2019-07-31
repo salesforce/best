@@ -12,9 +12,7 @@ function calculateAverageChange(result: BenchmarkComparison) {
         return [...all, ...generatePercentages(node)]
     }, <number[]>[])
 
-    if (flattenedValues.length === 0) {
-        return 0;
-    }
+    if (flattenedValues.length === 0) { return 0; }
 
     const sum = flattenedValues.reduce((previous, current) => current += previous);
     const avg = sum / flattenedValues.length;
