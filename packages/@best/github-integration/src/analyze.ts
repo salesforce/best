@@ -1,5 +1,5 @@
 import json2md from 'json2md';
-import { BenchmarkComparison, ResultComparison, BenchmarkMetricNames, BenchmarkStats } from '@best/types';
+import { BenchmarkComparison, ResultComparison, BenchmarkMetricNames, BenchmarkStats, ResultComparisonBenchmark, ResultComparisonGroup, ResultComparisonProject } from '@best/types';
 
 interface MarkdownTable {
     table: {
@@ -21,6 +21,16 @@ function padding(n: number) {
             .map(() => ' ')
             .join('') + '└─ '
         : '';
+}
+
+function generateMarkdownFromGroupedTables(tables: GroupedTables) {
+    const flattenedTables = Object.keys(tables).reduce((groups, projectName): json2md.DataObject[] => {
+        groups.push({ h2: `*${projectName}*` });
+        groups.push(...tables[projectName]);
+        return groups;
+    }, <json2md.DataObject[]>[])
+
+    return json2md(flattenedTables);
 }
 
 function generateRow(
@@ -50,14 +60,20 @@ function generateRow(
     ]
 }
 
-function generateDetailsMarkdown(tables: GroupedTables) {
-    const flattenedTables = Object.keys(tables).reduce((groups, projectName): json2md.DataObject[] => {
-        groups.push({ h2: `*${projectName}*` });
-        groups.push(...tables[projectName]);
-        return groups;
-    }, <json2md.DataObject[]>[])
+function generateRowsFromComparison<RowType>(stats: ResultComparison, handler: (node: ResultComparisonBenchmark, parentName: string) => RowType[], name: string = '', initialRows: RowType[] = []) {
+    if (stats.type === "project" || stats.type === "group") {
+        return stats.comparisons.reduce((rows, node): RowType[] => {
+            if (node.type === "project" || node.type === "group") {
+                return generateRowsFromComparison(node, handler, node.name, rows);
+            } else if (node.type === "benchmark") {
+                rows.push(...handler(node, name));
+            }
 
-    return json2md(flattenedTables);
+            return rows;
+        }, initialRows);
+    } else {
+        return initialRows;
+    }
 }
 
 function significantlyChangedRows(stats: ResultComparison, threshold: number, name: string = '', initialRows: SignificantlyChangedSummary = { improved: [], regressed: [] }) {
@@ -97,134 +113,120 @@ function significantlyChangedRows(stats: ResultComparison, threshold: number, na
     }
 }
 
-function generateRows(stats: ResultComparison, name: string = '', initialRows: string[][] = []) {
-    if (stats.type === "project" || stats.type === "group") {
-        return stats.comparisons.reduce((rows, node): string[][] => {
-            if (node.type === "project" || node.type === "group") {
-                return generateRows(node, node.name, rows);
-            } else if (node.type === "benchmark") {
-                // row with benchmark name
-                const emptyFields = Array.apply(null, Array(3)).map(() => '-');
-                rows.push([`${name}/${node.name}`, ...emptyFields]);
+function generateAllRows(stats: ResultComparison) {
+    return generateRowsFromComparison(stats, (node, parentName) => {
+        const rows: string[][] = [];
+        const emptyFields = Array.apply(null, Array(3)).map(() => '-');
+        rows.push([`${parentName}/${node.name}`, ...emptyFields]);
 
-                Object.keys(node.metrics).forEach(metric => {
-                    const metrics = node.metrics[metric as BenchmarkMetricNames];
+        Object.keys(node.metrics).forEach(metric => {
+            const metrics = node.metrics[metric as BenchmarkMetricNames];
 
-                    if (metrics) {
-                        rows.push(generateRow(padding(1) + metric, metrics, true));
-                    }
-                })
+            if (metrics) {
+                rows.push(generateRow(padding(1) + metric, metrics, true));
             }
-            return rows;
-        }, initialRows);
-    } else {
-        return initialRows;
-    }
+        })
+
+        return rows;
+    })
 }
 
-function generateTable(baseCommit: string, targetCommit: string, stats: ResultComparison): MarkdownTable {
-    const { name: benchmarkName } = stats;
-    const mdName = benchmarkName.replace('.benchmark', '');
+function generateCommentWithTables(result: BenchmarkComparison, handler: (node: ResultComparisonProject | ResultComparisonGroup, baseCommit: string, targetCommit: string) => MarkdownTable[]) {
+    const { baseCommit, targetCommit, comparisons } = result;
 
-    return {
-        table: {
-            headers: [`${mdName}`, `base (\`${baseCommit}\`)`, `target (\`${targetCommit}\`)`, 'trend'],
-            rows: generateRows(stats)
-        }
-    }
-}
-
-export function generateComparisonComment(result: BenchmarkComparison) {
-    const { baseCommit, targetCommit } = result;
-
-    const tables: GroupedTables = result.comparisons.reduce((tables, node): GroupedTables => {
+    const grouped: GroupedTables = comparisons.reduce((tables, node): GroupedTables => {
         if (node.type === "project" || node.type === "group") {
-            const group = node.comparisons.map(child => {
-                return generateTable(baseCommit, targetCommit, child);
-            })
+            const markdownTables = handler(node, baseCommit, targetCommit);
 
             return {
                 ...tables,
-                [node.name]: group
+                [node.name]: markdownTables
             }
         }
+
         return tables;
-    }, <GroupedTables>{})
+    }, <GroupedTables>{});
 
-    const tablesMarkdown = generateDetailsMarkdown(tables);
-
-    return `# Full Results\n\n${tablesMarkdown}`;
+    return generateMarkdownFromGroupedTables(grouped);
 }
 
 export function generateComparisonSummary(result: BenchmarkComparison, threshold: number) {
-    const { baseCommit, targetCommit, comparisons } = result;
-
-    const tables: GroupedTables = comparisons.reduce((tables, node): GroupedTables => {
-        const { name: benchmarkName } = node;
-        const mdName = benchmarkName.replace('.benchmark', '');
+    return generateCommentWithTables(result, (node, base, target) => {
         const changes = significantlyChangedRows(node, threshold);
 
-        const rows = [];
+        const tables: MarkdownTable[] = [];
         
         if (changes.improved.length) {
-            rows.push({
+            tables.push({
                 table: {
-                    headers: [`✅ Improvements`, `base (\`${baseCommit}\`)`, `target (\`${targetCommit}\`)`, 'trend'],
+                    headers: [`✅ Improvements`, `base (\`${base}\`)`, `target (\`${target}\`)`, 'trend'],
                     rows: changes.improved
                 }
             })
         }
 
         if (changes.regressed.length) {
-            rows.push({
+            tables.push({
                 table: {
-                    headers: [`❌ Regressions`, `base (\`${baseCommit}\`)`, `target (\`${targetCommit}\`)`, 'trend'],
+                    headers: [`❌ Regressions`, `base (\`${base}\`)`, `target (\`${target}\`)`, 'trend'],
                     rows: changes.regressed
                 }
             });
         }
 
-        if (rows.length) {
-            tables[`${mdName}`] = rows;
-        }
-
         return tables;
-    }, <GroupedTables>{})
-
-    return generateDetailsMarkdown(tables);
+    })
 }
 
+function generateAllRowsTable(baseCommit: string, targetCommit: string, stats: ResultComparison): MarkdownTable {
+    const { name: benchmarkName } = stats;
+    const mdName = benchmarkName.replace('.benchmark', '');
+
+    return {
+        table: {
+            headers: [`${mdName}`, `base (\`${baseCommit}\`)`, `target (\`${targetCommit}\`)`, 'trend'],
+            rows: generateAllRows(stats)
+        }
+    }
+}
+
+export function generateComparisonComment(result: BenchmarkComparison) {
+    const tablesMarkdown = generateCommentWithTables(result, (node, base, target) => {
+        const tables = node.comparisons.map(child => {
+            return generateAllRowsTable(base, target, child);
+        })
+
+        return tables;
+    });
+
+    return `# Full Results\n\n${tablesMarkdown}`;
+}
 // this takes all the results and recursively goes through them
 // then it creates a flat list of all of the percentages of change
-export function generatePercentages(stats: ResultComparison, rows: number[] = []): number[] {
-    if (stats.type === "project" || stats.type === "group") {
-        return stats.comparisons.reduce((allRows, node: ResultComparison) => {
-            if (node.type === "project" || node.type === "group") {
-                generatePercentages(node, rows);
-            } else if (node.type === "benchmark") {
-                Object.keys(node.metrics).forEach(metricName => {
-                    const metrics = node.metrics[metricName as BenchmarkMetricNames];
+export function generatePercentages(stats: ResultComparison): number[] {
+    return generateRowsFromComparison(stats, (node, parentName) => {
+        const rows: number[] = [];
 
-                    if (metrics) {
-                        const { baseStats, targetStats, samplesComparison } = metrics;
-                        const baseMed = baseStats.median;
-                        const targetMed = targetStats.median;
-            
-                        const percentage = Math.abs((baseMed - targetMed) / baseMed * 100);
-                        const relativeTrend = targetMed - baseMed;
+        Object.keys(node.metrics).map(metricName => {
+            const metrics = node.metrics[metricName as BenchmarkMetricNames];
 
-                        // ensures passes Mann-Whiteney U test and results are more than 1ms
-                        if (samplesComparison !== 0 && baseMed > 1 && targetMed > 1) {
-                            allRows.push(Math.sign(relativeTrend) * percentage);
-                        } else {
-                            allRows.push(0); // otherwise we count it as zero
-                        }
-                    }
-                })
+            if (metrics) {
+                const { baseStats, targetStats, samplesComparison } = metrics;
+                const baseMed = baseStats.median;
+                const targetMed = targetStats.median;
+    
+                const percentage = Math.abs((baseMed - targetMed) / baseMed * 100);
+                const relativeTrend = targetMed - baseMed;
+
+                // ensures passes Mann-Whiteney U test and results are more than 1ms
+                if (samplesComparison !== 0 && baseMed > 1 && targetMed > 1) {
+                    rows.push(Math.sign(relativeTrend) * percentage);
+                } else {
+                    rows.push(0); // otherwise we count it as zero
+                }
             }
-            return allRows;
-        }, rows);
-    }
+        })
 
-    return rows;
+        return rows;
+    })
 }
