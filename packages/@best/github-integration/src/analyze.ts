@@ -138,10 +138,14 @@ function generateCommentWithTables(result: BenchmarkComparison, handler: (node: 
         if (node.type === "project" || node.type === "group") {
             const markdownTables = handler(node, baseCommit, targetCommit);
 
-            return {
-                ...tables,
-                [node.name]: markdownTables
+            if (markdownTables.length) {
+                return {
+                    ...tables,
+                    [node.name]: markdownTables
+                }
             }
+
+            return tables;
         }
 
         return tables;
