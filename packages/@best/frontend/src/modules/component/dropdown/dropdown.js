@@ -6,14 +6,12 @@ export default class ComponentDropdown extends LightningElement {
 
     @track stateClass = 'closed';
 
-    @track selectedItems = [];
-
     get controlClasses() {
         return `control ${this.stateClass}`;
     }
 
     get hasSelectedItems() {
-        return !!this.selectedItems.length;
+        return !!this.options.selectedItems.length;
     }
 
     get hasItems() {
@@ -39,9 +37,5 @@ export default class ComponentDropdown extends LightningElement {
         } else {
             this.stateClass = 'closed';
         }
-    }
-
-    renderedCallback() {
-        this.selectedItems = this.options.selectedItems;
     }
 }

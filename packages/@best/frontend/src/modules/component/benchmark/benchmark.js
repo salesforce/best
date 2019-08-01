@@ -52,7 +52,7 @@ export default class ComponentBenchmark extends LightningElement {
     }
 
     allTrends = [];
-    @track visibleTrends = [];
+    visibleTrends = [];
 
     _benchmark;
     @api
