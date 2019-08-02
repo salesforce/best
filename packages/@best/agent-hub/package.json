@@ -17,9 +17,7 @@
     "@best/agent-logger": "4.0.0-alpha5",
     "@best/runner-remote": "4.0.0-alpha5",
     "@best/utils": "4.0.0-alpha5",
-    "@types/jsonwebtoken": "^8.3.2",
     "express": "~4.16.2",
-    "jsonwebtoken": "^8.5.1",
     "socket.io": "~2.2.0",
     "socket.io-file": "~2.0.31",
     "yargs": "^13.2.4"
