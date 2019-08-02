@@ -116,7 +116,7 @@ export default class BuildOutputStream {
 
     printBenchmark({ state, projectName, displayPath }:{ state: State, projectName: string, displayPath: string }) {
         const columns = this.stdout.columns || 80;
-        const overflow = columns - (state.length + projectName.length + displayPath.length + /* for padding */ 10);
+        const overflow = columns - (state.length + projectName.length + displayPath.length + /* for padding */ 14);
         const hasOverflow = overflow < 0;
 
         const ansiState = printState(state);
