@@ -52,11 +52,19 @@ function printProjectName(projectName: string) {
     return ' ' + chalk.reset.cyan.dim(`(${projectName})`);
 }
 
-function calculateBenchmarkProgress(progress: BenchmarkResultsState, { iterations, maxDuration }: BenchmarkRuntimeConfig): BenchmarkProgress {
+function calculateBenchmarkProgress(progress: BenchmarkResultsState, { iterations, maxDuration, minSampleCount }: BenchmarkRuntimeConfig): BenchmarkProgress {
     const { executedIterations, executedTime } = progress;
     const avgIteration = executedTime / executedIterations;
     const runtime = parseInt((executedTime / 1000) + '', 10);
-    const estimated = iterations ? Math.round(iterations * avgIteration / 1000) + 1 : maxDuration / 1000;
+
+    let estimated: number;
+    if (iterations) {
+        estimated = Math.round(iterations * avgIteration / 1000) + 1;
+    } else if (avgIteration * minSampleCount > maxDuration) {
+        estimated = Math.round(minSampleCount * avgIteration / 1000) + 1;
+    } else {
+        estimated = maxDuration / 1000;
+    }
 
     return {
         executedIterations,
