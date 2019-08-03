@@ -15,7 +15,7 @@ import {
 
 function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, messager: RunnerOutputStream) : Promise<BenchmarkResultsSnapshot> {
     return new Promise(async (resolve, reject) => {
-        const { benchmarkName, benchmarkEntry, benchmarkSignature } = benchmarkEntryBundle;
+        const { benchmarkName, benchmarkEntry, benchmarkFolder, benchmarkSignature } = benchmarkEntryBundle;
         const { host, options, remoteRunner } = projectConfig.benchmarkRunnerConfig;
         const bundleDirname = path.dirname(benchmarkEntry);
         const remoteProjectConfig = Object.assign({}, projectConfig, {
@@ -29,7 +29,22 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
             return reject(new Error('Benchmark artifact not found (${tarBundle})'));
         }
 
-        const socket = socketIO(host, options);
+        const normalizedSocketOptions = {
+            path: '/best',
+            ...options
+        }
+
+        const socket = socketIO(host, normalizedSocketOptions);
+
+        socket.on('connect_error', (err: any) => {
+            console.log('Error in connection to agent > ', err);
+            reject(err);
+        });
+
+        socket.on('error', (err: any) => {
+            console.log('Error in connection to agent > ', err);
+            reject(err);
+        });
 
         socket.on('connect', () => {
             socket.on('load_benchmark', () => {
@@ -65,11 +80,6 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
                 }
             });
 
-            socket.on('error', (err: any) => {
-                console.log('Error in connection to agent > ', err);
-                reject(err);
-            });
-
             socket.on('benchmark_error', (err: any) => {
                 console.log(err);
                 reject(new Error('Benchmark couldn\'t finish running. '));
@@ -82,6 +92,7 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
 
             socket.emit('benchmark_task', {
                 benchmarkName,
+                benchmarkFolder,
                 benchmarkSignature,
                 projectConfig: remoteProjectConfig,
                 globalConfig,

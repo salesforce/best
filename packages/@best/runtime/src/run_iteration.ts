@@ -80,20 +80,10 @@ export const runBenchmarkIteration = async (node: RuntimeNode, opts: { useMacroT
     // -- For each children ----
     if (children) {
         for (const child of children) {
-            // -- Before Each ----
-            for (const hook of hookHandlers[HOOKS.BEFORE_EACH]) {
-                await hook();
-            }
-
             // -- Traverse Child ----
             node.startedAt = formatTime(time());
             await runBenchmarkIteration(child, opts);
             node.aggregate = formatTime(time() - node.startedAt);
-
-            // -- After Each Child ----
-            for (const hook of hookHandlers[HOOKS.AFTER_EACH]) {
-                await hook();
-            }
         }
     }
 

@@ -1,6 +1,10 @@
 {
   "name": "@best/console-stream",
-  "version": "4.0.0",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "4.0.0-alpha5",
   "description": "Best stdout stream wrapper",
   "keywords": [
     "Best",
@@ -9,7 +13,10 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@best/utils": "4.0.0",
+    "@best/utils": "4.0.0-alpha5",
     "chalk": "~2.4.2"
-  }
+  },
+  "files": [
+    "build/**/*.js"
+  ]
 }

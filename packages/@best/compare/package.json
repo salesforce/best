@@ -1,6 +1,10 @@
 {
   "name": "@best/compare",
-  "version": "4.0.0",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "4.0.0-alpha5",
   "description": "Best Comparer",
   "keywords": [
     "Best",
@@ -8,7 +12,10 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@best/analyzer": "4.0.0",
+    "@best/analyzer": "4.0.0-alpha5",
     "chalk": "~2.4.2"
-  }
+  },
+  "files": [
+    "build/**/*.js"
+  ]
 }

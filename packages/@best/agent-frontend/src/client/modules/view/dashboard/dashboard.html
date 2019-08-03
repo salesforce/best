@@ -1,0 +1,13 @@
+<template>
+    <div class="container">
+        <template for:each={agents} for:item="agent">
+            <component-agent key={agent.agentId} name={agent.agentId} jobs={agent.jobs}></component-agent>
+        </template>
+
+        <template if:false={hasJobs}>
+            <div class="no-jobs">
+                <p>There are no jobs currently running.</p>
+            </div>
+        </template>
+    </div>
+</template>

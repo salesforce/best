@@ -1,0 +1,46 @@
+.job {
+    margin: 10px 0;
+}
+
+.status {
+    border-radius: 4px 4px 0 0;
+    display: block;
+    padding: 4px 8px;
+    font-size: 80%;
+    margin-right: 0;
+    z-index: 1;
+}
+
+.status.added, .status.queued { background: #cccccc; color: #252525; }
+.status.running { background: #adcff0; color: #032546; }
+.status.completed { background: #a0dfb5; color: #063b18; }
+.status.cancelled { background: #ebcd8c; color: #614700; }
+.status.error { background: #eb8c8c; color: #610000; }
+
+main {
+    display: grid;
+    grid-template-columns: auto 200px;
+    background: #eee;
+    padding: 12px;
+    border-radius: 0 0 4px 4px;
+}
+
+.info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.info h2 {
+    display: inline-block;
+    margin: 0;
+    font-weight: normal;
+}
+
+.stats {
+    text-align: right;
+}
+
+.stats p {
+    margin: 0;
+}

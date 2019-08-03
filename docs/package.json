@@ -1,6 +1,7 @@
 {
-  "name":"@best/docs",
-  "version": "4.0.0",
+  "name": "@best/docs",
+  "license": "MIT",
+  "version": "4.0.0-alpha5",
   "private": true,
   "scripts": {
     "test:links": "node scripts/verify-doc-links",
@@ -33,6 +34,7 @@
     "@lwc/synthetic-shadow": "~1.0.0",
     "@lwc/wire-service": "~1.0.0",
     "cpy": "~7.0.1",
+    "cross-env": "^5.2.0",
     "dateformat": "^3.0.3",
     "decamelize": "^3.2.0",
     "escape-html": "1.0.3",
@@ -49,7 +51,10 @@
     "mkdirp": "~0.5.1",
     "prismjs": "~1.16.0",
     "reload": "~3.0.1",
-    "watch": "^1.0.2",
-    "cross-env": "^5.2.0"
+    "watch": "^1.0.2"
+  },
+  "engines": {
+    "node": ">=10.16.0",
+    "yarn": ">=1.16.0"
   }
 }

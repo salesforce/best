@@ -1,6 +1,10 @@
 {
   "name": "@best/store-aws",
-  "version": "4.0.0",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "4.0.0-alpha5",
   "description": "Best Store AWS",
   "keywords": [
     "Best",
@@ -8,10 +12,13 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@best/types": "4.0.0",
+    "@best/types": "4.0.0-alpha5",
     "aws-sdk": "~2.444.0",
     "chalk": "~2.4.2",
     "mime-types": "~2.1.24",
     "node-fetch": "~1.7.3"
-  }
+  },
+  "files": [
+    "build/**/*.js"
+  ]
 }

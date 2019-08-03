@@ -1,6 +1,10 @@
 {
   "name": "@best/runner-headless",
-  "version": "4.0.0",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "4.0.0-alpha5",
   "description": "Best Runner (Headless)",
   "keywords": [
     "Best",
@@ -9,7 +13,11 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@best/runner-abstract": "4.0.0",
+    "@best/runner-abstract": "4.0.0-alpha5",
+    "@best/types": "4.0.0-alpha5",
     "puppeteer": "~1.17.0"
-  }
+  },
+  "files": [
+    "build/**/*.js"
+  ]
 }

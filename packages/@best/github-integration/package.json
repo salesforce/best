@@ -1,6 +1,10 @@
 {
   "name": "@best/github-integration",
-  "version": "4.0.0",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "4.0.0-alpha5",
   "description": "Best Github Integration",
   "keywords": [
     "Best",
@@ -8,13 +12,16 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@best/api-db": "4.0.0",
-    "@best/types": "4.0.0",
-    "@best/utils": "4.0.0",
+    "@best/api-db": "4.0.0-alpha5",
+    "@best/types": "4.0.0-alpha5",
+    "@best/utils": "4.0.0-alpha5",
     "@octokit/rest": "^16.28.2",
     "base-64": "^0.1.0",
     "expand-tilde": "~2.0.2",
     "json2md": "~1.5.11",
     "jsonwebtoken": "8.1.0"
-  }
+  },
+  "files": [
+    "build/**/*.js"
+  ]
 }

@@ -1,6 +1,10 @@
 {
   "name": "best",
-  "version": "4.0.0",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "4.0.0-alpha5",
   "description": "Best",
   "keywords": [
     "Best",
@@ -8,10 +12,12 @@
   ],
   "bin": {
     "best": "./bin/best.js",
-    "best-agent": "./bin/best-agent.js"
+    "best-agent": "./bin/best-agent.js",
+    "best-agent-hub": "./bin/best-agent-hub.js"
   },
   "dependencies": {
-    "@best/agent": "4.0.0",
-    "@best/cli": "4.0.0"
+    "@best/agent": "4.0.0-alpha5",
+    "@best/agent-hub": "4.0.0-alpha5",
+    "@best/cli": "4.0.0-alpha5"
   }
 }

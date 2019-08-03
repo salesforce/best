@@ -12,8 +12,9 @@
     "clean": "lerna run clean && lerna clean --yes && rimraf -g packages/**/build && rimraf packages/**/tsconfig.tsbuildinfo && rimraf -g packages/**/dist && rimraf -g packages/**/node_modules",
     "lint": "eslint packages/ --ext=js,ts",
     "prettier": "prettier --write '**/*.{js,md}'",
-    "prepare": "yarn build",
+    "prepare": "yarn build && yarn build:frontends",
     "build": "tsc -b",
+    "build:frontends": "lerna exec --scope **/agent-frontend --scope **/frontend -- yarn build",
     "build:docs": "cd docs && yarn build",
     "watch:docs": "cd docs && yarn watch",
     "release": "yarn prepare && lerna publish -m 'chore(release): publish %s' --exact --force-publish=* && yarn changelog",
@@ -22,6 +23,7 @@
     "changelog:publish": "git add CHANGELOG.md && git commit -m 'docs(changelog): publish release changelog' && git push",
     "perf": "cd packages/best-benchmarks/ && yarn start --externalStorage=@best/store-aws",
     "deploy:docs": "git subtree push --prefix docs heroku-docs master"
+    "start": "node ./scripts/start.js"
   },
   "husky": {
     "hooks": {
@@ -29,6 +31,8 @@
     }
   },
   "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/preset-typescript": "~7.3.3",
     "@commitlint/cli": "^8.0.0",
     "@commitlint/config-conventional": "^8.0.0",
@@ -50,14 +54,14 @@
     "@typescript-eslint/parser": "^1.9.0",
     "commitizen": "^3.1.1",
     "conventional-changelog-cli": "^2.0.21",
+    "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
     "husky": "2.4.0",
     "jest": "^24.8.0",
     "lerna": "^3.15.0",
     "prettier": "^1.17.1",
     "rimraf": "^2.6.3",
-    "typescript": "^3.5.1",
-    "cross-env": "^5.2.0"
+    "typescript": "^3.5.1"
   },
   "config": {
     "commitizen": {

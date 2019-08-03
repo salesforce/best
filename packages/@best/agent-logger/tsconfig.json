@@ -2,9 +2,6 @@
   "extends": "../../../tsconfig.settings.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "build",
-  },
-  "references": [
-    { "path": "../runner-abstract" },
-  ]
+    "outDir": "build"
+  }
 }

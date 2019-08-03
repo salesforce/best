@@ -7,22 +7,20 @@ module.exports = {
         },
         {
             "runner": "@best/runner-remote",
-            "alias": "remote-agent",
+            "alias": "heroku-agent",
             "config": {
-                "host": "http://localhost:5000",
-                "options": { path: "/best" },
+                "host": "http://bestv4-agent.herokuapp.com",
                 "remoteRunner": "@best/runner-headless"
             }
         },
         {
             "runner": "@best/runner-hub",
-            "alias": "hub",
+            "alias": "heroku-hub",
             "config": {
-                "host": "http://localhost:6000",
+                "host": "http://bestv4-hub.herokuapp.com",
                 "options": {
-                    path: "/hub",
                     query: {
-                        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6ImNsaWVudCIsImlhdCI6MTU2MTYwNzI1OCwiZXhwIjoxNTY0MTk5MjU4fQ.BER-PIIlsf6NWNBctWrmS1YWB4QkI2aYiNp0BE6aASU'
+                        token: process.env.HUB_TOKEN
                     }
                 },
                 "spec": {

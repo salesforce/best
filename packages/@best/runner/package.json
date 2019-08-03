@@ -1,6 +1,10 @@
 {
   "name": "@best/runner",
-  "version": "4.0.0",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "4.0.0-alpha5",
   "description": "Best Runner",
   "keywords": [
     "Best",
@@ -9,8 +13,11 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "chalk": "~2.4.2",
-    "@best/console-stream": "4.0.0",
-    "@best/runner-abstract": "4.0.0"
-  }
+    "@best/console-stream": "4.0.0-alpha5",
+    "@best/runner-abstract": "4.0.0-alpha5",
+    "chalk": "~2.4.2"
+  },
+  "files": [
+    "build/**/*.js"
+  ]
 }

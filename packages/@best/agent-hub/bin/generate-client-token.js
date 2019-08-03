@@ -12,7 +12,7 @@ const argv = require('yargs')
     .describe('s', 'Hub secret')
     .describe('c', 'If this key is meant to be used by a client accessing the hub. Is exclusive with option "a". Defaults true')
     .describe('a', 'If this key is meant to be used by an agent accessing the hub')
-    .describe('t', 'Time to live for the token in zeit/ms (check https://github.com/zeit/ms). For clients default is 30 days, for agents 180 days.')
+    .describe('t', 'Time to live for the token in zeit/ms (check https://github.com/zeit/ms). By default, tokens do not expire.')
     .demandOption(['s'])
     .boolean('c').default('c', true)
     .boolean('a').default('a', false)
@@ -25,21 +25,23 @@ const argv = require('yargs')
 const payload = {
     scope: 'client'
 };
-let ttl =  argv.ttl || '30 days';
+
+const ttl = argv.ttl;
 
 if (argv.agent) {
     payload.scope = 'agent';
-    ttl = argv.ttl || '180 days';
 }
 
 // nothing to do for client since has the defaults.
 
 const jwt = require('jsonwebtoken');
 
+const options = ttl ? { expiresIn : ttl } : {};
+
 const token = jwt.sign(
     payload,
     argv.secret,
-    { expiresIn: ttl }
+    options
 );
 
 console.log(token);

@@ -2,10 +2,8 @@ import {InputOption, RollupOptions} from "rollup";
 
 const PRIMITIVES = [
     'beforeAll',
-    'beforeEach',
     'before',
     'afterAll',
-    'afterEach',
     'after',
     'benchmark',
     'describe',

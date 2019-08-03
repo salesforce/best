@@ -4,19 +4,22 @@ import BenchmarkJob from "./BenchmarkJob";
 import { AgentManager } from "./AgentManager";
 import {Agent, Spec} from "./Agent";
 import {Client} from "./Client";
+import AgentLogger from "@best/agent-logger";
 
 export class HubApplication {
     private _incomingQueue: ObservableQueue<BenchmarkJob>;
     private _agentManager: AgentManager;
+    private _logger: AgentLogger;
 
     private assignedAgents: WeakMap<Agent, Client> = new WeakMap<Agent, Client>();
     private clientAgents: WeakMap<Client, Agent> = new WeakMap<Client, Agent>();
     private pendingClients: Client[] = [];
     private runningClients: Client[] = [];
 
-    constructor(incomingQueue: ObservableQueue<BenchmarkJob>, agentManager: AgentManager) {
+    constructor(incomingQueue: ObservableQueue<BenchmarkJob>, agentManager: AgentManager, logger: AgentLogger) {
         this._incomingQueue = incomingQueue;
         this._agentManager = agentManager;
+        this._logger = logger;
 
         this.attachEventListeners();
     }
@@ -25,6 +28,7 @@ export class HubApplication {
         // @todo: define the types for the data.
         // @todo: add timeout on waiting the benchmark task?
         socket.on('benchmark_task', (data: any) => {
+            this._logger.event(socket.id, 'benchmark added', { benchmarkName: data.benchmarkName })
             const job = new BenchmarkJob({
                 ...data,
                 socket
@@ -104,6 +108,7 @@ export class HubApplication {
             agent.runJob(job);
         } else {
             job.socketConnection.emit('benchmark_enqueued', { pending: this._incomingQueue.size });
+            this._logger.event(job.socketConnection.id, 'benchmark queued', { pending: this._incomingQueue.size }, false);
         }
     };
 

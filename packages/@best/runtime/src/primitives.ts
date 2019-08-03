@@ -23,11 +23,9 @@ benchmark.skip = (benchmarkName: string, fn: Function) => _dispatchBenchmark(ben
 
 const _addHook = (fn: Function, hookType: string) => dispatch({ nodeName: 'hook', fn, hookType, nodeType: 'add_hook' });
 const beforeAll = (fn: Function) => _addHook(fn, HOOKS.BEFORE_ALL);
-const beforeEach = (fn: Function) => _addHook(fn, HOOKS.BEFORE_EACH);
 const before = (fn: Function) => _addHook(fn, HOOKS.BEFORE);
 const afterAll = (fn: Function) => _addHook(fn, HOOKS.AFTER_ALL);
-const afterEach = (fn: Function) => _addHook(fn, HOOKS.AFTER_EACH);
 const after = (fn: Function) => _addHook(fn, HOOKS.AFTER);
 const run = (fn: Function) => dispatch({ nodeName: 'run', fn, nodeType: RUN_BENCHMARK });
 
-export { describe, benchmark, beforeAll, beforeEach, before, afterAll, afterEach, after, run };
+export { describe, benchmark, beforeAll, before, afterAll, after, run };

@@ -1,6 +1,10 @@
 {
   "name": "@best/agent-hub",
-  "version": "4.0.0",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "4.0.0-alpha5",
   "description": "Best Agent Hub",
   "keywords": [
     "Best",
@@ -9,13 +13,19 @@
   ],
   "main": "build/cli/index.js",
   "dependencies": {
-    "@best/runner-remote": "4.0.0",
-    "@best/utils": "4.0.0",
-    "jsonwebtoken": "^8.5.1",
+    "@best/agent-frontend": "4.0.0-alpha5",
+    "@best/agent-logger": "4.0.0-alpha5",
+    "@best/runner-remote": "4.0.0-alpha5",
+    "@best/utils": "4.0.0-alpha5",
     "@types/jsonwebtoken": "^8.3.2",
     "express": "~4.16.2",
+    "jsonwebtoken": "^8.5.1",
     "socket.io": "~2.2.0",
     "socket.io-file": "~2.0.31",
     "yargs": "^13.2.4"
-  }
+  },
+  "files": [
+    "build/**/*.js",
+    "bin/"
+  ]
 }

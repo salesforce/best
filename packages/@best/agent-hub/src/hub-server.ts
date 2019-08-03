@@ -7,28 +7,35 @@ import { createAgentManager } from "./AgentManager";
 import { HubApplication } from "./HubApplication";
 import { AgentConfig } from "./Agent";
 import { configureAgentsApi } from "./agents-api";
+import { attachMiddleware, serveFrontend } from '@best/agent-frontend';
+import AgentLogger from '@best/agent-logger';
 
 export interface HubConfig {
     tokenSecret: string,
     agents: AgentConfig[],
 }
 
-function createHubApplication(config: HubConfig): HubApplication {
+function createHubApplication(config: HubConfig, logger: AgentLogger): HubApplication {
     const incomingQueue = new ObservableQueue<BenchmarkJob>();
-    const agentsManager = createAgentManager(config.agents);
+    const agentsManager = createAgentManager(config.agents, logger);
 
-    return new HubApplication(incomingQueue, agentsManager);
+    return new HubApplication(incomingQueue, agentsManager, logger);
 }
 
 export function runHub(server: any, app: Application, hubConfig: HubConfig) {
-    const socketServer: SocketIO.Server = socketIO(server, { path: '/hub' });
-    const hub: HubApplication = createHubApplication(hubConfig);
+    const socketServer: SocketIO.Server = socketIO(server, { path: '/best' });
+    const logger = new AgentLogger();
+    const hub: HubApplication = createHubApplication(hubConfig, logger);
 
-    configureAgentsApi(app, hub.agentManager, hubConfig.tokenSecret);
+    configureAgentsApi(app, hub.agentManager, logger, hubConfig.tokenSecret);
+    serveFrontend(app);
 
     // Authentication middleware
     socketServer.use((socket, next) => {
         const token = socket.handshake.query.token || '';
+
+        // TODO: add authentication specifically for frontend
+        if (socket.handshake.query.frontend) return next();
 
         jwt.verify(token, hubConfig.tokenSecret, (err: Error, payload: any) => {
             if (err) {
@@ -42,8 +49,10 @@ export function runHub(server: any, app: Application, hubConfig: HubConfig) {
     });
 
     socketServer.on('connect', (socket) => {
-        hub.handleIncomingSocketConnection(socket)
+        if (!socket.handshake.query.frontend) hub.handleIncomingSocketConnection(socket);
     });
+
+    attachMiddleware(socketServer, logger);
 }
 
 export default { runHub };

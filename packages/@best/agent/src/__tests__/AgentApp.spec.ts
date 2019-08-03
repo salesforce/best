@@ -5,6 +5,7 @@ import BenchmarkRunner, {RunnerStatus} from "../BenchmarkRunner";
 import * as SocketIO from "socket.io";
 import { EventEmitter } from "events";
 import { FrozenGlobalConfig, FrozenProjectConfig } from "@best/types";
+import AgentLogger from "@best/agent-logger";
 
 const createTask = (idx: number) => {
     const SocketMock = jest.fn<SocketIO.Socket, any>();
@@ -26,15 +27,17 @@ const createTask = (idx: number) => {
     );
 };
 
+const logger = new AgentLogger('Test Agent', { write: jest.fn() });
+
 describe('Agent app', () => {
     test('subscribes to queue.item-added and runner.idle-runner', async () => {
         const queue = new ObservableQueue<BenchmarkTask>();
         const queueOnSpy = jest.spyOn(queue, 'on');
 
-        const runner = new BenchmarkRunner();
+        const runner = new BenchmarkRunner(logger);
         const runnerOnSpy = jest.spyOn(runner, 'on');
 
-        const agentApp = new AgentApp(queue, runner);
+        const agentApp = new AgentApp(queue, runner, logger);
 
         expect(queueOnSpy).toHaveBeenCalled();
         expect(queueOnSpy.mock.calls[0][0]).toBe('item-added');
@@ -48,12 +51,12 @@ describe('Agent app', () => {
             const queue = new ObservableQueue<BenchmarkTask>();
             const queueRemoveSpy = jest.spyOn(queue, 'remove');
 
-            const runner = new BenchmarkRunner();
+            const runner = new BenchmarkRunner(logger);
             runner.run = jest.fn();
 
             const runnerRunSpy = jest.spyOn(runner, 'run');
 
-            const agentApp = new AgentApp(queue, runner);
+            const agentApp = new AgentApp(queue, runner, logger);
 
             const task = createTask(1);
 
@@ -69,12 +72,12 @@ describe('Agent app', () => {
         test('if runner is running a task informs client that the job is added to the queue', async () => {
             const queue = new ObservableQueue<BenchmarkTask>();
 
-            const runner = new BenchmarkRunner();
+            const runner = new BenchmarkRunner(logger);
             runner.status = RunnerStatus.RUNNING;
             runner.run = jest.fn();
             const runnerRunSpy = jest.spyOn(runner, 'run');
 
-            const agentApp = new AgentApp(queue, runner);
+            const agentApp = new AgentApp(queue, runner, logger);
 
             const task = createTask(1);
             task.socketConnection.emit = jest.fn();
@@ -100,12 +103,12 @@ describe('Agent app', () => {
             queue.push(task1);
             queue.push(task2);
 
-            const runner = new BenchmarkRunner();
+            const runner = new BenchmarkRunner(logger);
             runner.status = RunnerStatus.RUNNING;
             runner.run = jest.fn();
             const runnerRunSpy = jest.spyOn(runner, 'run');
 
-            const agentApp = new AgentApp(queue, runner);
+            const agentApp = new AgentApp(queue, runner, logger);
 
             runner.status = RunnerStatus.IDLE;
 
@@ -119,9 +122,9 @@ describe('Agent app', () => {
     describe('incoming socket connection', () => {
         test('listen for benchmark_task event', async () => {
             const queue = new ObservableQueue<BenchmarkTask>();
-            const runner = new BenchmarkRunner();
+            const runner = new BenchmarkRunner(logger);
 
-            const agentApp = new AgentApp(queue, runner);
+            const agentApp = new AgentApp(queue, runner, logger);
 
             const SocketMock = jest.fn<SocketIO.Socket, any>();
             const socket = new SocketMock();
@@ -140,9 +143,9 @@ describe('Agent app', () => {
             queue.push = jest.fn();
             const queuePushSpy = jest.spyOn(queue, 'push');
 
-            const runner = new BenchmarkRunner();
+            const runner = new BenchmarkRunner(logger);
 
-            const agentApp = new AgentApp(queue, runner);
+            const agentApp = new AgentApp(queue, runner, logger);
 
             const SocketMock = jest.fn<SocketIO.Socket, any>();
             const socket = new SocketMock();
@@ -185,11 +188,11 @@ describe('Agent app', () => {
             queue.remove = jest.fn();
             const queueRemoveSpy = jest.spyOn(queue, 'remove');
 
-            const runner = new BenchmarkRunner();
+            const runner = new BenchmarkRunner(logger);
             runner.cancelRun = jest.fn();
             const runnerCancelRunSpy = jest.spyOn(runner, 'cancelRun');
 
-            const agentApp = new AgentApp(queue, runner);
+            const agentApp = new AgentApp(queue, runner, logger);
 
             const SocketMock = jest.fn<SocketIO.Socket, any>();
             const socket = new SocketMock();

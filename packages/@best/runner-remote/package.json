@@ -1,6 +1,10 @@
 {
   "name": "@best/runner-remote",
-  "version": "4.0.0",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "4.0.0-alpha5",
   "description": "Best Runner (Headless)",
   "keywords": [
     "Best",
@@ -9,8 +13,11 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@best/console-stream": "4.0.0",
+    "@best/console-stream": "4.0.0-alpha5",
     "socket.io-client": "~2.2.0",
     "tar": "~4.4.10"
-  }
+  },
+  "files": [
+    "build/**/*.js"
+  ]
 }

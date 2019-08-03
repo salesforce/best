@@ -1,8 +1,17 @@
 {
   "name": "@best/types",
-  "version": "4.0.0",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "4.0.0-alpha5",
   "description": "Best Types for Typescript",
-  "keywords": ["Best"],
+  "keywords": [
+    "Best"
+  ],
   "types": "build/index.d.ts",
-  "main":"build/index.js"
+  "main": "build/index.js",
+  "files": [
+    "build/**/*.js"
+  ]
 }

@@ -1,4 +1,4 @@
-Base commit: `abcdef0` | Target commit: `1234567`
+# Full Results
 
 ## *project-foo*
 

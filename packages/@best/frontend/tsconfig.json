@@ -9,6 +9,7 @@
     { "path": "../api-db" },
     { "path": "../github-integration" },
     { "path": "../config" },
+    { "path": "../console-stream" },
     { "path": "../types" }
   ]
 }

@@ -2,6 +2,7 @@ import SocketIOFile from "socket.io-file";
 import path from "path";
 import { cacheDirectory } from '@best/utils';
 import * as SocketIO from "socket.io";
+import AgentLogger from "@best/agent-logger";
 
 // This is all part of the initialization
 const LOADER_CONFIG = {
@@ -15,7 +16,7 @@ const LOADER_CONFIG = {
 
 const UPLOAD_START_TIMEOUT = 5000;
 
-export async function loadBenchmarkJob(socketConnection: SocketIO.Socket): Promise<any> {
+export async function loadBenchmarkJob(socketConnection: SocketIO.Socket, logger: AgentLogger): Promise<any> {
     return new Promise(async (resolve, reject) => {
         const socket = socketConnection;
         let uploaderTimeout: any = null;
@@ -23,7 +24,7 @@ export async function loadBenchmarkJob(socketConnection: SocketIO.Socket): Promi
 
         uploader.on('start', () => clearTimeout(uploaderTimeout));
         uploader.on('stream', ({ wrote, size }: any) => {
-            process.stdout.write(`Client[${socketConnection.id}] - downloading ${wrote} / ${size}\n`);
+            logger.info(socketConnection.id, 'downloading', `${wrote} / ${size}`);
         });
         uploader.on('complete', (info: any) => resolve(info));
         uploader.on('error', (err: any) => reject(err));

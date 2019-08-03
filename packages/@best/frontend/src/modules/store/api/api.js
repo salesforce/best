@@ -15,20 +15,20 @@ function timeQuery(project, timing) {
         return `since=${date.getTime()}`
     }
 
-    return ''
+    return '';
 }
 
 export async function fetchProjects() {
     const response = await fetch(createURL('projects'));
     const { projects } = await response.json();
-    return projects
+    return projects || [];
 }
 
 export async function fetchSnapshots(project, timing) {
     const timeParams = timeQuery(project, timing);
     const response = await fetch(createURL(`${project.id}/snapshots?${timeParams}`));
     const { snapshots } = await response.json();
-    return snapshots;
+    return snapshots || []; 
 }
 
 export async function fetchCommitInfo(commit) {

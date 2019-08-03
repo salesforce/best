@@ -1,6 +1,10 @@
 {
   "name": "@best/runtime",
-  "version": "4.0.0",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "4.0.0-alpha5",
   "description": "Best Runtime",
   "keywords": [
     "Best",
@@ -8,5 +12,8 @@
   ],
   "dependencies": {
     "chalk": "~2.4.2"
-  }
+  },
+  "files": [
+    "dist/**/*.js"
+  ]
 }
