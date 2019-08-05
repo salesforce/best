@@ -17,7 +17,8 @@ const BENCHMARK_CONFIG = {
 
 const PROJECT_CONFIG = {
     benchmarkIterations: 1,
-    benchmarkOutput: tempDir()
+    benchmarkOutput: tempDir(),
+    metrics: ['aggregate']
 };
 
 const GLOBAL_CONFIG = {
@@ -55,7 +56,8 @@ describe('run', () => {
             BENCHMARK_CONFIG,
             {
                 benchmarkIterations: iterations,
-                benchmarkOutput: tempDir()
+                benchmarkOutput: tempDir(),
+                metrics: ['aggregate']
             },
             GLOBAL_CONFIG,
             MOCK_MESSAGER,
@@ -80,7 +82,8 @@ describe('run', () => {
             {
                 benchmarkMaxDuration: -1,
                 benchmarkMinIterations: minIterations,
-                benchmarkOutput: tempDir()
+                benchmarkOutput: tempDir(),
+                metrics: ['aggregate']
             },
             GLOBAL_CONFIG,
             MOCK_MESSAGER,
