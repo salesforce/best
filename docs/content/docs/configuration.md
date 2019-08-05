@@ -79,6 +79,9 @@ Below are all of the support options that you can customize in your `best.config
 #### `externalStorage`
 `string` This option allows to save the results in an arbitrary storage system. Pass the external storage adapter that you would like to use. Currently Best supports AWS with the `@best/store-aws` adapter.
 
+#### `metrics`
+`array` The set of metrics you would like Best to capture for you. The currently supported options are: `script`, `aggregate`, `paint`, `layout`. By default Best will capture all of these metrics. You can read more about what these metrics mean [here](/guide/introduction#expressive-metrics).
+
 #### `apiDatabase`
 `object` This option must be supplied in order to store your results in a database for use with the frontend. The configuration must specify an adapter and connection URI. Best currently supports either `sql/sqlite` or `sql/postgres` databases.
 ```js
