@@ -3,7 +3,7 @@
         <template if:true={hasSelectedItems}>
             <div onclick={toggleItems} class="selected">
                 <img src="/resources/arrow.svg" />
-                <template for:each={selectedItems} for:item="item" for:index="index">
+                <template for:each={options.selectedItems} for:item="item" for:index="index">
                     <div class="selected-item" key={item.id} data-index={index}>{item.title}</div>
                 </template>
             </div>

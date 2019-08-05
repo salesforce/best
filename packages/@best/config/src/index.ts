@@ -36,6 +36,7 @@ function generateProjectConfigs(options: NormalizedConfig, isRoot: boolean, gitI
         plugins: options.plugins,
         rootDir: options.rootDir,
         projectName: options.projectName,
+        metrics: options.metrics,
         runInBatch: options.runInBatch,
         benchmarkRunner: options.runner,
         benchmarkRunnerConfig: options.runnerConfig,

@@ -53,7 +53,7 @@ export default class ComponentCommitInfo extends LightningElement {
         }))
     }
 
-    renderedCallback() {
+    connectedCallback() {
         if (!this.hasCommitInfo) {
             store.dispatch(fetchCommitInfoIfNeeded(this.commit));
         }

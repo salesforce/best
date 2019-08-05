@@ -52,11 +52,19 @@ function printProjectName(projectName: string) {
     return ' ' + chalk.reset.cyan.dim(`(${projectName})`);
 }
 
-function calculateBenchmarkProgress(progress: BenchmarkResultsState, { iterations, maxDuration }: BenchmarkRuntimeConfig): BenchmarkProgress {
+function calculateBenchmarkProgress(progress: BenchmarkResultsState, { iterations, maxDuration, minSampleCount }: BenchmarkRuntimeConfig): BenchmarkProgress {
     const { executedIterations, executedTime } = progress;
     const avgIteration = executedTime / executedIterations;
     const runtime = parseInt((executedTime / 1000) + '', 10);
-    const estimated = iterations ? Math.round(iterations * avgIteration / 1000) + 1 : maxDuration / 1000;
+
+    let estimated: number;
+    if (iterations) {
+        estimated = Math.round(iterations * avgIteration / 1000) + 1;
+    } else if (avgIteration * minSampleCount > maxDuration) {
+        estimated = Math.round(minSampleCount * avgIteration / 1000) + 1;
+    } else {
+        estimated = maxDuration / 1000;
+    }
 
     return {
         executedIterations,
@@ -152,7 +160,7 @@ export default class RunnerOutputStream {
 
     printBenchmarkState({ state, projectName, displayPath }: { state: State, projectName: string, displayPath: string }) {
         const columns = this.stdout.columns || 80;
-        const overflow = columns - (state.length + projectName.length + displayPath.length + /* for padding */ 10);
+        const overflow = columns - (state.length + projectName.length + displayPath.length + /* for padding */ 14);
         const hasOverflow = overflow < 0;
 
         const ansiState = printState(state);

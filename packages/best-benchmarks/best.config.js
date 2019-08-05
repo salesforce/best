@@ -1,5 +1,6 @@
 module.exports = {
     projectName: 'best-benchmark',
+    metrics: ['script', 'aggregate'],
     "runners": [
         {
             "runner": "@best/runner-headless",

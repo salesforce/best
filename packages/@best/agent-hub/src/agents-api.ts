@@ -1,26 +1,18 @@
 import {Application, NextFunction, Request, Response} from "express";
-import * as jwt from "jsonwebtoken";
 import {AgentManager} from "./AgentManager";
 import {Agent, AgentStatus} from "./Agent";
 import AgentLogger from "@best/agent-logger";
 
 function authenticateAgentApi(tokenSecret: string, req: Request, res: Response, next: NextFunction) {
     if (req.path.startsWith('/api/v1')) {
-        jwt.verify(req.headers.authorization || '', tokenSecret, (err: Error, payload: any) => {
-            if (err) {
-                return res.status(403).send({
-                    success: 'false',
-                    message: 'Authentication error: ' + err.message
-                });
-            } else if (payload.scope !== 'agent') {
-                return res.status(403).send({
-                    success: 'false',
-                    message: 'Authentication error: Invalid token'
-                });
-            }
+        if (req.headers.authorization !== tokenSecret) {
+            return res.status(403).send({
+                success: 'false',
+                message: 'Authentication error: Invalid token'
+            });
+        }
 
-            next();
-        });
+        next();
     } else {
         next();
     }
