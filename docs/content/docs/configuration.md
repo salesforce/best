@@ -97,7 +97,7 @@ Below are all of the support options that you can customize in your `best.config
 `number` For use with the [GitHub Integration](/guide/github-integration), this specifies the threshold for whether or not Best should leave a comment about performance on the Pull Request.
 
 #### `runInBatch`
-` boolean` When running on the hub, you can specify this option to your multiple of your benchmarks at the same time.
+`boolean` When running on the hub, you can specify this option to your multiple of your benchmarks at the same time.
 
 #### `projects`
 `array` A list of locations where each project's `best.config.js` lives.
