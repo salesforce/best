@@ -22,7 +22,7 @@
     "changelog:generate": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "changelog:publish": "git add CHANGELOG.md && git commit -m 'docs(changelog): publish release changelog' && git push",
     "perf": "cd packages/best-benchmarks/ && yarn start --externalStorage=@best/store-aws",
-    "deploy:docs": "git subtree push --prefix docs heroku-docs master"
+    "deploy:docs": "git subtree push --prefix docs heroku-docs master",
     "start": "node ./scripts/start.js"
   },
   "husky": {
