@@ -66,7 +66,9 @@ export default class HeadlessBrowser {
     }
 
     async close() {
-        await removeTrace(this.tracePath);
+        if (this.projectConfig.metrics.includes('paint') || this.projectConfig.metrics.includes('layout')) {
+            await removeTrace(this.tracePath);
+        }
 
         if (this.browser) {
             return this.browser.close();
@@ -82,7 +84,10 @@ export default class HeadlessBrowser {
     async evaluate(fn: any, payload: any) {
         let result;
         if (this.page) {
-            await this.page.tracing.start({ path: this.tracePath })
+            if (this.projectConfig.metrics.includes('paint') || this.projectConfig.metrics.includes('layout')) {
+                await this.page.tracing.start({ path: this.tracePath })
+            }
+
             result = await this.page.evaluate(fn, payload);
             await this.page.tracing.stop()
             this.checkForErrors();
@@ -91,6 +96,7 @@ export default class HeadlessBrowser {
 
         return result;
     }
+    
     version() {
         return this.browser ? this.browser.version(): Promise.resolve('unknown');
     }
