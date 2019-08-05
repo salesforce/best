@@ -28,6 +28,7 @@ export default class HeadlessBrowser {
     pageUrl: string;
     projectConfig: FrozenProjectConfig;
     tracePath: string;
+    tracingEnabled: boolean;
     browser?: puppeteer.Browser;
     page?: puppeteer.Page;
     pageError?: Error;
@@ -36,6 +37,7 @@ export default class HeadlessBrowser {
         this.pageUrl = url;
         this.projectConfig = projectConfig;
         this.tracePath = path.resolve(tempDir(), 'trace.json');
+        this.tracingEnabled = projectConfig.metrics.includes('paint') || projectConfig.metrics.includes('layout');
     }
 
     async initialize() {
@@ -57,7 +59,7 @@ export default class HeadlessBrowser {
     async processTrace(result: any) {
         if (! this.page) return result;
             
-        if (this.projectConfig.metrics.includes('paint') || this.projectConfig.metrics.includes('layout')) {
+        if (this.tracingEnabled) {
             const traces = await parseTrace(this.tracePath);
             mergeTracedMetrics(result, traces);
         }
@@ -66,9 +68,7 @@ export default class HeadlessBrowser {
     }
 
     async close() {
-        if (this.projectConfig.metrics.includes('paint') || this.projectConfig.metrics.includes('layout')) {
-            await removeTrace(this.tracePath);
-        }
+        if (this.tracingEnabled) await removeTrace(this.tracePath);
 
         if (this.browser) {
             return this.browser.close();
@@ -84,12 +84,12 @@ export default class HeadlessBrowser {
     async evaluate(fn: any, payload: any) {
         let result;
         if (this.page) {
-            if (this.projectConfig.metrics.includes('paint') || this.projectConfig.metrics.includes('layout')) {
-                await this.page.tracing.start({ path: this.tracePath })
-            }
+            if (this.tracingEnabled) await this.page.tracing.start({ path: this.tracePath });
 
             result = await this.page.evaluate(fn, payload);
-            await this.page.tracing.stop()
+            
+            if (this.tracingEnabled) await this.page.tracing.stop();
+
             this.checkForErrors();
             result = await this.processTrace(result);
         }
