@@ -55,7 +55,9 @@ export default class HeadlessBrowser {
     }
 
     async processTrace(result: any) {
-        if (this.page) {
+        if (! this.page) return result;
+            
+        if (this.projectConfig.metrics.includes('paint') || this.projectConfig.metrics.includes('layout')) {
             const traces = await parseTrace(this.tracePath);
             mergeTracedMetrics(result, traces);
         }

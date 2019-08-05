@@ -1,3 +1,5 @@
+import { BenchmarkMetricNames } from './benchmark';
+
 export interface GitConfig {
     lastCommit: { hash: string, date: string }
     localChanges: boolean,
@@ -65,6 +67,7 @@ export interface NormalizedConfig {
     externalStorage?: string,
     apiDatabase: ApiDatabaseConfig,
     commentThreshold: number,
+    metrics: BenchmarkMetricNames[],
     isInteractive?: boolean,
     runInBatch?: boolean;
     openPages: boolean,
@@ -121,6 +124,7 @@ export interface ProjectConfig {
     cacheDirectory: string;
     projectName: string;
     plugins: ProjectConfigPlugin[];
+    metrics: BenchmarkMetricNames[];
     rootDir: string;
     testMatch: string[];
     runInBatch?: boolean;
