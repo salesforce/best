@@ -1,4 +1,16 @@
-# [](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha5...v) (2019-07-31)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha5...v) (2019-08-05)
+
+
+### Bug Fixes
+
+* heroku deploy ([bcb43be](https://git.soma.salesforce.com/lwc/best/commits/bcb43be))
+* only show summary when not empty ([#194](https://git.soma.salesforce.com/lwc/best/issues/194)) ([16fcb8f](https://git.soma.salesforce.com/lwc/best/commits/16fcb8f))
+
+
+### Features
+
+* Bug Fixes, Easier Hub Authentication, Filter Out Metrics ([#195](https://git.soma.salesforce.com/lwc/best/issues/195)) ([44825a4](https://git.soma.salesforce.com/lwc/best/commits/44825a4))
+* enable Google Analytics ([3220e97](https://git.soma.salesforce.com/lwc/best/commits/3220e97))
 
 
 
