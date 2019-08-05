@@ -60,17 +60,10 @@ Once you have installed these packages, you can run the following command to sta
 yarn best-agent-hub
 ```
 
-If you used the Heroku Deploy button, you can run the following command on your Heroku instance to create the necessary tokens.
-```sh
-heroku run yarn tokens
-```
-
-If you setup your hub manually, you can read here about how to generate the necessary tokens.
-
-Either way, you should make note of these because you will need them below.
+If you used the Heroku button above, then a `TOKEN_SECRET` will automatically be set as a environment variable, otherwise you will need to set it yourself. This token will be used by your agents and your clients for authentication.
 
 ### Configuring Your Agents
-Now that you have your hub setup and you have your client token and agent token, you can configure your agents.
+Now that you have your hub setup, you can configure your agents.
 
 The easiest way to do this is to click the button in the agents section that is for deploying a hub's agent to Heroku. This will guide you through provisioning an agent with the proper configuration needed to interact with the hub.
 
@@ -80,7 +73,7 @@ Alternatively, you can configure your agents manually to talk to your hub. To do
 {
     hub: {
         host: "https://hub-url.herokuapp.com",
-        authToken: process.env.HUB_AGENT_TOKEN,
+        authToken: process.env.HUB_TOKEN,
         pingTimeout: 180000, // Optional: Default is 180000ms (3 minutes).
     },
     agentConfig: {
@@ -98,7 +91,7 @@ Alternatively, you can configure your agents manually to talk to your hub. To do
 
 The agent will use this configuration to register with the hub. Additionally, the `spec` field describes the browser and version that this agent is running. This is used together with the the `spec` option inside the `best.config.js` below.
 
-You should set the environment variable `HUB_AGENT_TOKEN` to your agent token which you got from the above steps.
+You should set the environment variable `HUB_TOKEN` to your token which you got from the above steps.
 
 ### Configuring Best
 Again, now that we have configured the hub and the agents, we need to tell Best to run your benchmarks on them inside your `best.config.js`:
@@ -114,7 +107,7 @@ module.exports = {
             config: {
                 host: "https://hub-url.herokuapp.com",
                 options: {
-                    query: { token: process.env.HUB_CLIENT_TOKEN }
+                    query: { token: process.env.HUB_TOKEN }
                 },
                 spec: {
                     browser: "chrome",
@@ -128,7 +121,7 @@ module.exports = {
 
 This is very similar to configuring Best to run on an agent, except we have added a `spec` configuration option. Like we added information about the browser and version to the agents, we can now tell the hub which browser and version we would like our benchmarks to run on. This allows us to create separate configurations that will run on different agents all through the same hub.
 
-You should set the environment variable `HUB_CLIENT_TOKEN` to your client token which you got from the above steps.
+You should set the environment variable `HUB_TOKEN` to your token which you got from the above steps.
 
 ## Agent & Hub Frontend
 Both the hubs and the agents come built-in with a frontend that allows you to monitor the state of the jobs they are running. 
