@@ -1,4 +1,8 @@
-# [](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha5...v) (2019-08-05)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha6...v) (2019-08-05)
+
+
+
+# [4.0.0-alpha6](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha5...v4.0.0-alpha6) (2019-08-05)
 
 
 ### Bug Fixes
