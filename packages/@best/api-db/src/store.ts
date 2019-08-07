@@ -76,7 +76,7 @@ export const saveBenchmarkSummaryInDB = async (benchmarkResults: BenchmarkResult
                 commit: lastCommit.hash,
                 commitDate: lastCommit.date,
                 environmentHash,
-                temporary: branch === 'master'
+                temporary: branch !== 'master'
             }
 
             if (stats) {
