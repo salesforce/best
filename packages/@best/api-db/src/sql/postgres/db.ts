@@ -10,7 +10,8 @@ export default class PostgresDatabase extends SQLDatabase {
     constructor(config: ApiDatabaseConfig) {
         super()
         this.pool = new Pool({
-            connectionString: config.uri
+            connectionString: config.uri,
+            ssl: true
         })
     }
 
