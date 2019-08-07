@@ -1,4 +1,14 @@
-# [](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha6...v) (2019-08-05)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha7...v) (2019-08-07)
+
+
+
+# [4.0.0-alpha7](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha6...v4.0.0-alpha7) (2019-08-07)
+
+
+### Bug Fixes
+
+* remove duplicate yarn prepare ([2b34143](https://git.soma.salesforce.com/lwc/best/commits/2b34143))
+* temporary when branch is NOT master ([#197](https://git.soma.salesforce.com/lwc/best/issues/197)) ([ffe3c85](https://git.soma.salesforce.com/lwc/best/commits/ffe3c85))
 
 
 
