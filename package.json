@@ -17,7 +17,7 @@
     "build:frontends": "lerna exec --scope **/agent-frontend --scope **/frontend -- yarn build",
     "build:docs": "cd docs && yarn build",
     "watch:docs": "cd docs && yarn watch",
-    "release": "yarn prepare && lerna publish -m 'chore(release): publish %s' --exact --force-publish=* && yarn changelog",
+    "release": "lerna publish -m 'chore(release): publish %s' --exact --force-publish=* && yarn changelog",
     "changelog": "yarn changelog:generate && yarn changelog:publish",
     "changelog:generate": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "changelog:publish": "git add CHANGELOG.md && git commit -m 'docs(changelog): publish release changelog' && git push",
