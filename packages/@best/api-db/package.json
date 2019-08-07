@@ -5,7 +5,7 @@
     "publishConfig": {
         "access": "public"
     },
-    "version": "4.0.0-alpha6",
+    "version": "4.0.0-alpha7",
     "dependencies": {
         "pg": "^7.11.0",
         "sqlite": "^3.0.3"

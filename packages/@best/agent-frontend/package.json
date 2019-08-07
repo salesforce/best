@@ -4,10 +4,10 @@
     "publishConfig": {
         "access": "public"
     },
-    "version": "4.0.0-alpha6",
+    "version": "4.0.0-alpha7",
     "main": "build/index.js",
     "dependencies": {
-        "@best/agent-logger": "4.0.0-alpha6",
+        "@best/agent-logger": "4.0.0-alpha7",
         "express": "^4.17.1",
         "lwc-services": "^1",
         "socket.io": "~2.2.0",
