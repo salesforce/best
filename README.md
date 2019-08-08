@@ -1,6 +1,6 @@
 <h1 align="center">🏆 Best Performance Benchmarks 🏆</h1>
 
-[![circleci badge](https://circleci.com/gh/salesforce/best/tree/master.svg)](https://circleci.com/gh/salesforce/best/tree/master) [![npm version](https://badge.fury.io/js/best.svg)](https://badge.fury.io/js/best)
+[![circleci badge](https://circleci.com/gh/salesforce/best/tree/master.svg)](https://circleci.com/gh/salesforce/best/tree/master) [![npm version](https://badge.fury.io/js/best.svg)](https://badge.fury.io/js/best) [![best badge](https://img.shields.io/badge/Performance%20By-Best-5100B9?labelColor=lightgrey)](https://perf.bestjs.dev)
 
 Best allows you to write benchmarks in the same way you write unit tests. This allows you to integrate Best into your CI workflow to create a consistent picture of your code's performance over time.
 
