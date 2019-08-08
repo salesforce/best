@@ -1,32 +1,22 @@
 module.exports = {
     projectName: 'best-benchmark',
     metrics: ['script', 'aggregate'],
-    "runners": [
+    runners: [
         {
-            "runner": "@best/runner-headless",
-            "alias": "default"
+            runner: "@best/runner-headless",
+            alias: "default"
         },
         {
-            "runner": "@best/runner-remote",
-            "alias": "heroku-agent",
-            "config": {
-                "host": "http://bestv4-agent.herokuapp.com",
-                "remoteRunner": "@best/runner-headless"
-            }
-        },
-        {
-            "runner": "@best/runner-hub",
-            "alias": "heroku-hub",
-            "config": {
-                "host": "http://bestv4-hub.herokuapp.com",
-                "options": {
-                    query: {
-                        token: process.env.HUB_TOKEN
-                    }
+            runner: "@best/runner-hub",
+            alias: "heroku-hub",
+            config: {
+                host: "https://best-public-hub.herokuapp.com",
+                options: {
+                    query: { token: process.env.BEST_HUB_CLIENT_TOKEN },
                 },
-                "spec": {
-                    "browser": "chrome",
-                    "version": "76"
+                spec: {
+                    browser: "chrome",
+                    version: "76"
                 }
             }
         }
