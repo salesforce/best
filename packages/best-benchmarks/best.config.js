@@ -10,7 +10,7 @@ module.exports = {
             runner: "@best/runner-hub",
             alias: "heroku-hub",
             config: {
-                host: "https://best-public-hub.herokuapp.com",
+                host: "https://hub.bestjs.dev",
                 options: {
                     query: { token: process.env.BEST_HUB_CLIENT_TOKEN },
                 },
