@@ -64,7 +64,7 @@ jobs:
 
       - run:
           name: Run BEST Benchmarks
-          command: yarn perf
+          command: yarn perf --runner heroku-hub --dbAdapter=sql/postgres --dbURI=${BEST_HUB_DATABASE_URL}
       - run:
           name: Compare BEST Benchmarks
           command: yarn perf --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --gitIntegration
