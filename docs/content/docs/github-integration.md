@@ -27,7 +27,11 @@ You can set either `GIT_APP_CERT_PATH` or `GIT_APP_CERT_BASE64` for Best to get 
 
 We encourage you to set these environment variables in your CI so that when you run Best through your CI the GitHub integration will run automatically.
 
-Additionally, if you want to enable comments on Pull Requests you need to set the environment variable `PULL_REQUEST` with the URL of the Pull Request.
+::: tip
+If you want to enable the GitHub integration for the frontend, you will need to set these environment variables on your frontend instance as well.
+:::
+
+Lastly, if you want to enable comments on Pull Requests from your CI workflow, you will need to set the environment variable `PULL_REQUEST` with the URL of the Pull Request.
 
 ## Usage
 Best will activate the GitHub integration when you pass the `--gitIntegration` flag in the command line. This will tell Best to create a GitHub Check and then possibly comment if there is a significant performance change.

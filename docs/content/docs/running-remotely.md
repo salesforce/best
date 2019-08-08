@@ -19,7 +19,9 @@ In order to provision a Best Agent your server will need access to [Puppeteer](h
 
 [![Deploy Best Agent](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/salesforce/best-heroku-deploy/tree/agent)
 
-Alternatively, you can install the `@best/agent` package. You will also probably need the `@best/runner-headless` package so you can use the headless Chrome runner.
+Alternatively, if you want more control over deployment, we recommend following [this template](https://github.com/salesforce/best-heroku-deploy/tree/agent) which contains everything you will need. Only a little tweaking should be required to get this to work with whatever cloud hosting you need.
+
+Lastly, if you want complete control, you can install the `@best/agent` package. You will also probably need the `@best/runner-headless` package so you can use the headless Chrome runner. We still recommend looking at the above template to see an example of how to setup your agent.
 
 Once you have these installed, you can run the following command to start an agent:
 ```sh
@@ -53,7 +55,9 @@ Provisioning a Best Hub is even easier than setting up an agent. The easiest way
 
 [![Deploy Best Hub](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/salesforce/best-heroku-deploy/tree/hub)
 
-Alternatively, you can install the `@best/agent-hub` package. You will also probably need the `@best/runner-headless` package again.
+Alternatively, if you want more control over deployment, we recommend following [this template](https://github.com/salesforce/best-heroku-deploy/tree/hub) which contains everything you will need to get a hub up and running. This template contains a bare-bones template so you can deploy Best to whatever cloud hosting provider you would like.
+
+Lastly, if you want full control over your hub, you can install the `@best/agent-hub` package. You will also probably need the `@best/runner-headless` package again. We still advise looking at the above template to see an example of how to setup your hub.
 
 Once you have installed these packages, you can run the following command to start a hub:
 ```sh

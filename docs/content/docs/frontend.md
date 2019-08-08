@@ -19,7 +19,9 @@ The easiest way to get the frontend up and running is by clicking the button bel
 [![Deploy Best Frontend](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/salesforce/best-heroku-deploy/tree/frontend)
 
 ## Manual Installation
-If you want to install the frontend yourself, you can do that by creating your own server that will host the frontend.
+If you want to install the frontend yourself, you can do that by creating your own server that will host the frontend. We strongly recommend following [this template](https://github.com/salesforce/best-heroku-deploy/tree/frontend) which contains everything you will need to get a frontend up and running.
+
+However if you want to manage everything yourself, that is also possible if you follow the steps below.
 
 In order to install the frontend simply add the package:
 ```sh
@@ -56,6 +58,8 @@ export default {
 ```
 
 Now all you need to do is start the server and you should be good to go.
+
+If you want to enable the GitHub integration, please follow [our guide](/guide/github-integration) to understand what is required.
 
 ## Configuring `apiDatabase`
 In order for your results to be stored on a hosted database (which is required for the frontend to work) you need to setup the `apiDatabase` field in your `best.config.js` file. Alternatively, you can also pass configuration variables to the cli.
