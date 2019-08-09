@@ -961,6 +961,7 @@ nav label:hover {
 nav ul.nav__list {
     background-color: #f6f4f4;
     border-radius: 5px;
+    overflow: hidden;
 }
 
 /**
