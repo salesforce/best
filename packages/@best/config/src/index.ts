@@ -112,7 +112,6 @@ export async function getConfigs(projectsFromCLIArgs: string[], cliOptions: CliC
         const parsedConfigs = await Promise.all(projects.map(root => readConfig(cliOptions, root, configPath)));
         ensureNoDuplicateConfigs(parsedConfigs, projects);
         configs = parsedConfigs.map(({ projectConfig }) => projectConfig);
-        globalConfig = parsedConfigs[0].globalConfig;
     }
 
     if (!globalConfig) {
