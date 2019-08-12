@@ -22,7 +22,7 @@ export function buildArgs(maybeArgv?: string[]): CliConfig {
 }
 
 function getProjectListFromCLIArgs(argsCLI: CliConfig, project?: string): string[] {
-    const projects = argsCLI.projects;
+    const projects = argsCLI.projects.slice();
 
     if (project) {
         projects.push(project);

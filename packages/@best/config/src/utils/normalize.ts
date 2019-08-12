@@ -70,6 +70,11 @@ function setCliOptionOverrides(initialOptions: UserConfig, argsCLI: CliConfig): 
                 case 'runInBatch':
                     options.runInBatch = !!argsCLI[key];
                     break;
+                case 'projects':
+                    if (argsCLI.projects && argsCLI.projects.length) {
+                        options.projects = argsCLI.projects;
+                    }
+                    break;
                 case 'compareStats':
                     options.compareStats = argsCLI.compareStats && argsCLI.compareStats.filter(Boolean);
                     break;
@@ -92,7 +97,7 @@ function setCliOptionOverrides(initialOptions: UserConfig, argsCLI: CliConfig): 
             }
             return options;
         }, {});
-    
+
     return { ...initialOptions, ...argvToOptions };
 }
 function normalizeObjectPathPatterns(options: { [key: string]: any }, rootDir: string) {
