@@ -1,4 +1,13 @@
-# [](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha7...v) (2019-08-07)
+# [](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha8...v) (2019-08-13)
+
+
+
+# [4.0.0-alpha8](https://git.soma.salesforce.com/lwc/best/compare/v4.0.0-alpha7...v4.0.0-alpha8) (2019-08-13)
+
+
+### Bug Fixes
+
+* projects option ([#199](https://git.soma.salesforce.com/lwc/best/issues/199)) ([7001a21](https://git.soma.salesforce.com/lwc/best/commits/7001a21))
 
 
 
