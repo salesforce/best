@@ -5,6 +5,10 @@ title: Understanding Best
 # Understanding Best
 Best came out of the need to have a tool that can consistently benchmark Javascript in the same way we can unit test our code. In pursuit of this goal, Best follows an opinionated model of performance benchmarking. Read on to learn about how Best will help you ensure you have performant code, and most importantly, that it stays that way over time.
 
+::: note
+The name of the project *Best* was inspired by *Jest* - changing the *"J"* to a *"B"* out of *"Benchmarks"* - The idea was that running benchmarks and doing perf testing should be as easy as unit testing.
+:::
+
 ## The "Best" Manifesto
 Once you have written your performance benchmarks, you pass them off to Best to process, run, and then analyze. This guide describes how that all happens.
 
