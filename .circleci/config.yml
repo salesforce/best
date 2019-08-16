@@ -21,7 +21,7 @@ jobs:
       - run:
           name: Sanity checks
           command: |
-            node ./scripts/tasks/check-license-headers.js
+            node ./scripts/check-license-headers.js
       - run: yarn lint
       - run: yarn test
 
