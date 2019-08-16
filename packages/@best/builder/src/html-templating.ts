@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2019, salesforce.com, inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: MIT
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+*/
+
 // The '<!-- saved from ... -->' syntax is required to let IE know that this content is safe to execute.
 // Full details are here: https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/compatibility/ms537628(v=vs.85)
 // Also, note that the line endings have to be <CR><LF> for Internet Explorer to correctly recognize the mark.
