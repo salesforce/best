@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2019, salesforce.com, inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: MIT
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+*/
+
 import { RunnerOutputStream } from "@best/console-stream";
 import { FrozenGlobalConfig, FrozenProjectConfig, BenchmarkInfo, BenchmarkRuntimeConfig, BenchmarkResults, BenchmarkResultsState, BenchmarkResultsSnapshot } from '@best/types';
 import AbstractRunner from '@best/runner-abstract';

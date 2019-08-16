@@ -18,6 +18,10 @@ jobs:
           - yarn-v3-{{ checksum "yarn.lock" }}
 
       - run: yarn install --frozen-lockfile
+      - run:
+          name: Sanity checks
+          command: |
+            node ./scripts/check-license-headers.js
       - run: yarn lint
       - run: yarn test
 
