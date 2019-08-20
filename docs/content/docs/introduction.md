@@ -3,60 +3,59 @@ title: Understanding Best
 ---
 
 # Understanding Best
-Best came out of the need to have a tool that can consistently benchmark Javascript in the same way we can unit test our code. In pursuit of this goal, Best follows an opinionated model of performance benchmarking. Read on to learn about how Best will help you ensure you have performant code, and most importantly, that it stays that way over time.
+Best came out of our need to consistently benchmark Javascript the same way we unit test our code. In pursuit of this goal, Best follows an opinionated model of performance benchmarking. Read on to learn how Best can help you create performant code and, most importantly, that it stays that way over time.
 
 ::: note
-The name of the project *Best* was inspired by *Jest* - changing the *"J"* to a *"B"* out of *"Benchmarks"* - The idea was that running benchmarks and doing perf testing should be as easy as unit testing.
+The name of the project *Best* was inspired by *Jest* - changing the *"J"* to a *"B"* for *"benchmarks."* The idea was that running benchmarks and doing perf testing should be as easy as unit testing.
 :::
 
-## The "Best" Manifesto
-Once you have written your performance benchmarks, you pass them off to Best to process, run, and then analyze. This guide describes how that all happens.
+## The Best Manifesto
+_Performance benchmarking should be as easy to write, run and trust as unit testing._
+
+## How Best Works
+Once you have written your performance benchmarks, you pass them off to Best to process, run, and analyze. This guide describes how that all happens.
 
 ### Best Builder
-Before we can run your benchmarks, we have compile them into an artifact that can be re-run at anytime and correctly reflects the state of your code. We do this by using Rollup to generate a bundle that contains your benchmarks, the code you are testing, and the Best Runtime.
-
-We inject the runtime at build time and this is what allows us to actually measure your code's performance in the browser.
+Before you can run your benchmarks, you must compile them into an artifact that Best can re-run at any time. You do this by using <a href="https://rollupjs.org/">Rollup</a> to generate a bundle that contains your benchmarks, the code you are testing, and the Best runtime.
 
 ![Builder](/assets/images/builder.svg)
 
-These artifacts are stored over time so that we can always go back and re-run them on whatever machines we want to capture an accurate representation of your code's performance over time.
+By including the Best runtime in the generated artifact you can run (and re-run) a performance benchmark at any time, in any environment (including your local browser), for any version of your code! If you want to compare performance on your local machine then just run them locally. Or if your dedicated hardware changes, you can re-run all the tests to recreate historical performance profiles in your new environment.
 
 ### Running Locally
-Now that we have generated consistent artifacts, it is time to run them and measure your code's performance. While you are developing new features on your local machine, we encourage you to occasionally run Best locally to get a rough measurement of how your code's performance characteristics may have changed.
+While you are making changes we recommend you run Best locally to measure how your code's performance characteristics have changed.
 
-This is ideal for local development, however the goal of Best is to create reproducible measurements of your code's performance, and that is where Best Agents come in.
+This works great for local development. But the goal of Best is to create reproducible measurements of your code's performance and that is where Best Agents come in.
 
 ### Best Agents
-Agents are the key aspect of Best which allow us to create reproducible results. By running Best Agents on dedicated hardware, we can ensure that how code is running in a consistent environment with extraneous variables that might effect the code's performance.
+Agents allow Best to create reproducible results. Agents should run in a consistent environment on dedicated hardware to ensure the code and performance benchmark produce consistent results.
 
-Best Agents are quite simple in the sense that they essentially run a benchmark and then tell you how long it took. This allows us to have leave the building and analyzing to the client (either your local machine or the CI).
+Best Agents are simple: they run a benchmark and report how long it took. The client, like your machine or a CI, is responsible for compiling and analyzing the results.
 
-A single Best Agent will have one environment that it can run code in, perhaps Chrome 74, and then you can have another agent running a different version of Chrome. This allows us to run our benchmarks in various environments while still maintaining the reproducibility of our results.
+Each Best Agent is responsible for running the test in a single environment. For example, first Agent runs Chrome 74, the second Agent runs Chrome 76, and the third Agent runs Edge.
 
 ### Best Hubs
-Agents work great for running your code in a stable, isolated, and reproducible environment. However, once you begin to have a larger team or want to use Best across your organization, you need some sort of orchestration tool. This is where Best Hub comes in.
-
-Best Hub allows any client to connect to a single endpoint, and then the hub handles connecting to agents to actually run your benchmarks. This means that you can have multiple agents running the same environment for parallelization or agents running different specs to test in separate environments.
+As you increase the number of Agents to support a growing team or organization, coordinating and efficiently using all Agents becomes challenging. Best Hubs provide a single entry point for a client to run performance benchmarks. The Best Hub orchestrates an unlimited number of Agents to run benchmarks. It runs tests in parallel across Agents, of the same and different environment, to deliver results as quickly as possible.
 
 ::: tip
-The great thing about Best Hub is that once you have a hub running for your organization, each team does not have to worry about its own benchmarking infrastructure. They can all connect to the same hub!
+Multiple teams and users may use a single Best Hub. This avoids teams running their own performance infrastructure. Scale the Hub up by adding as many Agents as you need.
 :::
 
-Once you have Best Hub running, you get to take full advantage of everything Best has to offer. You can read more about this in [Running Remotely](/guide/running-remotely).
+Once you have Best Hub running, you get to take full advantage of everything Best has to offer. Read more about this in [Running Remotely](/guide/running-remotely).
 
 ![The "Best" Hub Model](/assets/images/best_hub_model.svg)
 
 ### CI Integration
-Continuous integration is the best place to invoke Best. By integrating performance benchmarking next to your unit tests, you not only can ensure your code is working correctly, but you can be sure that your new changes are not negatively effecting performance.
+Continuous integration is the best place to invoke Best. By integrating performance benchmarking next to your unit tests, you ensure your code is functioning correctly and performing well.
 
 Additionally, since CI runs on all of your commits you can create consistent snapshots of your code's performance overtime.
 
 ### Expressive Metrics
-Another key aspect of Best that helps you understand your code's performance is the set of metrics with which we measure your code.
+Best helps you understand your code's performance with its many metrics.
 
-- `aggregate` The total time your benchmark took to run. If you were to only look at one metric it should be this one.
-- `script` The time it took to evaluate your benchmark code. This is useful to see if there is something in your code which is taking a long time to evaluate.
-- `paint` If you benchmark involves the DOM, we can measure how much time the browser spent on painting. This can be useful in making your UI codepaths more efficient.
-- `layout` If you benchmark involves the DOM, we can measure how much time the browser spent on layouts. By measuring the time the browser spends doing layouts, you can get a picture of how complex of DOM structure you are using.
+- `aggregate` The total time your benchmark took to run. If you look at one metric it should be this one.
+- `script` The time it took to evaluate your benchmark code. This is useful to confirm your benchmark code is running as quickly as you expect.
+- `paint` If your benchmark involves the DOM, Best measures how much time the browser spends on painting. This is useful to make your UI codepaths more efficient.
+- `layout` If your benchmark involves the DOM, Best measures how much time the browser spends on layouts. This gives you a picture of how complex of DOM structure you are using.
 
-**Note:** The `paint` and `layout` metrics are only available when using `runner-headless` because we get these directly from Chrome Dev Tools tracing.
+**Note:** The `paint` and `layout` metrics are only available when using `runner-headless` because Best gets these directly from Chrome Dev Tools tracing.

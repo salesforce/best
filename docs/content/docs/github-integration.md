@@ -3,45 +3,39 @@ title: GitHub Integration
 ---
 
 # GitHub Integration
-Best comes built-in with a GitHub Integration so you can insert Best into your Pull Request workflow. The integration provides the ability to use checks to ensure the performance benchmarks properly, as well as the ability to comment when performance improves or regresses.
+Best comes with GitHub Integration for rapid adoption into your existing development flow. It uses Github's [Checks](https://developer.github.com/v3/checks/) to report when benchmark results differ across commits.
 
 ## Installation
-In order to setup the integration you will need to create your own GitHub App that Best will use to interact with your repositories. GitHub has great documentation on [Creating a GitHub App](https://developer.github.com/apps/building-github-apps/creating-a-github-app/) that you should read in order to create your app. We encourage naming it something like `Best - Organization Name`.
+Best relies on a Github App to interact with your repositories. Follow [Github's guide to create a GitHub App](https://developer.github.com/apps/building-github-apps/creating-a-github-app/). We recommend naming the App `Best - [organization name]`.
 
-You will need to grant your app the following permissions:
+The Github App requires the following permissions:
 - **Checks**: Read/Write
 - **Issues**: Read/Write
 - **Pull Requests**: Read/Write
 
-These are the permissions that Best currently needs, however in the future we may add functionality which will require more permissions.
-
-Once you have successfully created your GitHub App, given it the proper permissions, and enabled it on the repo you would like to use with Best, you will need to set the following environment variables for Best.
-
-Best needs the App ID and a private key in order to authenticate itself. Setting the following `env` variables will allow Best to see these credentials.
+Set the following environment variables so Best may authenticate and interact with your Github App. It is recommended to set these environment variables in your CI.
 ```
 GIT_APP_ID=0000
 GIT_APP_CERT_PATH=/path/to/private-key.pem
 GIT_APP_CERT_BASE64=base64_encoded_version_of_private_key
 ```
-You can set either `GIT_APP_CERT_PATH` or `GIT_APP_CERT_BASE64` for Best to get access to the certificate.
-
-We encourage you to set these environment variables in your CI so that when you run Best through your CI the GitHub integration will run automatically.
+Set either `GIT_APP_CERT_PATH` or `GIT_APP_CERT_BASE64`.
 
 ::: tip
-If you want to enable the GitHub integration for the frontend, you will need to set these environment variables on your frontend instance as well.
+If you want to enable GitHub integration for the frontend then your must set these environment variables on your frontend instance as well.
 :::
 
-Lastly, if you want to enable comments on Pull Requests from your CI workflow, you will need to set the environment variable `PULL_REQUEST` with the URL of the Pull Request.
+To enable comments on pull requests from your CI workflow set the environment variable `PULL_REQUEST` with the URL of the pull request.
 
 ## Usage
-Best will activate the GitHub integration when you pass the `--gitIntegration` flag in the command line. This will tell Best to create a GitHub Check and then possibly comment if there is a significant performance change.
+Best will activate the GitHub integration when you pass the `--gitIntegration` flag. This tells Best to create a GitHub Check and then possibly comment if there is a significant performance change.
 
 ::: note
-The `--gitIntegration` command only works together with the `--compareStats` command, as the GitHub integration is meant for when you are comparing two different versions of code against the same benchmarks.
+You must specify the `--compareStats` flag to use `--gitIntegration` because Best reports meaningful difference _across commits_.
 :::
 
 ## Configuration
-By default, Best will leave a comment on the Pull Request when the average performance across your benchmarks changes by more than `5%`, however you are welcome to configure that number by adding the following in your `best.config.js`:
+By default, Best comments on pull request when the average performance across your benchmarks changes by more than `5%`. You can change this threshold by adding the following to your `best.config.js`:
 ```js
 {
     commentThreshold: 5

@@ -3,33 +3,35 @@ title: Running Remotely
 ---
 
 # Running Remotely
-Now you that you have written some benchmarks and setup your `best.config.js`, it's time to setup your remote running environment so that you can have reproducible results with Best.
+Now you that you have written some benchmarks and setup your `best.config.js`, it's time to setup Agents to remotely run your tests in environments that produce consistent results.
 
 ## Agents
-Agents are the core piece of running a benchmark remotely. They are the machines whose sole purpose is to run your code in the same environment every time.
+Agents run performance benchmarks. They should be deployed to dedicated hardware with stable environments so the results are consistent.
 
 ::: important
-While dedicated hardware can be expensive or hard to manage, we **strongly** recommend running Best Agents on dedicated hardware. This means that there will be no other processes that you do not have control over running on your machine while you are trying to run your benchmarks. This is the key to a reproducible measurement.
+While dedicated hardware can be expensive or hard to manage, it is **strongly** recommend to run Best Agents on dedicated hardware. This means that there will be no other processes on the machine influencing your benchmarks. This is key to a reproducible and reliable measurement.
 :::
 
 ### Provisioning an Agent
-In order to provision a Best Agent your server will need access to [Puppeteer](https://github.com/GoogleChrome/puppeteer) so that we can run your benchmarks using the headless runner inside Google Chrome. The easiest way to get an agent up and running is by clicking the button below which will create a Heroku app with everything you need.
+To provision a Best Agent your server needs [Puppeteer](https://github.com/GoogleChrome/puppeteer) so Best can run your benchmarks using the headless runner inside Google Chrome.
 
-**Note:** If you want to use a hub, please provision your hub first and then come back and press the button to configure your agent to work with your hub.
+The easiest way to get setup an Agent is by clicking the button below. It creates a Heroku app with everything you need.
+
+**Note:** If you want to use a Best Hub, provision the Hub first and then come back and press the button to configure your Agent to work with your Hub.
 
 [![Deploy Best Agent](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/salesforce/best-heroku-deploy/tree/agent)
 
-Alternatively, if you want more control over deployment, we recommend following [this template](https://github.com/salesforce/best-heroku-deploy/tree/agent) which contains everything you will need. Only a little tweaking should be required to get this to work with whatever cloud hosting you need.
+If you need more control over deployment follow [this template](https://github.com/salesforce/best-heroku-deploy/tree/agent). Only minimal tweaking is required to run this in any environment.
 
-Lastly, if you want complete control, you can install the `@best/agent` package. You will also probably need the `@best/runner-headless` package so you can use the headless Chrome runner. We still recommend looking at the above template to see an example of how to setup your agent.
+If you need complete control install the `@best/agent` package. You will probably need the `@best/runner-headless` package to use the headless Chrome runner. Use the above template for inspiration on setting up your Agent.
 
-Once you have these installed, you can run the following command to start an agent:
+Once you have these installed, run the following command to start the Agent:
 ```sh
 yarn best-agent
 ```
 
 ### Configuring Best to Run Remotely
-The last step in running your benchmarks remotely is to add the runner to your `best.config.js`:
+The last step to run your benchmarks remotely is to add the runner to your `best.config.js`:
 ```js
 module.exports = {
     projectName: 'agent-running',
@@ -41,37 +43,37 @@ module.exports = {
             config: {
                 host: "https://agent-url.herokuapp.com",
                 remoteRunner: "@best/runner-headless"
-            }
+            },
         },
     ]
 }
 ```
 
 ## Hubs
-If you have a lot of jobs that you want to run, or would like to run your benchmarks on multiple machines, then Best Hub is perfect you for. Best Hub allows you to create a single point of orchestration for your entire organization to access Best's agents.
+Use Best Hub if you have a lot of jobs that you want to run or would like to run your benchmarks on multiple machines. Best Hub provides a single entry point for your entire organization to access Best Agents.
 
 ### Provisioning a Hub
-Provisioning a Best Hub is even easier than setting up an agent. The easiest way to get a hub up and running is by clicking the button below which will create a Heroku app with everything you need.
+Provisioning a Best Hub is even easier than setting up an Agent. The easiest way to get a Hub setup is clicking the button below. It creates a Heroku app with everything you need.
 
 [![Deploy Best Hub](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/salesforce/best-heroku-deploy/tree/hub)
 
-Alternatively, if you want more control over deployment, we recommend following [this template](https://github.com/salesforce/best-heroku-deploy/tree/hub) which contains everything you will need to get a hub up and running. This template contains a bare-bones template so you can deploy Best to whatever cloud hosting provider you would like.
+If you need more control over deployment follow [this template](https://github.com/salesforce/best-heroku-deploy/tree/hub). This is a minimal template so you must configure it to suit your target environment.
 
-Lastly, if you want full control over your hub, you can install the `@best/agent-hub` package. You will also probably need the `@best/runner-headless` package again. We still advise looking at the above template to see an example of how to setup your hub.
+If you need complete control over the Hub install the `@best/agent-hub` package. You will probably need the `@best/runner-headless` package. Use the above template for inspiration on setting up your Hub.
 
-Once you have installed these packages, you can run the following command to start a hub:
+Once you have installed these packages, run the following command to start the Hub:
 ```sh
 yarn best-agent-hub
 ```
 
-If you used the Heroku button above, then a `TOKEN_SECRET` will automatically be set as a environment variable, otherwise you will need to set it yourself. This token will be used by your agents and your clients for authentication.
+If you used the Heroku button above then a `TOKEN_SECRET` is automatically set as an environment variable, otherwise you must set it yourself. This token is used by your Agents and clients for authentication.
 
 ### Configuring Your Agents
-Now that you have your hub setup, you can configure your agents.
+Now that you have your Hub setup you can configure your Agents.
 
-The easiest way to do this is to click the button in the agents section that is for deploying a hub's agent to Heroku. This will guide you through provisioning an agent with the proper configuration needed to interact with the hub.
+The easiest way is to click the button in the Agents section to deploy to Heroku. It will guide you through provisioning an Agent with the necessary configuration to interact with your Hub.
 
-Alternatively, you can configure your agents manually to talk to your hub. To do this you will need to set an environment variable called `HUB_CONFIG`. This should be set to a JSON string with the following information:
+Alternatively you can manually configure your Agents to talk to your Hub. Set an environment variable called `HUB_CONFIG` to a JSON string with the following information.
 
 ```js
 {
@@ -93,12 +95,12 @@ Alternatively, you can configure your agents manually to talk to your hub. To do
 }
 ```
 
-The agent will use this configuration to register with the hub. Additionally, the `spec` field describes the browser and version that this agent is running. This is used together with the the `spec` option inside the `best.config.js` below.
+The Agent uses this configuration to register with the Hub. Additionally, the `spec` field describes the browser and version that this Agent is running. This is used together with the `spec` option inside the `best.config.js` below.
 
 You should set the environment variable `HUB_TOKEN` to your token which you got from the above steps.
 
 ### Configuring Best
-Again, now that we have configured the hub and the agents, we need to tell Best to run your benchmarks on them inside your `best.config.js`:
+Now that you have configured your Hub and Agents you need to tell Best to run your benchmarks on them. Update your `best.config.js` with the following.
 
 ```js
 module.exports = {
@@ -123,13 +125,13 @@ module.exports = {
 }
 ```
 
-This is very similar to configuring Best to run on an agent, except we have added a `spec` configuration option. Like we added information about the browser and version to the agents, we can now tell the hub which browser and version we would like our benchmarks to run on. This allows us to create separate configurations that will run on different agents all through the same hub.
+This is similar to configuring Best to run on an Agent except you have added a `spec` configuration option. Like you added information about the browser and version to the Agents, you can tell the Hub which browser and version to run your benchmarks.
 
 You should set the environment variable `HUB_TOKEN` to your token which you got from the above steps.
 
 ## Agent & Hub Frontend
-Both the hubs and the agents come built-in with a frontend that allows you to monitor the state of the jobs they are running. 
+Both the Hubs and Agents come with a built-in frontend that allows you to monitor the state of the benchmarks they are running.
 
-You can view the frontend simply by visiting the URL of your agent or hub in your browser of choice.
+View the frontend by visiting the URL of your Hub or Agent agent.
 
 <img class="window-capture" src="/assets/images/agent_frontend.png" alt="Agent Frontend">

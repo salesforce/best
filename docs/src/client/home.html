@@ -1,7 +1,7 @@
 <section class="hero" id="getting-started">
 	<div class="content-wrapper flex-wrapper">
 		<div class="left-content">
-			<svg width="312" height="445" viewBox="0 0 3120 4450"><path fill="none" stroke="#fff" stroke-linejoin="round" stroke-width="410" d="M210 858.6v2169.8c0 667 540.8 1208 1208 1208h379c614.7 0 1113-498.5 1113-1113.2 0-561.8-416-1026.4-957-1102.3a970.6 970.6 0 0 0 483.3-839.8c0-536.3-434.7-971-971-971H858.6A648.6 648.6 0 0 0 210 858.6z"/></svg>					
+			<svg width="312" height="445" viewBox="0 0 3120 4450"><path fill="none" stroke="#fff" stroke-linejoin="round" stroke-width="410" d="M210 858.6v2169.8c0 667 540.8 1208 1208 1208h379c614.7 0 1113-498.5 1113-1113.2 0-561.8-416-1026.4-957-1102.3a970.6 970.6 0 0 0 483.3-839.8c0-536.3-434.7-971-971-971H858.6A648.6 648.6 0 0 0 210 858.6z"/></svg>
 		</div>
 		<div class="right-content">
 			<div class="about">
@@ -17,17 +17,17 @@
 <section class="flex-wrapper content-wrapper">
 	<div class="card card-shade">
 		<h4>Easy to Write</h4>
-		<p>Benchmarks are easy to write with a simple set of primitives so you don't have to worry about any domain specific knowledge.</p>
+		<p>Benchmarks are easy to write with a simple set of familiar primitives so you don't have to learn a whole new framework.</p>
 	</div>
 
 	<div class="card card-shade">
 		<h4>Anywhere and Anytime</h4>
-		<p>You can run, compare, and diff any change both locally and on dedicated hardware. This lets you compare any versions you want in whichever browser you desire.</p>
+		<p>You can run, compare, and diff any change locally and on dedicated hardware. This lets you compare any version in any browser you desire.</p>
 	</div>
 
 	<div class="card card-shade">
 		<h4>Simple Automation</h4>
-		<p>Best allows you to setup one set of dedicated machines so that no teams have to maintain any of their own infrastructure.</p>
+		<p>Best allows you to setup one set of shared hardware so individual teams don't have to maintain their own infrastructure.</p>
 	</div>
 </section>
 
@@ -35,7 +35,7 @@
 	<div class="content-wrapper">
 		<div class="learn">
 			<h3>Getting Started with Best</h3>
-			<p>Best allows you to write benchmarks in the same way you write unit tests. This allows you to integrate Best into your CI workflow to create a consistent picture of your code's performance over time. Ready to jump in? Check out the Developer Guide to read about how to get started!</p>
+			<p>Best allows you to write benchmarks the same way you write unit tests. This allows you to integrate Best into your CI workflow to create a consistent picture of your code's performance over time. Ready to jump in? Check out the <a href="/guide/introduction">Guide</a> to read about how to get started!</p>
 			<a href="/guide/introduction"><button class="brand">Learn More</button></a>
 		</div>
 
@@ -69,20 +69,20 @@
 		<img class="window-capture" alt="Best Compare Stats" src="/assets/images/compare_stats.png">
 		<div class="info">
 			<h4>Reproducible Results</h4>
-			<p>Best is designed to run on dedicated hardware, this means that you are running your benchmarks in the same environment everytime. We encourage you do this so that your results are not effected by an inconsistent environment which can be a false flag for performance changes.</p>
-			<p>The Best Hub and Agent model works great for implementing this, if you want to learn more take a look at <a href="/guide/running-remotely#hubs">Setting Up a Best Hub</a>.</p>
+			<p>Best is designed to run on dedicated hardware so your benchmarks run in the same environment every time. We recommend this so your results are not affected by inconsistent environments.</p>
+			<p>The Best Hub and Agent model works great for implementing this. Learn more in <a href="/guide/running-remotely#hubs">Setting Up a Best Hub</a>.</p>
 		</div>
 	</div>
 	<div class="feature">
 		<img class="window-capture" alt="Best Example Run" src="/assets/images/lwc_example_terminal.png">
 		<div class="info">
 			<h4>Expressive Metrics</h4>
-			<p>Best comes packed with ability to measure all the types of metrics you might want to know. You can learn more about the following metrics <a href="/guide/introduction#expressive-metrics">here</a>.</p>
+			<p>Best comes with ability to measure all the metrics you might want to know. Learn more in <a href="/guide/introduction#expressive-metrics">Expressive Metrics</a>.</p>
 			<ul>
 				<li><code>aggregate</code> The total time your benchmark took to run.</li>
 				<li><code>script</code> The time it took to evaluate your benchmark code.</li>
-				<li><code>paint</code> If you benchmark involves the DOM, we can measure how much time the browser spent on painting.</li>
-				<li><code>layout</code> If you benchmark involves the DOM, we can measure how much time the browser spent on layouts.</li>
+				<li><code>paint</code> If your benchmark involves the DOM, Best measures how much time the browser spends on painting.</li>
+				<li><code>layout</code> If your benchmark involves the DOM, Best measures how much time the browser spends on layouts.</li>
 			</ul>
 		</div>
 	</div>
@@ -90,16 +90,16 @@
 		<img alt="Best GitHub Comment" src="/assets/images/github_comment.png">
 		<div class="info">
 			<h4>GitHub Integration</h4>
-			<p>If your team uses GitHub then you can easily create a GitHub App so that you can integrate Best into your Pull Request workflow.</p>
-			<p>Best comes with a built-in GitHub bot that can create Checks and comment when a pull request is causing significant performance change. If you want to learn more, check out <a href="/guide/github-integration">Integrating Best with GitHub</a>.</p>
+			<p>If your team uses GitHub you can create a GitHub App that integrates Best into your Pull Request workflow.</p>
+			<p>Best comes with a built-in GitHub bot that creates <a href="https://help.github.com/en/articles/about-status-checks">checks</a> and comments when a pull request causes a significant performance change. Learn more in <a href="/guide/github-integration">Integrating Best with GitHub</a>.</p>
 		</div>
 	</div>
 	<div class="feature">
 		<img class="window-capture" alt="Best Frontend Example" src="/assets/images/frontend_example.png">
 		<div class="info">
 			<h4>The Best Frontend</h4>
-			<p>Best comes built-in with a frontend dashboard that allows you to monitor your benchmarks over the time with each commit. This allows you to pinpoint which commits causes improvements or regressions to your performance.</p>
-			<p>The frontend allows you to view all your projects and benchmarks in one place. If this seems like something you want, you can read through <a href="/guide/frontend">Enabling The Best Frontend</a>.</p>
+			<p>Best comes with a frontend dashboard to monitor your benchmarks by commit over time. This allows you to pinpoint which commits cause performance improvements and regressions.</p>
+			<p>The frontend allows you to view all your projects and benchmarks in one place. Learn more in <a href="/guide/frontend">Enabling The Best Frontend</a>.</p>
 		</div>
 	</div>
 </section>

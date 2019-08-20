@@ -3,25 +3,25 @@ title: Continuous Integration
 ---
 
 # Continuous Integration
-The best way to use Best is to integrate it into your CI workflow. We encourage you run your CI for all commits into master and on Pull Requests, by doing this you can ensure that you are measuring your code's performance whenever there are changes.
+Continuous integration is the best place to invoke Best. It is recommended to run your CI and Best on all commits into `master` and all pull requests (PR) so you have visibility into the performance profile of your code whenever it changes.
 
 ## Pull Requests
-When a new PR is created, we recommend using Best in the following ways by activating it twice:
+It is recommended to run Best in these ways on every new PR:
 
-1. `best` Run your benchmarks on your current code to measure their performance
-2. `best --compareStats` Run Best in comparison mode with the current code compared against the branch you are trying to merge into.
+1. `best` Run your benchmarks on your current code to measure its performance.
+2. `best --compareStats` Run Best in comparison mode with the current code compared against the target branch.
 
-By running Best a second time in comparison mode we can generate a comparison table which we can then show on the Pull Request using the [GitHub Integration](/guide/github-integration). 
+By running Best a second time in comparison mode it generates a comparison table which can be shown on the pull request using the [GitHub Integration](/guide/github-integration).
 
-When you run Best in comparison mode we are ensuring that we have as close to the same environment as possible so that we can reduce extraneous variables that may effect the results of our performance tests.
+When you run Best in comparison mode you ensure the same environment is used for the two executions. This reduces inconsistencies caused by extraneous variables.
 
-## Commits to Master
-When you run your CI after a new commit to master we recommend running Best again and ensuring that the results are stored so that you can see the performance on [the Frontend](/guide/frontend). This will allow you to see a graph of your code's performance over time with each change into master.
+## Commits to `master`
+When you run your CI after a new commit to `master` it is recommended to run Best again so the results are stored and visible on [the Frontend](/guide/frontend). This allows you to see a graph of your code's performance over time with each change in `master`.
 
-There is no need to run Best in comparison mode since you do not have anything to compare your new code in master against.
+There is no need to run Best in comparison mode because you are not comparing against a separate branch.
 
 ## Example in CircleCI
-If you want to see a full example you can look at Best's own CircleCI [`config.yml`](https://github.com/salesforce/best/blob/master/.circleci/config.yml). Take a look inside the `perf_and_compare` job to see how we are running Best. In short we have the following commands inside the configuration file.
+To see an example look at Best's own CircleCI [`config.yml`](https://github.com/salesforce/best/blob/master/.circleci/config.yml). Look at the `perf_and_compare` job to see Best is used to benchmark Best. The relevant commands are copied below.
 
 ```yml
 - run:
@@ -32,23 +32,21 @@ If you want to see a full example you can look at Best's own CircleCI [`config.y
     command: yarn perf --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --gitIntegration
 ```
 
-Here we have a Yarn command called `perf` which is essentially an alias to the Best CLI. You can see that first we run Best to measure the performance of our new code from the Pull Request.
-
-Then, we run `best --compareStats` and pass a base commit which is the newest commit from master, and a target commit which is the newest commit from our PR. Lastly we pass the `--gitIntegration` flag so that Best will update the PR on GitHub.
+The Yarn command `perf` is essentially an alias to the Best CLI. Best is first run to benchmark the code of the new Pull Request. Then `best --compareStats` is run with a base commit from `master` and a target commit from the PR. The `--gitIntegration` flag causes Best to post the results on the pull request on Github.
 
 ::: tip
-We **highly** encourage you to use a remote runner when running your benchmarks because otherwise there is no way to guarantee reproducible results. Please check out the guide on [running remotely](/guide/running-remotely) to see how to do this.
+It is **highly** recommended to use a remote runner for your benchmarks to guarantee reproducible results. Check out the guide on [running remotely](/guide/running-remotely) to see how this is setup.
 :::
 
 ## External Storage
-The last thing to keep in mind when running Best in your CI workflow is that we encourage you to use an external storage provider to store the artifacts that Best generates. This means you do not have to re-build your benchmarks every time we run the comparison. We currently support storing the artifacts on AWS.
+When running Best in your CI workflow is it recommended to use an external storage provider for the artifacts generated by Best. This avoids rebuilding the benchmark results to run the comparison. Best supports storing the artifacts on AWS.
 
-To enable this pass the `--externalStorage`:
+To enable this pass the `--externalStorage` flag:
 ```sh
 best --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --externalStorage=@best/store-aws
 ```
 
-You must also set the `AWS_BUCKET_NAME` environment variable so that Best knows where to look for your artifacts. Additionally, you must make your bucket publicly accessible so that Best can read and write into it.
+You must also set the `AWS_BUCKET_NAME` environment variable so Best knows where to find your artifacts. The bucket must be publicly accessible so that Best can read and write into it.
 
 ::: important
 This is necessary if you want to use a [remote runner](/guide/running-remotely) to run your benchmarks.

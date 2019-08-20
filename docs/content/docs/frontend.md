@@ -10,25 +10,23 @@ The Best Frontend provides a powerful tool to view the performance of your code.
 Check out the [live demo](#) to see a frontend showing Best's own examples.
 
 ::: note
-In order for the frontend to work, you need to [configure](#configuring-apidatabase) your `best.config.js` to properly use a hosted api database to store the result summaries.
+In order for the frontend to work you must [configure](#configuring-apidatabase) your `best.config.js` to use a hosted API database to store the result summaries.
 :::
 
 ## Heroku Installation
-The easiest way to get the frontend up and running is by clicking the button below to create a Heroku deployment that will serve your frontend.
+The easiest way to get the frontend up and running is by clicking the button below to create a Heroku deployment that serve the frontend.
 
 [![Deploy Best Frontend](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/salesforce/best-heroku-deploy/tree/frontend)
 
 ## Manual Installation
-If you want to install the frontend yourself, you can do that by creating your own server that will host the frontend. We strongly recommend following [this template](https://github.com/salesforce/best-heroku-deploy/tree/frontend) which contains everything you will need to get a frontend up and running.
+You can create your own server to host the frontend. It is recommended to follow [this template](https://github.com/salesforce/best-heroku-deploy/tree/frontend) and the steps below.
 
-However if you want to manage everything yourself, that is also possible if you follow the steps below.
-
-In order to install the frontend simply add the package:
+Install the frontend by adding its package.
 ```sh
 yarn add @best/frontend
 ```
 
-The next thing you will need to do is create a file like `serve.js` that actually creates the server:
+Create a file like `serve.js` that creates the HTTP server:
 ```js
 import express from 'express';
 import { Frontend } from '@best/frontend'
@@ -43,29 +41,29 @@ app.use(Frontend(config))
 app.listen(PORT)
 ```
 
-There are two things of note here, one we are using [Express](https://github.com/expressjs/express) to act as the actual webserver. Additionally, we have to provide a config to the frontend. The config file should be something like this:
+This example uses [Express](https://github.com/expressjs/express) as the webserver. The configuration file `best-frontend.confg` contains the following.
 ```js
 export default {
     apiDatabase: {
         adapter: 'sql/postgres',
-        uri: 'postgresql://localhost' // You should provide the connection URI to your hosted postgres database
+        uri: 'postgresql://localhost' // Provide the connection URI to your hosted postgres database
     },
-    githubConfig: { // (optional) this allows the frontend to fetch commit info directly from GitHub
+    githubConfig: { // (optional) Allows the frontend to fetch commit info directly from GitHub
         owner: 'salesforce',
         repo: 'best'
     }
 }
 ```
 
-Now all you need to do is start the server and you should be good to go.
+Start the server and point your browser as its URL.
 
-If you want to enable the GitHub integration, please follow [our guide](/guide/github-integration) to understand what is required.
+To enable the GitHub integration in the frontend follow the [Github integration guide](/guide/github-integration).
 
 ## Configuring `apiDatabase`
-In order for your results to be stored on a hosted database (which is required for the frontend to work) you need to setup the `apiDatabase` field in your `best.config.js` file. Alternatively, you can also pass configuration variables to the cli.
+To store your results in a hosted database (which is required for the frontend to work) you must set the `apiDatabase` field in your `best.config.js` file or pass command line arguments
 
 ### Configuration File
-The easiest way to configure Best to use your hosted database is by adding the following to your `best.config.js`:
+Specify the hosted API database by adding the following to your `best.config.js`.
 ```js
 {
     apiDatabase: {
@@ -76,8 +74,8 @@ The easiest way to configure Best to use your hosted database is by adding the f
 ```
 
 ### CLI Arguments
-If you do not want to do this, you can also pass the following arguments to the cli command like so,
+If the configuration file approach is not suitable for your environment then specify the following command-line arguments.
 ```sh
 best --dbAdapter=sql/postgres --dbURI=postgresql://localhost
 ```
-This will override any configuration you have in your `best.config.js` file.
+This overrides the configuration in `best.config.js`.
