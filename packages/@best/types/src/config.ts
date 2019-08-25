@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2019, salesforce.com, inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: MIT
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+*/
+
+import { BenchmarkMetricNames } from './benchmark';
+
 export interface GitConfig {
     lastCommit: { hash: string, date: string }
     localChanges: boolean,
@@ -65,6 +74,7 @@ export interface NormalizedConfig {
     externalStorage?: string,
     apiDatabase: ApiDatabaseConfig,
     commentThreshold: number,
+    metrics: BenchmarkMetricNames[],
     isInteractive?: boolean,
     runInBatch?: boolean;
     openPages: boolean,
@@ -121,6 +131,7 @@ export interface ProjectConfig {
     cacheDirectory: string;
     projectName: string;
     plugins: ProjectConfigPlugin[];
+    metrics: BenchmarkMetricNames[];
     rootDir: string;
     testMatch: string[];
     runInBatch?: boolean;

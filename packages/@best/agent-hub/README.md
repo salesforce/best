@@ -19,7 +19,7 @@ node bin/best-agent-hub.js
 This command will start the hub server using the following configuration:
 
 - Running port: `6000`. It can be overridden by setting `env.PORT` to the desired port.
-- Tokens secret: `secret`. It's recommended to override it by setting `env.TOKEN_SECRET` to the desired secret used authenticate clients. See [Generating hub access tokens for clients](#generating-hub-access-tokens-for-clients). 
+- Tokens secret: `secret`. It's recommended to override it by setting `env.TOKEN_SECRET` to the desired secret used authenticate clients.
 
 ### Configuring hub in startup.
 
@@ -132,23 +132,6 @@ best --runner hub-chrome
 
 # Measures in ie11:
 best --runner hub-ie11
-```
-
-### Generating hub access tokens for clients
-
-The hub authentication is based on [JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519) standard using (https://github.com/auth0/node-jsonwebtoken)
-
-Once you start your hub using a TOKEN_SECRET (for example: password) you will need to generate a token for the client connecting the hub. You can do that using the `generate-client-token` tool included with the `@best/agent-hub`
-
-To display the help on the tool run:
-```bash
-node bin/generate-client-token --help
-```
-
-Example using the tool: (generate a client token for the hub using `password` as secret, the token will expire in 45 days)
-
-```bash
-node bin/generate-client-token.js -s password -c --ttl "45 days"
 ```
 
 ### Adding agents to the hub once started

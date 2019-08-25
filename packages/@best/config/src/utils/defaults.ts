@@ -1,4 +1,12 @@
+/*
+ * Copyright (c) 2019, salesforce.com, inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: MIT
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+*/
+
 import { cacheDirectory } from '@best/utils';
+import { BenchmarkMetricNames } from '@best/types';
 
 const defaultOptions = {
     cache: true,
@@ -9,6 +17,7 @@ const defaultOptions = {
         adapter: 'sql/sqlite',
         uri: '<rootDir>/__benchmarks_results__/best.sqlite'
     },
+    metrics: ['script', 'aggregate', 'paint', 'layout', 'system', 'idle'] as BenchmarkMetricNames[],
     cacheDirectory: cacheDirectory(),
     useHttp: false,
     openPages: false,

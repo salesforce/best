@@ -1,5 +1,12 @@
+/*
+ * Copyright (c) 2019, salesforce.com, inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: MIT
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+*/
+
 import { VERSION } from './constants';
-import { BenchmarkResultsSnapshot, BenchmarkResultNode, BenchmarkMetricNames, BenchmarkStats, AllBenchmarksMetricsMap, BenchmarkMetricsAggregate, AllBenchmarkMetricStatsMap, StatsNode, BenchmarkMetricStatsMap, StatsNodeGroup, MetricsStatsMap } from "@best/types";
+import { BenchmarkResultsSnapshot, BenchmarkResultNode, BenchmarkMetricNames, BenchmarkStats, AllBenchmarksMetricsMap, BenchmarkMetricsAggregate, AllBenchmarkMetricStatsMap, StatsNode, BenchmarkMetricStatsMap, StatsNodeGroup, MetricsStatsMap, FrozenProjectConfig } from "@best/types";
 import { quantile, mean, median, variance, medianAbsoluteDeviation, compare as compareSamples } from './stats';
 
 function computeSampleStats(arr: number[], samplesQuantileThreshold: number): BenchmarkStats {
@@ -20,11 +27,15 @@ function computeSampleStats(arr: number[], samplesQuantileThreshold: number): Be
 }
 
 // Given an iteration benchmark (whith nested benchmarks), collect its metrics
-function collectResults(resultNode: BenchmarkResultNode, collector: AllBenchmarksMetricsMap) {
+function collectResults(resultNode: BenchmarkResultNode, collector: AllBenchmarksMetricsMap, projectConfig: FrozenProjectConfig) {
     const { name } = resultNode;
     let collectorNode = collector[name];
     if (!collectorNode) {
-        collectorNode = collector[name] = { script: [], aggregate: [], paint: [], layout: [] };
+        const emptyMetrics = projectConfig.metrics.reduce((acc, key) => ({
+            ...acc,
+            [key as BenchmarkMetricNames]: []
+        }), {})
+        collectorNode = collector[name] = emptyMetrics;
     }
 
     if (resultNode.aggregate > 0 && collectorNode.aggregate) {
@@ -43,7 +54,7 @@ function collectResults(resultNode: BenchmarkResultNode, collector: AllBenchmark
             return collector;
         }, collectorNode);
     } else {
-        resultNode.nodes.forEach((node: BenchmarkResultNode) => collectResults(node, collector));
+        resultNode.nodes.forEach((node: BenchmarkResultNode) => collectResults(node, collector, projectConfig));
     }
 
     return collector;
@@ -76,7 +87,7 @@ export async function analyzeBenchmarks(benchmarkResults: BenchmarkResultsSnapsh
             const structure = results[0];
 
             // Collect the metrics for the nested benchmarks within
-            const collector: AllBenchmarksMetricsMap = results.reduce((reducer: AllBenchmarksMetricsMap, node: BenchmarkResultNode) => collectResults(node, reducer), {});
+            const collector: AllBenchmarksMetricsMap = results.reduce((reducer: AllBenchmarksMetricsMap, node: BenchmarkResultNode) => collectResults(node, reducer, projectConfig), {});
 
             // For each metric
             const benchmarkStats: AllBenchmarkMetricStatsMap = Object.keys(collector).reduce((stats: AllBenchmarkMetricStatsMap, benchmarkName: string) => {

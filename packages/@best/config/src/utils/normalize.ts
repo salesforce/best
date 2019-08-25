@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2019, salesforce.com, inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: MIT
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+*/
+
 import path from 'path';
 import chalk from 'chalk';
 import DEFAULT_CONFIG from './defaults';
@@ -70,6 +77,11 @@ function setCliOptionOverrides(initialOptions: UserConfig, argsCLI: CliConfig): 
                 case 'runInBatch':
                     options.runInBatch = !!argsCLI[key];
                     break;
+                case 'projects':
+                    if (argsCLI.projects && argsCLI.projects.length) {
+                        options.projects = argsCLI.projects;
+                    }
+                    break;
                 case 'compareStats':
                     options.compareStats = argsCLI.compareStats && argsCLI.compareStats.filter(Boolean);
                     break;
@@ -92,7 +104,7 @@ function setCliOptionOverrides(initialOptions: UserConfig, argsCLI: CliConfig): 
             }
             return options;
         }, {});
-    
+
     return { ...initialOptions, ...argvToOptions };
 }
 function normalizeObjectPathPatterns(options: { [key: string]: any }, rootDir: string) {

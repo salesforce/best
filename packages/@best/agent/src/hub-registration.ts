@@ -1,4 +1,16 @@
+/*
+ * Copyright (c) 2019, salesforce.com, inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: MIT
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+*/
+
 import axios from "axios";
+
+export interface Spec {
+    browser: string,
+    version: string
+}
 
 export interface HubConfig {
     hub: {
@@ -7,10 +19,7 @@ export interface HubConfig {
         pingTimeout: number,
     },
     agentConfig: {
-        spec: {
-            browser: string,
-            version: string
-        },
+        spec: Spec | Spec[],
         host: string,
         options: { path: string },
         remoteRunner: string,

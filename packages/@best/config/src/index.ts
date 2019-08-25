@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2019, salesforce.com, inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: MIT
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+*/
+
 import { resolveConfigPath, readConfigAndSetRootDir, ensureNoDuplicateConfigs } from './utils/resolve-config';
 import { getGitInfo } from './utils/git';
 import { normalizeConfig, normalizeRootDirPattern } from './utils/normalize';
@@ -36,6 +43,7 @@ function generateProjectConfigs(options: NormalizedConfig, isRoot: boolean, gitI
         plugins: options.plugins,
         rootDir: options.rootDir,
         projectName: options.projectName,
+        metrics: options.metrics,
         runInBatch: options.runInBatch,
         benchmarkRunner: options.runner,
         benchmarkRunnerConfig: options.runnerConfig,
@@ -111,7 +119,6 @@ export async function getConfigs(projectsFromCLIArgs: string[], cliOptions: CliC
         const parsedConfigs = await Promise.all(projects.map(root => readConfig(cliOptions, root, configPath)));
         ensureNoDuplicateConfigs(parsedConfigs, projects);
         configs = parsedConfigs.map(({ projectConfig }) => projectConfig);
-        globalConfig = parsedConfigs[0].globalConfig;
     }
 
     if (!globalConfig) {

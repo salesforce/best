@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2019, salesforce.com, inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: MIT
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+*/
+
 import { Pool } from 'pg'
 import { SQLDatabase, SQLQueryResult } from '../db'
 import { ApiDatabaseConfig } from '@best/types';
@@ -10,7 +17,8 @@ export default class PostgresDatabase extends SQLDatabase {
     constructor(config: ApiDatabaseConfig) {
         super()
         this.pool = new Pool({
-            connectionString: config.uri
+            connectionString: config.uri,
+            ssl: true
         })
     }
 

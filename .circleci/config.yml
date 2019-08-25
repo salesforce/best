@@ -18,6 +18,10 @@ jobs:
           - yarn-v3-{{ checksum "yarn.lock" }}
 
       - run: yarn install --frozen-lockfile
+      - run:
+          name: Sanity checks
+          command: |
+            node ./scripts/check-license-headers.js
       - run: yarn lint
       - run: yarn test
 
@@ -64,7 +68,7 @@ jobs:
 
       - run:
           name: Run BEST Benchmarks
-          command: yarn perf
+          command: yarn perf --runner heroku-hub --dbAdapter=sql/postgres --dbURI=${BEST_HUB_DATABASE_URL}
       - run:
           name: Compare BEST Benchmarks
           command: yarn perf --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --gitIntegration

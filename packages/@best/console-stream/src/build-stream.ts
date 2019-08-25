@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2019, salesforce.com, inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: MIT
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+*/
+
 import path from "path";
 import { isInteractive as globaIsInteractive, clearLine } from "@best/utils";
 import chalk from "chalk";
@@ -116,7 +123,7 @@ export default class BuildOutputStream {
 
     printBenchmark({ state, projectName, displayPath }:{ state: State, projectName: string, displayPath: string }) {
         const columns = this.stdout.columns || 80;
-        const overflow = columns - (state.length + projectName.length + displayPath.length + /* for padding */ 10);
+        const overflow = columns - (state.length + projectName.length + displayPath.length + /* for padding */ 14);
         const hasOverflow = overflow < 0;
 
         const ansiState = printState(state);

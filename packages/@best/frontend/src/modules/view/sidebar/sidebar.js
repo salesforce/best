@@ -7,7 +7,7 @@ export default class ViewSidebar extends LightningElement {
     @track projects = [];
     @track selectedId;
 
-    hasFetchedInitialProject = false;
+    hasSelectedInitialProject = false;
 
     @wire(connectStore, { store })
     storeChange({ projects }) {
@@ -20,8 +20,8 @@ export default class ViewSidebar extends LightningElement {
     }
 
     renderedCallback() {
-        if (!this.hasFetchedInitialProject && this.projects.length) {
-            this.hasFetchedInitialProject = true;
+        if (!this.hasSelectedInitialProject && this.projects.length) {
+            this.hasSelectedInitialProject = true;
             if (this.selectedId) { // from URL
                 const project = this.projects.find(proj => proj.id === this.selectedId);
                 store.dispatch(selectProject(project, false));

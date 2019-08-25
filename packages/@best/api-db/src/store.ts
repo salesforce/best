@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2019, salesforce.com, inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: MIT
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+*/
+
 import crypto from 'crypto';
 import { loadDbFromConfig } from './utils';
 import { TemporarySnapshot, Metric } from './types';
@@ -76,7 +83,7 @@ export const saveBenchmarkSummaryInDB = async (benchmarkResults: BenchmarkResult
                 commit: lastCommit.hash,
                 commitDate: lastCommit.date,
                 environmentHash,
-                temporary: branch === 'master'
+                temporary: branch !== 'master'
             }
 
             if (stats) {

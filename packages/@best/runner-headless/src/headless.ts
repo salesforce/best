@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2019, salesforce.com, inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: MIT
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+*/
+
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
@@ -28,6 +35,7 @@ export default class HeadlessBrowser {
     pageUrl: string;
     projectConfig: FrozenProjectConfig;
     tracePath: string;
+    tracingEnabled: boolean;
     browser?: puppeteer.Browser;
     page?: puppeteer.Page;
     pageError?: Error;
@@ -36,6 +44,7 @@ export default class HeadlessBrowser {
         this.pageUrl = url;
         this.projectConfig = projectConfig;
         this.tracePath = path.resolve(tempDir(), 'trace.json');
+        this.tracingEnabled = projectConfig.metrics.includes('paint') || projectConfig.metrics.includes('layout');
     }
 
     async initialize() {
@@ -55,7 +64,9 @@ export default class HeadlessBrowser {
     }
 
     async processTrace(result: any) {
-        if (this.page) {
+        if (! this.page) return result;
+            
+        if (this.tracingEnabled) {
             const traces = await parseTrace(this.tracePath);
             mergeTracedMetrics(result, traces);
         }
@@ -64,7 +75,7 @@ export default class HeadlessBrowser {
     }
 
     async close() {
-        await removeTrace(this.tracePath);
+        if (this.tracingEnabled) await removeTrace(this.tracePath);
 
         if (this.browser) {
             return this.browser.close();
@@ -80,15 +91,19 @@ export default class HeadlessBrowser {
     async evaluate(fn: any, payload: any) {
         let result;
         if (this.page) {
-            await this.page.tracing.start({ path: this.tracePath })
+            if (this.tracingEnabled) await this.page.tracing.start({ path: this.tracePath });
+
             result = await this.page.evaluate(fn, payload);
-            await this.page.tracing.stop()
+            
+            if (this.tracingEnabled) await this.page.tracing.stop();
+
             this.checkForErrors();
             result = await this.processTrace(result);
         }
 
         return result;
     }
+    
     version() {
         return this.browser ? this.browser.version(): Promise.resolve('unknown');
     }

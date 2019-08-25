@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2019, salesforce.com, inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: MIT
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+*/
+
 import { normalize, usage, options, docs, check } from './args';
 import Output from './output';
 import yargs from 'yargs';
@@ -22,7 +29,7 @@ export function buildArgs(maybeArgv?: string[]): CliConfig {
 }
 
 function getProjectListFromCLIArgs(argsCLI: CliConfig, project?: string): string[] {
-    const projects = argsCLI.projects;
+    const projects = argsCLI.projects.slice();
 
     if (project) {
         projects.push(project);

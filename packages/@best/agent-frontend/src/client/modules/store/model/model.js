@@ -34,10 +34,18 @@ export class Job {
 
     update({ state, opts }) {
         const { executedIterations, executedTime } = state;
-        const { iterations, maxDuration } = opts;
+        const { iterations, minSampleCount, maxDuration } = opts;
         const avgIteration = executedTime / executedIterations;
         const runtime = parseInt((executedTime / 1000) + '', 10);
-        const estimated = iterations ? Math.round(iterations * avgIteration / 1000) + 1 : maxDuration / 1000;
+
+        let estimated;
+        if (iterations) {
+            estimated = Math.round(iterations * avgIteration / 1000) + 1;
+        } else if (avgIteration * minSampleCount > maxDuration) {
+            estimated = Math.round(minSampleCount * avgIteration / 1000) + 1;
+        } else {
+            estimated = maxDuration / 1000;
+        }
 
         this._time = runtime;
         this._estimatedTime = estimated;

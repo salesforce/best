@@ -1,4 +1,11 @@
 /*
+ * Copyright (c) 2019, salesforce.com, inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: MIT
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+*/
+
+/*
  * This code is a slight modification of VueJS next-tick
  * https://github.com/vuejs/vue/blob/dev/src/core/util/next-tick.js
  *
