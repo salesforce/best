@@ -28,10 +28,7 @@ export interface AgentConfig {
         path: string
         proxy?: string
     },
-    spec: {
-        browser: string,
-        version: string,
-    }
+    specs: Spec[],
     remoteRunner: string,
     remoteRunnerConfig?: object
 }
@@ -107,8 +104,10 @@ export class Agent extends EventEmitter {
     }
 
     canRunJob(spec: Spec): boolean {
-        const jobHasSameSpec = spec.browser == this._config.spec.browser &&
-            spec.version === this._config.spec.version;
+        const specs = this._config.specs;
+        const jobHasSameSpec = specs.some(({ browser, version }) => {
+            browser === spec.browser && version === spec.version
+        });
 
         return jobHasSameSpec && this.status !== AgentStatus.Offline;
     }

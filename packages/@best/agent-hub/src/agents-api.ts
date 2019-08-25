@@ -7,7 +7,7 @@
 
 import {Application, NextFunction, Request, Response} from "express";
 import {AgentManager} from "./AgentManager";
-import {Agent, AgentStatus} from "./Agent";
+import {Agent, AgentStatus, AgentConfig} from "./Agent";
 import AgentLogger from "@best/agent-logger";
 
 function authenticateAgentApi(tokenSecret: string, req: Request, res: Response, next: NextFunction) {
@@ -25,16 +25,38 @@ function authenticateAgentApi(tokenSecret: string, req: Request, res: Response, 
     }
 }
 
-function addAgentToHub(agentManager: AgentManager, logger: AgentLogger, req: Request, res: Response) {
-    // @todo: validate payload.
-    const agentConfig = {
-        host: req.body.host,
-        options: req.body.options,
-        spec: req.body.spec,
-        remoteRunner: req.body.remoteRunner,
-        remoteRunnerConfig: req.body.remoteRunnerConfig
-    };
+function validateSpec(maybeSpecObject: any): boolean {
+    if (!maybeSpecObject.browser || !maybeSpecObject.version) {
+        throw new Error('Invalid browser specification. Must contain "browser" and "version" properties');
+    }
 
+    return true;
+}
+
+function normalizeAndValidateAgentConfig(rawAgentConfig: any): AgentConfig {
+    const { host, options, spec: specConfig, remoteRunner, remoteRunnerConfig } = rawAgentConfig;
+    if (!host) {
+        throw new Error('Host for Agent must be provided');
+    }
+
+    if (!remoteRunner) {
+        throw new Error('Remote runner must be provided');
+    }
+
+    const specs = Array.isArray(specConfig) ? specConfig : [specConfig];
+    specs.forEach(validateSpec);
+
+    return {
+        host,
+        options,
+        specs,
+        remoteRunner,
+        remoteRunnerConfig
+    };
+}
+
+function addAgentToHub(agentManager: AgentManager, logger: AgentLogger, req: Request, res: Response) {
+    const agentConfig = normalizeAndValidateAgentConfig(req.body);
     const agent = new Agent(agentConfig, logger);
     agent.status = AgentStatus.Offline;
 
@@ -42,7 +64,7 @@ function addAgentToHub(agentManager: AgentManager, logger: AgentLogger, req: Req
 
     agent.status = AgentStatus.Idle;
 
-    logger.info('', 'agent added', [agentConfig.host, agentConfig.spec]);
+    logger.info('', 'agent added', [agentConfig.host, agentConfig.specs]);
 
     return res.status(201).send({
         success: 'true',

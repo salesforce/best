@@ -7,6 +7,11 @@
 
 import axios from "axios";
 
+export interface Spec {
+    browser: string,
+    version: string
+}
+
 export interface HubConfig {
     hub: {
         host: string,
@@ -14,10 +19,7 @@ export interface HubConfig {
         pingTimeout: number,
     },
     agentConfig: {
-        spec: {
-            browser: string,
-            version: string
-        },
+        spec: Spec | Spec[],
         host: string,
         options: { path: string },
         remoteRunner: string,
