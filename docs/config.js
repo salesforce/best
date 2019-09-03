@@ -2,8 +2,13 @@ module.exports = {
     // Ordered list of docs what will be loaded
     docs: {
         pages: [
-            'install',
             'introduction',
+            'getting-started',
+            'running-remotely',
+            'continuous-integration',
+            'github-integration',
+            'frontend',
+            'configuration'
         ],
     },
     blog: {

@@ -4,7 +4,7 @@
   "description": "Benchmark & Performance tool",
   "repository": {
     "type": "git",
-    "url": "https://git.soma.salesforce.com/lwc/best.git"
+    "url": "https://github.com/salesforce/best.git"
   },
   "license": "MIT",
   "scripts": {
@@ -22,7 +22,7 @@
     "changelog:generate": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "changelog:publish": "git add CHANGELOG.md && git commit -m 'docs(changelog): publish release changelog' && git push",
     "perf": "cd packages/best-benchmarks/ && yarn start --externalStorage=@best/store-aws",
-    "deploy:docs": "git push heroku `git subtree split --prefix docs master`:master --force",
+    "deploy:docs": "git subtree push --prefix docs heroku-docs master",
     "start": "node ./scripts/start.js"
   },
   "husky": {
