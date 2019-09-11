@@ -106,7 +106,7 @@ export class Agent extends EventEmitter {
     canRunJob(spec: Spec): boolean {
         const specs = this._config.specs;
         const jobHasSameSpec = specs.some(({ browser, version }) => {
-            browser === spec.browser && version === spec.version
+            return browser === spec.browser && version === spec.version
         });
 
         return jobHasSameSpec && this.status !== AgentStatus.Offline;
@@ -139,7 +139,7 @@ export class Agent extends EventEmitter {
             let resolved: boolean = false;
 
             job.socketConnection.on('disconnect', () => {
-                if (!resolved) { // it is not yet resolved then the job has been cancelled 
+                if (!resolved) { // it is not yet resolved then the job has been cancelled
                     this._logger.event(job.socketConnection.id, 'benchmark cancel');
                 }
 
@@ -180,7 +180,7 @@ export class Agent extends EventEmitter {
                 socket.on('running_benchmark_update', ({ state, opts }: { state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig }) => {
                     jobSocket.emit('running_benchmark_update', { state, opts });
                 });
-                
+
                 socket.on('running_benchmark_end', ({ entry }: { entry: string }) => {
                     jobSocket.emit('running_benchmark_end', { entry });
                 });
