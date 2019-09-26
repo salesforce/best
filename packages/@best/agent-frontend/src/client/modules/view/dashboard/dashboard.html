@@ -1,5 +1,27 @@
 <template>
     <div class="container">
+        <template if:true={hasHubStats}>
+            <div class="stats">
+                <span class="label">Active Clients:</span>
+                <span class="value">{hubStats.runningClientCount}</span>
+                <span class="label">Pending Clients:</span>
+                <span class="value">{hubStats.pendingClientCount}</span>
+                <span class="label">Queued Jobs:</span>
+                <span class="value">{hubStats.pendingJobCount}</span>
+            </div>
+        </template>
+        <template if:true={hasAgentStats}>
+            <div class="stats">
+                <span class="label">Active Agents:</span>
+                <span class="value">{agentStats.active}</span>
+                <span class="label">Idle Agents:</span>
+                <span class="value">{agentStats.idle}</span>
+                <span class="label">Offline Agents:</span>
+                <span class="value">{agentStats.offline}</span>
+                <span class="label">Total:</span>
+                <span class="value">{agentStats.agents}</span>
+            </div>
+        </template>
         <template for:each={agents} for:item="agent">
             <component-agent key={agent.agentId} name={agent.agentId} jobs={agent.jobs}></component-agent>
         </template>

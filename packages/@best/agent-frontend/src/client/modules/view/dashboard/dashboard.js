@@ -7,6 +7,8 @@ export default class ViewDashboard extends LightningElement {
     config = { host: window.location.origin, path: '/best' };
 
     @track agents = [];
+    @track hubStats = null;
+    @track agentStats = null;
     allJobs = [];
 
     connectedCallback() {
@@ -23,12 +25,21 @@ export default class ViewDashboard extends LightningElement {
         socket.on('benchmark error', this.error.bind(this));
         socket.on('benchmark cancel', this.cancel.bind(this));
         socket.on('benchmark results', this.results.bind(this));
+        socket.on('stats update', this.stats.bind(this));
     }
 
     // GETTERS
 
     get hasJobs() {
         return this.allJobs.length > 0;
+    }
+
+    get hasHubStats () {
+        return this.hubStats !== null;
+    }
+
+    get hasAgentStats () {
+        return this.agentStats !== null;
     }
 
     // HELPERS
@@ -60,7 +71,7 @@ export default class ViewDashboard extends LightningElement {
         oldAgent.jobs.splice(oldJobIndex, 1);
 
         this.updateAgentsJob(updatedJob);
-    } 
+    }
 
     // SOCKET
 
@@ -104,7 +115,7 @@ export default class ViewDashboard extends LightningElement {
         const index = this.allJobs.findIndex(j => j.jobId === event.jobId);
         const job = this.allJobs[index];
         job.status = 'RUNNING';
-        
+
         if (event.agentId !== job.agentId) {
             const oldAgentId = job.agentId;
             job.agentId = event.agentId;
@@ -145,5 +156,10 @@ export default class ViewDashboard extends LightningElement {
         job.status = 'CANCELLED';
 
         this.updateAgentsJob(job);
+    }
+
+    stats(event) {
+        this.hubStats = event.packet.hub;
+        this.agentStats = event.packet.agentManager;
     }
 }

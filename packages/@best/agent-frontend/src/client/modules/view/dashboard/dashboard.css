@@ -13,3 +13,31 @@ header {
     border-radius: 4px;
     padding: 8px 0;
 }
+
+.stats {
+    background: #ffe8be;
+    padding: 2px 12px;
+    text-align: right;
+}
+
+.stats:first-of-type {
+    border-radius: 4px 4px 0 0;
+}
+
+.stats:last-of-type {
+    border-radius: 0 0 4px 4px;
+}
+
+.stats span {
+    font-size: 14px;
+    text-align: right;
+    display:inline;
+    padding-right:5px;
+}
+
+.stats .label {
+    font-weight: bold;
+}
+.stats .value {
+    font-size: 12px;
+}
