@@ -62,10 +62,12 @@ export class Agent extends EventEmitter {
         if (value !== this._status) {
             const oldValue = this._status;
             this._status = value;
-            this.emit('status-changed', {
+            const packet = {
                 oldValue,
                 newValue: value
-            })
+            }
+            this.emit('status-changed', packet);
+            this._logger.event("AgentManager", "AGENT_STATUS_CHANGED", packet);
         }
     }
 

@@ -10,6 +10,7 @@ import { Application } from "express";
 import BenchmarkJob from "./BenchmarkJob";
 import ObservableQueue from "./utils/ObservableQueue";
 import { createAgentManager } from "./AgentManager";
+import { createStatsManager } from "./StatsManager";
 import { HubApplication } from "./HubApplication";
 import { AgentConfig } from "./Agent";
 import { configureAgentsApi } from "./agents-api";
@@ -25,7 +26,11 @@ function createHubApplication(config: HubConfig, logger: AgentLogger): HubApplic
     const incomingQueue = new ObservableQueue<BenchmarkJob>();
     const agentsManager = createAgentManager(config.agents, logger);
 
-    return new HubApplication(incomingQueue, agentsManager, logger);
+    const hub = new HubApplication(incomingQueue, agentsManager, logger);
+    createStatsManager(hub, agentsManager, logger);
+
+
+    return hub;
 }
 
 export function runHub(server: any, app: Application, hubConfig: HubConfig) {

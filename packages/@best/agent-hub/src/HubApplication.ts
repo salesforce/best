@@ -13,6 +13,12 @@ import {Agent, Spec} from "./Agent";
 import {Client} from "./Client";
 import AgentLogger from "@best/agent-logger";
 
+export interface HubStatus {
+    pendingJobCount: number
+    pendingClientCount: number,
+    runningClientCount: number,
+}
+
 export class HubApplication {
     private _incomingQueue: ObservableQueue<BenchmarkJob>;
     private _agentManager: AgentManager;
@@ -29,6 +35,15 @@ export class HubApplication {
         this._logger = logger;
 
         this.attachEventListeners();
+    }
+
+    getLoadStatus() : HubStatus {
+        return {
+            pendingJobCount: this.pendingClients.reduce((count, client) => count + client.jobsToRun, 0)
+            + this.runningClients.reduce((count, client) => count + client.jobsToRun, 0) + this._incomingQueue.size,
+            pendingClientCount: this.pendingClients.length,
+            runningClientCount: this.runningClients.length
+        }
     }
 
     handleIncomingSocketConnection = (socket: SocketIO.Socket) => {
@@ -81,6 +96,9 @@ export class HubApplication {
                             }
                         }
                     }
+
+                    this._logger.event("Hub", 'CLIENT_DISCONNECTED');
+
                 });
 
                 const notAssignedAgents = this.agentManager.getAgentsForSpec(spec)
@@ -93,6 +111,8 @@ export class HubApplication {
                     this.pendingClients.push(client);
                     client.notifyInQueue(this.pendingClients.length);
                 }
+
+                this._logger.event("Hub", 'CLIENT_CONNECTED');
             }
         });
     };
@@ -104,6 +124,7 @@ export class HubApplication {
     private attachEventListeners() {
         // @todo: rename the event to match each other
         this._agentManager.on('idle-agent', this.handleIdleAgent);
+        this._agentManager.on("agent-removed", this.handleRemovedAgent)
         this._incomingQueue.on('item-added', this.handleJobReadyToRun);
     }
 
@@ -113,11 +134,23 @@ export class HubApplication {
         if (agent !== null) {
             this._incomingQueue.remove(job);
             agent.runJob(job);
+            this._logger.event("Hub", 'PENDING_JOB_CHANGED');
         } else {
             job.socketConnection.emit('benchmark_enqueued', { pending: this._incomingQueue.size });
             this._logger.event(job.socketConnection.id, 'benchmark queued', { pending: this._incomingQueue.size }, false);
         }
     };
+
+    private handleRemovedAgent = (agent: Agent) => {
+        if (this.assignedAgents.has(agent)) {
+            const client: Client | undefined = this.assignedAgents.get(agent);
+            this.assignedAgents.delete(agent);
+            if (client) {
+                this.clientAgents.delete(client);
+            }
+            this._logger.event("Hub", 'AGENT_STATUS_CHANGED');
+        }
+    }
 
     private handleIdleAgent = (agent: Agent) => {
         if (this.assignedAgents.has(agent)) {
@@ -125,6 +158,7 @@ export class HubApplication {
 
             if (assignedClient.jobsToRun > 0) {
                 assignedClient.askForJob();
+                this._logger.event("Hub", 'PENDING_JOB_CHANGED');
             } else {
                 this.askJobFromRunningClientWithAgentSpecs(agent);
             }
@@ -154,6 +188,7 @@ export class HubApplication {
         for (let i=0, n = Math.min(notAssignAndIdleAgents.length, client.jobsToRun); i< n; i++) {
             client.askForJob();
         }
+        this._logger.event("Hub", 'PENDING_JOB_CHANGED');
     }
 
     private handleIdleFreeAgent(agent: Agent) {
@@ -174,6 +209,7 @@ export class HubApplication {
 
         if (runningClientsForAgent.length > 0) {
             runningClientsForAgent[0].askForJob();
+            this._logger.event("Hub", 'PENDING_JOB_CHANGED');
         }
     }
 
@@ -182,6 +218,7 @@ export class HubApplication {
         for (const job of this._incomingQueue) {
             if (agent.canRunJob(job!.spec)) {
                 this._incomingQueue.remove(job!);
+                this._logger.event("Hub", 'PENDING_JOB_CHANGED');
                 agent.runJob(job!);
                 break;
             }
