@@ -19,7 +19,7 @@
     { "path": "./packages/@best/runner-headless" },
     { "path": "./packages/@best/runner-remote" },
     { "path": "./packages/@best/runner-hub" },
-    // { "path": "./packages/@best/runner-webdriver" },
+    { "path": "./packages/@best/runner-webdriverio" },
     { "path": "./packages/@best/runtime" },
     { "path": "./packages/@best/store" },
     { "path": "./packages/@best/store-aws" },
