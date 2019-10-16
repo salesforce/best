@@ -210,7 +210,7 @@ The Best configuration file (`best.config.js`) supports the following options.
 
 `string` The password to access the `.pfx` file.
 
-### `GIT_APP_ID
+### `GIT_APP_ID`
 
 `string` Application Id of the GitHub application used when the `--gitIntegration` flag is enabled. Read more in the [GitHub Integration](/guide/github-integration#installation) guide. Use together with one of the following two items.
 
