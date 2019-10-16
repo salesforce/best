@@ -11,12 +11,12 @@ import { runBenchmark } from '@best/runner';
 import BenchmarkTask from "./BenchmarkTask";
 import { loadBenchmarkJob } from "./benchmark-loader";
 import { x as extractTar } from 'tar';
-import { RunnerOutputStream } from "@best/console-stream";
 import AgentLogger, { loggedSocket, LoggedSocket } from '@best/agent-logger';
 import {
     BenchmarkResultsSnapshot,
     BenchmarkResultsState,
-    BenchmarkRuntimeConfig
+    BenchmarkRuntimeConfig,
+    RunnerStream,
 } from "@best/types";
 
 // Maximum time before the agent becomes idle after a job is cancelled (client disconnected)
@@ -27,32 +27,45 @@ export enum RunnerStatus {
     RUNNING,
 }
 
-// @todo: make a Runner Stream, and add an interface type instead of the class.
-function initializeForwarder(socket: LoggedSocket): RunnerOutputStream {
-    return {
-        init() {},
-        finish() {},
-        onBenchmarkStart(benchmarkPath: string) {
-            if (socket.rawSocket.connected) {
-                socket.emit('running_benchmark_start', { entry: benchmarkPath });
-            }
-        },
-        onBenchmarkEnd(benchmarkPath: string) {
-            if (socket.rawSocket.connected) {
-                socket.emit('running_benchmark_end', { entry: benchmarkPath });
-            }
-        },
-        onBenchmarkError(benchmarkPath: string) {
-            if (socket.rawSocket.connected) {
-                socket.emit('running_benchmark_error', { entry: benchmarkPath });
-            }
-        },
-        updateBenchmarkProgress(state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) {
-            if (socket.rawSocket.connected) {
-                socket.emit('running_benchmark_update', { state, opts });
-            }
-        },
-    } as RunnerOutputStream;
+class RunnerLogStream implements RunnerStream {
+    _socket: LoggedSocket;
+
+    constructor(socket: LoggedSocket) {
+        this._socket = socket;
+    }
+
+    init() {}
+
+    finish() {}
+    onBenchmarkStart(benchmarkPath: string) {
+        if (this._socket.rawSocket.connected) {
+            this._socket.emit('running_benchmark_start', { entry: benchmarkPath });
+        }
+    }
+
+    onBenchmarkEnd(benchmarkPath: string) {
+        if (this._socket.rawSocket.connected) {
+            this._socket.emit('running_benchmark_end', { entry: benchmarkPath });
+        }
+    }
+
+    onBenchmarkError(benchmarkPath: string) {
+        if (this._socket.rawSocket.connected) {
+            this._socket.emit('running_benchmark_error', { entry: benchmarkPath });
+        }
+    }
+
+    updateBenchmarkProgress(state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) {
+        if (this._socket.rawSocket.connected) {
+            this._socket.emit('running_benchmark_update', { state, opts });
+        }
+    }
+
+    log(message: string) {
+        if (this._socket.rawSocket.connected) {
+            this._socket.emit('log', { message: message });
+        }
+    }
 }
 
 function extractBenchmarkTarFile(task: BenchmarkTask) {
@@ -126,7 +139,7 @@ export default class BenchmarkRunner extends EventEmitter {
     private async runBenchmark(task: BenchmarkTask) {
         const { benchmarkName } = task;
         const taskSocket = loggedSocket(task.socketConnection, this.logger);
-        const messenger = initializeForwarder(taskSocket);
+        const messenger = new RunnerLogStream(taskSocket);
 
         let results;
         let error;

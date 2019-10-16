@@ -10,17 +10,17 @@ import fs from 'fs';
 import socketIO from 'socket.io-client';
 import SocketIOFile from './file-uploader';
 import { createTarBundle } from './create-tar';
-import { RunnerOutputStream } from "@best/console-stream";
 import {
     BenchmarkInfo,
     BenchmarkResultsSnapshot,
     BenchmarkResultsState,
     BenchmarkRuntimeConfig,
     FrozenGlobalConfig,
-    FrozenProjectConfig
+    FrozenProjectConfig,
+    RunnerStream
 } from "@best/types";
 
-function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, messager: RunnerOutputStream) : Promise<BenchmarkResultsSnapshot> {
+function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, messager: RunnerStream) : Promise<BenchmarkResultsSnapshot> {
     return new Promise(async (resolve, reject) => {
         const { benchmarkName, benchmarkEntry, benchmarkFolder, benchmarkSignature } = benchmarkEntryBundle;
         const { host, options, remoteRunner } = projectConfig.benchmarkRunnerConfig;
@@ -111,7 +111,7 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
 }
 
 export class Runner {
-    run(benchmarkInfo: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerOutputStream): Promise<BenchmarkResultsSnapshot> {
+    run(benchmarkInfo: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot> {
         return proxifyRunner(benchmarkInfo, projectConfig, globalConfig, runnerLogStream);
     }
 }

@@ -13,7 +13,8 @@ import countEOL from "./utils/count-eod";
 import {
     BenchmarkResultsState,
     BenchmarkRuntimeConfig,
-    BuildConfig
+    BuildConfig,
+    RunnerStream,
 } from "@best/types";
 
 enum State {
@@ -100,7 +101,9 @@ function printProgressBar(runTime: number, estimatedTime: number, width: number)
     return time;
 }
 
-export default class RunnerOutputStream {
+
+
+export default class RunnerOutputStream implements RunnerStream {
     stdout: NodeJS.WriteStream;
     isInteractive: boolean;
 

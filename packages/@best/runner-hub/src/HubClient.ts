@@ -14,9 +14,9 @@ import {
     BenchmarkResultsState,
     BenchmarkRuntimeConfig,
     FrozenGlobalConfig,
-    FrozenProjectConfig
+    FrozenProjectConfig,
+    RunnerStream
 } from "@best/types";
-import { RunnerOutputStream } from "@best/console-stream";
 import { createTarBundle } from "./create-tar";
 import SocketIOFile from "./file-uploader";
 import { proxifiedSocketOptions } from '@best/utils';
@@ -26,7 +26,7 @@ interface HubRun {
     result: Promise<BenchmarkResultsSnapshot>
 }
 
-function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, messager: RunnerOutputStream) : HubRun {
+function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, messager: RunnerStream) : HubRun {
     let cancelledRun = false;
     let hubConnection: SocketIOClient.Socket | null = null;
     const cancelRun = () => {
@@ -146,7 +146,7 @@ function cancelRunningJobs(jobRuns: HubRun[]) {
 }
 
 export class HubClient {
-    async runBenchmarks(benchmarksBuilds: BenchmarkInfo[], projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, messager: RunnerOutputStream): Promise<BenchmarkResultsSnapshot[]> {
+    async runBenchmarks(benchmarksBuilds: BenchmarkInfo[], projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, messager: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
         let resolved = false;
 
         return new Promise(async (resolve, reject) => {
@@ -160,7 +160,7 @@ export class HubClient {
                 path: '/best',
                 ...options
             }
-    
+
             const socket = socketIO(host, proxifiedSocketOptions(normalizedSocketOptions));
 
             socket.on('connect_error', (err: any) => {
