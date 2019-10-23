@@ -123,7 +123,9 @@ export class Agent extends EventEmitter {
         const remoteAgentRunnerConfig = Object.assign(
             {},
             this._config.remoteRunnerConfig,
-            { host: this._config.host, options: this._config.options }
+            { host: this._config.host,
+                options: this._config.options,
+                webdriverOptions: job.projectConfig.benchmarkRunnerConfig.webdriverOptions }
         );
 
         const overriddenProjectConfig = Object.assign(
