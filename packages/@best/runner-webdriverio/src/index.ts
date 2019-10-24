@@ -100,12 +100,11 @@ export default class Runner extends AbstractRunner {
     }
 
     async runIteration(browser: WebdriverBrowser, payload: any): Promise<BenchmarkResults> {
-        return browser.evaluate(async (o: any, done: any) => {
-            try {
-                done(await BEST.runBenchmark(o))
-            } catch(e) {
-                throw e;
-            }
+        return browser.evaluate(function (o: any, done: any) {
+            // Injected code needs to be compatiable with IE11
+            BEST.runBenchmark(o)
+                .then(function(data: any) { done(data); })
+                .catch(function (e: any) { throw e; })
         }, payload);
     }
 }
