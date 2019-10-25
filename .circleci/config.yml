@@ -3,13 +3,13 @@ version: 2.1
 executors:
   best-executor:
     docker:
-      - image: circleci/node:10.16.0-stretch-browsers
+      - image: circleci/node:lts-stretch-browsers
     working_directory: ~/best
 
 jobs:
   build_and_test:
     executor: best-executor
-    
+
     steps:
       - checkout
 
@@ -40,7 +40,7 @@ jobs:
 
   perf_and_compare:
     executor: best-executor
-    
+
     environment:
       - CUSTOM_BASH_ENV: ~/.bashrc
       - CIRCLE_ENV_BROKEN: $CIRCLE_SHA1
@@ -49,7 +49,7 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      
+
       - checkout
 
       - run:
