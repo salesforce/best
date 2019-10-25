@@ -73,5 +73,13 @@
     "packages/@best/*",
     "packages/*",
     "docs"
-  ]
+  ],
+  "engines": {
+    "node": ">=12.13.0 <13.0.0",
+    "yarn": ">=1.19.0 <2.0.0"
+  },
+  "volta": {
+    "node": "12.13.0",
+    "yarn": "1.19.1"
+  }
 }

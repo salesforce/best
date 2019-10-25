@@ -7,7 +7,7 @@
 
 import { initializeBenchmarkConfig, getBenckmarkState } from './state';
 import { runBenchmark as _runBenchmark } from './runner';
-export * from './primitives';
+import { describe, benchmark, beforeAll, before, afterAll, after, run } from './primitives';
 
 declare var window: any;
 
@@ -33,3 +33,5 @@ window.addEventListener('load', async () => {
         window.BEST_RESULTS = await runBenchmark();
     }
 });
+
+export { describe, benchmark, beforeAll, before, afterAll, after, run };
