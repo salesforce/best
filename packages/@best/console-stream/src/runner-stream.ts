@@ -6,10 +6,11 @@
 */
 
 import path from "path";
-import { isInteractive as globaIsInteractive, clearLine } from "@best/utils";
+import { isInteractive as globaIsInteractive } from "@best/utils";
 import chalk from "chalk";
 import trimPath from "./utils/trim-path";
 import countEOL from "./utils/count-eod";
+import { ProxiedStream, proxyStream } from "./utils/proxy-stream";
 import {
     BenchmarkResultsState,
     BenchmarkRuntimeConfig,
@@ -101,19 +102,22 @@ function printProgressBar(runTime: number, estimatedTime: number, width: number)
 }
 
 export default class RunnerOutputStream {
-    stdout: NodeJS.WriteStream;
+    stdoutColumns: number;
+    stdoutWrite: Function;
     isInteractive: boolean;
-
     _streamBuffer: string = '';
     _state: AllBencharkRunnerState;
     _innerLog: string = '';
     _progress: BenchmarkProgress | null = null;
     _scheduled: NodeJS.Timeout | null = null;
+    _proxyStream: ProxiedStream;
 
     constructor(buildConfig: BuildConfig[], stream: NodeJS.WriteStream, isInteractive?: boolean) {
-        this.stdout = stream;
+        this.stdoutColumns = stream.columns || 80;
+        this.stdoutWrite = stream.write.bind(stream);
         this.isInteractive = isInteractive !== undefined ? isInteractive : globaIsInteractive;
         this._state = this.initState(buildConfig);
+        this._proxyStream = proxyStream(stream, this.isInteractive);
     }
 
     initState(buildConfigs: BuildConfig[]): AllBencharkRunnerState {
@@ -136,14 +140,19 @@ export default class RunnerOutputStream {
         if (lines) {
             buffer = '\r\x1B[K\r\x1B[1A'.repeat(lines);
         }
-        clearLine(this.stdout);
-        this.stdout.write(buffer);
+
+        if (this.isInteractive) {
+            // clear last line
+            this.stdoutWrite('\x1b[999D\x1b[K');
+        }
+
+        this.stdoutWrite(buffer);
         this._streamBuffer = '';
     }
 
     writeBufferStream(str: string) {
         this._streamBuffer += str;
-        this.stdout.write(str);
+        this.stdoutWrite(str);
     }
 
     updateRunnerState(benchmarkPath: string, state: State) {
@@ -166,7 +175,7 @@ export default class RunnerOutputStream {
     }
 
     printBenchmarkState({ state, projectName, displayPath }: { state: State, projectName: string, displayPath: string }) {
-        const columns = this.stdout.columns || 80;
+        const columns = this.stdoutColumns;
         const overflow = columns - (state.length + projectName.length + displayPath.length + /* for padding */ 14);
         const hasOverflow = overflow < 0;
 
@@ -177,13 +186,14 @@ export default class RunnerOutputStream {
         return `${ansiState} ${ansiProjectName} ${ansiDisplayname}\n`;
     }
 
-    printProgress(progress: BenchmarkProgress, { displayPath }: BenchmarkStatus): string {
+    printProgress(progress: BenchmarkProgress, { displayPath }: BenchmarkStatus, streamProxyBuffer?: string): string {
         const benchmarkName = chalk.bold.black(path.basename(displayPath));
         return [
             `\n${PROGRESS_TEXT} ${benchmarkName}`,
             chalk.bold.black('Avg iteration:        ') + progress.avgIteration.toFixed(2) + 'ms',
             chalk.bold.black('Completed iterations: ') + progress.executedIterations,
-            printProgressBar(progress.runtime, progress.estimated, 40)
+            printProgressBar(progress.runtime, progress.estimated, 40),
+            streamProxyBuffer ? `Buffered console logs:\n ${streamProxyBuffer}` : ''
         ].join('\n') + '\n\n';
     }
 
@@ -200,7 +210,7 @@ export default class RunnerOutputStream {
         }
 
         if (current && progress) {
-            buffer += this.printProgress(progress, current);
+            buffer += this.printProgress(progress, current, this._proxyStream.readBuffer());
         }
 
         this.clearBufferStream();
@@ -212,7 +222,7 @@ export default class RunnerOutputStream {
         if (this.isInteractive) {
             this.scheduleUpdate();
         } else {
-            this.stdout.write(` :: ${message}\n`);
+            this.stdoutWrite(` :: ${message}\n`);
         }
     }
 
@@ -231,7 +241,7 @@ export default class RunnerOutputStream {
         } else {
             const benchmarkState = this._state.get(benchmarkPath);
             if (benchmarkState) {
-                this.stdout.write(this.printBenchmarkState(benchmarkState));
+                this.stdoutWrite(this.printBenchmarkState(benchmarkState));
             }
         }
     }
@@ -245,13 +255,13 @@ export default class RunnerOutputStream {
             if (this.isInteractive) {
                 if (benchmarkState.state === State.ERROR) {
                     this.updateStream();
-                    this.stdout.write('\n');
+                    this.stdoutWrite('\n');
                 } else {
                     this.scheduleUpdate();
                 }
             } else {
                 this._clearTimeout();
-                this.stdout.write(this.printBenchmarkState(benchmarkState) + '\n');
+                this.stdoutWrite(this.printBenchmarkState(benchmarkState) + '\n');
             }
         }
     }
@@ -271,7 +281,7 @@ export default class RunnerOutputStream {
             this.scheduleUpdate();
         } else {
             this.scheduleUpdate(2500, () => {
-                this.stdout.write(
+                this.stdoutWrite(
                     ` :: ran: ${runIter} | avg: ${avgIter} | remainingTime: ${remaining}s \n`
                 );
             });
@@ -282,16 +292,17 @@ export default class RunnerOutputStream {
         if (this.isInteractive) {
             this.updateStream();
         } else {
-            this.stdout.write(INIT_MSG);
+            this.stdoutWrite(INIT_MSG);
         }
     }
 
     finish() {
         this._clearTimeout();
+        this._proxyStream.unproxyStream();
         if (this.isInteractive) {
             this.updateStream();
         } else {
-            this.stdout.write('\n');
+            this.stdoutWrite('\n');
         }
     }
 }

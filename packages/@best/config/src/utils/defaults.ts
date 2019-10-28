@@ -32,6 +32,7 @@ const defaultOptions = {
     }],
     plugins: [],
     projects: [],
+    runInBand: false,
     runnerConfig: {},
     benchmarkEnvironment: 'production',
     benchmarkMaxDuration: 1000 * 15, // 15s

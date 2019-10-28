@@ -28,6 +28,7 @@ function generateProjectConfigs(options: NormalizedConfig, isRoot: boolean, gitI
             projects: options.projects,
             rootDir: options.rootDir,
             rootProjectName: options.projectName,
+            runInBand: options.runInBand,
             nonFlagArgs: options.nonFlagArgs,
             gitInfo: gitInfo,
             isInteractive: options.isInteractive,

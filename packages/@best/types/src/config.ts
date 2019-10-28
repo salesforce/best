@@ -54,6 +54,7 @@ export interface CliConfig {
     externalStorage?: string,
     runner: string,
     runnerConfig: { [x:string]: any },
+    runInBand: boolean,
     config: string | undefined,
     projects: string[],
     iterations?: number,
@@ -85,6 +86,7 @@ export interface NormalizedConfig {
     projectName: string,
     projects: string[],
     plugins: ProjectConfigPlugin[],
+    runInBand: boolean,
     runner: string,
     runners: RunnerConfig[],
     runnerConfig: any,
@@ -106,6 +108,7 @@ export interface GlobalConfig {
     gitIntegration: boolean;
     projects: string[];
     rootDir: string;
+    runInBand: boolean;
     compareStats?: string[];
     nonFlagArgs: string[];
     isInteractive?: boolean;
