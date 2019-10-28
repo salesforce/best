@@ -1,13 +1,13 @@
 {
   "name": "perf-benchmarks",
   "license": "MIT",
-  "version": "4.0.0-alpha10",
+  "version": "4.0.0-alpha11",
   "private": true,
   "scripts": {
     "start": "best",
     "remote": "best"
   },
   "dependencies": {
-    "best": "4.0.0-alpha10"
+    "best": "4.0.0-alpha11"
   }
 }
