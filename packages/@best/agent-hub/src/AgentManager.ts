@@ -32,9 +32,7 @@ export class AgentManager extends EventEmitter {
 
     getIdleAgentForJob(job: BenchmarkJob): Agent | null {
         // @todo: organize Agents by category.
-        const idleAgentsForJob = this.agents.filter(agent => agent.isIdle() && agent.canRunJob(job.spec));
-
-        return idleAgentsForJob.length ? idleAgentsForJob[0] : null;
+        return this.agents.find(agent => agent.isIdle() && agent.canRunJob(job.spec)) || null;
     }
 
     existAgentWithSpec(spec: Spec): boolean {
