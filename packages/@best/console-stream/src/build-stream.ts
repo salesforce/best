@@ -6,10 +6,11 @@
 */
 
 import path from "path";
-import { isInteractive as globaIsInteractive, clearLine } from "@best/utils";
+import { isInteractive as globaIsInteractive } from "@best/utils";
 import chalk from "chalk";
 import trimPath from "./utils/trim-path";
 import countEOL from "./utils/count-eod";
+import { ProxiedStream, proxyStream } from "./utils/proxy-stream";
 
 interface ProjectBenchmarkTests {
     config: { projectName: string; rootDir: string },
@@ -49,17 +50,21 @@ function printProjectName(projectName: string) {
 }
 
 export default class BuildOutputStream {
-    stdout: NodeJS.WriteStream;
+    stdoutColumns: number;
+    stdoutWrite: Function;
     isInteractive: boolean;
     _streamBuffer: string = '';
     _state: AllBencharkState;
     _innerLog: string = '';
     _scheduled: NodeJS.Timeout | null = null;
+    _proxiedStream: ProxiedStream;
 
     constructor(buildConfig: ListProjectBenchmarkTests, stream: NodeJS.WriteStream, isInteractive?: boolean) {
-        this.stdout = stream;
+        this.stdoutColumns = stream.columns || 80;
+        this.stdoutWrite = stream.write.bind(stream);
         this.isInteractive = isInteractive !== undefined ? isInteractive : globaIsInteractive;
         this._state = this.initState(buildConfig);
+        this._proxiedStream = proxyStream(stream, this.isInteractive);
     }
 
     initState(buildConfig: ListProjectBenchmarkTests) {
@@ -82,14 +87,19 @@ export default class BuildOutputStream {
         if (lines) {
             buffer = '\r\x1B[K\r\x1B[1A'.repeat(lines);
         }
-        clearLine(this.stdout);
-        this.stdout.write(buffer);
+
+        if (this.isInteractive) {
+            // clear last line
+            this.stdoutWrite('\x1b[999D\x1b[K');
+        }
+
+        this.stdoutWrite(buffer);
         this._streamBuffer = '';
     }
 
     writeBufferStream(str: string) {
         this._streamBuffer += str;
-        this.stdout.write(str);
+        this.stdoutWrite(str);
     }
 
     updateBenchmarkState(benchmarkPath: string, state: State) {
@@ -107,7 +117,7 @@ export default class BuildOutputStream {
         } else {
             const benchmarkState = this._state.get(benchmarkPath);
             if (benchmarkState) {
-                this.stdout.write(this.printBenchmark(benchmarkState));
+                this.stdoutWrite(this.printBenchmark(benchmarkState));
             }
         }
     }
@@ -121,23 +131,23 @@ export default class BuildOutputStream {
         }
     }
 
-    printBenchmark({ state, projectName, displayPath }:{ state: State, projectName: string, displayPath: string }) {
-        const columns = this.stdout.columns || 80;
+    printBenchmark({ state, projectName, displayPath }:{ state: State, projectName: string, displayPath: string }, streamProxyBuffer?: string) {
+        const columns = this.stdoutColumns;
         const overflow = columns - (state.length + projectName.length + displayPath.length + /* for padding */ 14);
         const hasOverflow = overflow < 0;
 
         const ansiState = printState(state);
         const ansiProjectName = printProjectName(projectName);
         const ansiDisplayname = printDisplayName(displayPath, hasOverflow ? Math.abs(overflow): 0);
-
-        return `${ansiState} ${ansiProjectName} ${ansiDisplayname}\n`;
+        const proxiedBuffer = streamProxyBuffer ? `Buffered console logs:\n ${streamProxyBuffer}` : '';
+        return `${ansiState} ${ansiProjectName} ${ansiDisplayname}\n${proxiedBuffer}`;
     }
 
     updateStream() {
         const innerState = this._innerLog;
         let buffer = INIT_MSG;
         for (const { state, displayPath, projectName } of this._state.values()) {
-            buffer += this.printBenchmark({ state, displayPath, projectName });
+            buffer += this.printBenchmark({ state, displayPath, projectName }, this._proxiedStream.readBuffer());
         }
 
         if (innerState) {
@@ -157,7 +167,7 @@ export default class BuildOutputStream {
         } else {
             const benchmarkState = this._state.get(benchmarkPath);
             if (benchmarkState) {
-                this.stdout.write(this.printBenchmark(benchmarkState) + '\n');
+                this.stdoutWrite(this.printBenchmark(benchmarkState, this._proxiedStream.readBuffer()) + '\n');
             }
         }
     }
@@ -167,7 +177,7 @@ export default class BuildOutputStream {
         if (this.isInteractive) {
             this.scheduleUpdate();
         } else {
-            this.stdout.write(` :: ${message}\n`);
+            this.stdoutWrite(` :: ${message}\n`);
         }
     }
 
@@ -175,11 +185,12 @@ export default class BuildOutputStream {
         if (this.isInteractive) {
             this.updateStream();
         } else {
-            this.stdout.write(INIT_MSG);
+            this.stdoutWrite(INIT_MSG);
         }
     }
 
     finish() {
+        this._proxiedStream.unproxyStream();
         if (this._scheduled) {
             clearTimeout(this._scheduled);
             this._scheduled = null;
@@ -188,7 +199,7 @@ export default class BuildOutputStream {
         if (this.isInteractive) {
             this.updateStream();
         } else {
-            this.stdout.write('\n');
+            this.stdoutWrite('\n');
         }
     }
 }

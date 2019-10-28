@@ -77,6 +77,9 @@ function setCliOptionOverrides(initialOptions: UserConfig, argsCLI: CliConfig): 
                 case 'runInBatch':
                     options.runInBatch = !!argsCLI[key];
                     break;
+                case 'runInBand':
+                    options.runInBand = !!argsCLI[key];
+                    break;
                 case 'projects':
                     if (argsCLI.projects && argsCLI.projects.length) {
                         options.projects = argsCLI.projects;
