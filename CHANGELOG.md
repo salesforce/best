@@ -1,4 +1,13 @@
-# [](https://github.com/salesforce/best/compare/v4.0.0-alpha10...v) (2019-10-25)
+# [](https://github.com/salesforce/best/compare/v4.0.0-alpha11...v) (2019-10-28)
+
+
+
+# [4.0.0-alpha11](https://github.com/salesforce/best/compare/v4.0.0-alpha10...v4.0.0-alpha11) (2019-10-28)
+
+
+### Features
+
+* add runInBand for better debugging ([#212](https://github.com/salesforce/best/issues/212)) ([e739ee4](https://github.com/salesforce/best/commit/e739ee4))
 
 
 
