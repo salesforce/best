@@ -17,10 +17,9 @@
     "build:frontends": "lerna exec --scope **/agent-frontend --scope **/frontend -- yarn build",
     "build:docs": "cd docs && yarn build",
     "watch:docs": "cd docs && yarn watch",
-    "release": "lerna publish -m 'chore(release): publish %s' --exact --force-publish=* && yarn changelog",
-    "changelog": "yarn changelog:generate && yarn changelog:publish",
-    "changelog:generate": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-    "changelog:publish": "git add CHANGELOG.md && git commit -m 'docs(changelog): publish release changelog' && git push",
+    "release": "lerna version -m 'chore(release): publish %s' --exact --force-publish=* --no-git-tag-version --no-push --no-commit-hooks",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "publish": "lerna publish from-package",
     "perf": "cd packages/best-benchmarks/ && yarn start --externalStorage=@best/store-aws",
     "deploy:docs": "git subtree push --prefix docs heroku-docs master",
     "start": "node ./scripts/start.js"
@@ -58,7 +57,7 @@
     "eslint": "^5.16.0",
     "husky": "2.4.0",
     "jest": "^24.8.0",
-    "lerna": "^3.15.0",
+    "lerna": "^3.18.3",
     "prettier": "^1.17.1",
     "rimraf": "^2.6.3",
     "typescript": "^3.5.1",
@@ -73,5 +72,13 @@
     "packages/@best/*",
     "packages/*",
     "docs"
-  ]
+  ],
+  "engines": {
+    "node": ">=12.13.0 <13.0.0",
+    "yarn": ">=1.19.0 <2.0.0"
+  },
+  "volta": {
+    "node": "12.13.0",
+    "yarn": "1.19.1"
+  }
 }

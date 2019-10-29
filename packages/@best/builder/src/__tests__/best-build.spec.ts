@@ -143,8 +143,10 @@ describe('buildBenchmark', () => {
                 return () => {
                     return {
                         load(id) {
-                            loaded.push(id);
-                            return '/* empty */';
+                            if (id.endsWith('single-file.js')) {
+                                loaded.push(id);
+                                return '/* empty */';
+                            }
                         },
                         transform(src, id) {
                             transformed.push(id);

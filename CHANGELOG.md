@@ -1,4 +1,37 @@
-# [](https://github.com/salesforce/best/compare/v4.0.0-alpha9...v) (2019-10-16)
+# [](https://github.com/salesforce/best/compare/v4.0.0-alpha12...v) (2019-10-29)
+
+
+
+# [4.0.0-alpha12](https://github.com/salesforce/best/compare/v4.0.0-alpha11...v4.0.0-alpha12) (2019-10-29)
+
+
+### Bug Fixes
+
+* rollup multiple chunks issues ([#213](https://github.com/salesforce/best/issues/213)) ([8344162](https://github.com/salesforce/best/commit/8344162))
+
+
+
+# [4.0.0-alpha11](https://github.com/salesforce/best/compare/v4.0.0-alpha10...v4.0.0-alpha11) (2019-10-28)
+
+
+### Features
+
+* add job retry on agent connection error ([be1d6c6](https://github.com/salesforce/best/commit/be1d6c6))
+* add runInBand for better debugging ([#212](https://github.com/salesforce/best/issues/212)) ([e739ee4](https://github.com/salesforce/best/commit/e739ee4))
+
+
+
+# [4.0.0-alpha10](https://github.com/salesforce/best/compare/v4.0.0-alpha9...v4.0.0-alpha10) (2019-10-25)
+
+
+### Bug Fixes
+
+* webdriverio to work with IE11 and other browsers ([#209](https://github.com/salesforce/best/issues/209)) ([af061af](https://github.com/salesforce/best/commit/af061af))
+
+
+### Features
+
+* **runner-headless:** ugprade chrome ([#211](https://github.com/salesforce/best/issues/211)) ([97c0389](https://github.com/salesforce/best/commit/97c0389))
 
 
 
@@ -122,8 +155,8 @@
 * clean command and add build/dist to gitignore ([#154](https://github.com/salesforce/best/issues/154)) ([7f3cf58](https://github.com/salesforce/best/commit/7f3cf58))
 * cleanup runner ([57223c0](https://github.com/salesforce/best/commit/57223c0))
 * clear logs ([cdfe267](https://github.com/salesforce/best/commit/cdfe267))
-* config types ([097222d](https://github.com/salesforce/best/commit/097222d))
 * config types ([b21bfa3](https://github.com/salesforce/best/commit/b21bfa3))
+* config types ([097222d](https://github.com/salesforce/best/commit/097222d))
 * don't overwrite error messages ([d8d0cfa](https://github.com/salesforce/best/commit/d8d0cfa))
 * fix tests based on code review ([2317adc](https://github.com/salesforce/best/commit/2317adc))
 * fix thumbs up/down in fixture ([9a17cd4](https://github.com/salesforce/best/commit/9a17cd4))
@@ -132,8 +165,8 @@
 * minor type corrections ([523e443](https://github.com/salesforce/best/commit/523e443))
 * missing types in builder,console-stream and store ([#163](https://github.com/salesforce/best/issues/163)) ([1359d13](https://github.com/salesforce/best/commit/1359d13))
 * more result tyeps ([ea90ae3](https://github.com/salesforce/best/commit/ea90ae3))
-* more types ([5556ea6](https://github.com/salesforce/best/commit/5556ea6))
 * more types ([edb9d25](https://github.com/salesforce/best/commit/edb9d25))
+* more types ([5556ea6](https://github.com/salesforce/best/commit/5556ea6))
 * more types ([91dc56e](https://github.com/salesforce/best/commit/91dc56e))
 * refactor @best/agent using types ([#161](https://github.com/salesforce/best/issues/161)) ([5578e41](https://github.com/salesforce/best/commit/5578e41))
 * refactor runner ([4cc0527](https://github.com/salesforce/best/commit/4cc0527))
@@ -265,13 +298,13 @@
 
 ### Features
 
-* Split config for sample benchmark into prod and compat config ([0d7d022](https://github.com/salesforce/best/commit/0d7d022))
 * **best:** Add IE11 runner and configuration ([7d6f124](https://github.com/salesforce/best/commit/7d6f124))
 * **best:** CLI histograms ([c0f7a73](https://github.com/salesforce/best/commit/c0f7a73))
 * **best:** Compare against local changes ([b45a014](https://github.com/salesforce/best/commit/b45a014))
 * **best:** Converted IE runner into general webdriver runner ([6061f7d](https://github.com/salesforce/best/commit/6061f7d))
-* **best:** Fix comparison commit headings ([a3a0dd6](https://github.com/salesforce/best/commit/a3a0dd6))
 * **git:** update husky with commitlint ([#110](https://github.com/salesforce/best/issues/110)) ([8c7f1f0](https://github.com/salesforce/best/commit/8c7f1f0))
+* Split config for sample benchmark into prod and compat config ([0d7d022](https://github.com/salesforce/best/commit/0d7d022))
+* **best:** Fix comparison commit headings ([a3a0dd6](https://github.com/salesforce/best/commit/a3a0dd6))
 
 
 
@@ -312,9 +345,9 @@
 
 ### Features
 
-* **commit:** add commit validation ([#94](https://github.com/salesforce/best/issues/94)) ([e1bdbb7](https://github.com/salesforce/best/commit/e1bdbb7))
 * Allow local (fs) comparison ([#96](https://github.com/salesforce/best/issues/96)) ([5781d55](https://github.com/salesforce/best/commit/5781d55))
 * Refactor git and cli table display ([#97](https://github.com/salesforce/best/issues/97)) ([0fc095f](https://github.com/salesforce/best/commit/0fc095f))
+* **commit:** add commit validation ([#94](https://github.com/salesforce/best/issues/94)) ([e1bdbb7](https://github.com/salesforce/best/commit/e1bdbb7))
 
 
 

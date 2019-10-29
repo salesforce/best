@@ -8,6 +8,8 @@
 import BenchmarkJob from "./BenchmarkJob";
 import { EventEmitter} from "events";
 import socketIO from "socket.io-client";
+import http from 'http';
+import https from 'https';
 // @todo: use this indirectly... make an abstraction for the runner in agent
 import SocketIOFile from "@best/runner-remote/build/file-uploader";
 import { BenchmarkResultsSnapshot, BenchmarkResultsState, BenchmarkRuntimeConfig } from "@best/types";
@@ -77,6 +79,11 @@ export class Agent extends EventEmitter {
         }
         this.status = AgentStatus.RunningJob;
 
+        if (!await this.isAlive()) {
+            this.status = AgentStatus.Offline;
+            throw new Error(AGENT_CONNECTION_ERROR);
+        }
+
         // load the tar file...
         try {
             await loadBenchmarkJob(job);
@@ -85,7 +92,7 @@ export class Agent extends EventEmitter {
             this._logger.event(job.socketConnection.id, 'benchmark error', err, false);
             job.socketConnection.emit('benchmark_error', err);
             this.status = AgentStatus.Idle;
-            return ;
+            return;
         }
 
         // eventually this can become a runner...
@@ -98,7 +105,7 @@ export class Agent extends EventEmitter {
                 // @todo: move to failures queue
                 if (err.message === AGENT_CONNECTION_ERROR) {
                     this.status = AgentStatus.Offline;
-                    // TODO: in this case, we need to re-run the job on a different agent (if we have one)
+                    throw err;
                 } else {
                     this.status = AgentStatus.Idle;
                 }
@@ -116,6 +123,21 @@ export class Agent extends EventEmitter {
 
     isIdle(): boolean {
         return this.status === AgentStatus.Idle;
+    }
+
+    async isAlive() {
+        return new Promise((resolve) => {
+            const request = this._config.host.toLowerCase().startsWith('https') ? https : http;
+            request.get(this._config.host, res => {
+                if (res.statusCode === 200) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            }).on('error', error => {
+                resolve(false);
+            }).end();
+        });
     }
 
     private async proxifyJob(job: BenchmarkJob) {

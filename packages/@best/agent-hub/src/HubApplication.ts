@@ -133,7 +133,9 @@ export class HubApplication {
 
         if (agent !== null) {
             this._incomingQueue.remove(job);
-            agent.runJob(job);
+            agent.runJob(job).catch(err => {
+                this._incomingQueue.push(job);
+            });
             this._logger.event("Hub", 'PENDING_JOB_CHANGED');
         } else {
             job.socketConnection.emit('benchmark_enqueued', { pending: this._incomingQueue.size });
@@ -219,7 +221,9 @@ export class HubApplication {
             if (agent.canRunJob(job!.spec)) {
                 this._incomingQueue.remove(job!);
                 this._logger.event("Hub", 'PENDING_JOB_CHANGED');
-                agent.runJob(job!);
+                agent.runJob(job!).catch( (err) => {
+                    this._incomingQueue.push(job!);
+                });
                 break;
             }
         }

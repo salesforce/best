@@ -62,7 +62,8 @@ export async function buildBenchmark(entry: string, projectConfig: FrozenProject
     const rollupInputOpts = {
         input: entry,
         plugins: [benchmarkRollup(), ...addResolverPlugins(projectConfig.plugins)],
-        cache: ROLLUP_CACHE.get(projectName)
+        cache: ROLLUP_CACHE.get(projectName),
+        manualChunks: function () { /* guarantee one chunk */ return 'main_chunk'; }
     };
 
     buildLogStream.log('Bundling benchmark files...');

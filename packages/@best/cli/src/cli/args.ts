@@ -63,6 +63,11 @@ export const options: { [key: string]: Options } = {
         description: 'Displays calculated globalConfig and project configs',
         type: 'boolean',
     },
+    runInBand: {
+        default: undefined,
+        description: "Run in the main thread in one core (no paralellism)",
+        type: 'boolean'
+    },
     externalStorage: {
         default: undefined,
         description:
@@ -120,7 +125,7 @@ export const options: { [key: string]: Options } = {
 };
 
 export function normalize(args: { [x: string]: any; _: string[]; $0: string }): CliConfig {
-    const { _, help, clearCache, clearResults, showConfigs, disableInteractive, gitIntegration, generateHTML, useHttp, externalStorage, runner, runnerConfig, config, projects, iterations, compareStats, dbAdapter, dbURI, runInBatch } = args;
+    const { _, help, clearCache, clearResults, showConfigs, disableInteractive, gitIntegration, generateHTML, useHttp, externalStorage, runner, runnerConfig, config, projects, iterations, compareStats, dbAdapter, dbURI, runInBatch, runInBand } = args;
 
     return {
         _,
@@ -129,6 +134,7 @@ export function normalize(args: { [x: string]: any; _: string[]; $0: string }): 
         clearResults: Boolean(clearResults),
         useHttp: Boolean(useHttp),
         showConfigs: Boolean(showConfigs),
+        runInBand: Boolean(runInBand),
         disableInteractive,
         runInBatch,
         gitIntegration,

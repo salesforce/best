@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "4.0.0-alpha9",
+  "version": "4.0.0-alpha14",
   "description": "Best build package",
   "keywords": [
     "Best",
@@ -13,12 +13,12 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@best/runtime": "4.0.0-alpha9",
-    "@best/utils": "4.0.0-alpha9",
+    "@best/runtime": "4.0.0-alpha14",
+    "@best/utils": "4.0.0-alpha14",
     "mkdirp": "~0.5.1",
     "ncp": "^2.0.0",
     "rimraf": "^2.6.2",
-    "rollup": "~1.15.5",
+    "rollup": "~1.26.0",
     "rollup-plugin-compat": "^0.21.7",
     "worker-farm": "~1.7.0"
   },
