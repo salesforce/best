@@ -139,7 +139,7 @@ export default class BenchmarkRunner extends EventEmitter {
     private async runBenchmark(task: BenchmarkTask) {
         const { benchmarkName } = task;
         const taskSocket = loggedSocket(task.socketConnection, this.logger);
-        const messenger = new RunnerLogStream(taskSocket);
+        const runnerStream = new RunnerLogStream(taskSocket);
 
         let results;
         let error;
@@ -147,7 +147,7 @@ export default class BenchmarkRunner extends EventEmitter {
         try {
             this.logger.info(task.socketConnection.id, 'benchmark start', benchmarkName);
 
-            results = await runBenchmark(task.config, messenger);
+            results = await runBenchmark(task.config, runnerStream);
 
             this.logger.info(task.socketConnection.id, 'benchmark completed', benchmarkName);
         } catch (err) {
