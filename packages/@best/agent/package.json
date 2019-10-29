@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "4.0.0-alpha11",
+  "version": "4.0.0-alpha12",
   "description": "Best Agent",
   "keywords": [
     "Best",
@@ -12,10 +12,10 @@
   ],
   "main": "build/cli/index.js",
   "dependencies": {
-    "@best/agent-frontend": "4.0.0-alpha11",
-    "@best/agent-logger": "4.0.0-alpha11",
-    "@best/runner": "4.0.0-alpha11",
-    "@best/utils": "4.0.0-alpha11",
+    "@best/agent-frontend": "4.0.0-alpha12",
+    "@best/agent-logger": "4.0.0-alpha12",
+    "@best/runner": "4.0.0-alpha12",
+    "@best/utils": "4.0.0-alpha12",
     "axios": "~0.19.0",
     "express": "~4.16.2",
     "socket.io": "~2.2.0",

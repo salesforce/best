@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "4.0.0-alpha11",
+  "version": "4.0.0-alpha12",
   "description": "Best Runner (WebdriverIO)",
   "keywords": [
     "Best",
@@ -13,8 +13,8 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@best/runner-abstract": "4.0.0-alpha11",
-    "@best/types": "4.0.0-alpha11",
+    "@best/runner-abstract": "4.0.0-alpha12",
+    "@best/types": "4.0.0-alpha12",
     "deepmerge": "^4.0.0",
     "webdriverio": "^5.13.2"
   },
