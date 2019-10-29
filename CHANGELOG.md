@@ -1,4 +1,13 @@
-# [](https://github.com/salesforce/best/compare/v4.0.0-alpha11...v) (2019-10-28)
+# [](https://github.com/salesforce/best/compare/v4.0.0-alpha12...v) (2019-10-29)
+
+
+
+# [4.0.0-alpha12](https://github.com/salesforce/best/compare/v4.0.0-alpha11...v4.0.0-alpha12) (2019-10-29)
+
+
+### Bug Fixes
+
+* rollup multiple chunks issues ([#213](https://github.com/salesforce/best/issues/213)) ([8344162](https://github.com/salesforce/best/commit/8344162))
 
 
 
@@ -7,6 +16,7 @@
 
 ### Features
 
+* add job retry on agent connection error ([be1d6c6](https://github.com/salesforce/best/commit/be1d6c6))
 * add runInBand for better debugging ([#212](https://github.com/salesforce/best/issues/212)) ([e739ee4](https://github.com/salesforce/best/commit/e739ee4))
 
 
