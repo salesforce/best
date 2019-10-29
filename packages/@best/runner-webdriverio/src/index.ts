@@ -5,10 +5,17 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
-import { RunnerOutputStream } from "@best/console-stream";
-import { FrozenGlobalConfig, FrozenProjectConfig, BenchmarkInfo, BenchmarkRuntimeConfig, BenchmarkResults, BenchmarkResultsState, BenchmarkResultsSnapshot } from '@best/types';
 import AbstractRunner from '@best/runner-abstract';
 import WebdriverBrowser from './webdriver';
+import { FrozenGlobalConfig,
+    FrozenProjectConfig,
+    BenchmarkInfo,
+    BenchmarkRuntimeConfig,
+    BenchmarkResults,
+    BenchmarkResultsState,
+    BenchmarkResultsSnapshot,
+    RunnerStream
+} from '@best/types';
 
 declare var BEST: any;
 const UPDATE_INTERVAL = 300;
@@ -16,7 +23,7 @@ const UPDATE_INTERVAL = 300;
 
 export default class Runner extends AbstractRunner {
 
-    async run(benchmarkInfo: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerOutputStream): Promise<BenchmarkResultsSnapshot> {
+    async run(benchmarkInfo: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot> {
         const { benchmarkEntry } = benchmarkInfo;
         const { useHttp } = projectConfig;
 
@@ -48,13 +55,13 @@ export default class Runner extends AbstractRunner {
         return { executedTime: 0, executedIterations: 0, results: [] };
     }
 
-    async runIterations(browser: WebdriverBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnnerLogStream: RunnerOutputStream): Promise<BenchmarkResultsState> {
+    async runIterations(browser: WebdriverBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnnerLogStream: RunnerStream): Promise<BenchmarkResultsState> {
         return runtimeOptions.iterateOnClient
             ? this.runClientIterations(browser, state, runtimeOptions, runnnerLogStream)
             : this.runServerIterations(browser, state, runtimeOptions, runnnerLogStream);
     }
 
-    async runClientIterations(browser: WebdriverBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnerLogStream: RunnerOutputStream): Promise<BenchmarkResultsState> {
+    async runClientIterations(browser: WebdriverBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsState> {
         // Run an iteration to estimate the time it will take
         const testResult = await this.runIteration(browser, { iterations: 1 });
         const estimatedIterationTime = testResult.aggregate;
@@ -76,7 +83,7 @@ export default class Runner extends AbstractRunner {
         return state;
     }
 
-    async runServerIterations(browser: WebdriverBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnnerLogStream: RunnerOutputStream): Promise<BenchmarkResultsState> {
+    async runServerIterations(browser: WebdriverBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnnerLogStream: RunnerStream): Promise<BenchmarkResultsState> {
         while (state.executedTime < runtimeOptions.maxDuration || state.executedIterations < runtimeOptions.minSampleCount) {
             const start = Date.now();
             const { results: [root,] } = await this.runIteration(browser, runtimeOptions);

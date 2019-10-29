@@ -5,15 +5,14 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
-import { BuildConfig, BenchmarkInfo, BenchmarkResultsSnapshot } from "@best/types";
-import { RunnerOutputStream } from "@best/console-stream";
+import { BuildConfig, BenchmarkInfo, BenchmarkResultsSnapshot, RunnerStream } from "@best/types";
 import AbstractRunner from "@best/runner-abstract";
 
 interface ConcreteRunner extends AbstractRunner {
     new(config?: any): ConcreteRunner;
 }
 
-export async function runBenchmark(benchmarkBuild: BuildConfig, runnerLogStream: RunnerOutputStream): Promise<BenchmarkResultsSnapshot> {
+export async function runBenchmark(benchmarkBuild: BuildConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot> {
     const { benchmarkName, benchmarkEntry, benchmarkFolder, benchmarkSignature, projectConfig, globalConfig } = benchmarkBuild;
     const { benchmarkRunner } = projectConfig;
     let RunnerCtor: ConcreteRunner, runnerInstance: ConcreteRunner;
@@ -36,7 +35,7 @@ export async function runBenchmark(benchmarkBuild: BuildConfig, runnerLogStream:
     return runnerInstance.run(benchmarkInfo, projectConfig, globalConfig, runnerLogStream);
 }
 
-export async function runBenchmarksInBatch(benchmarksBuilds: BuildConfig[], messager: RunnerOutputStream): Promise<BenchmarkResultsSnapshot[]> {
+export async function runBenchmarksInBatch(benchmarksBuilds: BuildConfig[], messager: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
     const { projectConfig } = benchmarksBuilds[0];
     const { benchmarkRunner } = projectConfig;
     let RunnerCtor: ConcreteRunner, runnerInstance: ConcreteRunner;
@@ -59,7 +58,7 @@ export async function runBenchmarksInBatch(benchmarksBuilds: BuildConfig[], mess
     return runnerInstance.runBenchmarksInBatch(benchmarksBuilds, messager);
 }
 
-export async function runBenchmarks(benchmarksBuilds: BuildConfig[], messager: RunnerOutputStream): Promise<BenchmarkResultsSnapshot[]> {
+export async function runBenchmarks(benchmarksBuilds: BuildConfig[], messager: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
     const { projectConfig } = benchmarksBuilds[0];
     if (projectConfig.runInBatch) {
         return runBenchmarksInBatch(benchmarksBuilds, messager);

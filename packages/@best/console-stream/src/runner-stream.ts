@@ -14,7 +14,8 @@ import { ProxiedStream, proxyStream } from "./utils/proxy-stream";
 import {
     BenchmarkResultsState,
     BenchmarkRuntimeConfig,
-    BuildConfig
+    BuildConfig,
+    RunnerStream,
 } from "@best/types";
 
 enum State {
@@ -101,7 +102,7 @@ function printProgressBar(runTime: number, estimatedTime: number, width: number)
     return time;
 }
 
-export default class RunnerOutputStream {
+export default class RunnerOutputStream implements RunnerStream {
     stdoutColumns: number;
     stdoutWrite: Function;
     isInteractive: boolean;
