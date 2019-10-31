@@ -6,11 +6,11 @@ title: Configuration
 
 Best is highly configurable through command-line arguments, the Best configuration file, and environment variables.
 
-- [Command Line Arguments](#command-line-argumemnts)
+- [Command Line Arguments](#command-line-arguments)
 - [Best Configuration File](#best-configuration-file)
 - [Environment Variables](#environment-variables)
 
-## Command Line Argumemnts
+## Command Line Arguments
 
 Command-line arguments override the same option specified in the configuration file.
 
