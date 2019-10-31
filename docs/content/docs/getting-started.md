@@ -103,7 +103,7 @@ This command loads your `best.config.js`, finds your benchmarks, builds the arti
 
 While running Best locally is a great start, read about [running Best remotely](/guide/running-remotely) to get the most out of Best.
 
-To learn more about the Best CLI, check out the [Command Line Arguments](/guide/configuration#command-line-argumemnts).
+To learn more about the Best CLI, check out the [Command Line Arguments](/guide/configuration#command-line-arguments).
 
 ## Benchmark Callbacks
 
