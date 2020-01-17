@@ -30,7 +30,7 @@ function getDefaultConfig(tokenSecret: string, configAsJSON?: string): HubConfig
 
 export function run(config?: HubConfig) {
     const app = express();
-    
+
     const enableHttps = SSL_PFX_FILE && SSL_PFX_PASSPHRASE;
     const http = require(enableHttps ? 'https' : 'http');
 

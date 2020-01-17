@@ -16,19 +16,27 @@ import { AgentConfig } from "./Agent";
 import { configureAgentsApi } from "./agents-api";
 import { attachMiddleware, serveFrontend } from '@best/agent-frontend';
 import AgentLogger from '@best/agent-logger';
+import AutoScale, { AutoScaleConfig } from './autoscale/AutoScale';
 
 export interface HubConfig {
     tokenSecret: string,
     agents: AgentConfig[],
+    autoscale?: AutoScaleConfig
 }
 
-function createHubApplication(config: HubConfig, logger: AgentLogger): HubApplication {
+function createHubApplication(config: HubConfig, autoScaleConfig: AutoScaleConfig | undefined, logger: AgentLogger): HubApplication {
     const incomingQueue = new ObservableQueue<BenchmarkJob>();
     const agentsManager = createAgentManager(config.agents, logger);
 
     const hub = new HubApplication(incomingQueue, agentsManager, logger);
-    createStatsManager(hub, agentsManager, logger);
+    // createStatsManager(hub, agentsManager, logger);
+    const statsManager = createStatsManager(hub, agentsManager, logger);
 
+    // create an autoScale service if configuration is provided
+    if (autoScaleConfig) {
+        const autoScale = AutoScale.factory(autoScaleConfig, statsManager);
+        autoScale.initialize();
+    }
 
     return hub;
 }
@@ -36,7 +44,7 @@ function createHubApplication(config: HubConfig, logger: AgentLogger): HubApplic
 export function runHub(server: any, app: Application, hubConfig: HubConfig) {
     const socketServer: SocketIO.Server = socketIO(server, { path: '/best' });
     const logger = new AgentLogger();
-    const hub = createHubApplication(hubConfig, logger);
+    const hub = createHubApplication(hubConfig, hubConfig.autoscale, logger);
 
     configureAgentsApi(app, hub.agentManager, logger, hubConfig.tokenSecret);
     serveFrontend(app);
