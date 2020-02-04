@@ -30,11 +30,10 @@ export class AgentApp extends EventEmitter {
     }
 
     private initializeHandlers() {
+        // Orchestate services
         this.queue.on('item-added', (task: BenchmarkTask) => this.handleJobAddedInQueue(task));
         this.runner.on('idle-runner', (runner: BenchmarkRunner) => this.handleIdleRunner(runner));
-        this.socketServer.on('connect', (socket: SocketIO.Socket) => {
-            this.handleIncomingConnection(socket);
-        });
+        this.socketServer.on('connect', (socket: SocketIO.Socket) => this.handleIncomingConnection(socket));
     }
 
     async handleIncomingConnection(socket: SocketIO.Socket) {

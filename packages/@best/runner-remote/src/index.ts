@@ -73,6 +73,7 @@ function proxifyRunner(benchmarkEntryBundle: BenchmarkInfo, projectConfig: Froze
             socket.on('running_benchmark_update', ({ state, opts }: { state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig }) => {
                 messager.updateBenchmarkProgress(state, opts);
             });
+
             socket.on('running_benchmark_end', () => {
                 messager.onBenchmarkEnd(benchmarkEntry);
             });

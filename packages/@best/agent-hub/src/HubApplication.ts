@@ -9,8 +9,8 @@ import * as SocketIO from "socket.io";
 import ObservableQueue from "./utils/ObservableQueue";
 import BenchmarkJob from "./BenchmarkJob";
 import { AgentManager } from "./AgentManager";
-import {Agent, Spec} from "./Agent";
-import {Client} from "./Client";
+import { Agent, Spec } from "./Agent";
+import { Client } from "./Client";
 import AgentLogger from "@best/agent-logger";
 
 export interface HubStatus {
