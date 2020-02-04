@@ -159,7 +159,7 @@ export interface BuildConfig {
     globalConfig: FrozenGlobalConfig,
 }
 
-export interface BrowserConfig {
+export interface BrowserSpec {
     version: string;
     name?: string;
     config?: { [key: string]: any }
@@ -185,7 +185,7 @@ export interface EnvironmentConfig {
     container: {
         load: { cpuLoad: number }
     },
-    browser: BrowserConfig;
+    browser: BrowserSpec;
     configuration: {
         project: {
             projectName: string;

@@ -11,16 +11,20 @@ import BenchmarkRunner, { RunnerStatus } from "./BenchmarkRunner";
 import BenchmarkTask from "./BenchmarkTask";
 import { BuildConfig } from "@best/types";
 import AgentLogger from '@best/agent-logger';
+import { EventEmitter } from 'events';
 
-export class AgentApp {
+export class AgentApp extends EventEmitter {
     private queue: ObservableQueue<BenchmarkTask>;
     private runner: BenchmarkRunner;
-    private logger: AgentLogger;
+    public logger: AgentLogger;
+    public socketServer: SocketIO.Server
 
-    constructor(queue: ObservableQueue<BenchmarkTask>, runner: BenchmarkRunner, logger: AgentLogger) {
+    constructor(socketServer: SocketIO.Server, queue: ObservableQueue<BenchmarkTask>, runner: BenchmarkRunner, logger: AgentLogger) {
+        super();
         this.queue = queue;
         this.runner = runner;
         this.logger = logger;
+        this.socketServer = socketServer;
 
         this.initializeHandlers();
     }
@@ -28,9 +32,12 @@ export class AgentApp {
     private initializeHandlers() {
         this.queue.on('item-added', (task: BenchmarkTask) => this.handleJobAddedInQueue(task));
         this.runner.on('idle-runner', (runner: BenchmarkRunner) => this.handleIdleRunner(runner));
+        this.socketServer.on('connect', (socket: SocketIO.Socket) => {
+            this.handleIncomingConnection(socket);
+        });
     }
 
-    handleIncomingConnection(socket: SocketIO.Socket) {
+    async handleIncomingConnection(socket: SocketIO.Socket) {
         socket.on('benchmark_task', (data: BuildConfig) => {
             const task = new BenchmarkTask(data, socket);
             this.logger.event(socket.id, 'benchmark added', { benchmarkName: data.benchmarkName }, false);
@@ -42,6 +49,9 @@ export class AgentApp {
 
             this.queue.push(task);
         });
+
+        const specs = await this.runner.getRunnerBrowserSpecs();
+        this.logger.event(socket.id, 'specs update', specs);
     }
 
     private handleJobAddedInQueue(task: BenchmarkTask) {

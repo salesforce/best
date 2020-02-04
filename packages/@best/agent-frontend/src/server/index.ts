@@ -18,10 +18,10 @@ export const serveFrontend = (app: express.Application) => {
     app.get('*', (req, res) => res.sendFile(path.resolve(DIST_DIR, 'index.html')));
 }
 
-export const attachMiddleware = (server: socketIO.Server, logger: AgentLogger) => {
-    const manager = new Manager(logger);
+export const observeAgent = (agent: { socketServer: socketIO.Server; logger: AgentLogger }) => {
+    const manager = new Manager(agent.logger);
 
-    server.on('connect', (socket: SocketIO.Socket) => {
+    agent.socketServer.on('connect', (socket: SocketIO.Socket) => {
         if (socket.handshake.query && socket.handshake.query.frontend) {
             manager.addFrontend(socket);
         }

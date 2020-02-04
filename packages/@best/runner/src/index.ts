@@ -5,11 +5,12 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
-import { BuildConfig, BenchmarkInfo, BenchmarkResultsSnapshot, RunnerStream } from "@best/types";
+import { BuildConfig, BenchmarkInfo, BenchmarkResultsSnapshot, RunnerStream, BrowserSpec } from "@best/types";
 import AbstractRunner from "@best/runner-abstract";
 
 interface ConcreteRunner extends AbstractRunner {
     new(config?: any): ConcreteRunner;
+    getBrowserSpecs(): Promise<BrowserSpec[]>
 }
 
 export async function runBenchmark(benchmarkBuild: BuildConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot> {
@@ -35,17 +36,20 @@ export async function runBenchmark(benchmarkBuild: BuildConfig, runnerLogStream:
     return runnerInstance.run(benchmarkInfo, projectConfig, globalConfig, runnerLogStream);
 }
 
-export async function runBenchmarksInBatch(benchmarksBuilds: BuildConfig[], messager: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
-    const { projectConfig } = benchmarksBuilds[0];
-    const { benchmarkRunner } = projectConfig;
-    let RunnerCtor: ConcreteRunner, runnerInstance: ConcreteRunner;
-
+function loadRunnerModule(benchmarkRunner: string): ConcreteRunner {
     try {
         const RunnerModule: any = require(benchmarkRunner);
-        RunnerCtor = RunnerModule.Runner || RunnerModule.default || RunnerModule;
+        return RunnerModule.Runner || RunnerModule.default || RunnerModule;
     } catch (e) {
         throw new Error(`Runner "${benchmarkRunner}" not found.`);
     }
+}
+
+export async function runBenchmarksInBatch(benchmarksBuilds: BuildConfig[], messager: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
+    const { projectConfig } = benchmarksBuilds[0];
+    const { benchmarkRunner } = projectConfig;
+    const RunnerCtor: ConcreteRunner = loadRunnerModule(benchmarkRunner);
+    let runnerInstance: ConcreteRunner;
 
     // Create a runner instance
     try {
@@ -71,4 +75,10 @@ export async function runBenchmarks(benchmarksBuilds: BuildConfig[], messager: R
 
         return results;
     }
+}
+
+export async function getBrowserSpecs(runner: string | BuildConfig): Promise<BrowserSpec[]> {
+    const benchmarkRunner = typeof runner === 'string' ? runner: runner.projectConfig.benchmarkRunner;
+    const RunnerModule: ConcreteRunner = loadRunnerModule(benchmarkRunner);
+    return RunnerModule.getBrowserSpecs();
 }

@@ -7,7 +7,7 @@
 
 import path from 'path';
 import { EventEmitter } from "events";
-import { runBenchmark } from '@best/runner';
+import { runBenchmark, getBrowserSpecs } from '@best/runner';
 import BenchmarkTask from "./BenchmarkTask";
 import { loadBenchmarkJob } from "./benchmark-loader";
 import { x as extractTar } from 'tar';
@@ -17,6 +17,7 @@ import {
     BenchmarkResultsState,
     BenchmarkRuntimeConfig,
     RunnerStream,
+    BrowserSpec,
 } from "@best/types";
 
 // Maximum time before the agent becomes idle after a job is cancelled (client disconnected)
@@ -86,10 +87,12 @@ export default class BenchmarkRunner extends EventEmitter {
     private cancelledTimeout: any = null;
 
     private logger: AgentLogger;
+    private runner: string;
 
-    constructor(logger: AgentLogger) {
+    constructor(runner: string, logger: AgentLogger) {
         super();
         this.logger = logger;
+        this.runner = runner;
     }
 
     get status() {
@@ -134,6 +137,10 @@ export default class BenchmarkRunner extends EventEmitter {
             .catch((err: any) => {
                 this.afterRunBenchmark(err, null);
             })
+    }
+
+    getRunnerBrowserSpecs(): Promise<BrowserSpec[]> {
+        return getBrowserSpecs(this.runner);
     }
 
     private async runBenchmark(task: BenchmarkTask) {

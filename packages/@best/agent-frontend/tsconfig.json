@@ -5,7 +5,7 @@
       "outDir": "build"
     },
     "references": [
-      { "path": "../agent-logger" }
+      { "path": "../agent-logger" },
+      { "path": "../types" }
     ]
   }
-  

@@ -8,24 +8,20 @@
 import axios from "axios";
 
 export interface Spec {
-    browser: string,
-    version: string
+    browser: string;
+    version: string;
 }
 
 export interface HubConfig {
-    hub: {
-        host: string,
-        authToken: string,
-        pingTimeout: number,
-    },
-    agentConfig: {
-        spec: Spec | Spec[],
-        host: string,
-        options: { path: string },
-        remoteRunner: string,
-        remoteRunnerConfig: any,
-    },
+    uri: string;
+    authToken: string;
+    pingTimeout: number;
+}
 
+export interface AgentConfig {
+    uri: string;
+    options: { path: string };
+    runner: string;
 }
 
 async function pingHub(hubHost: string, hubToken: string, agentHost: string): Promise<string> {
@@ -42,33 +38,31 @@ async function pingHub(hubHost: string, hubToken: string, agentHost: string): Pr
     return response.data.agentStatus;
 }
 
-async function connectToHub(hubConfig: HubConfig): Promise<boolean> {
-    console.log('Trying to register in hub: ', hubConfig.hub.host);
+async function connectToHub(hubConfig: HubConfig, agentConfig: AgentConfig): Promise<boolean> {
+    console.log('Trying to register in hub: ', hubConfig.uri);
     const response = await axios.post(
-        `${hubConfig.hub.host}/api/v1/agents`,
-        hubConfig.agentConfig,
+        `${hubConfig.uri}/api/v1/agents`,
+        agentConfig,
         {
-            headers: {
-                'Authorization': hubConfig.hub.authToken
-            }
+            headers: { 'Authorization': hubConfig.authToken }
         }
     );
 
     if (response.status === 201) {
-        console.log('Successfully registered with hub: ', hubConfig.hub.host);
+        console.log('Successfully registered with hub: ', hubConfig.uri);
     }
 
     return response.status === 201;
 }
 
-export async function registerWithHub(hubConfig: HubConfig) {
-    const pingTimeout = hubConfig.hub.pingTimeout || 30000;
+export async function registerWithHub(hubConfig: HubConfig, agentConfig: AgentConfig) {
+    const pingTimeout = hubConfig.pingTimeout || 30000;
     let keepPing = true;
     try {
-        const agentStatus = await pingHub(hubConfig.hub.host, hubConfig.hub.authToken, hubConfig.agentConfig.host);
+        const agentStatus = await pingHub(hubConfig.uri, hubConfig.authToken, agentConfig.uri);
 
         if (agentStatus !== 'connected') {
-            keepPing = await connectToHub(hubConfig);
+            keepPing = await connectToHub(hubConfig, agentConfig);
 
             if (!keepPing) {
                 console.log('Error connecting to hub, suspending hub registration.');

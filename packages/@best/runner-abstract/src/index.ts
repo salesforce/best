@@ -14,7 +14,7 @@ import {
     BenchmarkInfo,
     BenchmarkRuntimeConfig,
     BenchmarkResultsSnapshot,
-    BrowserConfig,
+    BrowserSpec,
     EnvironmentConfig,
     BuildConfig,
     RunnerStream
@@ -24,6 +24,10 @@ export default abstract class AbstractRunner {
     abstract async run(benchmarkInfo: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot>;
     async runBenchmarksInBatch(benchmarksBuilds: BuildConfig[], messager: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
         throw new Error('Runner does not support run in batch option');
+    }
+
+    static async getBrowserSpecs(): Promise<BrowserSpec[]> {
+        throw new Error('Runner must implement getBrowserSpecs');
     }
 
     initializeServer(benchmarkEntry: string, useHttp: boolean): Promise<{ terminate:Function, url: string }> {
@@ -60,7 +64,7 @@ export default abstract class AbstractRunner {
         };
     }
 
-    async getEnvironment(browser: BrowserConfig, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig): Promise<EnvironmentConfig> {
+    async getEnvironment(browser: BrowserSpec, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig): Promise<EnvironmentConfig> {
         const { system, cpu, os, load } = await getSystemInfo();
         const {
             benchmarkOnClient,

@@ -8,7 +8,7 @@
 import socketIO from 'socket.io';
 import AgentLogger from '@best/agent-logger';
 
-const FRONTEND_EVENTS = ['benchmark added', 'benchmark start', 'benchmark update', 'benchmark end', 'benchmark error', 'benchmark results', 'benchmark queued', 'benchmark cancel', "stats update"]
+const FRONTEND_EVENTS = ['benchmark added', 'benchmark start', 'benchmark update', 'benchmark end', 'benchmark error', 'benchmark results', 'benchmark queued', 'benchmark cancel', "stats update", "specs update"]
 
 export default class Manager {
     private frontends: socketIO.Socket[] = [];

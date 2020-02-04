@@ -93,4 +93,8 @@ export default class Runner extends AbstractRunner {
     runIteration(browser: HeadlessBrowser, payload: any): Promise<BenchmarkResults> {
         return browser.evaluate((o: any) => BEST.runBenchmark(o), payload);
     }
+
+    static async getBrowserSpecs() {
+        return [];
+    }
 }

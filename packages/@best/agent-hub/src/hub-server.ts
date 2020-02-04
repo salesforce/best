@@ -14,7 +14,7 @@ import { createStatsManager } from "./StatsManager";
 import { HubApplication } from "./HubApplication";
 import { AgentConfig } from "./Agent";
 import { configureAgentsApi } from "./agents-api";
-import { attachMiddleware, serveFrontend } from '@best/agent-frontend';
+import { observeAgent, serveFrontend } from '@best/agent-frontend';
 import AgentLogger from '@best/agent-logger';
 
 export interface HubConfig {
@@ -28,7 +28,6 @@ function createHubApplication(config: HubConfig, logger: AgentLogger): HubApplic
 
     const hub = new HubApplication(incomingQueue, agentsManager, logger);
     createStatsManager(hub, agentsManager, logger);
-
 
     return hub;
 }
@@ -59,7 +58,7 @@ export function runHub(server: any, app: Application, hubConfig: HubConfig) {
         if (!socket.handshake.query.frontend) hub.handleIncomingSocketConnection(socket);
     });
 
-    attachMiddleware(socketServer, logger);
+    observeAgent({ socketServer, logger });
 }
 
 export default { runHub };

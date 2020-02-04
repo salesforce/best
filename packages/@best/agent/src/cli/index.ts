@@ -7,19 +7,22 @@
 
 import express from 'express';
 import { readFileSync } from 'fs';
-import { runAgent } from '../agent-service';
-import { registerWithHub, HubConfig } from '../hub-registration';
-import { serveFrontend } from '@best/agent-frontend';
+import { createAgent } from '../agent-service';
+import { registerWithHub } from '../hub-registration';
+import { serveFrontend, observeAgent } from '@best/agent-frontend';
+import { getAgentConfig, getHubConfig } from './config';
 
 const PORT = process.env.PORT || 5000;
 const SSL_PFX_FILE = process.env.SSL_PFX_FILE;
 const SSL_PFX_PASSPHRASE = process.env.SSL_PFX_PASSPHRASE;
-const hubRegistrationConfig: HubConfig = process.env.HUB_CONFIG ? JSON.parse(process.env.HUB_CONFIG) : null;
 
 export function run() {
+    const hubRegistrationConfig = getHubConfig();
+    const agentConfig = getAgentConfig();
+
     const app = express();
     serveFrontend(app);
-    
+
     const enableHttps = SSL_PFX_FILE && SSL_PFX_PASSPHRASE;
     const http = require(enableHttps ? 'https' : 'http');
 
@@ -31,12 +34,12 @@ export function run() {
     const server = http.createServer(options, app);
     server.listen(PORT);
 
-    // app.get('/', (req, res) => res.send('BEST agent running!'));
+    const agent = createAgent(server, agentConfig);
+    observeAgent(agent);
+
     process.stdout.write(`Best agent listening in port ${PORT}...\n`);
 
-    runAgent(server);
-
-    if (hubRegistrationConfig) {
-        registerWithHub(hubRegistrationConfig);
+    if (hubRegistrationConfig.uri) {
+        registerWithHub(hubRegistrationConfig, agentConfig);
     }
 }

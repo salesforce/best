@@ -26,6 +26,7 @@ export default class ViewDashboard extends LightningElement {
         socket.on('benchmark cancel', this.cancel.bind(this));
         socket.on('benchmark results', this.results.bind(this));
         socket.on('stats update', this.stats.bind(this));
+        socket.on('specs update', this.specs.bind(this));
     }
 
     // GETTERS
@@ -161,5 +162,9 @@ export default class ViewDashboard extends LightningElement {
     stats(event) {
         this.hubStats = event.packet.hub;
         this.agentStats = event.packet.agentManager;
+    }
+
+    specs(event) {
+        console.log(event);
     }
 }
