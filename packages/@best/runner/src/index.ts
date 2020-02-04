@@ -82,3 +82,7 @@ export async function getBrowserSpecs(runner: string | BuildConfig): Promise<Bro
     const RunnerModule: ConcreteRunner = loadRunnerModule(benchmarkRunner);
     return RunnerModule.getBrowserSpecs();
 }
+
+export function validateRunner(runner: string): void {
+    loadRunnerModule(runner);
+}

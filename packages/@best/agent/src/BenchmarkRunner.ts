@@ -7,7 +7,7 @@
 
 import path from 'path';
 import { EventEmitter } from "events";
-import { runBenchmark, getBrowserSpecs } from '@best/runner';
+import { runBenchmark, getBrowserSpecs, validateRunner } from '@best/runner';
 import BenchmarkTask from "./BenchmarkTask";
 import { loadBenchmarkJob } from "./benchmark-loader";
 import { x as extractTar } from 'tar';
@@ -141,6 +141,10 @@ export default class BenchmarkRunner extends EventEmitter {
 
     getRunnerBrowserSpecs(): Promise<BrowserSpec[]> {
         return getBrowserSpecs(this.runner);
+    }
+
+    validateRunner() {
+        validateRunner(this.runner);
     }
 
     private async runBenchmark(task: BenchmarkTask) {

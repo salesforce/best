@@ -9,6 +9,7 @@ export default class ViewDashboard extends LightningElement {
     @track agents = [];
     @track hubStats = null;
     @track agentStats = null;
+    @track agentSpecs = [];
     allJobs = [];
 
     connectedCallback() {
@@ -165,6 +166,6 @@ export default class ViewDashboard extends LightningElement {
     }
 
     specs(event) {
-        console.log(event);
+        this.agentSpecs = event.packet.specs;
     }
 }

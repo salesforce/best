@@ -1,3 +1,7 @@
+:host {
+    display: block;
+}
+
 .container {
     width: 800px;
     margin: 40px auto;
@@ -40,4 +44,19 @@ header {
 }
 .stats .value {
     font-size: 12px;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+footer .specs {
+    list-style: none;
+    padding: 0px 15px;
+}
+
+footer span {
+    margin: 0 5px;
 }

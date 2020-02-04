@@ -95,6 +95,6 @@ export default class Runner extends AbstractRunner {
     }
 
     static async getBrowserSpecs() {
-        return [];
+        return HeadlessBrowser.getSpecs();
     }
 }

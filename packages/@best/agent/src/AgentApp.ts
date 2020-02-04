@@ -25,7 +25,7 @@ export class AgentApp extends EventEmitter {
         this.runner = runner;
         this.logger = logger;
         this.socketServer = socketServer;
-
+        this.runner.validateRunner();
         this.initializeHandlers();
     }
 
@@ -51,7 +51,7 @@ export class AgentApp extends EventEmitter {
         });
 
         const specs = await this.runner.getRunnerBrowserSpecs();
-        this.logger.event(socket.id, 'specs update', specs);
+        this.logger.event(socket.id, 'specs update', { specs });
     }
 
     private handleJobAddedInQueue(task: BenchmarkTask) {

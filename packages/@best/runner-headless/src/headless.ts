@@ -10,7 +10,7 @@ import fs from 'fs';
 import os from 'os';
 import puppeteer from 'puppeteer';
 import { parseTrace, removeTrace, mergeTracedMetrics } from './trace'
-import { FrozenProjectConfig } from '@best/types';
+import { FrozenProjectConfig, BrowserSpec } from '@best/types';
 
 const BROWSER_ARGS = [
     '--no-sandbox',
@@ -54,7 +54,7 @@ export default class HeadlessBrowser {
         await this.page.goto(this.pageUrl);
         this.checkForErrors();
     }
-    
+
     checkForErrors() {
         const pageError = this.pageError;
         if (pageError) {
@@ -65,7 +65,7 @@ export default class HeadlessBrowser {
 
     async processTrace(result: any) {
         if (! this.page) return result;
-            
+
         if (this.tracingEnabled) {
             const traces = await parseTrace(this.tracePath);
             mergeTracedMetrics(result, traces);
@@ -94,7 +94,7 @@ export default class HeadlessBrowser {
             if (this.tracingEnabled) await this.page.tracing.start({ path: this.tracePath });
 
             result = await this.page.evaluate(fn, payload);
-            
+
             if (this.tracingEnabled) await this.page.tracing.stop();
 
             this.checkForErrors();
@@ -103,8 +103,15 @@ export default class HeadlessBrowser {
 
         return result;
     }
-    
+
     version() {
         return this.browser ? this.browser.version(): Promise.resolve('unknown');
+    }
+
+    static async getSpecs(): Promise<BrowserSpec[]> {
+        // TODO: Create pupeteer test so we fail when upgrading
+        return [
+            { name: 'chrome', version: '80' }
+        ];
     }
 }

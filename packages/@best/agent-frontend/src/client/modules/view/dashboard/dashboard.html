@@ -32,4 +32,11 @@
             </div>
         </template>
     </div>
+    <footer>
+        <ul class="specs">
+            <template for:each={agentSpecs} for:item="spec">
+                <li key={spec.name}><span class="name">{spec.name}</span><span class="version">{spec.version}</span></li>
+            </template>
+        </ul>
+    </footer>
 </template>
