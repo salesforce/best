@@ -21,6 +21,7 @@
     { "path": "./packages/@best/runner-hub" },
     { "path": "./packages/@best/runner-webdriverio" },
     { "path": "./packages/@best/runtime" },
+    { "path": "./packages/@best/shared" },
     { "path": "./packages/@best/store" },
     { "path": "./packages/@best/store-aws" },
     { "path": "./packages/@best/store-fs" },
