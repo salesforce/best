@@ -174,10 +174,29 @@ class RemoteRunner {
     [BEST_RPC.BENCHMARK_UPLOAD_REQUEST]() {
         const benchmarkConfig = this.benchmarkBuilds.shift();
         if (!benchmarkConfig) {
-            this.triggerBenchmarkError('Agent is requesting more jobs than specified');
+            return this.triggerBenchmarkError('Agent is requesting more jobs than specified');
         }
 
-        this.socket.emit(BEST_RPC.BENCHMARK_UPLOAD_INFO, benchmarkConfig);
+        this.socket.emit(BEST_RPC.BENCHMARK_UPLOAD_INFO, benchmarkConfig, async (entry: string) => {
+            const { benchmarkName, benchmarkEntry } = benchmarkConfig;
+            const bundleDirname = path.dirname(benchmarkEntry);
+
+            const tarBundle = path.resolve(bundleDirname, `${benchmarkName}.tgz`);
+            try {
+                await createTarBundle(bundleDirname, benchmarkName);
+            } catch(err) {
+                return this.triggerBenchmarkError(err);
+            }
+
+            const uploader = new SocketIOFile(this.socket);
+            uploader.on('ready', () => {
+                uploader.upload(tarBundle);
+            });
+
+            uploader.on('error', (err) => {
+                return this.triggerBenchmarkError(err);
+            });
+        });
     }
 
     [BEST_RPC.BENCHMARK_UPLOAD_COMPLETED]() {
@@ -208,8 +227,9 @@ class RemoteRunner {
 
     }
 
-    triggerBenchmarkError(error_msg: any) {
-        this._onBenchmarkError(new Error(error_msg));
+    triggerBenchmarkError(error_msg: string | Error) {
+        const error = typeof error_msg === 'string' ? new Error(error_msg) : error_msg;
+        this._onBenchmarkError(error);
     }
 
     onBenchmarkError(callback: Function) {

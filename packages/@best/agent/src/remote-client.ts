@@ -1,6 +1,7 @@
 import { BEST_RPC } from "@best/shared";
 import { EventEmitter } from "events";
 import { Socket } from "socket.io";
+import { loadBenchmarkJob } from "./benchmark-loader";
 import { BrowserSpec, BuildConfig } from "@best/types";
 
 export interface RemoteClientConfig {
@@ -12,7 +13,7 @@ enum RemoteClientState {
     IDLE,
     REQUESTING_JOB_INFO,
     REQUESTING_JOB_PAYLOAD
-};
+}
 
 export default class RemoteClient extends EventEmitter {
     private clientSocket: Socket;
@@ -71,12 +72,16 @@ export default class RemoteClient extends EventEmitter {
         console.log('noop');
     }
 
-    [BEST_RPC.BENCHMARK_UPLOAD_INFO](benchmarkConfig: BuildConfig) {
+    async [BEST_RPC.BENCHMARK_UPLOAD_INFO](benchmarkConfig: BuildConfig, ack: Function) {
         if (this.state !== RemoteClientState.REQUESTING_JOB_INFO) {
             this.disconnectClient('Client should not send jobs at this point.');
         }
 
         console.log('benchmark_info', benchmarkConfig);
+        ack(benchmarkConfig.benchmarkEntry);
+        this.state = RemoteClientState.REQUESTING_JOB_PAYLOAD;
+        const benchmarkBinary = await loadBenchmarkJob(this.clientSocket);
+        console.log(benchmarkBinary);
     }
 
     [BEST_RPC.BENCHMARK_UPLOAD_REQUEST]() {
