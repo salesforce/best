@@ -7,7 +7,7 @@
 
 import path from 'path';
 import { EventEmitter } from "events";
-import { runBenchmark, getBrowserSpecs, validateRunner } from '@best/runner';
+import { runBenchmarks, getBrowserSpecs, validateRunner } from '@best/runner';
 import BenchmarkTask from "./BenchmarkTask";
 import { loadBenchmarkJob } from "./benchmark-loader";
 import { x as extractTar } from 'tar';
@@ -56,7 +56,7 @@ class RunnerLogStream implements RunnerStream {
         }
     }
 
-    updateBenchmarkProgress(state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) {
+    updateBenchmarkProgress(benchmarkPath: string, state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) {
         if (this._socket.rawSocket.connected) {
             this._socket.emit('running_benchmark_update', { state, opts });
         }
@@ -147,7 +147,7 @@ export default class BenchmarkRunner extends EventEmitter {
         validateRunner(this.runner);
     }
 
-    private async runBenchmark(task: BenchmarkTask) {
+    private async runBenchmark(task: any) {
         const { benchmarkName } = task;
         const taskSocket = loggedSocket(task.socketConnection, this.logger);
         const runnerStream = new RunnerLogStream(taskSocket);
@@ -158,7 +158,7 @@ export default class BenchmarkRunner extends EventEmitter {
         try {
             this.logger.info(task.socketConnection.id, 'benchmark start', benchmarkName);
 
-            results = await runBenchmark(task.config, runnerStream);
+            results = await runBenchmarks(task.config, runnerStream);
 
             this.logger.info(task.socketConnection.id, 'benchmark completed', benchmarkName);
         } catch (err) {

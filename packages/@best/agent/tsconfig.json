@@ -9,6 +9,7 @@
     { "path": "../agent-logger" },
     { "path": "../runner" },
     { "path": "../utils" },
+    { "path": "../shared" },
     { "path": "../types" }
   ]
 }

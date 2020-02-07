@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
-import { BuildConfig, BenchmarkInfo, BenchmarkResultsSnapshot, RunnerStream, BrowserSpec } from "@best/types";
+import { BuildConfig, BenchmarkResultsSnapshot, RunnerStream, BrowserSpec, BenchmarksBundle } from "@best/types";
 import AbstractRunner from "@best/runner-abstract";
 
 interface ConcreteRunner extends AbstractRunner {
@@ -13,8 +13,8 @@ interface ConcreteRunner extends AbstractRunner {
     getBrowserSpecs(): Promise<BrowserSpec[]>
 }
 
-export async function runBenchmark(benchmarkBuild: BuildConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot> {
-    const { benchmarkName, benchmarkEntry, benchmarkFolder, benchmarkSignature, projectConfig, globalConfig } = benchmarkBuild;
+function runBenchmarksBundle(benchmarkBuild: BenchmarksBundle, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
+    const { projectConfig, globalConfig, benchmarkBuilds } = benchmarkBuild;
     const { benchmarkRunner } = projectConfig;
     let RunnerCtor: ConcreteRunner, runnerInstance: ConcreteRunner;
 
@@ -32,8 +32,7 @@ export async function runBenchmark(benchmarkBuild: BuildConfig, runnerLogStream:
         throw new Error(`Runner "${benchmarkRunner}" does not expose a constructor.`);
     }
 
-    const benchmarkInfo: BenchmarkInfo = { benchmarkName, benchmarkEntry, benchmarkFolder, benchmarkSignature };
-    return runnerInstance.run(benchmarkInfo, projectConfig, globalConfig, runnerLogStream);
+    return runnerInstance.run(benchmarkBuilds, projectConfig, globalConfig, runnerLogStream);
 }
 
 function loadRunnerModule(benchmarkRunner: string): ConcreteRunner {
@@ -45,36 +44,15 @@ function loadRunnerModule(benchmarkRunner: string): ConcreteRunner {
     }
 }
 
-export async function runBenchmarksInBatch(benchmarksBuilds: BuildConfig[], messager: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
-    const { projectConfig } = benchmarksBuilds[0];
-    const { benchmarkRunner } = projectConfig;
-    const RunnerCtor: ConcreteRunner = loadRunnerModule(benchmarkRunner);
-    let runnerInstance: ConcreteRunner;
+export async function runBenchmarks(benchmarksBuilds: BenchmarksBundle[], messager: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
+    const results = [];
 
-    // Create a runner instance
-    try {
-        runnerInstance = new RunnerCtor(projectConfig.benchmarkRunnerConfig);
-    } catch (e) {
-        throw new Error(`Runner "${benchmarkRunner}" does not expose a constructor.`);
+    for (const benchmarkBundle of benchmarksBuilds) {
+        const benchmarkResults = await runBenchmarksBundle(benchmarkBundle, messager);
+        results.push(...benchmarkResults);
     }
 
-    // const benchmarkInfo: BenchmarkInfo = { benchmarkName, benchmarkEntry, benchmarkFolder, benchmarkSignature };
-    return runnerInstance.runBenchmarksInBatch(benchmarksBuilds, messager);
-}
-
-export async function runBenchmarks(benchmarksBuilds: BuildConfig[], messager: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
-    const { projectConfig } = benchmarksBuilds[0];
-    if (projectConfig.runInBatch) {
-        return runBenchmarksInBatch(benchmarksBuilds, messager);
-    } else {
-        const results = [];
-        for (const benchmarkBuild of benchmarksBuilds) {
-            const benchmarkResults = await runBenchmark(benchmarkBuild, messager);
-            results.push(benchmarkResults);
-        }
-
-        return results;
-    }
+    return results;
 }
 
 export async function getBrowserSpecs(runner: string | BuildConfig): Promise<BrowserSpec[]> {

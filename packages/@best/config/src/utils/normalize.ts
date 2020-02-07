@@ -9,7 +9,7 @@ import path from 'path';
 import chalk from 'chalk';
 import DEFAULT_CONFIG from './defaults';
 import { replacePathSepForRegex } from '@best/regex-util';
-import { CliConfig, UserConfig, NormalizedConfig, RunnerConfig } from '@best/types';
+import { CliConfig, UserConfig, NormalizedConfig, RunnerConfig, BrowserSpec } from '@best/types';
 
 const TARGET_COMMIT = process.env.TARGET_COMMIT;
 const BASE_COMMIT = process.env.BASE_COMMIT;
@@ -40,7 +40,7 @@ function normalizeRunner(runner: string, runners: RunnerConfig[]) {
     return selectedRunner.runner;
 }
 
-function normalizeRunnerConfig(runner: string, runners?: RunnerConfig[]) {
+function normalizeRunnerConfig(runner: string, runners: RunnerConfig[], specs?: BrowserSpec) {
     if (!runners) {
         return {};
     }
@@ -58,7 +58,11 @@ function normalizeRunnerConfig(runner: string, runners?: RunnerConfig[]) {
         throw new Error(`Unable to find a runner for ${runner}`);
     }
 
-    return selectedRunner ? selectedRunner.config : {};
+    const selectedRunnerConfig = selectedRunner.config || {};
+    return {
+        ...selectedRunnerConfig,
+        specs: selectedRunner.specs || specs
+    };
 }
 
 function setCliOptionOverrides(initialOptions: UserConfig, argsCLI: CliConfig): UserConfig {
@@ -188,11 +192,14 @@ export function normalizeConfig(userConfig: UserConfig, cliOptions: CliConfig): 
                 mergeConfig[key] = normalizeRunner(normalizedConfig[key], mergeConfig.runners);
                 break;
             case 'runnerConfig':
-                mergeConfig[key] = normalizeRunnerConfig(normalizedConfig['runner'], mergeConfig.runners);
+                mergeConfig[key] = normalizeRunnerConfig(normalizedConfig['runner'], mergeConfig.runners, mergeConfig.specs);
                 break;
             case 'compareStats':
                 mergeConfig[key] = normalizeCommits(normalizedConfig[key]);
                 break;
+            case 'specs':
+                    mergeConfig[key] = normalizedConfig['runnerConfig'].specs || mergeConfig[key];
+                    break;
             case 'apiDatabase': {
                 const apiDatabaseConfig = normalizedConfig[key];
                 mergeConfig[key] = apiDatabaseConfig ? normalizeObjectPathPatterns(apiDatabaseConfig, normalizedConfig.rootDir) : apiDatabaseConfig;

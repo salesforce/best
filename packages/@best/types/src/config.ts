@@ -28,6 +28,7 @@ export interface RunnerConfig {
     alias: string;
     runner: string;
     config?: any;
+    specs?: BrowserSpec;
 }
 
 export interface ApiDatabaseConfig {
@@ -66,6 +67,7 @@ export interface CliConfig {
 
 export interface NormalizedConfig {
     nonFlagArgs: string[];
+    specs?: BrowserSpec;
     cache: boolean,
     cacheDirectory: string,
     compareStats?: string[],
@@ -157,6 +159,13 @@ export interface BuildConfig {
     benchmarkEntry: string,
     projectConfig: FrozenProjectConfig,
     globalConfig: FrozenGlobalConfig,
+}
+
+export interface BenchmarksBundle {
+    projectName: string;
+    projectConfig: FrozenProjectConfig;
+    globalConfig: FrozenGlobalConfig;
+    benchmarkBuilds: BuildConfig[]
 }
 
 export interface BrowserSpec {

@@ -7,9 +7,9 @@
 
 import express from 'express';
 import { readFileSync } from 'fs';
-import { createAgent } from '../agent-service';
+import { createAgent } from '../create-agent';
 import { registerWithHub } from '../hub-registration';
-import { serveFrontend, observeAgent } from '@best/agent-frontend';
+import { serveFrontend } from '@best/agent-frontend';
 import { getAgentConfig, getHubConfig } from './config';
 
 const PORT = process.env.PORT || 5000;
@@ -35,7 +35,8 @@ export function run() {
     server.listen(PORT);
 
     const agent = createAgent(server, agentConfig);
-    observeAgent(agent);
+    console.log('agent: ', !!agent);
+    // observeAgent(agent);
 
     process.stdout.write(`Best agent listening in port ${PORT}...\n`);
 

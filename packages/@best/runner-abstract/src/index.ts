@@ -11,7 +11,6 @@ import { getSystemInfo } from '@best/utils';
 import {
     FrozenGlobalConfig,
     FrozenProjectConfig,
-    BenchmarkInfo,
     BenchmarkRuntimeConfig,
     BenchmarkResultsSnapshot,
     BrowserSpec,
@@ -21,10 +20,7 @@ import {
 } from '@best/types';
 
 export default abstract class AbstractRunner {
-    abstract async run(benchmarkInfo: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot>;
-    async runBenchmarksInBatch(benchmarksBuilds: BuildConfig[], messager: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
-        throw new Error('Runner does not support run in batch option');
-    }
+    abstract async run(benchmarkBuilds: BuildConfig[], projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot[]>;
 
     static async getBrowserSpecs(): Promise<BrowserSpec[]> {
         throw new Error('Runner must implement getBrowserSpecs');

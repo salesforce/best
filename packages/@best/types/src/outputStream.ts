@@ -13,6 +13,6 @@ export interface RunnerStream {
     onBenchmarkStart: (benchmarkPath: string) => void,
     onBenchmarkEnd: (benchmarkPath: string) => void,
     onBenchmarkError: (benchmarkPath: string) => void,
-    updateBenchmarkProgress: (state: BenchmarkResultsState, runtimeOpts: BenchmarkRuntimeConfig) => void,
+    updateBenchmarkProgress: (benchmarkPath: string, state: BenchmarkResultsState, runtimeOpts: BenchmarkRuntimeConfig) => void,
     log: (message: string) => void;
 }

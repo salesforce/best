@@ -6,6 +6,8 @@
   },
   "references": [
     { "path": "../console-stream" },
+    { "path": "../runner-abstract" },
+    { "path": "../shared" },
     { "path": "../types" }
   ]
 }

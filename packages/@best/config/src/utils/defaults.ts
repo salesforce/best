@@ -12,6 +12,7 @@ const defaultOptions = {
     cache: true,
     gitIntegration: false,
     commentThreshold: 5,
+    specs: undefined,
     generateHTML: false,
     apiDatabase: {
         adapter: 'sql/sqlite',

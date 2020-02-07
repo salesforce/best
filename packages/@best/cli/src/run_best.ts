@@ -15,7 +15,7 @@ import { BuildOutputStream, RunnerOutputStream } from "@best/console-stream";
 import { storeBenchmarkResults } from '@best/store';
 import { saveBenchmarkSummaryInDB } from '@best/api-db';
 import { analyzeBenchmarks } from '@best/analyzer';
-import { BuildConfig, FrozenGlobalConfig, FrozenProjectConfig} from "@best/types";
+import { FrozenGlobalConfig, FrozenProjectConfig, BenchmarksBundle } from "@best/types";
 
 async function getBenchmarkPaths(config: FrozenProjectConfig): Promise<string[]> {
     const { testMatch, testPathIgnorePatterns, rootDir: cwd } = config;
@@ -64,13 +64,19 @@ async function getBenchmarkTests(projectConfigs: FrozenProjectConfig[], globalCo
     }));
 }
 
-async function buildBundleBenchmarks(benchmarksTests: { config: FrozenProjectConfig; matches: string[] }[], globalConfig: FrozenGlobalConfig, messager: BuildOutputStream) {
-    const benchmarkBuilds: BuildConfig[] = [];
+async function buildBundleBenchmarks(benchmarksTests: { config: FrozenProjectConfig; matches: string[] }[], globalConfig: FrozenGlobalConfig, messager: BuildOutputStream): Promise<BenchmarksBundle[]> {
+    const benchmarkBuilds: BenchmarksBundle[] = [];
     // We wait for each project to run before starting the next batch
     for (const benchmarkTest of benchmarksTests) {
         const { matches, config } = benchmarkTest;
         const result = await buildBenchmarks(matches, config, globalConfig, messager);
-        benchmarkBuilds.push(...result);
+
+        benchmarkBuilds.push({
+            projectName: config.projectName,
+            projectConfig: config,
+            globalConfig,
+            benchmarkBuilds: result
+        });
     }
 
     return benchmarkBuilds;

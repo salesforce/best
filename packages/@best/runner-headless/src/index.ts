@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
-import { FrozenGlobalConfig, FrozenProjectConfig, BenchmarkInfo, BenchmarkRuntimeConfig, BenchmarkResults, BenchmarkResultsState, BenchmarkResultsSnapshot } from '@best/types';
+import { FrozenGlobalConfig, FrozenProjectConfig, BuildConfig, BenchmarkRuntimeConfig, BenchmarkResults, BenchmarkResultsState, BenchmarkResultsSnapshot } from '@best/types';
 import AbstractRunner from '@best/runner-abstract';
 import HeadlessBrowser from "./headless";
 import { RunnerStream } from "@best/types";
@@ -15,42 +15,47 @@ const UPDATE_INTERVAL = 300;
 
 export default class Runner extends AbstractRunner {
 
-    async run(benchmarkInfo: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot> {
-        const { benchmarkEntry } = benchmarkInfo;
-        const { useHttp } = projectConfig;
-        const runtimeOptions = this.getRuntimeOptions(projectConfig);
-        const state = this.initializeBenchmarkState();
-        const { url, terminate } = await this.initializeServer(benchmarkEntry, useHttp);
-        const browser = new HeadlessBrowser(url, projectConfig);
+    async run(benchmarkBuilds: BuildConfig[], projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
+        const snapshotResults: BenchmarkResultsSnapshot[] = [];
+        for (const benchmarkInfo of benchmarkBuilds) {
+            const { benchmarkEntry } = benchmarkInfo;
+            const { useHttp } = projectConfig;
+            const runtimeOptions = this.getRuntimeOptions(projectConfig);
+            const state = this.initializeBenchmarkState();
+            const { url, terminate } = await this.initializeServer(benchmarkEntry, useHttp);
+            const browser = new HeadlessBrowser(url, projectConfig);
 
-        try {
-            await browser.initialize();
-            runnerLogStream.onBenchmarkStart(benchmarkEntry);
-            const { results } = await this.runIterations(browser, state, runtimeOptions, runnerLogStream);
-            const version = await browser.version();
-            const environment = await this.getEnvironment({ version }, projectConfig, globalConfig);
-            return { results, environment, benchmarkInfo, projectConfig };
-        } catch (e) {
-            runnerLogStream.onBenchmarkError(benchmarkEntry);
-            throw e;
-        } finally {
-            runnerLogStream.onBenchmarkEnd(benchmarkEntry);
-            await browser.close();
-            terminate();
+            try {
+                await browser.initialize();
+                runnerLogStream.onBenchmarkStart(benchmarkEntry);
+                const { results } = await this.runIterations(benchmarkEntry, browser, state, runtimeOptions, runnerLogStream);
+                const version = await browser.version();
+                const environment = await this.getEnvironment({ version }, projectConfig, globalConfig);
+                snapshotResults.push({ results, environment, benchmarkInfo, projectConfig });
+            } catch (e) {
+                runnerLogStream.onBenchmarkError(benchmarkEntry);
+                throw e;
+            } finally {
+                runnerLogStream.onBenchmarkEnd(benchmarkEntry);
+                await browser.close();
+                terminate();
+            }
         }
+
+        return snapshotResults;
     }
 
     initializeBenchmarkState(): BenchmarkResultsState {
         return { executedTime: 0, executedIterations: 0, results: [] };
     }
 
-    async runIterations(browser: HeadlessBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnnerLogStream: RunnerStream): Promise<BenchmarkResultsState> {
+    async runIterations(benchmarkEntry: string, browser: HeadlessBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnnerLogStream: RunnerStream): Promise<BenchmarkResultsState> {
         return runtimeOptions.iterateOnClient
-            ? this.runClientIterations(browser, state, runtimeOptions, runnnerLogStream)
-            : this.runServerIterations(browser, state, runtimeOptions, runnnerLogStream);
+            ? this.runClientIterations(benchmarkEntry, browser, state, runtimeOptions, runnnerLogStream)
+            : this.runServerIterations(benchmarkEntry, browser, state, runtimeOptions, runnnerLogStream);
     }
 
-    async runClientIterations(browser: HeadlessBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsState> {
+    async runClientIterations(benchmarkEntry: string, browser: HeadlessBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsState> {
         // Run an iteration to estimate the time it will take
         const testResult = await this.runIteration(browser, { iterations: 1 });
         const estimatedIterationTime = testResult.aggregate;
@@ -61,7 +66,7 @@ export default class Runner extends AbstractRunner {
             const executing = Date.now() - start;
             state.executedTime = executing;
             state.executedIterations = Math.round(executing / estimatedIterationTime);
-            runnerLogStream.updateBenchmarkProgress(state, runtimeOptions);
+            runnerLogStream.updateBenchmarkProgress(benchmarkEntry, state, runtimeOptions);
         }, UPDATE_INTERVAL);
 
         await browser.reloadPage();
@@ -72,7 +77,7 @@ export default class Runner extends AbstractRunner {
         return state;
     }
 
-    async runServerIterations(browser: HeadlessBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnnerLogStream: RunnerStream): Promise<BenchmarkResultsState> {
+    async runServerIterations(benchmarkEntry: string, browser: HeadlessBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnnerLogStream: RunnerStream): Promise<BenchmarkResultsState> {
         if (state.executedTime < runtimeOptions.maxDuration || state.executedIterations < runtimeOptions.minSampleCount) {
             const start = Date.now();
             const benchmarkResults = await this.runIteration(browser, runtimeOptions);
@@ -83,8 +88,8 @@ export default class Runner extends AbstractRunner {
             if (root) {
                 state.results.push(root);
             }
-            runnnerLogStream.updateBenchmarkProgress(state, runtimeOptions);
-            return this.runIterations(browser, state, runtimeOptions, runnnerLogStream);
+            runnnerLogStream.updateBenchmarkProgress(benchmarkEntry, state, runtimeOptions);
+            return this.runIterations(benchmarkEntry, browser, state, runtimeOptions, runnnerLogStream);
         }
 
         return state;

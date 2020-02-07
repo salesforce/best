@@ -6,7 +6,6 @@
 */
 
 import {
-    BenchmarkInfo,
     BenchmarkResultsSnapshot,
     BuildConfig,
     FrozenGlobalConfig,
@@ -17,11 +16,8 @@ import AbstractRunner from "@best/runner-abstract";
 import { HubClient } from "./HubClient";
 
 export class Runner extends AbstractRunner {
-    async run(benchmarkInfo: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot> {
-        const client = new HubClient();
-        const results = await client.runBenchmarks([benchmarkInfo], projectConfig, globalConfig, runnerLogStream);
-
-        return results[0];
+    async run(benchmarkBuilds: BuildConfig[], projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
+        throw new Error('DELETE ME');
     }
 
     async runBenchmarksInBatch(benchmarksBuilds: BuildConfig[], messager: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
