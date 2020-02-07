@@ -7,9 +7,11 @@
 
 import socketIO, { Server as SocketIoServer, Socket } from "socket.io";
 import { Server } from "http";
-import { AgentConfig } from './hub-registration';
 import { BrowserSpec } from "@best/types";
 import { BEST_RPC } from "@best/shared";
+import { runBenchmarks } from '@best/runner';
+import { AgentConfig } from './utils/hub-registration';
+import { createBundleConfig } from './utils/create-bundle-config';
 import RemoteClient, { RemoteClientConfig } from "./remote-client";
 
 enum AgentState {
@@ -17,13 +19,15 @@ enum AgentState {
     BUSY,
 }
 
-class Agent {
+export class Agent {
     private socketServer: SocketIoServer;
     private state: AgentState;
+    private agentConfig: AgentConfig;
     private connectedClients = new Set<RemoteClient>();
     private activeClient?: RemoteClient;
 
-    constructor(server: Server) {
+    constructor(server: Server, agentConfig: AgentConfig) {
+        this.agentConfig = agentConfig;
         this.socketServer = socketIO(server, { path: '/best' });
         this.socketServer.on('connect', this.connect.bind(this));
         this.state = AgentState.IDLE;
@@ -47,16 +51,25 @@ class Agent {
         }
 
         const remoteClient = this.setupNewClient(socketClient, config);
-        this.runBenchmark(remoteClient);
+
+        if (this.idleState) {
+            this.runBenchmark(remoteClient);
+        }
     }
 
     async runBenchmark(remoteClient: RemoteClient) {
         if (this.idleState) {
             this.state === AgentState.BUSY;
             this.activeClient = remoteClient;
-            await remoteClient.requestJob();
+            try {
+                const benchmarkBuild = await remoteClient.requestJob();
+                const bundleConfig = createBundleConfig(benchmarkBuild, this.agentConfig);
+                await runBenchmarks(bundleConfig, remoteClient);
+            } catch(err) {
+                console.log('>> TODO!!!');
+                console.log(err);
+            }
         }
-
     }
 
     get idleState() {
@@ -83,14 +96,11 @@ class Agent {
     }
 
     setupNewClient(socketClient: Socket, config: any): RemoteClient {
-        const remoteClientConfig: RemoteClientConfig = {
-            specs: config.specs,
-            jobs: parseInt(config.jobs, 10)
-        };
+        // Normalize Config
+        const remoteClientConfig: RemoteClientConfig = { specs: config.specs, jobs: parseInt(config.jobs, 10) };
 
+        // Create and new RemoteClient and add it to the pool
         const remoteClient = new RemoteClient(socketClient, remoteClientConfig);
-
-        // Add it to the list of clients
         this.connectedClients.add(remoteClient);
 
         // Make sure we remove it from the agent when disconnected
@@ -103,17 +113,4 @@ class Agent {
 
         return remoteClient;
     }
-}
-
-
-export function createAgent(server: Server, agentConfig: AgentConfig) {
-    if (!agentConfig.runner) {
-        throw new Error('An agent must have a runner attached to it');
-    }
-
-    const agent = new Agent(server);
-    setInterval(() => {
-        console.log('[agent-state]', agent.getState());
-    }, 1000);
-    return agent;
 }

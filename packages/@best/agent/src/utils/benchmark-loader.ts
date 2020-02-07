@@ -8,6 +8,7 @@
 import path from "path";
 import SocketIOFile from "socket.io-file";
 import { cacheDirectory } from '@best/utils';
+import { x as extractTar } from 'tar';
 import { Socket } from "socket.io";
 
 // This is all part of the initialization
@@ -42,4 +43,9 @@ export async function loadBenchmarkJob(socketConnection: Socket): Promise<any> {
             reject(new Error(`Timed out waiting upload to start. Waited for ${UPLOAD_START_TIMEOUT}ms`));
         }, UPLOAD_START_TIMEOUT);
     });
+}
+
+export function extractBenchmarkTarFile(uploadDir: string) {
+    const benchmarkDirname = path.dirname(uploadDir);
+    return extractTar({ cwd: benchmarkDirname, file: uploadDir });
 }

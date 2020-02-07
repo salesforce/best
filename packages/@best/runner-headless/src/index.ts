@@ -18,7 +18,7 @@ export default class Runner extends AbstractRunner {
     async run(benchmarkBuilds: BuildConfig[], projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
         const snapshotResults: BenchmarkResultsSnapshot[] = [];
         for (const benchmarkInfo of benchmarkBuilds) {
-            const { benchmarkEntry } = benchmarkInfo;
+            const { benchmarkEntry, benchmarkSignature } = benchmarkInfo;
             const { useHttp } = projectConfig;
             const runtimeOptions = this.getRuntimeOptions(projectConfig);
             const state = this.initializeBenchmarkState();
@@ -27,16 +27,16 @@ export default class Runner extends AbstractRunner {
 
             try {
                 await browser.initialize();
-                runnerLogStream.onBenchmarkStart(benchmarkEntry);
-                const { results } = await this.runIterations(benchmarkEntry, browser, state, runtimeOptions, runnerLogStream);
+                runnerLogStream.onBenchmarkStart(benchmarkSignature);
+                const { results } = await this.runIterations(benchmarkSignature, browser, state, runtimeOptions, runnerLogStream);
                 const version = await browser.version();
                 const environment = await this.getEnvironment({ version }, projectConfig, globalConfig);
                 snapshotResults.push({ results, environment, benchmarkInfo, projectConfig });
             } catch (e) {
-                runnerLogStream.onBenchmarkError(benchmarkEntry);
+                runnerLogStream.onBenchmarkError(benchmarkSignature);
                 throw e;
             } finally {
-                runnerLogStream.onBenchmarkEnd(benchmarkEntry);
+                runnerLogStream.onBenchmarkEnd(benchmarkSignature);
                 await browser.close();
                 terminate();
             }
@@ -49,13 +49,13 @@ export default class Runner extends AbstractRunner {
         return { executedTime: 0, executedIterations: 0, results: [] };
     }
 
-    async runIterations(benchmarkEntry: string, browser: HeadlessBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnnerLogStream: RunnerStream): Promise<BenchmarkResultsState> {
+    async runIterations(benchmarkSignature: string, browser: HeadlessBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnnerLogStream: RunnerStream): Promise<BenchmarkResultsState> {
         return runtimeOptions.iterateOnClient
-            ? this.runClientIterations(benchmarkEntry, browser, state, runtimeOptions, runnnerLogStream)
-            : this.runServerIterations(benchmarkEntry, browser, state, runtimeOptions, runnnerLogStream);
+            ? this.runClientIterations(benchmarkSignature, browser, state, runtimeOptions, runnnerLogStream)
+            : this.runServerIterations(benchmarkSignature, browser, state, runtimeOptions, runnnerLogStream);
     }
 
-    async runClientIterations(benchmarkEntry: string, browser: HeadlessBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsState> {
+    async runClientIterations(benchmarkSignature: string, browser: HeadlessBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsState> {
         // Run an iteration to estimate the time it will take
         const testResult = await this.runIteration(browser, { iterations: 1 });
         const estimatedIterationTime = testResult.aggregate;
@@ -66,7 +66,7 @@ export default class Runner extends AbstractRunner {
             const executing = Date.now() - start;
             state.executedTime = executing;
             state.executedIterations = Math.round(executing / estimatedIterationTime);
-            runnerLogStream.updateBenchmarkProgress(benchmarkEntry, state, runtimeOptions);
+            runnerLogStream.updateBenchmarkProgress(benchmarkSignature, state, runtimeOptions);
         }, UPDATE_INTERVAL);
 
         await browser.reloadPage();
@@ -77,7 +77,7 @@ export default class Runner extends AbstractRunner {
         return state;
     }
 
-    async runServerIterations(benchmarkEntry: string, browser: HeadlessBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnnerLogStream: RunnerStream): Promise<BenchmarkResultsState> {
+    async runServerIterations(benchmarkSignature: string, browser: HeadlessBrowser, state: BenchmarkResultsState, runtimeOptions: BenchmarkRuntimeConfig, runnnerLogStream: RunnerStream): Promise<BenchmarkResultsState> {
         if (state.executedTime < runtimeOptions.maxDuration || state.executedIterations < runtimeOptions.minSampleCount) {
             const start = Date.now();
             const benchmarkResults = await this.runIteration(browser, runtimeOptions);
@@ -88,8 +88,8 @@ export default class Runner extends AbstractRunner {
             if (root) {
                 state.results.push(root);
             }
-            runnnerLogStream.updateBenchmarkProgress(benchmarkEntry, state, runtimeOptions);
-            return this.runIterations(benchmarkEntry, browser, state, runtimeOptions, runnnerLogStream);
+            runnnerLogStream.updateBenchmarkProgress(benchmarkSignature, state, runtimeOptions);
+            return this.runIterations(benchmarkSignature, browser, state, runtimeOptions, runnnerLogStream);
         }
 
         return state;

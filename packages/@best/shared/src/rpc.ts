@@ -15,14 +15,13 @@ export const BEST_RPC = {
     AGENT_STATUS: 'agent_status',
     AGENT_REJECTION: 'agent_rejection',
 
-    BENCHMARK_UPLOAD_INFO: 'benchmark_upload_info',
+    BENCHMARK_UPLOAD_RESPONSE: 'benchmark_upload_response',
     BENCHMARK_UPLOAD_REQUEST: 'benchmark_upload_request',
-    BENCHMARK_UPLOAD_COMPLETED: 'benchmark_upload_completed',
-    BENCHMARK_UPLOAD_ERROR: 'benchmark_upload_error',
 
     BENCHMARK_START: 'benchmark_start',
     BENCHMARK_UPDATE: 'benchmark_update',
     BENCHMARK_END: 'benchmark_end',
     BENCHMARK_ERROR: 'benchmark_error',
+    BENCHMARK_LOG: 'benchmark_log',
     BENCHMARK_RESULTS: 'benchmark_results'
 }

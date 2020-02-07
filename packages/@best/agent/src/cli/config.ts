@@ -1,4 +1,4 @@
-import { AgentConfig, HubConfig } from '../hub-registration';
+import { AgentConfig, HubConfig } from '../utils/hub-registration';
 
 const HUB_CONFIG = process.env.HUB_CONFIG ? JSON.parse(process.env.HUB_CONFIG): {};
 const HUB_URI = process.env.HUB_URI;

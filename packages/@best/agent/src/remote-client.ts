@@ -1,8 +1,9 @@
 import { BEST_RPC } from "@best/shared";
 import { EventEmitter } from "events";
 import { Socket } from "socket.io";
-import { loadBenchmarkJob } from "./benchmark-loader";
-import { BrowserSpec, BuildConfig } from "@best/types";
+import { loadBenchmarkJob, extractBenchmarkTarFile } from "./utils/benchmark-loader";
+import { BrowserSpec, BuildConfig, RunnerStream, BenchmarkResultsState, BenchmarkRuntimeConfig } from "@best/types";
+import path from "path";
 
 export interface RemoteClientConfig {
     specs: BrowserSpec;
@@ -15,13 +16,13 @@ enum RemoteClientState {
     REQUESTING_JOB_PAYLOAD
 }
 
-export default class RemoteClient extends EventEmitter {
+export default class RemoteClient extends EventEmitter implements RunnerStream {
     private clientSocket: Socket;
     public connected: boolean;
     private specs: BrowserSpec;
     private pendingJobs: number;
     private state: RemoteClientState = RemoteClientState.IDLE;
-    private _requestJobSuccess?: Function;
+    private _requestJobSuccess: Function = function () {};
     private _requestJobError: Function = function (err: any) { throw new Error(err) };
 
     constructor(clientSocket: Socket, { specs, jobs }: RemoteClientConfig) {
@@ -72,48 +73,92 @@ export default class RemoteClient extends EventEmitter {
         console.log('noop');
     }
 
-    async [BEST_RPC.BENCHMARK_UPLOAD_INFO](benchmarkConfig: BuildConfig, ack: Function) {
+    async [BEST_RPC.BENCHMARK_UPLOAD_RESPONSE](benchmarkConfig: BuildConfig, ack: Function) {
         if (this.state !== RemoteClientState.REQUESTING_JOB_INFO) {
             this.disconnectClient('Client should not send jobs at this point.');
+            this._requestJobError('Unexpected upload response');
         }
 
-        console.log('benchmark_info', benchmarkConfig);
-        ack(benchmarkConfig.benchmarkEntry);
+        // Get ready to receive the payload
+        const { benchmarkEntry, benchmarkName } = benchmarkConfig;
+        ack(benchmarkEntry);
         this.state = RemoteClientState.REQUESTING_JOB_PAYLOAD;
-        const benchmarkBinary = await loadBenchmarkJob(this.clientSocket);
-        console.log(benchmarkBinary);
+        try {
+            const { uploadDir: tarFile } = await loadBenchmarkJob(this.clientSocket);
+            const uploadDir = path.dirname(tarFile);
+            await extractBenchmarkTarFile(tarFile);
+            benchmarkConfig.benchmarkEntry = path.join(uploadDir, `${benchmarkName}.html`);
+            benchmarkConfig.benchmarkFolder = uploadDir;
+            this.state = RemoteClientState.IDLE;
+            this._requestJobSuccess(benchmarkConfig);
+
+        } catch(err) {
+            this.disconnectClient(err);
+            this._requestJobError(err);
+        }
     }
 
     [BEST_RPC.BENCHMARK_UPLOAD_REQUEST]() {
-
-    }
-
-    [BEST_RPC.BENCHMARK_UPLOAD_COMPLETED]() {
-
-    }
-
-    [BEST_RPC.BENCHMARK_UPLOAD_ERROR]() {
-
+        console.log('noop');
     }
 
     [BEST_RPC.BENCHMARK_START]() {
-
+        console.log('noop');
     }
 
     [BEST_RPC.BENCHMARK_UPDATE]() {
-
+        console.log('noop');
     }
 
     [BEST_RPC.BENCHMARK_END]() {
-
+        console.log('noop');
     }
 
     [BEST_RPC.BENCHMARK_ERROR]() {
-
+        console.log('noop');
+    }
+    [BEST_RPC.BENCHMARK_LOG]() {
+        console.log('noop');
     }
 
     [BEST_RPC.BENCHMARK_RESULTS]() {
+        console.log('noop');
+    }
 
+    // -- RunnerStream methods ----------------------------------------------------------
+
+    init() {}
+
+    finish() {}
+
+    onBenchmarkStart(benchmarkSignature: string) {
+        if (this.clientSocket.connected) {
+            this.clientSocket.emit(BEST_RPC.BENCHMARK_START, benchmarkSignature);
+        }
+    }
+
+    onBenchmarkEnd(benchmarkSignature: string) {
+        if (this.clientSocket.connected) {
+            this.clientSocket.emit(BEST_RPC.BENCHMARK_END, benchmarkSignature);
+        }
+    }
+
+    onBenchmarkError(benchmarkSignature: string) {
+        if (this.clientSocket.connected) {
+            this.clientSocket.emit(BEST_RPC.BENCHMARK_ERROR, benchmarkSignature);
+        }
+    }
+
+    updateBenchmarkProgress(benchmarkSignature: string, state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) {
+        if (this.clientSocket.connected) {
+            this.clientSocket.emit(BEST_RPC.BENCHMARK_UPDATE, benchmarkSignature, state, opts);
+        }
+    }
+
+    log(message: string) {
+        if (this.clientSocket.connected) {
+            this.clientSocket.emit(BEST_RPC.BENCHMARK_LOG, message);
+        }
     }
 
     // -- Imperative methods ------------------------------------------------------------
@@ -125,17 +170,13 @@ export default class RemoteClient extends EventEmitter {
         this.emit(BEST_RPC.DISCONNECT, reason);
     }
 
-    requestJob() {
+    requestJob(): Promise<BuildConfig> {
         return new Promise((resolve, reject) => {
             this.state = RemoteClientState.REQUESTING_JOB_INFO;
             this.clientSocket.emit(BEST_RPC.BENCHMARK_UPLOAD_REQUEST);
             this._requestJobSuccess = resolve;
             this._requestJobError = reject;
         });
-    }
-
-    _DELETEME() {
-        console.log(this._requestJobError, this._requestJobSuccess);
     }
 
     toString() {
