@@ -167,8 +167,8 @@ class RemoteRunner {
         this.triggerBenchmarkError(reason);
     }
 
-    [BEST_RPC.BENCHMARK_INFO]() {
-        console.log('benchmark_info');
+    [BEST_RPC.BENCHMARK_UPLOAD_INFO]() {
+        console.log('benchmark_upload_info');
     }
 
     [BEST_RPC.BENCHMARK_UPLOAD_REQUEST]() {
@@ -177,7 +177,7 @@ class RemoteRunner {
             this.triggerBenchmarkError('Agent is requesting more jobs than specified');
         }
 
-        console.log('Upload Request');
+        this.socket.emit(BEST_RPC.BENCHMARK_UPLOAD_INFO, benchmarkConfig);
     }
 
     [BEST_RPC.BENCHMARK_UPLOAD_COMPLETED]() {

@@ -1,7 +1,7 @@
 import { BEST_RPC } from "@best/shared";
 import { EventEmitter } from "events";
 import { Socket } from "socket.io";
-import { BrowserSpec } from "@best/types/src";
+import { BrowserSpec, BuildConfig } from "@best/types";
 
 export interface RemoteClientConfig {
     specs: BrowserSpec;
@@ -21,7 +21,7 @@ export default class RemoteClient extends EventEmitter {
     private pendingJobs: number;
     private state: RemoteClientState = RemoteClientState.IDLE;
     private _requestJobSuccess?: Function;
-    private _requestJobError?: Function;
+    private _requestJobError: Function = function (err: any) { throw new Error(err) };
 
     constructor(clientSocket: Socket, { specs, jobs }: RemoteClientConfig) {
         super();
@@ -71,8 +71,12 @@ export default class RemoteClient extends EventEmitter {
         console.log('noop');
     }
 
-    [BEST_RPC.BENCHMARK_INFO]() {
-        console.log('benchmark_info');
+    [BEST_RPC.BENCHMARK_UPLOAD_INFO](benchmarkConfig: BuildConfig) {
+        if (this.state !== RemoteClientState.REQUESTING_JOB_INFO) {
+            this.disconnectClient('Client should not send jobs at this point.');
+        }
+
+        console.log('benchmark_info', benchmarkConfig);
     }
 
     [BEST_RPC.BENCHMARK_UPLOAD_REQUEST]() {

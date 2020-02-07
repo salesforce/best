@@ -15,7 +15,7 @@ export const BEST_RPC = {
     AGENT_STATUS: 'agent_status',
     AGENT_REJECTION: 'agent_rejection',
 
-    BENCHMARK_INFO: 'benchmark_send_info',
+    BENCHMARK_UPLOAD_INFO: 'benchmark_upload_info',
     BENCHMARK_UPLOAD_REQUEST: 'benchmark_upload_request',
     BENCHMARK_UPLOAD_COMPLETED: 'benchmark_upload_completed',
     BENCHMARK_UPLOAD_ERROR: 'benchmark_upload_error',
