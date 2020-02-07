@@ -11,7 +11,7 @@ import socketIO from "socket.io-client";
 import http from 'http';
 import https from 'https';
 // @todo: use this indirectly... make an abstraction for the runner in agent
-import SocketIOFile from "@best/runner-remote/build/file-uploader";
+import SocketIOFile from "@best/runner-remote/build/utils/file-uploader";
 import { BenchmarkResultsSnapshot, BenchmarkResultsState, BenchmarkRuntimeConfig } from "@best/types";
 import { loadBenchmarkJob } from "./benchmark-loader";
 import AgentLogger, { loggedSocket } from '@best/agent-logger';
