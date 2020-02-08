@@ -39,6 +39,7 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
     }
 
     // -- Socket lifecycle ------------------------------------------------------------
+
     [BEST_RPC.CONNECT](...args: any[]) {
         console.log('client - connect', args);
     }

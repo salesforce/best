@@ -38,8 +38,6 @@ export async function loadBenchmarkJob(socketConnection: Socket): Promise<any> {
 
         socket.emit('load_benchmark');
         uploaderTimeout = setTimeout(() => {
-            uploader.destroy();
-
             reject(new Error(`Timed out waiting upload to start. Waited for ${UPLOAD_START_TIMEOUT}ms`));
         }, UPLOAD_START_TIMEOUT);
     });

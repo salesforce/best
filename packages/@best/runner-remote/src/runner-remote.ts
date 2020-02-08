@@ -12,6 +12,7 @@ import {
 } from "@best/types";
 
 export class RunnerRemote {
+    private uploader?: SocketIOFile;
     private socket: SocketIOClient.Socket;
     private benchmarkBuilds: BuildConfig[];
     private runnerLogStream: RunnerStream;
@@ -90,7 +91,7 @@ export class RunnerRemote {
             return this.triggerBenchmarkError('Already uploading a benchmark');
         }
 
-        this.uploadingBenchmark = true;
+        console.log(`[RR] Sending ${benchmarkConfig.benchmarkSignature}`);
 
         this.socket.emit(BEST_RPC.BENCHMARK_UPLOAD_RESPONSE, benchmarkConfig, async (entry: string) => {
             const { benchmarkName, benchmarkEntry } = benchmarkConfig;
@@ -103,13 +104,8 @@ export class RunnerRemote {
                 return this.triggerBenchmarkError(err);
             }
 
-            const uploader = new SocketIOFile(this.socket);
-            uploader.on('ready', () => uploader.upload(tarBundle));
-            uploader.on('error', (err) => this.triggerBenchmarkError(err));
-            uploader.on('complete', () => {
-                this.uploadingBenchmark = false;
-                uploader.destroy();
-            });
+            const uploader = await this.getUploaderInstance();
+            uploader.upload(tarBundle);
         });
     }
 
@@ -135,6 +131,41 @@ export class RunnerRemote {
 
     [BEST_RPC.BENCHMARK_RESULTS](results: BenchmarkResultsSnapshot) {
         this.benchmarkResults.push(results);
+    }
+
+    getUploaderInstance(): Promise<SocketIOFile> {
+        if (this.uploader) {
+            return Promise.resolve(this.uploader);
+        }
+
+        return new Promise((resolve, reject) => {
+            const uploader = new SocketIOFile(this.socket);
+
+            const cancelRejection = setTimeout(() => {
+                reject('Unable to stablish connection for upload benchmarks');
+            }, 10000);
+
+            uploader.on('start', () => {
+                console.log('[RR] uploader start');
+                this.uploadingBenchmark = true;
+            });
+
+            uploader.on('error', (err) => {
+                console.log('[RR] uploader error');
+                this.triggerBenchmarkError(err);
+            });
+
+            uploader.on('complete', () => {
+                console.log('[RR] uploader complete');
+                this.uploadingBenchmark = false;
+            });
+
+            uploader.on('ready', () => {
+                this.uploader = uploader;
+                clearTimeout(cancelRejection);
+                resolve(uploader);
+            });
+        });
     }
 
     triggerBenchmarkSucess() {
