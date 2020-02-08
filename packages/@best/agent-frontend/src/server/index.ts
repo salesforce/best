@@ -9,7 +9,7 @@ import path from 'path';
 import express from 'express';
 import socketIO from "socket.io";
 import { Server } from 'http';
-import { Agent } from "@best/agent/src/agent";
+import { BestAgent } from "@best/types";
 import { BEST_RPC } from "@best/shared";
 
 export const serveFrontend = (app: express.Application) => {
@@ -19,10 +19,14 @@ export const serveFrontend = (app: express.Application) => {
     app.get('*', (req, res) => res.sendFile(path.resolve(DIST_DIR, 'index.html')));
 }
 
-export const observeAgent = (server: Server, agent: Agent) => {
+export const observeAgent = (server: Server, agent: BestAgent) => {
     const socketServer = socketIO(server, { path: '/frontend' });
     socketServer.on('connect', (socket: SocketIO.Socket) => {
         agent.on(BEST_RPC.AGENT_CONNECTED_CLIENT, (args) => socket.emit(BEST_RPC.AGENT_CONNECTED_CLIENT, args));
         agent.on(BEST_RPC.AGENT_DISCONNECTED_CLIENT, (args) => socket.emit(BEST_RPC.AGENT_DISCONNECTED_CLIENT, args));
+        agent.on(BEST_RPC.BENCHMARK_START, (args) => socket.emit(BEST_RPC.BENCHMARK_START, args));
+        agent.on(BEST_RPC.BENCHMARK_END, (args) => socket.emit(BEST_RPC.BENCHMARK_END, args));
+
+        // TODO: Disconnect all event handlers from agent
     });
 }

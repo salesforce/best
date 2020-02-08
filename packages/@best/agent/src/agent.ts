@@ -22,6 +22,7 @@ enum AgentState {
 }
 
 export class Agent extends EventEmitter {
+    private id: string;
     private socketServer: SocketIoServer;
     private state: AgentState;
     private specs: BrowserSpec[] = [];
@@ -33,6 +34,7 @@ export class Agent extends EventEmitter {
     constructor(server: Server, agentConfig: AgentConfig) {
         super();
         validateRunner(agentConfig.runner);
+        this.id = agentConfig.name || `Agent[${Date.now()}]`;
         this.agentConfig = agentConfig;
         this.socketServer = socketIO(server, { path: '/best' });
         this.socketServer.on('connect', this.onClientConnect.bind(this));
@@ -163,6 +165,7 @@ export class Agent extends EventEmitter {
         remoteClient.on(BEST_RPC.DISCONNECT, () => {
             console.log(`[AGENT] Disconnected client ${remoteClient.getId()}`);
             this.emit(BEST_RPC.AGENT_DISCONNECTED_CLIENT, remoteClient.getId());
+
             this.connectedClients.delete(remoteClient);
             if (this.activeClient === remoteClient) {
                 this.activeClient = undefined;
@@ -171,6 +174,16 @@ export class Agent extends EventEmitter {
                     this.interruption.requestInterruption();
                 }
             }
+        });
+
+        // Forward events from the client to the Agent
+
+        remoteClient.on(BEST_RPC.BENCHMARK_START, (benchmarkSignature: string) => {
+            this.emit(BEST_RPC.BENCHMARK_START, { agentId: this.id, clientId: remoteClient.getId(), benchmarkSignature });
+        });
+
+        remoteClient.on(BEST_RPC.BENCHMARK_END, (benchmarkSignature: string) => {
+            this.emit(BEST_RPC.BENCHMARK_END, { agentId: this.id, clientId: remoteClient.getId(), benchmarkSignature });
         });
 
         // If we are done with the job, make sure after a short time the client gets removed

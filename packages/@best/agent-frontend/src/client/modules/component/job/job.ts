@@ -1,7 +1,7 @@
 import { LightningElement, api } from 'lwc';
 
 export default class ComponentJob extends LightningElement {
-    @api job = {};
+    @api job: any = {};
 
     get statusClass() {
         return 'status ' + this.job.status.toLowerCase();

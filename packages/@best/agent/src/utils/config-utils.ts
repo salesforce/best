@@ -20,6 +20,7 @@ export interface HubConfig {
 }
 
 export interface AgentConfig {
+    name?: string;
     uri: string;
     options: { path: string };
     runner: string;

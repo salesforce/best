@@ -141,6 +141,7 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
         if (this.socket.connected) {
             console.log(`[AGENT-REMOTE-CLIENT] benchmarkStart(${benchmarkSignature})`);
             this.socket.emit(BEST_RPC.BENCHMARK_START, benchmarkSignature);
+            this.emit(BEST_RPC.BENCHMARK_START, benchmarkSignature);
         }
     }
 
@@ -148,12 +149,14 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
         console.log(`[AGENT-REMOTE-CLIENT] benchmarkEnd(${benchmarkSignature})`);
         if (this.socket.connected) {
             this.socket.emit(BEST_RPC.BENCHMARK_END, benchmarkSignature);
+            this.emit(BEST_RPC.BENCHMARK_END, benchmarkSignature);
         }
     }
 
     onBenchmarkError(benchmarkSignature: string) {
         if (this.socket.connected) {
             this.socket.emit(BEST_RPC.BENCHMARK_ERROR, benchmarkSignature);
+            this.emit(BEST_RPC.BENCHMARK_ERROR, benchmarkSignature);
         }
     }
 
@@ -164,6 +167,7 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
                 if (this.socket.connected) {
                     console.log(`[AGENT-REMOTE-CLIENT] benchmarkProgress(${benchmarkSignature}) | iterations: ${state.executedIterations}`);
                     this.socket.emit(BEST_RPC.BENCHMARK_UPDATE, benchmarkSignature, state, opts);
+                    this.emit(BEST_RPC.BENCHMARK_UPDATE, benchmarkSignature, state, opts);
                 }
             }, 300);
         }

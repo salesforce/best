@@ -1,11 +1,10 @@
 {
     "extends": "../../../tsconfig.settings.json",
     "compilerOptions": {
-      "rootDir": "src/server",
+      "rootDir": "src",
       "outDir": "build"
     },
     "references": [
-      { "path": "../agent" },
       { "path": "../agent-logger" },
       { "path": "../shared" },
       { "path": "../types" }

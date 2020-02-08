@@ -12,7 +12,11 @@
     "composite": true,
     "target": "es2018",
     "skipLibCheck": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "paths": {
+      "store/socket": ["packages/@best/agent-frontend/src/client/modules/store/socket/socket.ts"],
+    }
   },
   "exclude": [
     "**/__tests__/**",

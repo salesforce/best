@@ -1,3 +1,5 @@
+import { EventEmitter } from "events";
+
 /*
  * Copyright (c) 2019, salesforce.com, inc.
  * All rights reserved.
@@ -10,3 +12,7 @@ export * from "./benchmark";
 export * from "./stats";
 export * from "./comparison";
 export * from "./outputStream";
+
+export interface BestAgent extends EventEmitter{
+
+}
