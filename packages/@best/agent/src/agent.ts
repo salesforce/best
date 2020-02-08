@@ -35,7 +35,6 @@ export class Agent {
 
     connect(socketClient: Socket) {
         const config = socketClient.handshake.query;
-        console.log(config);
         if (!this.validateToken(config.token)) {
             socketClient.disconnect(true);
         }
@@ -62,13 +61,31 @@ export class Agent {
             this.state === AgentState.BUSY;
             this.activeClient = remoteClient;
             try {
+                console.log(`[AGENT] Requesting benchmark from RemoteClient ${remoteClient.getId()}`);
                 const benchmarkBuild = await remoteClient.requestJob();
                 const bundleConfig = createBundleConfig(benchmarkBuild, this.agentConfig);
+                console.log(`[AGENT] Running benchmark ${benchmarkBuild.benchmarkSignature} from RemoteClient ${remoteClient.getId()}`);
                 await runBenchmarks(bundleConfig, remoteClient);
             } catch(err) {
-                console.log('>> TODO!!!');
+                console.log(`[AGENT] Error running benchmark for remote client ${remoteClient.getId()}`);
                 console.log(err);
+                this.activeClient = undefined;
+            } finally {
+                this.state === AgentState.IDLE;
             }
+
+            queueMicrotask(() => this.runQueuedBenchmarks());
+        }
+    }
+
+    runQueuedBenchmarks() {
+        if (this.idleState) {
+            console.log('[AGENT] Checking for queued agents and tasks...');
+            if (this.activeClient && this.activeClient.getPendingJobs()) {
+                this.runBenchmark(this.activeClient);
+            }
+        } else {
+            console.log(`[AGENT] Busy, running ${this.activeClient!.getId()}`);
         }
     }
 

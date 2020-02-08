@@ -106,7 +106,10 @@ export class RunnerRemote {
             const uploader = new SocketIOFile(this.socket);
             uploader.on('ready', () => uploader.upload(tarBundle));
             uploader.on('error', (err) => this.triggerBenchmarkError(err));
-            uploader.on('complete', () => this.uploadingBenchmark = false);
+            uploader.on('complete', () => {
+                this.uploadingBenchmark = false;
+                uploader.destroy();
+            });
         });
     }
 

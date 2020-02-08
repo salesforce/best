@@ -31,7 +31,7 @@ export async function loadBenchmarkJob(socketConnection: Socket): Promise<any> {
 
         uploader.on('start', () => clearTimeout(uploaderTimeout));
         uploader.on('stream', ({ wrote, size }: any) => {
-            console.log(socketConnection.id, 'downloading', `${wrote} / ${size}`);
+            console.log(`:: loading benchmark for ${socket.id}  (${wrote} / ${size})`);
         });
         uploader.on('complete', (info: any) => resolve(info));
         uploader.on('error', (err: any) => reject(err));

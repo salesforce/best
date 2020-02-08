@@ -79,6 +79,8 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
             this._requestJobError('Unexpected upload response');
         }
 
+        console.log(`[RC] Receiving benchmark ${benchmarkConfig.benchmarkSignature} from socket ${this.clientSocket.id}`);
+
         // Get ready to receive the payload
         const { benchmarkEntry, benchmarkName } = benchmarkConfig;
         ack(benchmarkEntry);
@@ -90,6 +92,8 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
             benchmarkConfig.benchmarkEntry = path.join(uploadDir, `${benchmarkName}.html`);
             benchmarkConfig.benchmarkFolder = uploadDir;
             this.state = RemoteClientState.IDLE;
+            console.log(`[RC] Completed upload for benchmark ${benchmarkConfig.benchmarkSignature} from socket ${this.clientSocket.id}`);
+            this.pendingJobs -= 1;
             this._requestJobSuccess(benchmarkConfig);
 
         } catch(err) {
@@ -133,11 +137,13 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
 
     onBenchmarkStart(benchmarkSignature: string) {
         if (this.clientSocket.connected) {
+            console.log(`[RC] benchmarkStart(${benchmarkSignature})`);
             this.clientSocket.emit(BEST_RPC.BENCHMARK_START, benchmarkSignature);
         }
     }
 
     onBenchmarkEnd(benchmarkSignature: string) {
+        console.log(`[RC] benchmarkEnd(${benchmarkSignature})`);
         if (this.clientSocket.connected) {
             this.clientSocket.emit(BEST_RPC.BENCHMARK_END, benchmarkSignature);
         }
@@ -179,7 +185,19 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
         });
     }
 
+    getPendingJobs() {
+        return this.pendingJobs;
+    }
+
     toString() {
+        return `[RemoteClient](${this.clientSocket.id})`;
+    }
+
+    getId() {
+        return this.toString();
+    }
+
+    getStatusInfo() {
         return `remining jobs: ${this.pendingJobs} | specs: ${this.specs} | state: ${this.state}`;
     }
 }
