@@ -31,6 +31,7 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
     private state: RemoteClientState = RemoteClientState.IDLE;
     private _requestJobSuccess: Function = function () {};
     private _requestJobError: Function = function (err: any) { throw new Error(err) };
+    private debounce?: any;
 
     constructor(socket: Socket, { specs, jobs }: RemoteClientConfig) {
         super();
@@ -157,9 +158,14 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
     }
 
     updateBenchmarkProgress(benchmarkSignature: string, state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) {
-        console.log(`[AGENT-REMOTE-CLIENT] benchmarkProgress(${benchmarkSignature}) | iterations: ${state.executedIterations}`);
-        if (this.socket.connected) {
-            this.socket.emit(BEST_RPC.BENCHMARK_UPDATE, benchmarkSignature, state, opts);
+        if (!this.debounce && this.socket.connected) {
+            this.debounce = setTimeout(() => {
+                this.debounce = undefined;
+                if (this.socket.connected) {
+                    console.log(`[AGENT-REMOTE-CLIENT] benchmarkProgress(${benchmarkSignature}) | iterations: ${state.executedIterations}`);
+                    this.socket.emit(BEST_RPC.BENCHMARK_UPDATE, benchmarkSignature, state, opts);
+                }
+            }, 300);
         }
     }
 

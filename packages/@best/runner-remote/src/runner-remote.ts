@@ -1,4 +1,5 @@
 import path from 'path';
+import debug from "debug";
 import socketIO from 'socket.io-client';
 import SocketIOFile from './utils/file-uploader';
 import { createTarBundle } from './utils/create-tar';
@@ -17,7 +18,10 @@ const RPC_METHODS = [CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED
 
 const THROW_FUNCTION = function (err: any) { throw new Error(err || 'unknown error'); };
 
+const log_rpc = debug('runner-remote:rpc');
+
 export class RunnerRemote {
+    private uri: string;
     private running: boolean = false;
     private uploader?: SocketIOFile;
     private pendingBenchmarks: number;
@@ -42,7 +46,7 @@ export class RunnerRemote {
                 jobs: benchmarksBuilds.length
             }
         };
-
+        this.uri = uri;
         this.socket = socketIO(uri, socketOptions);
         this.benchmarkBuilds = benchmarksBuilds;
         this.pendingBenchmarks = benchmarksBuilds.length;
@@ -54,28 +58,33 @@ export class RunnerRemote {
     // -- Socket lifecycle ----------------------------------------------------------------------
 
     [CONNECT]() {
-        console.log(`[RUNNER-REMOTE] Connected to runner`);
+        log_rpc(`socket:connect`);
     }
 
     [CONNECT_ERROR]() {
-        this._triggerBenchmarkError('Unable to connect to agent (socket:connect_error)');
+        log_rpc('socket:error');
+        this._triggerBenchmarkError(`Unable to connect to agent "${this.uri}" (socket:connect_error)`);
     }
 
-    [DISCONNECT](...args: any[]) {
+    [DISCONNECT]() {
+        log_rpc('socket:disconnect');
         this._triggerBenchmarkError('socket:disconnect');
     }
 
-    [ERROR](...args: any[]) {
+    [ERROR]() {
+        log_rpc('socket:error');
         this._triggerBenchmarkError('socket:reconnect_failed');
     }
 
-    [RECONNECT_FAILED](...args: any[]) {
+    [RECONNECT_FAILED]() {
+        log_rpc('reconnect_failed');
         this._triggerBenchmarkError('socket:reconnect_failed');
     }
 
     // -- Specific Best RPC Commands ------------------------------------------------------------
 
     [AGENT_REJECTION](reason: string) {
+        log_rpc(`agent_rejection: ${AGENT_REJECTION}`);
         this._triggerBenchmarkError(reason);
     }
 
@@ -90,7 +99,7 @@ export class RunnerRemote {
             return this._triggerBenchmarkError('Already uploading a benchmark');
         }
 
-        console.log(`[RUNNER-REMOTE] Sending ${benchmarkConfig.benchmarkSignature}`);
+        log_rpc(`${BENCHMARK_UPLOAD_REQUEST} - Sending: ${benchmarkConfig.benchmarkSignature}`);
 
         this.socket.emit(BEST_RPC.BENCHMARK_UPLOAD_RESPONSE, benchmarkConfig, async (benchmarkSignature: string) => {
             const { benchmarkName, benchmarkEntry } = benchmarkConfig;
@@ -110,7 +119,9 @@ export class RunnerRemote {
     [BENCHMARK_RESULTS](results: BenchmarkResultsSnapshot[]) {
         this.benchmarkResults.push(...results);
         this.pendingBenchmarks -= 1;
-        console.log(`[RUNNER-REMOTE] Received results, pending ${this.pendingBenchmarks}`);
+
+        log_rpc(`${BENCHMARK_UPLOAD_REQUEST} - Received results, pending ${this.pendingBenchmarks}`);
+
         if (this.pendingBenchmarks === 0) {
             if (this.benchmarkBuilds.length === 0) {
                 this._triggerBenchmarkSucess();
@@ -157,21 +168,22 @@ export class RunnerRemote {
             }, 10000);
 
             uploader.on('start', () => {
-                console.log('[RUNNER_REMOTE] - uploader:start');
+                log_rpc('uploader:start');
                 this.uploadingBenchmark = true;
             });
 
             uploader.on('error', (err) => {
-                console.log('[RUNNER_REMOTE] - uploader:error');
+                log_rpc('uploader:error');
                 this._triggerBenchmarkError(err);
             });
 
             uploader.on('complete', () => {
-                console.log('[RUNNER_REMOTE] - uploader:complete');
+                log_rpc('uploader:complete');
                 this.uploadingBenchmark = false;
             });
 
             uploader.on('ready', () => {
+                log_rpc('uploader:ready');
                 this.uploader = uploader;
                 clearTimeout(cancelRejection);
                 resolve(uploader);

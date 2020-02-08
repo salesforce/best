@@ -65,10 +65,12 @@ export class Agent {
         }
 
         const remoteClient = this.setupNewClient(socketClient, config);
-        console.log(`[AGENT] Connected clients: ${this.connectedClients.size} | state: ${this.state}`);
+        console.log(`[AGENT] Connected clients: ${this.connectedClients.size} | state: ${this.state} | activePending: ${this.activeClient && this.activeClient.getPendingBenchmarks()}`);
 
         if (this.idleState) {
             this.runBenchmark(remoteClient);
+        } else {
+            remoteClient.log(`Client enqueued. Waiting for the agent to be free...`);
         }
     }
 
@@ -138,11 +140,11 @@ export class Agent {
         return jobs > 0;
     }
 
-    getState() {
+    getStateInfo() {
         return `
-            |> state: ${this.idleState ? 'IDLE' : 'BUSY'}
+            |> state: ${this.idleState}
             |> clients: ${this.connectedClients.size}
-            |> activeClient: ${!!this.activeClient}
+            |> activeClient: ${this.activeClient && this.activeClient.getId()}
         `;
     }
 
