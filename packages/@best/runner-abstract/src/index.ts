@@ -16,11 +16,12 @@ import {
     BrowserSpec,
     EnvironmentConfig,
     BuildConfig,
-    RunnerStream
+    RunnerStream,
+    Interruption
 } from '@best/types';
 
 export default abstract class AbstractRunner {
-    abstract async run(benchmarkBuilds: BuildConfig[], projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot[]>;
+    abstract async run(benchmarkBuilds: BuildConfig[], projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream, interruption?: Interruption): Promise<BenchmarkResultsSnapshot[]>;
 
     static async getBrowserSpecs(): Promise<BrowserSpec[]> {
         throw new Error('Runner must implement getBrowserSpecs');

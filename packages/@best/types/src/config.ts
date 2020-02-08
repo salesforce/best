@@ -31,6 +31,12 @@ export interface RunnerConfig {
     specs?: BrowserSpec;
 }
 
+export interface Interruption {
+    id?: string;
+    requestedInterruption: boolean;
+    requestInterruption() :void;
+}
+
 export interface ApiDatabaseConfig {
     adapter: string;
     uri: string;

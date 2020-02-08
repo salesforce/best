@@ -7,13 +7,13 @@
 
 import socketIO, { Server as SocketIoServer, Socket } from "socket.io";
 import { Server } from "http";
-import { BrowserSpec } from "@best/types";
+import { BrowserSpec, Interruption } from "@best/types";
 import { BEST_RPC } from "@best/shared";
 import { runBenchmarks, validateRunner, getBrowserSpecs } from '@best/runner';
 import { AgentConfig, normalizeClientConfig } from './utils/config-utils';
 import { createBundleConfig } from './utils/create-bundle-config';
 import RemoteClient, { RemoteClientConfig } from "./agent-remote-client";
-import { matchSpecs } from "@best/utils";
+import { matchSpecs, RunnerInterruption } from "@best/utils";
 
 enum AgentState {
     IDLE = 'IDLE',
@@ -27,6 +27,7 @@ export class Agent {
     private agentConfig: AgentConfig;
     private connectedClients = new Set<RemoteClient>();
     private activeClient?: RemoteClient;
+    private interruption?: Interruption;
 
     constructor(server: Server, agentConfig: AgentConfig) {
         validateRunner(agentConfig.runner);
@@ -81,7 +82,8 @@ export class Agent {
                 const bundleConfig = createBundleConfig(benchmarkBuild, this.agentConfig);
 
                 console.log(`[AGENT] Running benchmark ${benchmarkBuild.benchmarkSignature} from RemoteClient ${remoteClient.getId()}`);
-                const results = await runBenchmarks(bundleConfig, remoteClient);
+                this.interruption = new RunnerInterruption(benchmarkBuild.benchmarkSignature);
+                const results = await runBenchmarks(bundleConfig, remoteClient, this.interruption);
                 console.log(`[AGENT] Completed benchmark ${benchmarkBuild.benchmarkSignature} from RemoteClient ${remoteClient.getId()}`);
                 remoteClient.sendResults(results);
 
@@ -91,6 +93,7 @@ export class Agent {
                 remoteClient.disconnectClient(`Error running benchmark ${err}`); // make sure we disconnect the agent
             } finally {
                 this.state = AgentState.IDLE;
+                this.interruption = undefined;
                 queueMicrotask(() => this.runQueuedBenchmarks());
             }
         }
@@ -156,6 +159,10 @@ export class Agent {
             this.connectedClients.delete(remoteClient);
             if (this.activeClient === remoteClient) {
                 this.activeClient = undefined;
+                if (this.interruption) {
+                    console.log(`[AGENT] Halting benchmark runner`);
+                    this.interruption.requestInterruption();
+                }
             }
         });
 

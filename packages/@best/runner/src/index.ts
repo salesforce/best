@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
-import { BuildConfig, BenchmarkResultsSnapshot, RunnerStream, BrowserSpec, BenchmarksBundle } from "@best/types";
+import { BuildConfig, BenchmarkResultsSnapshot, RunnerStream, BrowserSpec, BenchmarksBundle, Interruption } from "@best/types";
 import AbstractRunner from "@best/runner-abstract";
 import { matchSpecs } from "@best/utils";
 
@@ -15,7 +15,7 @@ interface ConcreteRunner extends AbstractRunner {
     isRemote: boolean;
 }
 
-async function runBenchmarksBundle(benchmarkBuild: BenchmarksBundle, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
+async function runBenchmarksBundle(benchmarkBuild: BenchmarksBundle, runnerLogStream: RunnerStream, interruption?: Interruption): Promise<BenchmarkResultsSnapshot[]> {
     const { projectConfig, globalConfig, benchmarkBuilds } = benchmarkBuild;
     const { benchmarkRunner, benchmarkRunnerConfig } = projectConfig;
 
@@ -35,7 +35,7 @@ async function runBenchmarksBundle(benchmarkBuild: BenchmarksBundle, runnerLogSt
     }
 
     const runnerInstance: ConcreteRunner = new RunnerCtor(projectConfig.benchmarkRunnerConfig);
-    return runnerInstance.run(benchmarkBuilds, projectConfig, globalConfig, runnerLogStream);
+    return runnerInstance.run(benchmarkBuilds, projectConfig, globalConfig, runnerLogStream, interruption);
 }
 
 function loadRunnerModule(benchmarkRunner: string): ConcreteRunner {
@@ -47,11 +47,11 @@ function loadRunnerModule(benchmarkRunner: string): ConcreteRunner {
     }
 }
 
-export async function runBenchmarks(benchmarksBuilds: BenchmarksBundle[], messager: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
+export async function runBenchmarks(benchmarksBuilds: BenchmarksBundle[], messager: RunnerStream, interruption?: Interruption): Promise<BenchmarkResultsSnapshot[]> {
     const results = [];
 
     for (const benchmarkBundle of benchmarksBuilds) {
-        const benchmarkResults = await runBenchmarksBundle(benchmarkBundle, messager);
+        const benchmarkResults = await runBenchmarksBundle(benchmarkBundle, messager, interruption);
         results.push(...benchmarkResults);
     }
 
