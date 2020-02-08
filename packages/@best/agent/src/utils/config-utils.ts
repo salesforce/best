@@ -6,6 +6,7 @@
 */
 
 import axios from "axios";
+import { RemoteClientConfig } from "../agent-remote-client";
 
 export interface Spec {
     browser: string;
@@ -22,6 +23,7 @@ export interface AgentConfig {
     uri: string;
     options: { path: string };
     runner: string;
+    authToken? : string;
 }
 
 async function pingHub(hubHost: string, hubToken: string, agentHost: string): Promise<string> {
@@ -82,4 +84,18 @@ export async function registerWithHub(hubConfig: HubConfig, agentConfig: AgentCo
     if (keepPing) {
         setTimeout(registerWithHub.bind(null, hubConfig), pingTimeout);
     }
+}
+
+export function normalizeClientConfig(config: any): RemoteClientConfig {
+    const jobs = config.jobs ? parseInt(config.jobs, 10) : 0;
+    let specs;
+    if (config.specs && config.specs !== 'any') {
+        try {
+            specs = JSON.parse(config.specs);
+        } catch {
+            specs = { name: 'invalid_specs', version: 0 };
+        }
+    }
+
+    return { jobs, specs, token: config.token };
 }

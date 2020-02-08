@@ -13,6 +13,7 @@ module.exports = {
         }],
         ['rollup-plugin-replace', { 'process.env.NODE_ENV': JSON.stringify('production') }]
     ],
+    specs: { name: 'chrome.headless', version: 80 },
     runners: [
         {
             runner: "@best/runner-headless",
@@ -30,6 +31,14 @@ module.exports = {
                     browser: "chrome",
                     version: "76"
                 }
+            }
+        },
+        {
+            runner: "@best/runner-remote",
+            alias: "local-remote",
+            config: {
+                uri: 'http://localhost:5000',
+                options: { token: 'foo' }
             }
         }
     ]

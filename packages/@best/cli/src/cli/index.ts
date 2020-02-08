@@ -55,7 +55,6 @@ export async function run(maybeArgv?: string[], project?: string) {
         }
         console.warn(errParts.join('\n'));
         process.exit(1);
-        throw error;
     }
 }
 

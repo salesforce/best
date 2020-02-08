@@ -11,21 +11,31 @@ import {
     BenchmarkRuntimeConfig
 } from "@best/types";
 
+const { CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, AGENT_REJECTION, BENCHMARK_UPLOAD_REQUEST } = BEST_RPC;
+const { BENCHMARK_START, BENCHMARK_UPDATE, BENCHMARK_END, BENCHMARK_ERROR, BENCHMARK_LOG, BENCHMARK_RESULTS } = BEST_RPC;
+const RPC_METHODS = [CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, AGENT_REJECTION, BENCHMARK_UPLOAD_REQUEST, BENCHMARK_START, BENCHMARK_UPDATE, BENCHMARK_END, BENCHMARK_ERROR, BENCHMARK_LOG, BENCHMARK_RESULTS]
+
+const THROW_FUNCTION = function (err: any) { throw new Error(err || 'unknown error'); };
+
 export class RunnerRemote {
+    private running: boolean = false;
     private uploader?: SocketIOFile;
+    private pendingBenchmarks: number;
     private socket: SocketIOClient.Socket;
     private benchmarkBuilds: BuildConfig[];
     private runnerLogStream: RunnerStream;
     private benchmarkResults: BenchmarkResultsSnapshot[] = [];
     private uploadingBenchmark: boolean = false;
-    private _onBenchmarkError: Function = function (err: any) { throw new Error(err); };
-    private _onBenchmarksRunSuccess: Function = function () {};
+    private _onBenchmarkError: Function = THROW_FUNCTION;
+    private _onBenchmarksRunSuccess: Function = THROW_FUNCTION;
 
     constructor(benchmarksBuilds: BuildConfig[], runnerLogStream: RunnerStream, config: any ) {
         const { uri, options, specs } = config;
+
         const socketOptions = {
             path: '/best',
             reconnection: false,
+            autoConnect: false,
             query: {
                 ...options,
                 specs: JSON.stringify(specs),
@@ -33,107 +43,108 @@ export class RunnerRemote {
             }
         };
 
-        this.socket =  socketIO(uri, socketOptions);
+        this.socket = socketIO(uri, socketOptions);
         this.benchmarkBuilds = benchmarksBuilds;
+        this.pendingBenchmarks = benchmarksBuilds.length;
         this.runnerLogStream = runnerLogStream;
 
-        Object.keys(BEST_RPC).forEach((key) => {
-            const methodName = (BEST_RPC as any)[key];
-            this.socket.on(methodName, (this as any)[methodName].bind(this));
-        });
+        RPC_METHODS.forEach((methodName) => this.socket.on(methodName, (this as any)[methodName].bind(this)));
     }
 
-    // -- Socket lifecycle ------------------------------------------------------------
-    [BEST_RPC.CONNECT](...args: any[]) {
-        console.log('connect', args);
-    }
-    [BEST_RPC.DISCONNECT](...args: any[]) {
-        console.log('disconnect', args);
+    // -- Socket lifecycle ----------------------------------------------------------------------
+
+    [CONNECT]() {
+        console.log(`[RUNNER-REMOTE] Connected to runner`);
     }
 
-    [BEST_RPC.CONNECT_ERROR](...args: any[]) {
-        console.log('connect_error', args);
-    }
-    [BEST_RPC.DISCONNECT](...args: any[]) {
-        console.log('disconnect', args);
+    [CONNECT_ERROR]() {
+        this._triggerBenchmarkError('Unable to connect to agent (socket:connect_error)');
     }
 
-    [BEST_RPC.ERROR](...args: any[]) {
-        console.log('error', args);
+    [DISCONNECT](...args: any[]) {
+        this._triggerBenchmarkError('socket:disconnect');
     }
 
-    [BEST_RPC.RECONNECT_FAILED](...args: any[]) {
-        console.log('reconnect_failed', args);
+    [ERROR](...args: any[]) {
+        this._triggerBenchmarkError('socket:reconnect_failed');
+    }
+
+    [RECONNECT_FAILED](...args: any[]) {
+        this._triggerBenchmarkError('socket:reconnect_failed');
     }
 
     // -- Specific Best RPC Commands ------------------------------------------------------------
 
-    [BEST_RPC.AGENT_STATUS](...args: any[]) {
-        console.log('agent_status', args);
+    [AGENT_REJECTION](reason: string) {
+        this._triggerBenchmarkError(reason);
     }
 
-    [BEST_RPC.AGENT_REJECTION](reason: string) {
-        this.triggerBenchmarkError(reason);
-    }
-
-    [BEST_RPC.BENCHMARK_UPLOAD_RESPONSE]() {
-        console.log('noop:benchmark_upload_info');
-    }
-
-    [BEST_RPC.BENCHMARK_UPLOAD_REQUEST]() {
+    [BENCHMARK_UPLOAD_REQUEST]() {
         const benchmarkConfig = this.benchmarkBuilds.shift();
 
         if (!benchmarkConfig) {
-            return this.triggerBenchmarkError('Agent is requesting more jobs than specified');
+            return this._triggerBenchmarkError('Agent is requesting more jobs than specified');
         }
 
         if (this.uploadingBenchmark) {
-            return this.triggerBenchmarkError('Already uploading a benchmark');
+            return this._triggerBenchmarkError('Already uploading a benchmark');
         }
 
-        console.log(`[RR] Sending ${benchmarkConfig.benchmarkSignature}`);
+        console.log(`[RUNNER-REMOTE] Sending ${benchmarkConfig.benchmarkSignature}`);
 
-        this.socket.emit(BEST_RPC.BENCHMARK_UPLOAD_RESPONSE, benchmarkConfig, async (entry: string) => {
+        this.socket.emit(BEST_RPC.BENCHMARK_UPLOAD_RESPONSE, benchmarkConfig, async (benchmarkSignature: string) => {
             const { benchmarkName, benchmarkEntry } = benchmarkConfig;
             const bundleDirname = path.dirname(benchmarkEntry);
             const tarBundle = path.resolve(bundleDirname, `${benchmarkName}.tgz`);
 
             try {
                 await createTarBundle(bundleDirname, benchmarkName);
+                const uploader = await this._getUploaderInstance();
+                uploader.upload(tarBundle);
             } catch(err) {
-                return this.triggerBenchmarkError(err);
+                return this._triggerBenchmarkError(err);
             }
-
-            const uploader = await this.getUploaderInstance();
-            uploader.upload(tarBundle);
         });
     }
 
-    [BEST_RPC.BENCHMARK_START](benchmarkSignature: string) {
+    [BENCHMARK_RESULTS](results: BenchmarkResultsSnapshot[]) {
+        this.benchmarkResults.push(...results);
+        this.pendingBenchmarks -= 1;
+        console.log(`[RUNNER-REMOTE] Received results, pending ${this.pendingBenchmarks}`);
+        if (this.pendingBenchmarks === 0) {
+            if (this.benchmarkBuilds.length === 0) {
+                this._triggerBenchmarkSucess();
+            } else {
+                this._triggerBenchmarkError('Results missmatch: Agent has sent more jobs that benchmarks consumed...');
+            }
+        }
+    }
+
+    // -- Logger methods (must be side effect free) --------------------------------------------------------------------
+
+    [BENCHMARK_START](benchmarkSignature: string) {
         this.runnerLogStream.onBenchmarkStart(benchmarkSignature);
     }
 
-    [BEST_RPC.BENCHMARK_UPDATE](benchmarkSignature: string, state: BenchmarkResultsState, runtimeOpts: BenchmarkRuntimeConfig) {
+    [BENCHMARK_UPDATE](benchmarkSignature: string, state: BenchmarkResultsState, runtimeOpts: BenchmarkRuntimeConfig) {
         this.runnerLogStream.updateBenchmarkProgress(benchmarkSignature, state, runtimeOpts);
     }
 
-    [BEST_RPC.BENCHMARK_END](benchmarkSignature: string) {
+    [BENCHMARK_END](benchmarkSignature: string) {
         this.runnerLogStream.onBenchmarkEnd(benchmarkSignature);
     }
 
-    [BEST_RPC.BENCHMARK_ERROR](err: any) {
-        this.triggerBenchmarkError(err);
+    [BENCHMARK_ERROR](benchmarkSignature: string) {
+        this.runnerLogStream.onBenchmarkError(benchmarkSignature);
     }
 
-    [BEST_RPC.BENCHMARK_LOG](msg: string) {
+    [BENCHMARK_LOG](msg: string) {
         this.runnerLogStream.log(msg);
     }
 
-    [BEST_RPC.BENCHMARK_RESULTS](results: BenchmarkResultsSnapshot) {
-        this.benchmarkResults.push(results);
-    }
+    // -- Private  --------------------------------------------------------------------
 
-    getUploaderInstance(): Promise<SocketIOFile> {
+    _getUploaderInstance(): Promise<SocketIOFile> {
         if (this.uploader) {
             return Promise.resolve(this.uploader);
         }
@@ -142,21 +153,21 @@ export class RunnerRemote {
             const uploader = new SocketIOFile(this.socket);
 
             const cancelRejection = setTimeout(() => {
-                reject('Unable to stablish connection for upload benchmarks');
+                reject('[RUNNER_REMOTE] uploader:error | Unable to stablish connection for upload benchmarks');
             }, 10000);
 
             uploader.on('start', () => {
-                console.log('[RR] uploader start');
+                console.log('[RUNNER_REMOTE] - uploader:start');
                 this.uploadingBenchmark = true;
             });
 
             uploader.on('error', (err) => {
-                console.log('[RR] uploader error');
-                this.triggerBenchmarkError(err);
+                console.log('[RUNNER_REMOTE] - uploader:error');
+                this._triggerBenchmarkError(err);
             });
 
             uploader.on('complete', () => {
-                console.log('[RR] uploader complete');
+                console.log('[RUNNER_REMOTE] - uploader:complete');
                 this.uploadingBenchmark = false;
             });
 
@@ -168,20 +179,30 @@ export class RunnerRemote {
         });
     }
 
-    triggerBenchmarkSucess() {
-        this._onBenchmarksRunSuccess(this.benchmarkResults);
+    _triggerBenchmarkSucess() {
+        if (this.running) {
+            this.running = false;
+            this.socket.disconnect();
+            this._onBenchmarksRunSuccess(this.benchmarkResults);
+            this._onBenchmarksRunSuccess = THROW_FUNCTION; // To catch side-effects and race conditions
+        }
     }
 
-    triggerBenchmarkError(error_msg: string | Error) {
-        const error = typeof error_msg === 'string' ? new Error(error_msg) : error_msg;
-        this._onBenchmarkError(error);
+    _triggerBenchmarkError(error_msg: string | Error) {
+        if (this.running) {
+            const error = typeof error_msg === 'string' ? new Error(error_msg) : error_msg;
+            this.running = false;
+            this._onBenchmarkError(error);
+            this._onBenchmarkError = THROW_FUNCTION; // To catch side-effects and race conditions
+        }
     }
 
-    onBenchmarkError(callback: Function) {
-        this._onBenchmarkError = callback;
-    }
-
-    onBenchmarksRunSuccess(callback: Function) {
-        this._onBenchmarksRunSuccess = callback;
+    run(): Promise<BenchmarkResultsSnapshot[]> {
+        return new Promise((resolve, reject) => {
+            this._onBenchmarksRunSuccess = resolve;
+            this._onBenchmarkError = reject;
+            this.running = true;
+            this.socket.open();
+        });
     }
 }

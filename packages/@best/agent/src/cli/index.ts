@@ -7,7 +7,7 @@
 
 import express from 'express';
 import { Agent } from '../agent';
-import { registerWithHub } from '../utils/hub-registration';
+import { registerWithHub } from '../utils/config-utils';
 import { serveFrontend } from '@best/agent-frontend';
 import { getAgentConfig, getHubConfig } from './config';
 import http from "http";

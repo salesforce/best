@@ -1,5 +1,5 @@
 import { BuildConfig, BenchmarksBundle } from "@best/types";
-import { AgentConfig } from "./hub-registration";
+import { AgentConfig } from "./config-utils";
 
 export function createBundleConfig(benchmarkBuild: BuildConfig, agentConfig: AgentConfig): BenchmarksBundle[] {
     (benchmarkBuild.projectConfig as any).benchmarkRunner = agentConfig.runner;

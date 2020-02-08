@@ -94,15 +94,23 @@ export async function runBest(globalConfig: FrozenGlobalConfig, configs: FrozenP
         return [];
     }
 
+    let benchmarksBuilds;
     const buildLogStream = new BuildOutputStream(benchmarksTests, outputStream, globalConfig.isInteractive);
-    buildLogStream.init();
-    const benchmarksBuilds = await buildBundleBenchmarks(benchmarksTests, globalConfig, buildLogStream);
-    buildLogStream.finish();
+    try {
+        buildLogStream.init();
+        benchmarksBuilds = await buildBundleBenchmarks(benchmarksTests, globalConfig, buildLogStream);
+    } finally {
+        buildLogStream.finish();
+    }
 
+    let benchmarkBundleResults;
     const runnerLogStream = new RunnerOutputStream(benchmarksBuilds, outputStream, globalConfig.isInteractive);
-    runnerLogStream.init();
-    const benchmarkBundleResults = await runBenchmarks(benchmarksBuilds, runnerLogStream);
-    runnerLogStream.finish();
+    try {
+        runnerLogStream.init();
+        benchmarkBundleResults = await runBenchmarks(benchmarksBuilds, runnerLogStream);
+    } finally {
+        runnerLogStream.finish();
+    }
 
     await analyzeBenchmarks(benchmarkBundleResults);
     await storeBenchmarkResults(benchmarkBundleResults, globalConfig);

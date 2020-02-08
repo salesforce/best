@@ -7,9 +7,10 @@
 
 
 declare module 'socket.io-file' {
-    export default class SocketIO {
+    export default class SocketIOFile {
         on(arg0: string, arg1: ({ wrote, size }: any) => void): void;
         destroy(): void;
+        load(b: string): Promise<any>;
         constructor(socket: any, config: any);
     }
 }

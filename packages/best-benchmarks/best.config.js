@@ -8,12 +8,11 @@
 module.exports = {
     projectName: 'best-benchmark',
     metrics: ['script', 'aggregate'],
-    specs: { name: 'chrome.headless', version: '70' },
+    specs: { name: 'chrome.headless', version: 80 },
     runners: [
         {
             runner: "@best/runner-headless",
             alias: "default",
-            specs: { name: 'chrome.headless', version: '71' }
         },
         {
             runner: "@best/runner-remote",

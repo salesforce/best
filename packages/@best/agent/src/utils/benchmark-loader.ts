@@ -21,26 +21,25 @@ const LOADER_CONFIG = {
     overwrite: true,
 };
 
-const UPLOAD_START_TIMEOUT = 5000;
+// In order to make the uploader singleton, but yet allow multiple file downloads we need to do some manual cleanup
+// The assumption is only one upload can occurr at the time, otherwise this code might not work as expected
+export function getUploaderInstance(socket: Socket) {
+    const uploader: any = new SocketIOFile(socket, LOADER_CONFIG);
+    uploader.load = function () {
+        return new Promise((resolve, reject) => {
+            uploader.on('complete', (info: any) => {
+                uploader.removeAllListeners('complete');
+                uploader.removeAllListeners('error');
+                resolve(info.uploadDir);
+            });
 
-export async function loadBenchmarkJob(socketConnection: Socket): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-        const socket = socketConnection;
-        let uploaderTimeout: any = null;
-        const uploader = new SocketIOFile(socket, LOADER_CONFIG);
-
-        uploader.on('start', () => clearTimeout(uploaderTimeout));
-        uploader.on('stream', ({ wrote, size }: any) => {
-            console.log(`:: loading benchmark for ${socket.id}  (${wrote} / ${size})`);
+            uploader.on('error', (err: any) => {
+                reject(err);
+            });
         });
-        uploader.on('complete', (info: any) => resolve(info));
-        uploader.on('error', (err: any) => reject(err));
+    }
 
-        socket.emit('load_benchmark');
-        uploaderTimeout = setTimeout(() => {
-            reject(new Error(`Timed out waiting upload to start. Waited for ${UPLOAD_START_TIMEOUT}ms`));
-        }, UPLOAD_START_TIMEOUT);
-    });
+    return uploader;
 }
 
 export function extractBenchmarkTarFile(uploadDir: string) {

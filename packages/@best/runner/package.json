@@ -15,6 +15,7 @@
   "dependencies": {
     "@best/console-stream": "4.0.0-alpha14",
     "@best/runner-abstract": "4.0.0-alpha14",
+    "@best/utils": "4.0.0-alpha14",
     "chalk": "~2.4.2"
   },
   "files": [

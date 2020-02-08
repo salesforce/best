@@ -8,5 +8,6 @@
     { "path": "../types" },
     { "path": "../console-stream" },
     { "path": "../runner-abstract" },
+    { "path": "../utils" }
   ]
 }

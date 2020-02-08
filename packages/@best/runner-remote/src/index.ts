@@ -10,10 +10,9 @@ import AbstractRunner from "@best/runner-abstract";
 import { BuildConfig, FrozenProjectConfig, FrozenGlobalConfig, RunnerStream, BenchmarkResultsSnapshot } from "@best/types";
 export class Runner extends AbstractRunner {
     run(benchmarkBuilds: BuildConfig[], { benchmarkRunnerConfig }: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
-        return new Promise((resolve, reject) => {
-            const remoteRunner = new RunnerRemote(benchmarkBuilds.slice(), runnerLogStream, benchmarkRunnerConfig);
-            remoteRunner.onBenchmarkError(reject);
-            remoteRunner.onBenchmarksRunSuccess(resolve);
-        });
+        const remoteRunner = new RunnerRemote(benchmarkBuilds.slice(), runnerLogStream, benchmarkRunnerConfig);
+        return remoteRunner.run();
     }
+
+    static isRemote = true;
 }

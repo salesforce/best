@@ -26,6 +26,8 @@ export default abstract class AbstractRunner {
         throw new Error('Runner must implement getBrowserSpecs');
     }
 
+    static isRemote: boolean = false;
+
     initializeServer(benchmarkEntry: string, useHttp: boolean): Promise<{ terminate:Function, url: string }> {
         if (!useHttp) {
             return Promise.resolve({ url: `file://${benchmarkEntry}`, terminate: () => {}});

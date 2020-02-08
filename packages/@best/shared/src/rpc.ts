@@ -23,5 +23,8 @@ export const BEST_RPC = {
     BENCHMARK_END: 'benchmark_end',
     BENCHMARK_ERROR: 'benchmark_error',
     BENCHMARK_LOG: 'benchmark_log',
-    BENCHMARK_RESULTS: 'benchmark_results'
+    BENCHMARK_RESULTS: 'benchmark_results',
+
+    REMOTE_CLIENT_UPLOAD_COMPLETED: 'remote_client_job_completed',
+    REMOTE_CLIENT_EMPTY_QUEUE: 'remote_client_empty_queue'
 }
