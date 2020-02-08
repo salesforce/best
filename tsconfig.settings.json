@@ -11,7 +11,8 @@
     "esModuleInterop": true,
     "composite": true,
     "target": "es2018",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "experimentalDecorators": true
   },
   "exclude": [
     "**/__tests__/**",

@@ -7,9 +7,10 @@
 
 import path from 'path';
 import express from 'express';
-import socketIO from 'socket.io';
-import Manager from './manager';
-import AgentLogger from '@best/agent-logger';
+import socketIO from "socket.io";
+import { Server } from 'http';
+import { Agent } from "@best/agent/src/agent";
+import { BEST_RPC } from "@best/shared";
 
 export const serveFrontend = (app: express.Application) => {
     const DIST_DIR = path.resolve(__dirname, '../dist');
@@ -18,12 +19,10 @@ export const serveFrontend = (app: express.Application) => {
     app.get('*', (req, res) => res.sendFile(path.resolve(DIST_DIR, 'index.html')));
 }
 
-export const observeAgent = (agent: { socketServer: socketIO.Server; logger: AgentLogger }) => {
-    const manager = new Manager(agent.logger);
-
-    agent.socketServer.on('connect', (socket: SocketIO.Socket) => {
-        if (socket.handshake.query && socket.handshake.query.frontend) {
-            manager.addFrontend(socket);
-        }
+export const observeAgent = (server: Server, agent: Agent) => {
+    const socketServer = socketIO(server, { path: '/frontend' });
+    socketServer.on('connect', (socket: SocketIO.Socket) => {
+        agent.on(BEST_RPC.AGENT_CONNECTED_CLIENT, (args) => socket.emit(BEST_RPC.AGENT_CONNECTED_CLIENT, args));
+        agent.on(BEST_RPC.AGENT_DISCONNECTED_CLIENT, (args) => socket.emit(BEST_RPC.AGENT_DISCONNECTED_CLIENT, args));
     });
 }

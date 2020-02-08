@@ -1,4 +1,9 @@
 <template>
+    <header>
+        <p>Clients: <span>{connectedClients}</span></p>
+        <p>Pending Jobs: <span>{pendingJobs}</span></p>
+    </header>
+
     <div class="container">
         <template if:true={hasHubStats}>
             <div class="stats">

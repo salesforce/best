@@ -5,7 +5,9 @@
       "outDir": "build"
     },
     "references": [
+      { "path": "../agent" },
       { "path": "../agent-logger" },
+      { "path": "../shared" },
       { "path": "../types" }
     ]
   }

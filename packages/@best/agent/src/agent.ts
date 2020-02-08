@@ -14,13 +14,14 @@ import { AgentConfig, normalizeClientConfig } from './utils/config-utils';
 import { createBundleConfig } from './utils/create-bundle-config';
 import RemoteClient, { RemoteClientConfig } from "./agent-remote-client";
 import { matchSpecs, RunnerInterruption } from "@best/utils";
+import { EventEmitter } from "events";
 
 enum AgentState {
     IDLE = 'IDLE',
     BUSY = 'BUSY',
 }
 
-export class Agent {
+export class Agent extends EventEmitter {
     private socketServer: SocketIoServer;
     private state: AgentState;
     private specs: BrowserSpec[] = [];
@@ -30,6 +31,7 @@ export class Agent {
     private interruption?: Interruption;
 
     constructor(server: Server, agentConfig: AgentConfig) {
+        super();
         validateRunner(agentConfig.runner);
         this.agentConfig = agentConfig;
         this.socketServer = socketIO(server, { path: '/best' });
@@ -152,12 +154,15 @@ export class Agent {
 
         // Create and new RemoteClient and add it to the pool
         const remoteClient = new RemoteClient(socketClient, clientConfig);
-        console.log(`[AGENT] New client ${remoteClient.getId()} connected. Jobs requested ${clientConfig.jobs} | specs: ${JSON.stringify(clientConfig.specs)}`);
         this.connectedClients.add(remoteClient);
+
+        console.log(`[AGENT] New client ${remoteClient.getId()} connected. Jobs requested ${clientConfig.jobs} | specs: ${JSON.stringify(clientConfig.specs)}`);
+        this.emit(BEST_RPC.AGENT_CONNECTED_CLIENT, { id: remoteClient.getId(), jobs: clientConfig.jobs });
 
         // Make sure we remove it from an agent's perspective if the client is disconnected
         remoteClient.on(BEST_RPC.DISCONNECT, () => {
             console.log(`[AGENT] Disconnected client ${remoteClient.getId()}`);
+            this.emit(BEST_RPC.AGENT_DISCONNECTED_CLIENT, remoteClient.getId());
             this.connectedClients.delete(remoteClient);
             if (this.activeClient === remoteClient) {
                 this.activeClient = undefined;

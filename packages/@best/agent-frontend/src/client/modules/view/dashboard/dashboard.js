@@ -2,46 +2,48 @@ import { LightningElement, track } from 'lwc';
 
 import { connect } from 'store/socket';
 import { Job } from 'store/model';
+import { BEST_RPC } from "@best/shared";
+
+// eslint-disable-next-line no-undef
+const host = 'http://localhost:5000' || window.location.origin;
 
 export default class ViewDashboard extends LightningElement {
-    config = { host: window.location.origin, path: '/best' };
+    // eslint-disable-next-line no-undef
+    config = { host, path: '/frontend' };
 
     @track agents = [];
     @track hubStats = null;
     @track agentStats = null;
     @track agentSpecs = [];
-    allJobs = [];
+    @track clients = [];
 
     connectedCallback() {
         const socket = connect(this.config.host, { path: this.config.path, query: { frontend: true } });
-
         socket.on('connect', this.socketConnect.bind(this))
         socket.on('disconnect', this.socketDisconnect.bind(this))
         socket.on('error', this.socketError.bind(this))
 
-        socket.on('benchmark added', this.added.bind(this));
-        socket.on('benchmark queued', this.queued.bind(this));
-        socket.on('benchmark start', this.start.bind(this));
-        socket.on('benchmark update', this.update.bind(this));
-        socket.on('benchmark error', this.error.bind(this));
-        socket.on('benchmark cancel', this.cancel.bind(this));
-        socket.on('benchmark results', this.results.bind(this));
-        socket.on('stats update', this.stats.bind(this));
-        socket.on('specs update', this.specs.bind(this));
+        socket.on(BEST_RPC.AGENT_CONNECTED_CLIENT, this.onConnectedClient.bind(this));
+        socket.on(BEST_RPC.AGENT_DISCONNECTED_CLIENT, this.onDisconnectedClient.bind(this));
+    }
+
+    onConnectedClient(clientSpecs) {
+        this.clients.push(clientSpecs);
+    }
+
+    onDisconnectedClient(clientId) {
+        const pos = this.clients.findIndex((c) => c.id === clientId);
+        this.clients.splice(pos, 1);
     }
 
     // GETTERS
 
-    get hasJobs() {
-        return this.allJobs.length > 0;
+    get connectedClients() {
+        return this.clients.length;
     }
 
-    get hasHubStats () {
-        return this.hubStats !== null;
-    }
-
-    get hasAgentStats () {
-        return this.agentStats !== null;
+    get pendingJobs() {
+        return this.clients.reduce((p, j) => p + j.jobs, 0);
     }
 
     // HELPERS
@@ -76,6 +78,10 @@ export default class ViewDashboard extends LightningElement {
     }
 
     // SOCKET
+
+    socketTest() {
+        console.log('Test!');
+    }
 
     socketConnect() {
         // console.log('[connect]')

@@ -8,7 +8,7 @@
 import express from 'express';
 import { Agent } from '../agent';
 import { registerWithHub } from '../utils/config-utils';
-import { serveFrontend } from '@best/agent-frontend';
+import { serveFrontend, observeAgent } from '@best/agent-frontend';
 import { getAgentConfig, getHubConfig } from './config';
 import http from "http";
 
@@ -24,11 +24,10 @@ export function run() {
 
     const app = express();
     serveFrontend(app);
-
     const server = http.createServer(app);
+
     const agent = new Agent(server, agentConfig);
-    console.log('agent: ', !!agent);
-    // observeAgent(agent);
+    observeAgent(server, agent);
 
     server.listen(PORT);
     process.stdout.write(`Best agent listening in port ${PORT}...\n`);
@@ -37,3 +36,5 @@ export function run() {
         registerWithHub(hubRegistrationConfig, agentConfig);
     }
 }
+
+export { Agent };
