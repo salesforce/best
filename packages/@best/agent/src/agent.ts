@@ -78,6 +78,7 @@ export class Agent extends EventEmitter {
             this.runBenchmark(remoteClient);
         } else {
             remoteClient.log(`Client enqueued. Waiting for the agent to be free...`);
+            this.emit(BEST_RPC.AGENT_QUEUED_CLIENT, { clientId: remoteClient.getId(), jobs: config.jobs, specs: config.specs });
         }
     }
 

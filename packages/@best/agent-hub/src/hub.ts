@@ -15,6 +15,7 @@ export class Hub extends EventEmitter {
     private agentsSocketServer: SocketIoServer;
     private connectedClients = new Set<RemoteClient>();
     private connectedAgents = new Set<RemoteAgent>();
+    private activeClients: Map<RemoteClient, Set<RemoteAgent>> = new Map();
 
     constructor(server: Server, hubConfig: HubConfig) {
         super();
@@ -40,7 +41,7 @@ export class Hub extends EventEmitter {
         console.log(`[HUB] Connected clients: ${this.connectedClients.size}`);
 
         if (this.idleAgentMatchingSpecs(remoteClient)) {
-            console.log('WIP');
+            console.log('WIP', this.activeClients.size);
         }
     }
 
@@ -48,6 +49,9 @@ export class Hub extends EventEmitter {
         // Create and new RemoteClient and add it to the pool
         const remoteClient = new RemoteClient(socketClient, clientConfig);
         this.connectedClients.add(remoteClient);
+
+        console.log(`[HUB] New client ${remoteClient.getId()} connected. Jobs requested ${clientConfig.jobs} | specs: ${JSON.stringify(clientConfig.specs)}`);
+        this.emit(BEST_RPC.AGENT_CONNECTED_CLIENT, { clientId: remoteClient.getId(), jobs: clientConfig.jobs });
 
         // Make sure we remove it from an agent's perspective if the client is disconnected
         remoteClient.on(BEST_RPC.DISCONNECT, () => {
@@ -62,6 +66,8 @@ export class Hub extends EventEmitter {
 
         return remoteClient;
     }
+
+    // -- Agent lifecycle ---------------------------------------------------------------
 
     onAgentConnect(agentSocket: Socket) {
         const query = agentSocket.handshake.query;
@@ -80,7 +86,10 @@ export class Hub extends EventEmitter {
         }
 
         const remoteAgent = this.setupNewAgent(agentSocket, specs);
-        console.log('>> ', remoteAgent.toString());
+
+        if (remoteAgent) {
+            // If queued jobs with those specs, run them...
+        }
     }
 
     setupNewAgent(socketAgent: Socket, specs: BrowserSpec[]): RemoteAgent {

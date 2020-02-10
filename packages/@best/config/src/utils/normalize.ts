@@ -52,7 +52,8 @@ function normalizeRunnerConfig(runner: string, runners: RunnerConfig[], specs?: 
         }
     }
 
-    const selectedRunner = runners.find((c: RunnerConfig) => c.alias === runner || c.runner === runner);
+    const selectedAliasRunner = runners.find((c: RunnerConfig) => c.alias === runner);
+    const selectedRunner = selectedAliasRunner || runners.find((c: RunnerConfig) => c.runner === runner);
 
     if (!selectedRunner) {
         throw new Error(`Unable to find a runner for ${runner}`);
@@ -179,6 +180,7 @@ export function normalizeRegexPattern(names: string | string[] | RegExp) {
 export function normalizeConfig(userConfig: UserConfig, cliOptions: CliConfig): NormalizedConfig {
     const userCliMergedConfig = normalizeRootDir(setCliOptionOverrides(userConfig, cliOptions));
     const normalizedConfig: NormalizedConfig = { ...DEFAULT_CONFIG, ...userCliMergedConfig };
+    const aliasRunner = normalizedConfig.runner;
 
     Object.keys(normalizedConfig).reduce((mergeConfig: NormalizedConfig, key: string) => {
         switch (key) {
@@ -188,11 +190,11 @@ export function normalizeConfig(userConfig: UserConfig, cliOptions: CliConfig): 
             case 'plugins':
                 mergeConfig[key] = normalizePlugins(normalizedConfig[key], normalizedConfig);
                 break;
+            case 'runnerConfig':
+                mergeConfig['runnerConfig'] = normalizeRunnerConfig(aliasRunner, mergeConfig.runners, mergeConfig.specs);
+                break;
             case 'runner':
                 mergeConfig[key] = normalizeRunner(normalizedConfig[key], mergeConfig.runners);
-                break;
-            case 'runnerConfig':
-                mergeConfig[key] = normalizeRunnerConfig(normalizedConfig['runner'], mergeConfig.runners, mergeConfig.specs);
                 break;
             case 'compareStats':
                 mergeConfig[key] = normalizeCommits(normalizedConfig[key]);
