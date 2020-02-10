@@ -7,9 +7,69 @@
     margin: 100px auto;
 }
 
-header {
-    box-sizing: border-box;
+/*  ==== HEADER ==== */
+
+.header {
+    background-color: #fff;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.1);
 }
+
+.header a:hover,
+.header a:active {
+    background-color: transparent;
+}
+
+.header ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.header li {
+    margin-bottom: 0;
+}
+
+.header li a {
+    display: block;
+    padding: 20px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
+
+.header li a:hover,
+.header .menu-btn:hover {
+    background-color: #f4f4f4;
+}
+
+.header li {
+    float: left;
+}
+
+.header li a {
+    padding: 20px 30px;
+    font-weight: 300;
+}
+
+.header .menu {
+    clear: none;
+    float: right;
+    max-height: none;
+}
+
+.header .menu-icon {
+    display: none;
+}
+
+.header .menu li.active {
+    box-shadow: inset 0 -4px 0 var(--primary-color-blue);
+}
+
+
+
 
 .no-jobs {
     text-align: center;

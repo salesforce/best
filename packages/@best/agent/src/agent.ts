@@ -7,13 +7,14 @@
 
 import socketIO, { Server as SocketIoServer, Socket } from "socket.io";
 import { Server } from "http";
-import { BrowserSpec, Interruption } from "@best/types";
+import { BrowserSpec, Interruption, RemoteHubConfig, AgentConfig } from "@best/types";
 import { BEST_RPC } from "@best/shared";
 import { runBenchmarks, validateRunner, getBrowserSpecs } from '@best/runner';
-import { AgentConfig, normalizeClientConfig } from './utils/config-utils';
+import { normalizeClientConfig } from '@best/utils';
+import { validateConfig } from './utils/validate';
 import { createBundleConfig } from './utils/create-bundle-config';
 import RemoteClient, { RemoteClientConfig } from "./agent-remote-client";
-import { matchSpecs, RunnerInterruption } from "@best/utils";
+import { RunnerInterruption } from "@best/utils";
 import { EventEmitter } from "events";
 
 enum AgentState {
@@ -31,8 +32,9 @@ export class Agent extends EventEmitter {
     private activeClient?: RemoteClient;
     private interruption?: Interruption;
 
-    constructor(server: Server, agentConfig: AgentConfig) {
+    constructor(server: Server, agentConfig: AgentConfig, hubConfig?: RemoteHubConfig) {
         super();
+
         validateRunner(agentConfig.runner);
         this.id = agentConfig.name || `Agent[${Date.now()}]`;
         this.agentConfig = agentConfig;
@@ -45,26 +47,16 @@ export class Agent extends EventEmitter {
     async loadRunnerSpecs() {
         this.specs = await getBrowserSpecs(this.agentConfig.runner);
         console.log(`[AGENT] Available specs: ${JSON.stringify(this.specs)}`);
+        this.emit('ready');
     }
 
     onClientConnect(socketClient: Socket) {
         const query = socketClient.handshake.query;
         const config = normalizeClientConfig(query);
-        if (!this.validateToken(config.token, this.agentConfig.authToken)) {
-            console.log(`[AGENT] Rejecting client (${socketClient.id}): Token missmatch`);
-            socketClient.emit(BEST_RPC.AGENT_REJECTION, `Unable to match token.`);
-            return socketClient.disconnect(true);
-        }
+        const invalidConfig = validateConfig(config, this.agentConfig, this.specs, socketClient.id);
 
-        if (!this.validateSpecs(config.specs, this.specs)) {
-            console.log(`[AGENT] Rejecting client (${socketClient.id}): Invalid specs ${JSON.stringify(config.specs)}`);
-            socketClient.emit(BEST_RPC.AGENT_REJECTION, `Unable to match specs.`);
-            return socketClient.disconnect(true);
-        }
-
-        if (!this.validateJobs(config.jobs)) {
-            console.log(`[AGENT] Rejecting client (${socketClient.id}): No jobs specified`);
-            socketClient.emit(BEST_RPC.AGENT_REJECTION, `Client must specify number of jobs in advance.`);
+        if (invalidConfig) {
+            socketClient.emit(BEST_RPC.AGENT_REJECTION, invalidConfig);
             return socketClient.disconnect(true);
         }
 
@@ -128,21 +120,7 @@ export class Agent extends EventEmitter {
         }
     }
 
-    get idleState() {
-        return this.state === AgentState.IDLE;
-    }
-
-    validateToken(token?: string, requiredToken?: string) {
-        return requiredToken ? requiredToken === token : true;
-    }
-
-    validateSpecs(specs?: BrowserSpec, agentSpecs: BrowserSpec[] = []) {
-        return specs ? matchSpecs(specs, agentSpecs): true;
-    }
-
-    validateJobs(jobs: number) {
-        return jobs > 0;
-    }
+    get idleState() { return this.state === AgentState.IDLE; }
 
     getStateInfo() {
         return `
@@ -176,14 +154,13 @@ export class Agent extends EventEmitter {
             }
         });
 
-        // Forward events from the client to the Agent
-
-        remoteClient.on(BEST_RPC.BENCHMARK_START, (benchmarkSignature: string) => {
-            this.emit(BEST_RPC.BENCHMARK_START, { agentId: this.id, clientId: remoteClient.getId(), benchmarkSignature });
+        // Forward events from the Client to the Agent
+        remoteClient.on(BEST_RPC.BENCHMARK_START, (benchmarkId: string) => {
+            this.emit(BEST_RPC.BENCHMARK_START, { agentId: this.id, clientId: remoteClient.getId(), benchmarkId });
         });
 
-        remoteClient.on(BEST_RPC.BENCHMARK_END, (benchmarkSignature: string) => {
-            this.emit(BEST_RPC.BENCHMARK_END, { agentId: this.id, clientId: remoteClient.getId(), benchmarkSignature });
+        remoteClient.on(BEST_RPC.BENCHMARK_END, (benchmarkId: string) => {
+            this.emit(BEST_RPC.BENCHMARK_END, { agentId: this.id, clientId: remoteClient.getId(), benchmarkId });
         });
 
         // If we are done with the job, make sure after a short time the client gets removed
@@ -200,3 +177,5 @@ export class Agent extends EventEmitter {
         return remoteClient;
     }
 }
+
+export { RemoteClient };

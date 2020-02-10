@@ -5,46 +5,25 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
-import { readFileSync } from 'fs';
 import express from 'express';
-import { HubConfig, runHub } from '../hub-server';
+import { Hub } from '../hub';
+import { serveFrontend, observeAgent } from '@best/agent-frontend';
+import {  getHubConfig } from './config';
+import http from "http";
 
 const PORT = process.env.PORT || 5000;
-const SSL_PFX_FILE = process.env.SSL_PFX_FILE;
-const SSL_PFX_PASSPHRASE = process.env.SSL_PFX_PASSPHRASE;
-const DEFAULT_CONFIG = getDefaultConfig(
-    process.env.TOKEN_SECRET || 'secret',
-    process.env.CONFIG,
-);
 
-function getDefaultConfig(tokenSecret: string, configAsJSON?: string): HubConfig {
-    const minimumConfig = { tokenSecret, agents: [] };
-    let resultConfig = {};
+export function run() {
+    const hubConfig = getHubConfig();
 
-    if (configAsJSON) {
-        resultConfig = JSON.parse(configAsJSON);
-    }
-
-    return Object.assign({}, minimumConfig, resultConfig);
-}
-
-export function run(config?: HubConfig) {
     const app = express();
-    
-    const enableHttps = SSL_PFX_FILE && SSL_PFX_PASSPHRASE;
-    const http = require(enableHttps ? 'https' : 'http');
+    serveFrontend(app);
+    const server = http.createServer(app);
+    const agent = new Hub(server, hubConfig);
+    observeAgent(server, agent);
 
-    const options = {
-        pfx: SSL_PFX_FILE ? readFileSync(SSL_PFX_FILE) : undefined,
-        passphrase: enableHttps ? SSL_PFX_PASSPHRASE: undefined
-    };
-
-    const server = http.createServer(options, app);
     server.listen(PORT);
-
-    app.use(express.json());
-
-    process.stdout.write(`Best agent hub listening in port ${PORT}... \n\n`);
-
-    runHub(server, app, config ? config : DEFAULT_CONFIG);
+    process.stdout.write(`Best agent listening in port ${PORT}...\n`);
 }
+
+export { Hub };

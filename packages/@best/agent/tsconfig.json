@@ -6,7 +6,6 @@
   },
   "references": [
     { "path": "../agent-frontend" },
-    { "path": "../agent-logger" },
     { "path": "../runner" },
     { "path": "../utils" },
     { "path": "../shared" },

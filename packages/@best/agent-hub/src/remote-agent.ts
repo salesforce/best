@@ -1,18 +1,10 @@
 import { BEST_RPC } from "@best/shared";
 import { EventEmitter } from "events";
 import { Socket } from "socket.io";
-import { getUploaderInstance, extractBenchmarkTarFile } from "./utils/benchmark-loader";
-import { BrowserSpec, BuildConfig, RunnerStream, BenchmarkResultsState, BenchmarkRuntimeConfig } from "@best/types";
-import path from "path";
+import { BrowserSpec, RunnerStream, BenchmarkResultsState, BenchmarkRuntimeConfig } from "@best/types";
 import SocketIOFile from "socket.io-file";
 
-export interface RemoteClientConfig {
-    specs?: BrowserSpec;
-    jobs: number;
-    token?: string;
-}
-
-enum RemoteClientState {
+enum RemoteAgentState {
     IDLE,
     REQUESTING_JOB_INFO,
     REQUESTING_JOB_PAYLOAD
@@ -21,24 +13,21 @@ enum RemoteClientState {
 const { DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, BENCHMARK_UPLOAD_RESPONSE } = BEST_RPC;
 const RPC_METHODS = [ DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, BENCHMARK_UPLOAD_RESPONSE];
 
-export default class RemoteClient extends EventEmitter implements RunnerStream {
+export default class RemoteAgent extends EventEmitter implements RunnerStream {
     private socket: Socket;
     private uploader?: SocketIOFile;
-    private specs?: BrowserSpec;
+    private specs?: BrowserSpec[];
     public connected: boolean;
-    private pendingBenchmarksToUpload: number;
-    private pendingResultsToSend: number = 0;
-    private state: RemoteClientState = RemoteClientState.IDLE;
+    private state: RemoteAgentState = RemoteAgentState.IDLE;
     private _requestJobSuccess: Function = function () {};
     private _requestJobError: Function = function (err: any) { throw new Error(err) };
     private debounce?: any;
 
-    constructor(socket: Socket, { specs, jobs }: RemoteClientConfig) {
+    constructor(socket: Socket, { specs, jobs }: any) {
         super();
         this.socket = socket;
         this.connected = this.socket.connected;
         this.specs = specs;
-        this.pendingBenchmarksToUpload = jobs;
 
         RPC_METHODS.forEach((methodName) => this.socket.on(methodName, (this as any)[methodName].bind(this)));
     }
@@ -69,63 +58,6 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
 
     // -- Specific Best RPC Commands ------------------------------------------------------------
 
-    async [BENCHMARK_UPLOAD_RESPONSE](benchmarkConfig: BuildConfig, emitContinuationForUpload: Function) {
-        if (this.state !== RemoteClientState.REQUESTING_JOB_INFO) {
-            this.disconnectClient('Client should not send jobs at this point.');
-            this._requestJobError('Unexpected upload response');
-        }
-
-        console.log(`[AGENT-REMOTE-CLIENT] Receiving benchmark ${benchmarkConfig.benchmarkSignature} from socket ${this.socket.id}`);
-
-        const { benchmarkEntry, benchmarkName, benchmarkSignature } = benchmarkConfig;
-        const uploader = this.getUploader();
-
-        this.state = RemoteClientState.REQUESTING_JOB_PAYLOAD;
-        emitContinuationForUpload(benchmarkSignature); // This is an ACK, telling the client that is ok to send the file now
-
-        try {
-            // Retrieve an uncompress the benchmark bundle
-            const tarFile = await uploader.load(benchmarkEntry);
-            await extractBenchmarkTarFile(tarFile);
-
-            // Modify the benchmark bundle to point to the new files
-            const uploadDir = path.dirname(tarFile);
-            benchmarkConfig.benchmarkEntry = path.join(uploadDir, `${benchmarkName}.html`);
-            benchmarkConfig.benchmarkFolder = uploadDir;
-
-            console.log(`[AGENT-REMOTE-CLIENT] Completed upload for benchmark ${benchmarkConfig.benchmarkSignature} from socket ${this.socket.id}`);
-            this.state = RemoteClientState.IDLE;
-            this.pendingBenchmarksToUpload -= 1;
-            this.pendingResultsToSend += 1;
-            this._requestJobSuccess(benchmarkConfig);
-
-            // Notify upload updates
-            this.emit(BEST_RPC.REMOTE_CLIENT_UPLOAD_COMPLETED);
-
-        } catch(err) {
-            this.disconnectClient(err);
-            this._requestJobError(err);
-        }
-
-        finally {
-            this.state = RemoteClientState.IDLE;
-        }
-    }
-
-    // -- Private
-
-    getUploader(): any {
-        if (!this.uploader) {
-            const uploader = getUploaderInstance(this.socket);
-            uploader.on('stream', ({ wrote, size }: any) => {
-                console.log(`  :: [ARC-${this.socket.id}] loading benchmark (${wrote} / ${size})`);
-            });
-
-            this.uploader = uploader;
-        }
-
-        return this.uploader;
-    }
 
     // -- RunnerStream methods ----------------------------------------------------------
 
@@ -180,48 +112,20 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
     }
 
     // -- Imperative methods ------------------------------------------------------------
+    _deleteme() {
+        console.log(this._requestJobError, this._requestJobSuccess, this.specs, this.uploader, this.state);
+    }
 
     disconnectClient(reason?: string) {
         if (this.connected) {
             this.connected = false;
-            this.pendingBenchmarksToUpload = -1;
             this.socket.emit(BEST_RPC.AGENT_REJECTION, reason);
             this.socket.disconnect(true);
             this.emit(BEST_RPC.DISCONNECT, reason);
         }
     }
-
-    requestJob(): Promise<BuildConfig> {
-        return new Promise((resolve, reject) => {
-            this.state = RemoteClientState.REQUESTING_JOB_INFO;
-            this.socket.emit(BEST_RPC.BENCHMARK_UPLOAD_REQUEST);
-            this._requestJobSuccess = resolve;
-            this._requestJobError = reject;
-        });
-    }
-
-    sendResults(results: any) {
-        this.pendingResultsToSend -= 1;
-        this.socket.emit(BEST_RPC.BENCHMARK_RESULTS, results);
-        if (this.pendingBenchmarksToUpload === 0 && this.pendingResultsToSend === 0) {
-            this.emit(BEST_RPC.REMOTE_CLIENT_EMPTY_QUEUE);
-        }
-    }
-
-    getPendingBenchmarks() {
-        return this.pendingBenchmarksToUpload;
-    }
-
-    toString() {
-        return `[ARC-${this.socket.id}]`;
-    }
-
     getId() {
         return this.toString();
-    }
-
-    getStatusInfo() {
-        return `remining jobs: ${this.pendingBenchmarksToUpload} | specs: ${this.specs} | state: ${this.state}`;
     }
 
     getSpecs() {

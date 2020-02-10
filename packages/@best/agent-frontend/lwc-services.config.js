@@ -10,8 +10,5 @@
 module.exports = {
     resources: [{ from: 'src/client/resources', to: 'dist/resources' }],
     sourceDir: './src/client',
-    moduleDir: './src/client/modules',
-    server: {
-        customConfig: './src/server/index.js'
-    }
+    moduleDir: './src/client/modules'
 };

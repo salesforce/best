@@ -5,7 +5,7 @@
         "access": "public"
     },
     "version": "4.0.0-alpha14",
-    "main": "build/index.js",
+    "main": "build/server/index.js",
     "dependencies": {
         "@best/shared": "4.0.0-alpha14",
         "express": "^4.17.1",

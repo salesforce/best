@@ -23,7 +23,8 @@ const LOADER_CONFIG = {
 
 // In order to make the uploader singleton, but yet allow multiple file downloads we need to do some manual cleanup
 // The assumption is only one upload can occurr at the time, otherwise this code might not work as expected
-export function getUploaderInstance(socket: Socket) {
+
+export function getUploaderInstance(socket: Socket): SocketIOFile {
     const uploader: any = new SocketIOFile(socket, LOADER_CONFIG);
     uploader.load = function () {
         return new Promise((resolve, reject) => {

@@ -1,7 +1,11 @@
 <template>
-    <header>
-        <p>Clients: <span>{connectedClients}</span></p>
-        <p>Pending Jobs: <span>{pendingJobs}</span></p>
+    <header class="header">
+        <div class="content-wrapper">
+            <ul class="menu">
+                <li><a href="#clients">Connected Clients: <span>{connectedClients}</span> </a></li>
+                <li><a href="#Pending">Pending Jobs: <span>{pendingJobs}</span></a></li>
+            </ul>
+        </div>
     </header>
 
     <div class="container">

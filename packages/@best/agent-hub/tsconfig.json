@@ -5,8 +5,8 @@
     "outDir": "build"
   },
   "references": [
+    { "path": "../agent" },
     { "path": "../agent-frontend" },
-    { "path": "../agent-logger" },
     { "path": "../runner-remote" },
     { "path": "../utils" },
     { "path": "../types" }

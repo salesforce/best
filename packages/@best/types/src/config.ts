@@ -31,6 +31,29 @@ export interface RunnerConfig {
     specs?: BrowserSpec;
 }
 
+export interface RemoteClientConfig {
+    specs?: BrowserSpec;
+    jobs: number;
+    token?: string;
+}
+
+export interface RemoteHubConfig {
+    uri: string;
+    authToken: string;
+    pingTimeout: number;
+}
+
+export interface HubConfig {
+    name?: string;
+    uri: string;
+    options: { path: string };
+    authToken? : string;
+}
+
+export interface AgentConfig extends HubConfig {
+    runner: string;
+}
+
 export interface Interruption {
     id?: string;
     requestedInterruption: boolean;

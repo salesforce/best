@@ -1,9 +1,4 @@
-import { AgentConfig, RemoteHubConfig } from '@best/types';
-
-const AGENT_CONFIG = process.env.AGENT_CONFIG ? JSON.parse(process.env.AGENT_CONFIG): {};
-const AGENT_URI = process.env.AGENT_HOST;
-const AGENT_RUNNER = process.env.AGENT_RUNNER;
-const AGENT_AUTH_TOKEN = process.env.AGENT_AUTH_TOKEN;
+import { AgentConfig } from "@best/types";
 
 const HUB_CONFIG = process.env.HUB_CONFIG ? JSON.parse(process.env.HUB_CONFIG): {};
 const HUB_URI = process.env.HUB_URI;
@@ -28,16 +23,7 @@ function normalizeArgOptions(argv: string[]): any {
 
 const argv = normalizeArgOptions(process.argv.slice(2));
 
-export function getAgentConfig(): AgentConfig {
-    return {
-        ...AGENT_CONFIG,
-        uri: AGENT_URI || AGENT_CONFIG.uri,
-        runner: argv.runner || AGENT_RUNNER || AGENT_CONFIG.runner,
-        authToken: argv.authToken || AGENT_AUTH_TOKEN || AGENT_CONFIG.authToken
-    };
-}
-
-export function getHubConfig(): RemoteHubConfig {
+export function getHubConfig(): AgentConfig {
     return {
         ...HUB_CONFIG,
         uri: argv.hubUri || HUB_URI || HUB_CONFIG.uri,

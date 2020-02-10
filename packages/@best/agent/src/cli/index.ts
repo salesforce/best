@@ -6,8 +6,7 @@
 */
 
 import express from 'express';
-import { Agent } from '../agent';
-import { registerWithHub } from '../utils/config-utils';
+import { Agent, RemoteClient } from '../agent';
 import { serveFrontend, observeAgent } from '@best/agent-frontend';
 import { getAgentConfig, getHubConfig } from './config';
 import http from "http";
@@ -25,16 +24,11 @@ export function run() {
     const app = express();
     serveFrontend(app);
     const server = http.createServer(app);
-
-    const agent = new Agent(server, agentConfig);
+    const agent = new Agent(server, agentConfig, hubRegistrationConfig);
     observeAgent(server, agent);
 
     server.listen(PORT);
     process.stdout.write(`Best agent listening in port ${PORT}...\n`);
-
-    if (hubRegistrationConfig.uri) {
-        registerWithHub(hubRegistrationConfig, agentConfig);
-    }
 }
 
-export { Agent };
+export { Agent, RemoteClient };
