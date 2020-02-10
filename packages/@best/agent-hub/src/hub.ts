@@ -49,6 +49,17 @@ export class Hub extends EventEmitter {
         const remoteClient = new RemoteClient(socketClient, clientConfig);
         this.connectedClients.add(remoteClient);
 
+        // Make sure we remove it from an agent's perspective if the client is disconnected
+        remoteClient.on(BEST_RPC.DISCONNECT, () => {
+            console.log(`[AGENT] Disconnected client ${remoteClient.getId()}`);
+            this.emit(BEST_RPC.AGENT_DISCONNECTED_CLIENT, remoteClient.getId());
+
+            this.connectedClients.delete(remoteClient);
+
+            // TODO: If the client is actively running something we need to kill it
+            throw new Error('TODOooOoooOOOo!');
+        });
+
         return remoteClient;
     }
 
