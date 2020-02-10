@@ -16,6 +16,7 @@ import { createBundleConfig } from './utils/create-bundle-config';
 import RemoteClient from "./remote-client";
 import { RunnerInterruption } from "@best/utils";
 import { EventEmitter } from "events";
+import RemoteHub from "./remote-hub";
 
 enum AgentState {
     IDLE = 'IDLE',
@@ -28,20 +29,30 @@ export class Agent extends EventEmitter {
     private state: AgentState;
     private specs: BrowserSpec[] = [];
     private agentConfig: AgentConfig;
+    private remoteHubConfig: RemoteHubConfig;
     private connectedClients = new Set<RemoteClient>();
+    private remoteHub? : RemoteHub;
     private activeClient?: RemoteClient;
     private interruption?: Interruption;
 
-    constructor(server: Server, agentConfig: AgentConfig, hubConfig?: RemoteHubConfig) {
+    constructor(server: Server, agentConfig: AgentConfig, remoteHubConfig: RemoteHubConfig) {
         super();
 
         validateRunner(agentConfig.runner);
         this.id = agentConfig.name || `Agent[${Date.now()}]`;
         this.agentConfig = agentConfig;
+        this.remoteHubConfig = remoteHubConfig;
         this.socketServer = socketIO(server, { path: '/best' });
         this.socketServer.on('connect', this.onClientConnect.bind(this));
         this.state = AgentState.IDLE;
         this.loadRunnerSpecs();
+
+        if (this.remoteHubConfig.uri) {
+            this.once('ready', () => {
+                this.remoteHub = new RemoteHub(this.remoteHubConfig, this.specs);
+                this.remoteHub.connectToHub();
+            });
+        }
     }
 
     async loadRunnerSpecs() {
@@ -137,7 +148,7 @@ export class Agent extends EventEmitter {
         this.connectedClients.add(remoteClient);
 
         console.log(`[AGENT] New client ${remoteClient.getId()} connected. Jobs requested ${clientConfig.jobs} | specs: ${JSON.stringify(clientConfig.specs)}`);
-        this.emit(BEST_RPC.AGENT_CONNECTED_CLIENT, { id: remoteClient.getId(), jobs: clientConfig.jobs });
+        this.emit(BEST_RPC.AGENT_CONNECTED_CLIENT, { clientId: remoteClient.getId(), jobs: clientConfig.jobs });
 
         // Make sure we remove it from an agent's perspective if the client is disconnected
         remoteClient.on(BEST_RPC.DISCONNECT, () => {
@@ -175,6 +186,10 @@ export class Agent extends EventEmitter {
         });
 
         return remoteClient;
+    }
+
+    connectToHub(remoteHubConfig: RemoteHubConfig) {
+
     }
 }
 

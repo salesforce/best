@@ -6,24 +6,23 @@ import SocketIOFile from "socket.io-file";
 
 enum RemoteAgentState {
     IDLE,
-    REQUESTING_JOB_INFO,
-    REQUESTING_JOB_PAYLOAD
+    BUSY
 }
 
-const { DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, BENCHMARK_UPLOAD_RESPONSE } = BEST_RPC;
-const RPC_METHODS = [ DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, BENCHMARK_UPLOAD_RESPONSE];
+const { DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED } = BEST_RPC;
+const RPC_METHODS = [ DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED];
 
 export default class RemoteAgent extends EventEmitter implements RunnerStream {
     private socket: Socket;
     private uploader?: SocketIOFile;
-    private specs?: BrowserSpec[];
+    private specs: BrowserSpec[];
     public connected: boolean;
     private state: RemoteAgentState = RemoteAgentState.IDLE;
     private _requestJobSuccess: Function = function () {};
     private _requestJobError: Function = function (err: any) { throw new Error(err) };
     private debounce?: any;
 
-    constructor(socket: Socket, { specs, jobs }: any) {
+    constructor(socket: Socket, { specs }: any) {
         super();
         this.socket = socket;
         this.connected = this.socket.connected;
@@ -116,6 +115,10 @@ export default class RemoteAgent extends EventEmitter implements RunnerStream {
         console.log(this._requestJobError, this._requestJobSuccess, this.specs, this.uploader, this.state);
     }
 
+    isBusy() {
+        return this.state === RemoteAgentState.BUSY;
+    }
+
     disconnectClient(reason?: string) {
         if (this.connected) {
             this.connected = false;
@@ -125,10 +128,15 @@ export default class RemoteAgent extends EventEmitter implements RunnerStream {
         }
     }
     getId() {
-        return this.toString();
+        return this.socket.id;
     }
 
     getSpecs() {
         return this.specs;
     }
+
+    toString() {
+        return `[REMOTE_AGENT_${this.getId()}]`;
+    }
+
 }

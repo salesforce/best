@@ -5,9 +5,9 @@ const AGENT_URI = process.env.AGENT_HOST;
 const AGENT_RUNNER = process.env.AGENT_RUNNER;
 const AGENT_AUTH_TOKEN = process.env.AGENT_AUTH_TOKEN;
 
-const HUB_CONFIG = process.env.HUB_CONFIG ? JSON.parse(process.env.HUB_CONFIG): {};
-const HUB_URI = process.env.HUB_URI;
-const HUB_AUTH_TOKEN = process.env.HUB_AUTH_TOKEN;
+const REMOTE_HUB_CONFIG = process.env.REMOTE_HUB_CONFIG ? JSON.parse(process.env.REMOTE_HUB_CONFIG): {};
+const REMOTE_HUB_URI = process.env.REMOTE_HUB_URI;
+const REMOTE_HUB_AUTH_TOKEN = process.env.REMOTE_HUB_AUTH_TOKEN;
 
 function normalizeArgOptions(argv: string[]): any {
     let arg;
@@ -37,10 +37,10 @@ export function getAgentConfig(): AgentConfig {
     };
 }
 
-export function getHubConfig(): RemoteHubConfig {
+export function getRemoteHubConfig(): RemoteHubConfig {
     return {
-        ...HUB_CONFIG,
-        uri: argv.hubUri || HUB_URI || HUB_CONFIG.uri,
-        authToken: argv.hubAuthToken || HUB_AUTH_TOKEN || HUB_CONFIG.authToken
+        ...REMOTE_HUB_CONFIG,
+        uri: argv.remoteHubUri || REMOTE_HUB_URI || REMOTE_HUB_CONFIG.uri,
+        authToken: argv.remoteHubAuthToken || REMOTE_HUB_AUTH_TOKEN || REMOTE_HUB_CONFIG.authToken
     };
 }

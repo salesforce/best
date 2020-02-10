@@ -13,3 +13,11 @@ export function normalizeClientConfig(config: any): RemoteClientConfig {
 
     return { jobs, specs, token: config.token };
 }
+
+export function normalizeSpecs(config: any) {
+    try {
+        return JSON.parse(config.specs);
+    } catch {
+        return [];
+    }
+}

@@ -23,7 +23,7 @@ export function run() {
     observeAgent(server, agent);
 
     server.listen(PORT);
-    process.stdout.write(`Best agent listening in port ${PORT}...\n`);
+    process.stdout.write(`Best Hub listening in port ${PORT}...\n`);
 }
 
 export { Hub };

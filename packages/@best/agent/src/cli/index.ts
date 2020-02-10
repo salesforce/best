@@ -8,13 +8,13 @@
 import express from 'express';
 import { Agent, RemoteClient } from '../agent';
 import { serveFrontend, observeAgent } from '@best/agent-frontend';
-import { getAgentConfig, getHubConfig } from './config';
+import { getAgentConfig, getRemoteHubConfig } from './config';
 import http from "http";
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 export function run() {
-    const hubRegistrationConfig = getHubConfig();
+    const hubRegistrationConfig = getRemoteHubConfig();
     const agentConfig = getAgentConfig();
 
     if (!agentConfig.runner) {

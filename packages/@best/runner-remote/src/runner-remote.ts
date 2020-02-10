@@ -201,6 +201,7 @@ export class RunnerRemote {
     }
 
     _triggerBenchmarkError(error_msg: string | Error) {
+        console.log(error_msg);
         if (this.running) {
             const error = typeof error_msg === 'string' ? new Error(error_msg) : error_msg;
             this.running = false;

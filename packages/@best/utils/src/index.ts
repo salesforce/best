@@ -13,4 +13,4 @@ export { default as logError } from './log-error';
 export { proxifiedSocketOptions } from './proxy';
 export { matchSpecs } from './match-specs';
 export { RunnerInterruption } from './runner-interruption';
-export { normalizeClientConfig } from './normalize-client-config';
+export { normalizeClientConfig, normalizeSpecs } from './normalize-client-config';

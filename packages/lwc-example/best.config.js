@@ -37,7 +37,7 @@ module.exports = {
             runner: "@best/runner-remote",
             alias: "local-remote",
             config: {
-                uri: 'http://localhost:5000',
+                uri: 'http://localhost:5001',
                 options: { token: 'foo' }
             }
         }
