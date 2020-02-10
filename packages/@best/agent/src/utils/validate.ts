@@ -1,4 +1,4 @@
-import { RemoteClientConfig } from "../agent-remote-client";
+import { RemoteClientConfig } from "@best/types";
 import { BrowserSpec, AgentConfig } from "@best/types";
 import { matchSpecs } from "@best/utils";
 

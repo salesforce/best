@@ -4,13 +4,8 @@ import { Socket } from "socket.io";
 import { getUploaderInstance, extractBenchmarkTarFile } from "./utils/benchmark-loader";
 import { BrowserSpec, BuildConfig, RunnerStream, BenchmarkResultsState, BenchmarkRuntimeConfig } from "@best/types";
 import path from "path";
+import { RemoteClientConfig } from "@best/types";
 import SocketIOFile from "socket.io-file";
-
-export interface RemoteClientConfig {
-    specs?: BrowserSpec;
-    jobs: number;
-    token?: string;
-}
 
 enum RemoteClientState {
     IDLE,

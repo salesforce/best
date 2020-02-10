@@ -7,13 +7,13 @@
 
 import socketIO, { Server as SocketIoServer, Socket } from "socket.io";
 import { Server } from "http";
-import { BrowserSpec, Interruption, RemoteHubConfig, AgentConfig } from "@best/types";
+import { BrowserSpec, Interruption, RemoteHubConfig, AgentConfig, RemoteClientConfig } from "@best/types";
 import { BEST_RPC } from "@best/shared";
 import { runBenchmarks, validateRunner, getBrowserSpecs } from '@best/runner';
 import { normalizeClientConfig } from '@best/utils';
 import { validateConfig } from './utils/validate';
 import { createBundleConfig } from './utils/create-bundle-config';
-import RemoteClient, { RemoteClientConfig } from "./agent-remote-client";
+import RemoteClient from "./remote-client";
 import { RunnerInterruption } from "@best/utils";
 import { EventEmitter } from "events";
 
