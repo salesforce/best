@@ -16,3 +16,6 @@ export class Runner extends AbstractRunner {
 
     static isRemote = true;
 }
+
+
+export { RunnerRemote };

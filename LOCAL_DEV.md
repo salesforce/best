@@ -10,7 +10,7 @@ PORT=5002 yarn best-agent --remoteHubUri http://localhost:5005 --runner @best/ru
 
 // Best Runner1
 cd packages/best-benchmarks
-node ./node_modules/.bin/best --disableInteractive --runner local-remote --iterations 10
+node ./node_modules/.bin/best --disableInteractive --runner local-hub --iterations 10
 
 // Best Runner2
 cd packages/lwc-example

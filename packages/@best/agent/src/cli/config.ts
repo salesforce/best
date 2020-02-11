@@ -31,7 +31,7 @@ const argv = normalizeArgOptions(process.argv.slice(2));
 export function getAgentConfig(): AgentConfig {
     return {
         ...AGENT_CONFIG,
-        uri: AGENT_URI || AGENT_CONFIG.uri,
+        uri: argv.uri || AGENT_URI || AGENT_CONFIG.uri,
         runner: argv.runner || AGENT_RUNNER || AGENT_CONFIG.runner,
         authToken: argv.authToken || AGENT_AUTH_TOKEN || AGENT_CONFIG.authToken
     };

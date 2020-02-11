@@ -3,8 +3,8 @@ import { EventEmitter } from "events";
 import { RemoteHubConfig, BrowserSpec } from "@best/types";
 import socketIOClient from 'socket.io-client';
 
-const { CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED,  } = BEST_RPC;
-const RPC_METHODS = [ CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED];
+const { CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, AGENT_REJECTION } = BEST_RPC;
+const RPC_METHODS = [ CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, AGENT_REJECTION];
 
 const DEFAULT_SOCKET_CONFIG = {
     path: '/agents',
@@ -16,13 +16,14 @@ export default class RemoteHub extends EventEmitter {
     private hubSocket: SocketIOClient.Socket;
     public connected: boolean = false;
 
-    constructor(remoteHubConfig: RemoteHubConfig, agentSpecs: BrowserSpec[]) {
+    constructor(remoteHubConfig: RemoteHubConfig, agentUri: string, agentSpecs: BrowserSpec[]) {
         super();
 
         const { uri } = remoteHubConfig;
         const socketOptions = {
             ...DEFAULT_SOCKET_CONFIG,
             query: {
+                agentUri,
                 specs: JSON.stringify(agentSpecs)
             }
         };
@@ -40,6 +41,9 @@ export default class RemoteHub extends EventEmitter {
 
     [DISCONNECT](reason: string) {
         console.log(`${this.getId()} - socket:disconnect`, reason);
+        if (this.connected) {
+            this.disconnectFromHub();
+        }
     }
 
     [CONNECT_ERROR](reason: string) {
@@ -48,10 +52,17 @@ export default class RemoteHub extends EventEmitter {
 
     [ERROR](reason: string) {
         console.log(`${this.getId()} - socket:error`, reason);
+        if (this.connected) {
+            this.disconnectFromHub();
+        }
     }
 
     [RECONNECT_FAILED](reason: string) {
         console.log(`${this.getId()} - socket:reconnect_failed`, reason);
+    }
+
+    [AGENT_REJECTION](reason: string) {
+        console.log(`${this.getId()} - socket:agent_rejection`, reason);
     }
 
     // -- Specific Best RPC Commands ------------------------------------------------------------

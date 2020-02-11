@@ -2,7 +2,8 @@ import { BEST_RPC } from "@best/shared";
 import { EventEmitter } from "events";
 import { Socket } from "socket.io";
 import { BrowserSpec, RunnerStream, BenchmarkResultsState, BenchmarkRuntimeConfig } from "@best/types";
-import SocketIOFile from "socket.io-file";
+import { RemoteClient } from "@best/agent";
+import { RunnerRemote } from "@best/runner-remote";
 
 enum RemoteAgentState {
     IDLE,
@@ -14,7 +15,7 @@ const RPC_METHODS = [ DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED];
 
 export default class RemoteAgent extends EventEmitter implements RunnerStream {
     private socket: Socket;
-    private uploader?: SocketIOFile;
+    private uri: string;
     private specs: BrowserSpec[];
     public connected: boolean;
     private state: RemoteAgentState = RemoteAgentState.IDLE;
@@ -22,11 +23,12 @@ export default class RemoteAgent extends EventEmitter implements RunnerStream {
     private _requestJobError: Function = function (err: any) { throw new Error(err) };
     private debounce?: any;
 
-    constructor(socket: Socket, { specs }: any) {
+    constructor(socket: Socket, { uri, specs }: any) {
         super();
         this.socket = socket;
         this.connected = this.socket.connected;
         this.specs = specs;
+        this.uri = uri;
 
         RPC_METHODS.forEach((methodName) => this.socket.on(methodName, (this as any)[methodName].bind(this)));
     }
@@ -36,23 +38,23 @@ export default class RemoteAgent extends EventEmitter implements RunnerStream {
     [DISCONNECT](reason: string) {
         if (this.connected) {
             console.log(`${this.getId()} - socket:disconnect`, reason);
-            this.disconnectClient(reason);
+            this.disconnectAgent(reason);
         }
     }
 
     [CONNECT_ERROR](reason: string) {
         console.log(`${this.getId()} - socket:connect_error`, reason);
-        this.disconnectClient(reason);
+        this.disconnectAgent(reason);
     }
 
     [ERROR](reason: string) {
         console.log(`${this.getId()} - socket:error`, reason);
-        this.disconnectClient(reason);
+        this.disconnectAgent(reason);
     }
 
     [RECONNECT_FAILED](reason: string) {
         console.log(`${this.getId()} - socket:reconnect_failed`, reason);
-        this.disconnectClient(reason);
+        this.disconnectAgent(reason);
     }
 
     // -- Specific Best RPC Commands ------------------------------------------------------------
@@ -66,6 +68,20 @@ export default class RemoteAgent extends EventEmitter implements RunnerStream {
 
     finish() {
         console.log(`[AGENT-REMOTE-CLIENT] finishingRunner`);
+    }
+
+    async runBenchmarks(remoteClient: RemoteClient, jobsToRun: number = remoteClient.getPendingBenchmarks()) {
+        if (this.isIdle()) {
+            const iterator = Array.from(Array(jobsToRun), (x, index) => index + 1);
+            const runnerConfig = { uri: this.uri, specs: remoteClient.getSpecs(), jobs: 1 };
+            for (const job of iterator) {
+                const benchmarkBuild = await remoteClient.requestJob();
+                const runner = new RunnerRemote([benchmarkBuild], remoteClient, runnerConfig);
+                const results = await runner.run();
+                remoteClient.sendResults(results);
+                console.log(`[REMOTE_AGENT] Running job ${job} of ${jobsToRun}`);
+            }
+        }
     }
 
     onBenchmarkStart(benchmarkSignature: string) {
@@ -112,14 +128,18 @@ export default class RemoteAgent extends EventEmitter implements RunnerStream {
 
     // -- Imperative methods ------------------------------------------------------------
     _deleteme() {
-        console.log(this._requestJobError, this._requestJobSuccess, this.specs, this.uploader, this.state);
+        console.log(this._requestJobError, this._requestJobSuccess, this.specs);
     }
 
     isBusy() {
         return this.state === RemoteAgentState.BUSY;
     }
 
-    disconnectClient(reason?: string) {
+    isIdle() {
+        return this.state === RemoteAgentState.IDLE;
+    }
+
+    disconnectAgent(reason?: string) {
         if (this.connected) {
             this.connected = false;
             this.socket.emit(BEST_RPC.AGENT_REJECTION, reason);
@@ -133,6 +153,10 @@ export default class RemoteAgent extends EventEmitter implements RunnerStream {
 
     getSpecs() {
         return this.specs;
+    }
+
+    getUri() {
+        return this.uri;
     }
 
     toString() {

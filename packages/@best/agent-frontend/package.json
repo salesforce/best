@@ -14,7 +14,6 @@
         "socket.io-client": "~2.2.0"
     },
     "devDependencies": {
-        "@best/agent-logger": "4.0.0-alpha14",
         "husky": "^2.3",
         "lint-staged": "^8.1.5"
     },

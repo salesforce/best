@@ -15,7 +15,7 @@ export class Hub extends EventEmitter {
     private agentsSocketServer: SocketIoServer;
     private connectedClients = new Set<RemoteClient>();
     private connectedAgents = new Set<RemoteAgent>();
-    private activeClients: Map<RemoteClient, Set<RemoteAgent>> = new Map();
+    private activeClients: Map<RemoteClient, RemoteAgent> = new Map();
 
     constructor(server: Server, hubConfig: HubConfig) {
         super();
@@ -41,7 +41,26 @@ export class Hub extends EventEmitter {
         console.log(`[HUB] Connected clients: ${this.connectedClients.size}`);
 
         if (this.idleAgentMatchingSpecs(remoteClient)) {
-            console.log('WIP', this.activeClients.size);
+            this.runBenchmarks(remoteClient);
+        } else {
+            remoteClient.log(`Client enqueued. Waiting for an agent to be free...`);
+            this.emit(BEST_RPC.AGENT_QUEUED_CLIENT, { clientId: remoteClient.getId(), jobs: config.jobs, specs: config.specs });
+        }
+    }
+
+    async runBenchmarks(remoteClient: RemoteClient) {
+        // New agent setup
+        if (!this.activeClients.has(remoteClient)) {
+            const matchingAgents = this.findAgentMatchingSpecs(remoteClient, { ignoreBusy: true });
+            if (matchingAgents.length > 0) {
+                const remoteAgent = matchingAgents[0];
+                this.activeClients.set(remoteClient, remoteAgent);
+                await remoteAgent.runBenchmarks(remoteClient);
+            } else {
+                console.log('[HUB] All agents are busy at this moment...');
+            }
+        } else {
+            // We need to check for...
         }
     }
 
@@ -85,17 +104,22 @@ export class Hub extends EventEmitter {
             return agentSocket.disconnect(true);
         }
 
-        const remoteAgent = this.setupNewAgent(agentSocket, specs);
+        if (!query.agentUri) {
+            agentSocket.emit(BEST_RPC.AGENT_REJECTION, 'An agent must provide a URI');
+            return agentSocket.disconnect(true);
+        }
+
+        const remoteAgent = this.setupNewAgent(agentSocket, query.agentUri, specs);
 
         if (remoteAgent) {
             // If queued jobs with those specs, run them...
         }
     }
 
-    setupNewAgent(socketAgent: Socket, specs: BrowserSpec[]): RemoteAgent {
+    setupNewAgent(socketAgent: Socket, uri: string, specs: BrowserSpec[]): RemoteAgent {
 
         // Create and new RemoteAgent and add it to the pool
-        const remoteAgent = new RemoteAgent(socketAgent, { specs });
+        const remoteAgent = new RemoteAgent(socketAgent, { uri, specs });
         this.connectedAgents.add(remoteAgent);
 
         console.log(`[HUB] New Agent ${remoteAgent.getId()} connected with specs: ${JSON.stringify(remoteAgent.getSpecs())}`);
@@ -125,15 +149,22 @@ export class Hub extends EventEmitter {
     }
 
     idleAgentMatchingSpecs(remoteClient: RemoteClient): boolean {
+        return this.findAgentMatchingSpecs(remoteClient, { ignoreBusy: true }).length > 0;
+    }
+
+    findAgentMatchingSpecs(remoteClient: RemoteClient, { ignoreBusy }: { ignoreBusy?: boolean } = {}): RemoteAgent[] {
         const specs = remoteClient.getSpecs();
+        const agents: RemoteAgent[] = [];
         if (specs) {
             for (const agent of this.connectedAgents) {
-                if (matchSpecs(specs, agent.getSpecs() || [])) {
-                    return true;
+                const matchesSpecs = matchSpecs(specs, agent.getSpecs() || []);
+                const matchesFilterCriteria = ignoreBusy ? !agent.isBusy(): true;
+                if (matchesSpecs && matchesFilterCriteria) {
+                    agents.push(agent);
                 }
             }
         }
 
-        return false;
+        return agents;
     }
 }

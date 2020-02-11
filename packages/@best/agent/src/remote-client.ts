@@ -70,7 +70,7 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
             this._requestJobError('Unexpected upload response');
         }
 
-        console.log(`[AGENT-REMOTE-CLIENT] Receiving benchmark ${benchmarkConfig.benchmarkSignature} from socket ${this.socket.id}`);
+        console.log(`[AGENT_REMOTE_CLIENT] Receiving benchmark ${benchmarkConfig.benchmarkSignature} from socket ${this.socket.id}`);
 
         const { benchmarkEntry, benchmarkName, benchmarkSignature } = benchmarkConfig;
         const uploader = this.getUploader();
@@ -88,7 +88,7 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
             benchmarkConfig.benchmarkEntry = path.join(uploadDir, `${benchmarkName}.html`);
             benchmarkConfig.benchmarkFolder = uploadDir;
 
-            console.log(`[AGENT-REMOTE-CLIENT] Completed upload for benchmark ${benchmarkConfig.benchmarkSignature} from socket ${this.socket.id}`);
+            console.log(`[AGENT_REMOTE_CLIENT] Completed upload for benchmark ${benchmarkConfig.benchmarkSignature} from socket ${this.socket.id}`);
             this.state = RemoteClientState.IDLE;
             this.pendingBenchmarksToUpload -= 1;
             this.pendingResultsToSend += 1;
@@ -125,23 +125,23 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
     // -- RunnerStream methods ----------------------------------------------------------
 
     init() {
-        console.log(`[AGENT-REMOTE-CLIENT] startingRunner`);
+        console.log(`[AGENT_REMOTE_CLIENT] startingRunner`);
     }
 
     finish() {
-        console.log(`[AGENT-REMOTE-CLIENT] finishingRunner`);
+        console.log(`[AGENT_REMOTE_CLIENT] finishingRunner`);
     }
 
     onBenchmarkStart(benchmarkSignature: string) {
         if (this.socket.connected) {
-            console.log(`[AGENT-REMOTE-CLIENT] benchmarkStart(${benchmarkSignature})`);
+            console.log(`[AGENT_REMOTE_CLIENT] benchmarkStart(${benchmarkSignature})`);
             this.socket.emit(BEST_RPC.BENCHMARK_START, benchmarkSignature);
             this.emit(BEST_RPC.BENCHMARK_START, benchmarkSignature);
         }
     }
 
     onBenchmarkEnd(benchmarkSignature: string) {
-        console.log(`[AGENT-REMOTE-CLIENT] benchmarkEnd(${benchmarkSignature})`);
+        console.log(`[AGENT_REMOTE_CLIENT] benchmarkEnd(${benchmarkSignature})`);
         if (this.socket.connected) {
             this.socket.emit(BEST_RPC.BENCHMARK_END, benchmarkSignature);
             this.emit(BEST_RPC.BENCHMARK_END, benchmarkSignature);
@@ -160,7 +160,7 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
             this.debounce = setTimeout(() => {
                 this.debounce = undefined;
                 if (this.socket.connected) {
-                    console.log(`[AGENT-REMOTE-CLIENT] benchmarkProgress(${benchmarkSignature}) | iterations: ${state.executedIterations}`);
+                    console.log(`[AGENT_REMOTE_CLIENT] benchmarkProgress(${benchmarkSignature}) | iterations: ${state.executedIterations}`);
                     this.socket.emit(BEST_RPC.BENCHMARK_UPDATE, benchmarkSignature, state, opts);
                     this.emit(BEST_RPC.BENCHMARK_UPDATE, benchmarkSignature, state, opts);
                 }
@@ -187,12 +187,16 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
     }
 
     requestJob(): Promise<BuildConfig> {
-        return new Promise((resolve, reject) => {
-            this.state = RemoteClientState.REQUESTING_JOB_INFO;
-            this.socket.emit(BEST_RPC.BENCHMARK_UPLOAD_REQUEST);
-            this._requestJobSuccess = resolve;
-            this._requestJobError = reject;
-        });
+        if (this.isIdle()) {
+            return new Promise((resolve, reject) => {
+                this.state = RemoteClientState.REQUESTING_JOB_INFO;
+                this.socket.emit(BEST_RPC.BENCHMARK_UPLOAD_REQUEST);
+                this._requestJobSuccess = resolve;
+                this._requestJobError = reject;
+            });
+        } else {
+            return Promise.reject(`RemoteClient is busy`);
+        }
     }
 
     sendResults(results: any) {
@@ -201,6 +205,14 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
         if (this.pendingBenchmarksToUpload === 0 && this.pendingResultsToSend === 0) {
             this.emit(BEST_RPC.REMOTE_CLIENT_EMPTY_QUEUE);
         }
+    }
+
+    isIdle() {
+        return this.state === RemoteClientState.IDLE;
+    }
+
+    isBusy() {
+        return !this.isIdle();
     }
 
     getPendingBenchmarks() {

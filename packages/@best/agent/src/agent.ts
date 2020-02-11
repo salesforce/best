@@ -25,6 +25,7 @@ enum AgentState {
 
 export class Agent extends EventEmitter {
     private id: string;
+    private uri: string;
     private socketServer: SocketIoServer;
     private state: AgentState;
     private specs: BrowserSpec[] = [];
@@ -39,6 +40,7 @@ export class Agent extends EventEmitter {
         super();
 
         validateRunner(agentConfig.runner);
+        this.uri = agentConfig.uri;
         this.id = agentConfig.name || `Agent[${Date.now()}]`;
         this.agentConfig = agentConfig;
         this.remoteHubConfig = remoteHubConfig;
@@ -49,7 +51,7 @@ export class Agent extends EventEmitter {
 
         if (this.remoteHubConfig.uri) {
             this.once('ready', () => {
-                this.remoteHub = new RemoteHub(this.remoteHubConfig, this.specs);
+                this.remoteHub = new RemoteHub(this.remoteHubConfig, this.uri, this.specs);
                 this.remoteHub.connectToHub();
             });
         }
@@ -106,6 +108,8 @@ export class Agent extends EventEmitter {
                 this.interruption = undefined;
                 queueMicrotask(() => this.runQueuedBenchmarks());
             }
+        } else {
+            console.log('[AGENT] Benchmark already running...');
         }
     }
 
@@ -187,10 +191,6 @@ export class Agent extends EventEmitter {
         });
 
         return remoteClient;
-    }
-
-    connectToHub(remoteHubConfig: RemoteHubConfig) {
-
     }
 }
 

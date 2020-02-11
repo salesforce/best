@@ -21,6 +21,10 @@ export function run() {
         throw new Error('An agent must have a runner attached to it');
     }
 
+    if (!agentConfig.uri) {
+        throw new Error('An agent must have a URI defined');
+    }
+
     const app = express();
     serveFrontend(app);
     const server = http.createServer(app);
