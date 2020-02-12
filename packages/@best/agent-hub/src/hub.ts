@@ -27,6 +27,8 @@ export class Hub extends EventEmitter {
         this.agentsSocketServer.on('connect', this.onAgentConnect.bind(this));
     }
 
+    // -- Client lifecycle ---------------------------------------------------------------
+
     onClientConnect(clientSocket: Socket) {
         const query = clientSocket.handshake.query;
         const config = normalizeClientConfig(query);
@@ -48,22 +50,6 @@ export class Hub extends EventEmitter {
         }
     }
 
-    async runBenchmarks(remoteClient: RemoteClient) {
-        // New agent setup
-        if (!this.activeClients.has(remoteClient)) {
-            const matchingAgents = this.findAgentMatchingSpecs(remoteClient, { ignoreBusy: true });
-            if (matchingAgents.length > 0) {
-                const remoteAgent = matchingAgents[0];
-                this.activeClients.set(remoteClient, remoteAgent);
-                await remoteAgent.runBenchmarks(remoteClient);
-            } else {
-                console.log('[HUB] All agents are busy at this moment...');
-            }
-        } else {
-            // We need to check for...
-        }
-    }
-
     setupNewClient(socketClient: Socket, clientConfig: RemoteClientConfig): RemoteClient {
         // Create and new RemoteClient and add it to the pool
         const remoteClient = new RemoteClient(socketClient, clientConfig);
@@ -76,11 +62,27 @@ export class Hub extends EventEmitter {
         remoteClient.on(BEST_RPC.DISCONNECT, () => {
             console.log(`[AGENT] Disconnected client ${remoteClient.getId()}`);
             this.emit(BEST_RPC.AGENT_DISCONNECTED_CLIENT, remoteClient.getId());
-
             this.connectedClients.delete(remoteClient);
 
-            // TODO: If the client is actively running something we need to kill it
-            throw new Error('TODOooOoooOOOo!');
+            // If the client is actively running something we need to kill it
+            if (this.activeClients.has(remoteClient)) {
+                const remoteAgent = this.activeClients.get(remoteClient);
+                if (remoteAgent && remoteAgent.isBusy()) {
+                    remoteAgent.interruptRunner();
+                }
+
+                this.activeClients.delete(remoteClient);
+            }
+        });
+
+        // If we are done with the job, make sure after a short time the client gets removed
+        remoteClient.on(BEST_RPC.REMOTE_CLIENT_EMPTY_QUEUE, () => {
+            setTimeout(() => {
+                if (this.connectedClients.has(remoteClient)) {
+                    console.log(`[AGENT] Force client disconnect (${remoteClient.getId()}): With no more jobs to run an agent must disconnect`);
+                    remoteClient.disconnectClient(`Forced disconnect: With no more jobs client should have disconnected`);
+                }
+            }, 10000);
         });
 
         return remoteClient;
@@ -132,12 +134,42 @@ export class Hub extends EventEmitter {
             this.connectedAgents.delete(remoteAgent);
 
             if (remoteAgent.isBusy()) {
-                // TODO, if this was busy running a job, notify the client
-                throw new Error('TODOOOOOOOO!!!');
+                remoteAgent.interruptRunner();
             }
         });
 
+
         return remoteAgent;
+    }
+
+    async runBenchmarks(remoteClient: RemoteClient) {
+        // New agent setup
+        if (!this.activeClients.has(remoteClient)) {
+            const matchingAgents = this.findAgentMatchingSpecs(remoteClient, { ignoreBusy: true });
+            if (matchingAgents.length > 0) {
+                const remoteAgent = matchingAgents[0];
+                this.activeClients.set(remoteClient, remoteAgent);
+                try {
+                    await remoteAgent.runBenchmarks(remoteClient);
+                } catch(err) {
+                    console.log(`[HUB] Error running benchmark for remote client ${remoteClient.getId()}`);
+                    remoteClient.disconnectClient(`Error running benchmark ${err}`); // make sure we disconnect the agent
+                } finally {
+                    this.activeClients.delete(remoteClient);
+                    queueMicrotask(() => this.runQueuedBenchmarks());
+                }
+            } else {
+                console.log('[HUB] All agents are busy at this moment...');
+            }
+        } else {
+            console.log(`[HUB] Client ${remoteClient.getId()} is actively running already`)
+        }
+    }
+
+    runQueuedBenchmarks() {
+        // WIP!!
+        Array.from(this.connectedClients).forEach((remoteClient) => {
+        });
     }
 
     getAgentSpecs(): BrowserSpec[] {

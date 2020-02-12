@@ -218,4 +218,10 @@ export class RunnerRemote {
             this.socket.open();
         });
     }
+
+    interruptRunner() {
+        if (this.running) {
+            this.socket.disconnect();
+        }
+    }
 }

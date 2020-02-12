@@ -1,7 +1,7 @@
 import { BEST_RPC } from "@best/shared";
 import { EventEmitter } from "events";
 import { Socket } from "socket.io";
-import { BrowserSpec, RunnerStream, BenchmarkResultsState, BenchmarkRuntimeConfig } from "@best/types";
+import { BrowserSpec } from "@best/types";
 import { RemoteClient } from "@best/agent";
 import { RunnerRemote } from "@best/runner-remote";
 
@@ -13,15 +13,13 @@ enum RemoteAgentState {
 const { DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED } = BEST_RPC;
 const RPC_METHODS = [ DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED];
 
-export default class RemoteAgent extends EventEmitter implements RunnerStream {
+export default class RemoteAgent extends EventEmitter {
     private socket: Socket;
     private uri: string;
     private specs: BrowserSpec[];
     public connected: boolean;
     private state: RemoteAgentState = RemoteAgentState.IDLE;
-    private _requestJobSuccess: Function = function () {};
-    private _requestJobError: Function = function (err: any) { throw new Error(err) };
-    private debounce?: any;
+    private runner?: RunnerRemote;
 
     constructor(socket: Socket, { uri, specs }: any) {
         super();
@@ -59,76 +57,32 @@ export default class RemoteAgent extends EventEmitter implements RunnerStream {
 
     // -- Specific Best RPC Commands ------------------------------------------------------------
 
-
-    // -- RunnerStream methods ----------------------------------------------------------
-
-    init() {
-        console.log(`[AGENT-REMOTE-CLIENT] startingRunner`);
-    }
-
-    finish() {
-        console.log(`[AGENT-REMOTE-CLIENT] finishingRunner`);
-    }
-
     async runBenchmarks(remoteClient: RemoteClient, jobsToRun: number = remoteClient.getPendingBenchmarks()) {
         if (this.isIdle()) {
+            this.state = RemoteAgentState.BUSY;
             const iterator = Array.from(Array(jobsToRun), (x, index) => index + 1);
             const runnerConfig = { uri: this.uri, specs: remoteClient.getSpecs(), jobs: 1 };
-            for (const job of iterator) {
-                const benchmarkBuild = await remoteClient.requestJob();
-                const runner = new RunnerRemote([benchmarkBuild], remoteClient, runnerConfig);
-                const results = await runner.run();
-                remoteClient.sendResults(results);
-                console.log(`[REMOTE_AGENT] Running job ${job} of ${jobsToRun}`);
+            try {
+                for (const job of iterator) {
+                    console.log(`[REMOTE_AGENT] Running job ${job} of ${jobsToRun}`);
+                    const benchmarkBuild = await remoteClient.requestJob();
+                    this.runner = new RunnerRemote([benchmarkBuild], remoteClient, runnerConfig);
+                    const results = await this.runner.run();
+                    remoteClient.sendResults(results);
+                    console.log(`[REMOTE_AGENT_${this.getId()}] Completed job ${job} of ${jobsToRun}`);
+
+                }
+            } finally {
+                 this.state = RemoteAgentState.IDLE;
+                 this.runner = undefined;
             }
         }
     }
 
-    onBenchmarkStart(benchmarkSignature: string) {
-        if (this.socket.connected) {
-            console.log(`[AGENT-REMOTE-CLIENT] benchmarkStart(${benchmarkSignature})`);
-            this.socket.emit(BEST_RPC.BENCHMARK_START, benchmarkSignature);
-            this.emit(BEST_RPC.BENCHMARK_START, benchmarkSignature);
+    interruptRunner() {
+        if (this.isBusy() && this.runner) {
+            this.runner.interruptRunner();
         }
-    }
-
-    onBenchmarkEnd(benchmarkSignature: string) {
-        console.log(`[AGENT-REMOTE-CLIENT] benchmarkEnd(${benchmarkSignature})`);
-        if (this.socket.connected) {
-            this.socket.emit(BEST_RPC.BENCHMARK_END, benchmarkSignature);
-            this.emit(BEST_RPC.BENCHMARK_END, benchmarkSignature);
-        }
-    }
-
-    onBenchmarkError(benchmarkSignature: string) {
-        if (this.socket.connected) {
-            this.socket.emit(BEST_RPC.BENCHMARK_ERROR, benchmarkSignature);
-            this.emit(BEST_RPC.BENCHMARK_ERROR, benchmarkSignature);
-        }
-    }
-
-    updateBenchmarkProgress(benchmarkSignature: string, state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) {
-        if (!this.debounce && this.socket.connected) {
-            this.debounce = setTimeout(() => {
-                this.debounce = undefined;
-                if (this.socket.connected) {
-                    console.log(`[AGENT-REMOTE-CLIENT] benchmarkProgress(${benchmarkSignature}) | iterations: ${state.executedIterations}`);
-                    this.socket.emit(BEST_RPC.BENCHMARK_UPDATE, benchmarkSignature, state, opts);
-                    this.emit(BEST_RPC.BENCHMARK_UPDATE, benchmarkSignature, state, opts);
-                }
-            }, 300);
-        }
-    }
-
-    log(message: string) {
-        if (this.socket.connected) {
-            this.socket.emit(BEST_RPC.BENCHMARK_LOG, message);
-        }
-    }
-
-    // -- Imperative methods ------------------------------------------------------------
-    _deleteme() {
-        console.log(this._requestJobError, this._requestJobSuccess, this.specs);
     }
 
     isBusy() {
