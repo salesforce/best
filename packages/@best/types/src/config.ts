@@ -6,6 +6,7 @@
 */
 
 import { BenchmarkMetricNames } from './benchmark';
+import { EventEmitter } from 'events';
 
 export interface GitConfig {
     lastCommit: { hash: string, date: string }
@@ -239,4 +240,28 @@ export interface EnvironmentConfig {
             gitRepository: { owner: string, repo: string };
         }
     }
+}
+
+export interface BestAgentState {
+    connectedClients: {
+        clientId: string;
+        specs?: BrowserSpec;
+        jobs: number;
+        state: string;
+    }[],
+    connectedAgents: {
+        agentId: string;
+        state: string;
+        specs: BrowserSpec[];
+        uri: string;
+    }[],
+
+    activeClients: {
+        clientId: string;
+        agentId: string;
+    }[]
+}
+
+export interface BestAgent extends EventEmitter {
+    getState(): BestAgentState;
 }

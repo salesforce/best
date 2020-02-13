@@ -27,8 +27,8 @@ function forwardEvent(eventType: string, ...args: any[]) {
     }
 }
 
-const { AGENT_CONNECTED_CLIENT,AGENT_DISCONNECTED_CLIENT, BENCHMARK_START, BENCHMARK_END } = BEST_RPC;
-const FORWARD_EVENTS = [AGENT_CONNECTED_CLIENT, AGENT_DISCONNECTED_CLIENT, BENCHMARK_START, BENCHMARK_END];
+const { HUB_CONNECTED_AGENT, HUB_DISCONNECTED_AGENT,AGENT_QUEUED_CLIENT, AGENT_CONNECTED_CLIENT, AGENT_DISCONNECTED_CLIENT, BENCHMARK_START, BENCHMARK_UPDATE, BENCHMARK_END } = BEST_RPC;
+const FORWARD_EVENTS = [HUB_CONNECTED_AGENT, AGENT_QUEUED_CLIENT, HUB_DISCONNECTED_AGENT, AGENT_CONNECTED_CLIENT, AGENT_DISCONNECTED_CLIENT, BENCHMARK_START, BENCHMARK_UPDATE, BENCHMARK_END];
 
 export function observeAgent(server: Server, agent: BestAgent) {
     // Instanciate a new socketServer on a dedicated path
@@ -39,8 +39,9 @@ export function observeAgent(server: Server, agent: BestAgent) {
 
     // Manage connections
     socketServer.on('connect', (socket: SocketIO.Socket) => {
-        FrontendSockets.add(socket);
         console.log(`[AGENT_FE] Adding Frontend socket ${socket.id} | active: ${FrontendSockets.size}`);
+        socket.emit(BEST_RPC.AGENT_STATE, agent.getState());
+        FrontendSockets.add(socket);
         socket.on('disconnect', () => {
             FrontendSockets.delete(socket);
             console.log(`[AGENT_FE] Disconnecting Frontend socket ${socket.id} | remaining: ${FrontendSockets.size}`);

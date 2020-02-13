@@ -11,13 +11,16 @@ export const BEST_RPC = {
     CONNECT_ERROR: 'connect_error',
     ERROR: 'error',
     RECONNECT_FAILED: 'reconnect_failed',
+    RECONNECTING: 'reconnecting',
 
-    AGENT_STATUS: 'agent_status',
+    AGENT_STATE: 'agent_state',
     AGENT_REJECTION: 'agent_rejection',
     AGENT_CONNECTED_CLIENT: 'agent_connected_client',
     AGENT_DISCONNECTED_CLIENT: 'agent_disconnected_client',
-    AGENT_DISCONNECTED_FROM_HUB: 'agent_disconnected_from_hub',
+    AGENT_RUNNING_CLIENT: 'agent_running_client',
     AGENT_QUEUED_CLIENT: 'agent_queued_client',
+    AGENT_CONNECTED_HUB: 'agent_connected_hub',
+    AGENT_DISCONNECTED_HUB: 'agent_disconnected_hub',
 
     HUB_CONNECTED_AGENT: 'hub_connected_agent',
     HUB_DISCONNECTED_AGENT: 'hub_disconnected_agent',

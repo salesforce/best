@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import { Server } from "http";
-import { HubConfig, RemoteClientConfig, BrowserSpec } from "@best/types";
+import { HubConfig, RemoteClientConfig, BrowserSpec, BenchmarkResultsState, BenchmarkRuntimeConfig, BestAgentState } from "@best/types";
 import { normalizeClientConfig , normalizeSpecs } from '@best/utils';
 import socketIO, { Server as SocketIoServer, Socket } from "socket.io";
 import { BEST_RPC } from "@best/shared";
@@ -60,9 +60,10 @@ export class Hub extends EventEmitter {
 
         // Make sure we remove it from an agent's perspective if the client is disconnected
         remoteClient.on(BEST_RPC.DISCONNECT, () => {
-            console.log(`[AGENT] Disconnected client ${remoteClient.getId()}`);
+            console.log(`[HUB] Disconnected client ${remoteClient.getId()}`);
             this.emit(BEST_RPC.AGENT_DISCONNECTED_CLIENT, remoteClient.getId());
             this.connectedClients.delete(remoteClient);
+            console.log(`[HUB] Connected clients: ${this.connectedClients.size}`);
 
             // If the client is actively running something we need to kill it
             if (this.activeClients.has(remoteClient)) {
@@ -75,11 +76,27 @@ export class Hub extends EventEmitter {
             }
         });
 
+        remoteClient.on(BEST_RPC.BENCHMARK_START, (benchmarkId: string) => {
+            const agent = this.activeClients.get(remoteClient);
+            this.emit(BEST_RPC.BENCHMARK_START, { agentId: agent && agent.getId(), clientId: remoteClient.getId(), benchmarkId });
+        });
+
+        remoteClient.on(BEST_RPC.BENCHMARK_END, (benchmarkId: string) => {
+            const agent = this.activeClients.get(remoteClient);
+            this.emit(BEST_RPC.BENCHMARK_END, { agentId: agent && agent.getId(), clientId: remoteClient.getId(), benchmarkId });
+        });
+
+        remoteClient.on(BEST_RPC.BENCHMARK_UPDATE, (benchmarkId: string, state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) => {
+            const agent = this.activeClients.get(remoteClient);
+            this.emit(BEST_RPC.BENCHMARK_UPDATE, { agentId: agent && agent.getId(), clientId: remoteClient.getId(), benchmarkId, state, opts });
+        });
+
         // If we are done with the job, make sure after a short time the client gets removed
         remoteClient.on(BEST_RPC.REMOTE_CLIENT_EMPTY_QUEUE, () => {
+            console.log(`[HUB] Remote client ${remoteClient.getId()} is done. Scheduling a force disconnect.`);
             setTimeout(() => {
                 if (this.connectedClients.has(remoteClient)) {
-                    console.log(`[AGENT] Force client disconnect (${remoteClient.getId()}): With no more jobs to run an agent must disconnect`);
+                    console.log(`[HUB] Force client disconnect (${remoteClient.getId()}): With no more jobs to run an agent must disconnect`);
                     remoteClient.disconnectClient(`Forced disconnect: With no more jobs client should have disconnected`);
                 }
             }, 10000);
@@ -130,7 +147,7 @@ export class Hub extends EventEmitter {
         // Make sure we remove it from an agent's perspective if the client is disconnected
         remoteAgent.on(BEST_RPC.DISCONNECT, () => {
             console.log(`[HUB] Disconnected Agent ${remoteAgent.getId()}`);
-            this.emit(BEST_RPC.HUB_DISCONNECTED_AGENT, remoteAgent.getId());
+            this.emit(BEST_RPC.HUB_DISCONNECTED_AGENT, { agentId: remoteAgent.getId(), specs: remoteAgent.getSpecs() });
             this.connectedAgents.delete(remoteAgent);
 
             if (remoteAgent.isBusy()) {
@@ -142,6 +159,8 @@ export class Hub extends EventEmitter {
         return remoteAgent;
     }
 
+    // -- Private methods ---------------------------------------------------------------
+
     async runBenchmarks(remoteClient: RemoteClient) {
         // New agent setup
         if (!this.activeClients.has(remoteClient)) {
@@ -149,6 +168,7 @@ export class Hub extends EventEmitter {
             if (matchingAgents.length > 0) {
                 const remoteAgent = matchingAgents[0];
                 this.activeClients.set(remoteClient, remoteAgent);
+                this.emit(BEST_RPC.AGENT_RUNNING_CLIENT, { clientId: remoteClient.getId(), agentId: remoteAgent.getId(), jobs: remoteClient.getPendingBenchmarks() });
                 try {
                     await remoteAgent.runBenchmarks(remoteClient);
                 } catch(err) {
@@ -169,8 +189,8 @@ export class Hub extends EventEmitter {
     runQueuedBenchmarks() {
         Array.from(this.connectedClients).forEach((remoteClient) => {
             if (!this.activeClients.has(remoteClient)) {
-                if (this.idleAgentMatchingSpecs(remoteClient)) {
-                    console.log(`[HUB] Client "${remoteClient.getId()}" has ${remoteClient.getPendingBenchmarks()} to run`);
+                if (this.idleAgentMatchingSpecs(remoteClient) && remoteClient.getPendingBenchmarks() > 0) {
+                    console.log(`[HUB] Running benchmark: "${remoteClient.getId()}" has ${remoteClient.getPendingBenchmarks()} to run`);
                     this.runBenchmarks(remoteClient);
                 } else {
                     console.log(`[HUB] All matching agents still busy for ${remoteClient.getId()}`);
@@ -205,5 +225,17 @@ export class Hub extends EventEmitter {
         }
 
         return agents;
+    }
+
+    // -- Public API ---------------------------------------------------------------
+    getState(): BestAgentState {
+        const connectedClients = Array.from(this.connectedClients).map((client) => client.getState());
+        const connectedAgents = Array.from(this.connectedAgents).map(agent => agent.getState());
+        const activeClients = Array.from(this.activeClients).map(([rc, ra])  => ({ clientId: rc.getId(), agentId: ra.getId() }));
+        return {
+            connectedClients,
+            connectedAgents,
+            activeClients
+        };
     }
 }

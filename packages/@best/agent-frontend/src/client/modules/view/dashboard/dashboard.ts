@@ -17,10 +17,27 @@ export default class ViewDashboard extends LightningElement {
     connectedCallback() {
         const socket = connect(host, socketConfig);
 
+        socket.on(BEST_RPC.AGENT_STATE, this.onAgentState.bind(this));
+        socket.on(BEST_RPC.HUB_CONNECTED_AGENT, this.onConnectedAgent.bind(this));
+        socket.on(BEST_RPC.HUB_DISCONNECTED_AGENT, this.onDisconnectedAgent.bind(this));
         socket.on(BEST_RPC.AGENT_CONNECTED_CLIENT, this.onConnectedClient.bind(this));
         socket.on(BEST_RPC.AGENT_DISCONNECTED_CLIENT, this.onDisconnectedClient.bind(this));
+        socket.on(BEST_RPC.AGENT_QUEUED_CLIENT, this.onQueuedClient.bind(this));
         socket.on(BEST_RPC.BENCHMARK_START, this.onBenchmarkStart.bind(this));
+        socket.on(BEST_RPC.BENCHMARK_UPDATE, this.onBenchmarkUpdate.bind(this));
         socket.on(BEST_RPC.BENCHMARK_END, this.onBenchmarkEnd.bind(this));
+    }
+
+    onAgentState(...args: any) {
+        console.log(BEST_RPC.AGENT_STATE, args);
+    }
+
+    onConnectedAgent(...args: any) {
+        console.log(BEST_RPC.HUB_CONNECTED_AGENT, args);
+    }
+
+    onDisconnectedAgent(...args: any) {
+        console.log(BEST_RPC.HUB_DISCONNECTED_AGENT, args);
     }
 
     onConnectedClient(clientSpecs: any) {
@@ -31,13 +48,20 @@ export default class ViewDashboard extends LightningElement {
         const pos = this.clients.findIndex((c: any) => c.id === clientId);
         this.clients.splice(pos, 1);
     }
+    onQueuedClient(...args: any) {
+        console.log(BEST_RPC.AGENT_QUEUED_CLIENT, args);
+    }
 
-    onBenchmarkStart(args: any) {
+    onBenchmarkStart(...args: any) {
         console.log(BEST_RPC.BENCHMARK_START, args);
     }
 
-    onBenchmarkEnd(args: any) {
+    onBenchmarkEnd(...args: any) {
         console.log(BEST_RPC.BENCHMARK_END, args);
+    }
+
+    onBenchmarkUpdate(...args: any) {
+        console.log(BEST_RPC.BENCHMARK_UPDATE, args);
     }
 
     // GETTERS

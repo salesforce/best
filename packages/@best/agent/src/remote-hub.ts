@@ -3,8 +3,8 @@ import { EventEmitter } from "events";
 import { RemoteHubConfig, BrowserSpec } from "@best/types";
 import socketIOClient from 'socket.io-client';
 
-const { CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, AGENT_REJECTION } = BEST_RPC;
-const RPC_METHODS = [ CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, AGENT_REJECTION];
+const { CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECTING, RECONNECT_FAILED, AGENT_REJECTION } = BEST_RPC;
+const RPC_METHODS = [ CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECTING, RECONNECT_FAILED, AGENT_REJECTION];
 
 const DEFAULT_SOCKET_CONFIG = {
     path: '/agents',
@@ -39,17 +39,19 @@ export default class RemoteHub extends EventEmitter {
     [CONNECT]() {
         console.log(`${this.getId()} - socket:connect`);
         this.connected = true;
+        this.emit(BEST_RPC.AGENT_CONNECTED_HUB, this.hubUri);
     }
 
     [DISCONNECT](reason: string) {
         console.log(`${this.getId()} - socket:disconnect`, reason);
-        // if (this.connected) {
-        //     this.disconnectFromHub();
-        // }
+        this.emit(BEST_RPC.AGENT_DISCONNECTED_HUB);
+    }
+    [RECONNECTING]() {
+        console.log(`${this.getId()} - socket:reconnecting`);
     }
 
-    [CONNECT_ERROR](reason: string) {
-        console.log(`${this.getId()} - socket:connect_error`, typeof reason);
+    [CONNECT_ERROR](reason: any) {
+        console.log(`${this.getId()} - socket:connect_error`, reason.message || reason);
     }
 
     [ERROR](reason: string) {
@@ -72,7 +74,7 @@ export default class RemoteHub extends EventEmitter {
     disconnectFromHub(reason?: string) {
         if (this.connected) {
             this.connected = false;
-            this.hubSocket.emit(BEST_RPC.AGENT_DISCONNECTED_FROM_HUB, reason);
+            this.hubSocket.emit(BEST_RPC.AGENT_DISCONNECTED_HUB, reason);
             this.hubSocket.disconnect();
             this.emit(BEST_RPC.DISCONNECT, reason);
         }

@@ -3,7 +3,6 @@ import { BrowserSpec, AgentConfig } from "@best/types";
 import { matchSpecs } from "@best/utils";
 
 function validateToken(token?: string, requiredToken?: string) {
-    console.log(!!requiredToken);
     return requiredToken ? requiredToken === token : true;
 }
 
@@ -16,7 +15,6 @@ function validateJobs(jobs: number) {
 }
 
 export function validateConfig(config: RemoteClientConfig, agentConfig: AgentConfig, runnerSpecs: BrowserSpec[], socketId: string): string | undefined {
-    console.log(config, agentConfig)
     if (!validateToken(config.token, agentConfig.authToken)) {
         console.log(`[AGENT] Rejecting client (${socketId}): Token missmatch`);
         return `Unable to match token`;

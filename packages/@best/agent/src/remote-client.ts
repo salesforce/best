@@ -8,9 +8,9 @@ import { RemoteClientConfig } from "@best/types";
 import SocketIOFile from "socket.io-file";
 
 enum RemoteClientState {
-    IDLE,
-    REQUESTING_JOB_INFO,
-    REQUESTING_JOB_PAYLOAD
+    IDLE = 'IDLE',
+    REQUESTING_JOB_INFO = 'REQUESTING_JOB_INFO',
+    REQUESTING_JOB_PAYLOAD = 'REQUESTING_JOB_PAYLOAD'
 }
 
 const { DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, BENCHMARK_UPLOAD_RESPONSE } = BEST_RPC;
@@ -201,6 +201,7 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
 
     sendResults(results: any) {
         this.pendingResultsToSend -= 1;
+        console.log(`[AGENT_REMOTE_CLIENT] Sending Results | pending: ${this.pendingResultsToSend}`);
         this.socket.emit(BEST_RPC.BENCHMARK_RESULTS, results);
         if (this.pendingBenchmarksToUpload === 0 && this.pendingResultsToSend === 0) {
             this.emit(BEST_RPC.REMOTE_CLIENT_EMPTY_QUEUE);
@@ -220,15 +221,24 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
     }
 
     toString() {
-        return `[ARC-${this.socket.id}]`;
+        return this.getId();
     }
 
     getId() {
-        return this.toString();
+        return `REMOTE_CLIENT_${this.socket.id}`;
     }
 
     getStatusInfo() {
         return `remining jobs: ${this.pendingBenchmarksToUpload} | specs: ${this.specs} | state: ${this.state}`;
+    }
+
+    getState() {
+        return {
+            clientId: this.toString(),
+            specs: this.specs,
+            jobs: this.getPendingBenchmarks(),
+            state: this.isIdle() ? 'IDLE' : 'BUSY'
+        };
     }
 
     getSpecs() {

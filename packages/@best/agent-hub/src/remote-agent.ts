@@ -58,7 +58,7 @@ export default class RemoteAgent extends EventEmitter {
     // -- Specific Best RPC Commands ------------------------------------------------------------
 
     async runBenchmarks(remoteClient: RemoteClient, jobsToRun: number = remoteClient.getPendingBenchmarks()) {
-        if (this.isIdle()) {
+        if (this.isIdle() && remoteClient.getPendingBenchmarks() > 0) {
             this.state = RemoteAgentState.BUSY;
             const iterator = Array.from(Array(jobsToRun), (x, index) => index + 1);
             const runnerConfig = { uri: this.uri, specs: remoteClient.getSpecs(), jobs: 1 };
@@ -115,6 +115,15 @@ export default class RemoteAgent extends EventEmitter {
 
     toString() {
         return `[REMOTE_AGENT_${this.getId()}]`;
+    }
+
+    getState() {
+        return {
+            agentId: this.getId(),
+            state: this.isIdle() ? 'IDLE': 'BUSY',
+            specs: this.specs,
+            uri: this.uri
+        };
     }
 
 }

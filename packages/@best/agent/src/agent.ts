@@ -7,7 +7,7 @@
 
 import socketIO, { Server as SocketIoServer, Socket } from "socket.io";
 import { Server } from "http";
-import { BrowserSpec, Interruption, RemoteHubConfig, AgentConfig, RemoteClientConfig } from "@best/types";
+import { BrowserSpec, Interruption, RemoteHubConfig, AgentConfig, RemoteClientConfig, BenchmarkResultsState, BenchmarkRuntimeConfig, BestAgentState } from "@best/types";
 import { BEST_RPC } from "@best/shared";
 import { runBenchmarks, validateRunner, getBrowserSpecs } from '@best/runner';
 import { normalizeClientConfig } from '@best/utils';
@@ -32,7 +32,6 @@ export class Agent extends EventEmitter {
     private agentConfig: AgentConfig;
     private remoteHubConfig: RemoteHubConfig;
     private connectedClients = new Set<RemoteClient>();
-    private remoteHub? : RemoteHub;
     private activeClient?: RemoteClient;
     private interruption?: Interruption;
 
@@ -51,8 +50,8 @@ export class Agent extends EventEmitter {
 
         if (this.remoteHubConfig.uri) {
             this.once('ready', () => {
-                this.remoteHub = new RemoteHub(this.remoteHubConfig, this.uri, this.specs);
-                this.remoteHub.connectToHub();
+                const remoteHub = this.setupNewHub(this.remoteHubConfig, this.uri, this.specs);
+                remoteHub.connectToHub();
             });
         }
     }
@@ -146,6 +145,13 @@ export class Agent extends EventEmitter {
         `;
     }
 
+    setupNewHub(remoteHubConfig: RemoteHubConfig, uri: string, specs: BrowserSpec[]): RemoteHub {
+        const remoteHub = new RemoteHub(remoteHubConfig, uri, specs);
+        remoteHub.on(BEST_RPC.AGENT_CONNECTED_HUB, (hubUri) => this.emit(BEST_RPC.AGENT_CONNECTED_HUB, hubUri));
+        remoteHub.on(BEST_RPC.AGENT_DISCONNECTED_HUB, (hubUri) => this.emit(BEST_RPC.AGENT_DISCONNECTED_HUB, hubUri));
+        return remoteHub;
+    }
+
     setupNewClient(socketClient: Socket, clientConfig: RemoteClientConfig): RemoteClient {
 
         // Create and new RemoteClient and add it to the pool
@@ -179,6 +185,10 @@ export class Agent extends EventEmitter {
             this.emit(BEST_RPC.BENCHMARK_END, { agentId: this.id, clientId: remoteClient.getId(), benchmarkId });
         });
 
+        remoteClient.on(BEST_RPC.BENCHMARK_UPDATE, (benchmarkId: string, state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) => {
+            this.emit(BEST_RPC.BENCHMARK_UPDATE, { agentId: this.id, clientId: remoteClient.getId(), benchmarkId, state, opts });
+        });
+
         // If we are done with the job, make sure after a short time the client gets removed
         remoteClient.on(BEST_RPC.REMOTE_CLIENT_EMPTY_QUEUE, () => {
             setTimeout(() => {
@@ -192,6 +202,22 @@ export class Agent extends EventEmitter {
 
         return remoteClient;
     }
+
+    getState(): BestAgentState {
+        const connectedClients = Array.from(this.connectedClients).map((client) => client.getState());
+        const activeClients = this.activeClient ? [{ agentId: this.id, clientId: this.activeClient.getId() }] : [];
+        return {
+            connectedClients,
+            connectedAgents: [{
+                agentId: this.id,
+                state: this.idleState ? 'IDLE': 'BUSY',
+                specs: this.specs,
+                uri: this.uri
+            }],
+            activeClients
+        };
+    }
+
 }
 
 export { RemoteClient };
