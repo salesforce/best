@@ -1,19 +1,13 @@
 <template>
-    <div class="job">
-        <span class={statusClass}>{job.status}</span>
+    <div class="card card-shadow job">
+        <h2>BenchmarkId:<span>{benchmarkId}</span></h2>
+        <p>AgentId: <span>{agentId}</span></p>
+        <p>ClientId: <span>{clientId}</span></p>
         <main>
-            <div class="info">
-                <h2 class="name">{job.name}</h2>
-            </div>
             <div class="stats">
                 <template if:true={isRunning}>
-                    <progress value={job.progressValue} max="100"></progress>
-                    <template if:true={hasEstimate}>
-                        <span class="estimate">{estimatedText}</span>
-                    </template>
-                </template>
-                <template if:true={isCompleted}>
-                    <p>{statsText}</p>
+                    <p>Running: <span class="runtime">{progress.runtime}</span> | Estimated: {progress.estimated}</p>
+                    <p><progress value={progress.percentage} max="100"></progress> <span class="percentage">{progress.percentage}%</span></p>
                 </template>
             </div>
         </main>

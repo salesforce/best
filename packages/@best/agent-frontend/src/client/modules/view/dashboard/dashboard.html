@@ -2,37 +2,35 @@
     <header class="header">
         <div class="content-wrapper">
             <ul class="menu">
-                <li><a href="#clients">Connected Clients: <span>{connectedClients}</span> </a></li>
-                <li><a href="#Pending">Pending Jobs: <span>{pendingJobs}</span></a></li>
+                <li><a href="#agents">Clients: <span>{connectedClients}</span></a></li>
+                <li><a href="#agents">Agents: <span>{connectedAgents}</span></a></li>
             </ul>
         </div>
     </header>
 
     <div class="container">
-        <template if:true={hasHubStats}>
-            <div class="stats">
-                <span class="label">Active Clients:</span>
-                <span class="value">{hubStats.runningClientCount}</span>
-                <span class="label">Pending Clients:</span>
-                <span class="value">{hubStats.pendingClientCount}</span>
-                <span class="label">Queued Jobs:</span>
-                <span class="value">{hubStats.pendingJobCount}</span>
-            </div>
+        <template for:each={normalizedAgents} for:item="agent">
+            <component-agent key={agent.agentId} agent-id={agent.agentId} uri={agent.uri} specs={agent.specs} state={agent.state}></component-agent>
         </template>
-        <template if:true={hasAgentStats}>
-            <div class="stats">
-                <span class="label">Active Agents:</span>
-                <span class="value">{agentStats.active}</span>
-                <span class="label">Idle Agents:</span>
-                <span class="value">{agentStats.idle}</span>
-                <span class="label">Offline Agents:</span>
-                <span class="value">{agentStats.offline}</span>
-                <span class="label">Total:</span>
-                <span class="value">{agentStats.agents}</span>
-            </div>
+
+        <template for:each={normalizedClients} for:item="client">
+            <component-client key={client.clientId} client-id={client.clientId}  specs={client.specs} state={client.state}></component-client>
         </template>
-        <template for:each={agents} for:item="agent">
-            <component-agent key={agent.agentId} name={agent.agentId} jobs={agent.jobs}></component-agent>
+
+        <template if:true={hasJobs}>
+            <template for:each={jobs} for:item="job">
+                <component-job
+                    key={job.benchmarkId}
+                    benchmark-id={job.benchmarkId}
+                    client-id={job.clientId}
+                    agent-id={job.agentId}
+                    executed-time={job.executedTime}
+                    executed-iterations={job.executedIterations}
+                    iterations={job.iterations}
+                    max-duration={job.maxDuration}
+                    min-sample-count={job.minSampleCount}>
+                </component-job>
+            </template>
         </template>
 
         <template if:false={hasJobs}>
@@ -41,11 +39,5 @@
             </div>
         </template>
     </div>
-    <footer>
-        <ul class="specs">
-            <template for:each={agentSpecs} for:item="spec">
-                <li key={spec.name}><span class="name">{spec.name}</span><span class="version">{spec.version}</span></li>
-            </template>
-        </ul>
-    </footer>
+
 </template>

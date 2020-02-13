@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import { Server } from "http";
-import { HubConfig, RemoteClientConfig, BrowserSpec, BenchmarkResultsState, BenchmarkRuntimeConfig, BestAgentState } from "@best/types";
+import { HubConfig, RemoteClientConfig, BrowserSpec, BenchmarkRuntimeConfig, BestAgentState, BenchmarkUpdateState } from "@best/types";
 import { normalizeClientConfig , normalizeSpecs } from '@best/utils';
 import socketIO, { Server as SocketIoServer, Socket } from "socket.io";
 import { BEST_RPC } from "@best/shared";
@@ -56,7 +56,7 @@ export class Hub extends EventEmitter {
         this.connectedClients.add(remoteClient);
 
         console.log(`[HUB] New client ${remoteClient.getId()} connected. Jobs requested ${clientConfig.jobs} | specs: ${JSON.stringify(clientConfig.specs)}`);
-        this.emit(BEST_RPC.AGENT_CONNECTED_CLIENT, { clientId: remoteClient.getId(), jobs: clientConfig.jobs });
+        this.emit(BEST_RPC.AGENT_CONNECTED_CLIENT, { clientId: remoteClient.getId(), jobs: clientConfig.jobs, specs: remoteClient.getSpecs() });
 
         // Make sure we remove it from an agent's perspective if the client is disconnected
         remoteClient.on(BEST_RPC.DISCONNECT, () => {
@@ -86,7 +86,7 @@ export class Hub extends EventEmitter {
             this.emit(BEST_RPC.BENCHMARK_END, { agentId: agent && agent.getId(), clientId: remoteClient.getId(), benchmarkId });
         });
 
-        remoteClient.on(BEST_RPC.BENCHMARK_UPDATE, (benchmarkId: string, state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) => {
+        remoteClient.on(BEST_RPC.BENCHMARK_UPDATE, (benchmarkId: string, state: BenchmarkUpdateState, opts: BenchmarkRuntimeConfig) => {
             const agent = this.activeClients.get(remoteClient);
             this.emit(BEST_RPC.BENCHMARK_UPDATE, { agentId: agent && agent.getId(), clientId: remoteClient.getId(), benchmarkId, state, opts });
         });
@@ -142,12 +142,12 @@ export class Hub extends EventEmitter {
         this.connectedAgents.add(remoteAgent);
 
         console.log(`[HUB] New Agent ${remoteAgent.getId()} connected with specs: ${JSON.stringify(remoteAgent.getSpecs())}`);
-        this.emit(BEST_RPC.HUB_CONNECTED_AGENT, { agentId: remoteAgent.getId(), specs: remoteAgent.getSpecs() });
+        this.emit(BEST_RPC.HUB_CONNECTED_AGENT, { agentId: remoteAgent.getId(), specs: remoteAgent.getSpecs(), uri: remoteAgent.getUri()});
 
         // Make sure we remove it from an agent's perspective if the client is disconnected
         remoteAgent.on(BEST_RPC.DISCONNECT, () => {
             console.log(`[HUB] Disconnected Agent ${remoteAgent.getId()}`);
-            this.emit(BEST_RPC.HUB_DISCONNECTED_AGENT, { agentId: remoteAgent.getId(), specs: remoteAgent.getSpecs() });
+            this.emit(BEST_RPC.HUB_DISCONNECTED_AGENT, { agentId: remoteAgent.getId() });
             this.connectedAgents.delete(remoteAgent);
 
             if (remoteAgent.isBusy()) {

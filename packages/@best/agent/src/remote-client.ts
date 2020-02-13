@@ -2,7 +2,7 @@ import { BEST_RPC } from "@best/shared";
 import { EventEmitter } from "events";
 import { Socket } from "socket.io";
 import { getUploaderInstance, extractBenchmarkTarFile } from "./utils/benchmark-loader";
-import { BrowserSpec, BuildConfig, RunnerStream, BenchmarkResultsState, BenchmarkRuntimeConfig } from "@best/types";
+import { BrowserSpec, BuildConfig, RunnerStream, BenchmarkRuntimeConfig, BenchmarkUpdateState } from "@best/types";
 import path from "path";
 import { RemoteClientConfig } from "@best/types";
 import SocketIOFile from "socket.io-file";
@@ -145,6 +145,8 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
         if (this.socket.connected) {
             this.socket.emit(BEST_RPC.BENCHMARK_END, benchmarkSignature);
             this.emit(BEST_RPC.BENCHMARK_END, benchmarkSignature);
+            clearTimeout(this.debounce);
+            this.debounce = undefined;
         }
     }
 
@@ -155,7 +157,7 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
         }
     }
 
-    updateBenchmarkProgress(benchmarkSignature: string, state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) {
+    updateBenchmarkProgress(benchmarkSignature: string, state: BenchmarkUpdateState, opts: BenchmarkRuntimeConfig) {
         if (!this.debounce && this.socket.connected) {
             this.debounce = setTimeout(() => {
                 this.debounce = undefined;
@@ -164,7 +166,7 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
                     this.socket.emit(BEST_RPC.BENCHMARK_UPDATE, benchmarkSignature, state, opts);
                     this.emit(BEST_RPC.BENCHMARK_UPDATE, benchmarkSignature, state, opts);
                 }
-            }, 300);
+            }, 1000);
         }
     }
 

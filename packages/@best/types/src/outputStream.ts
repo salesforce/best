@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
-import { BenchmarkResultsState, BenchmarkRuntimeConfig } from "./benchmark";
+import { BenchmarkRuntimeConfig, BenchmarkUpdateState } from "./benchmark";
 
 export interface RunnerStream {
     init: () => void,
@@ -13,6 +13,6 @@ export interface RunnerStream {
     onBenchmarkStart: (benchmarkPath: string) => void,
     onBenchmarkEnd: (benchmarkPath: string) => void,
     onBenchmarkError: (benchmarkPath: string) => void,
-    updateBenchmarkProgress: (benchmarkPath: string, state: BenchmarkResultsState, runtimeOpts: BenchmarkRuntimeConfig) => void,
+    updateBenchmarkProgress: (benchmarkPath: string, state: BenchmarkUpdateState, runtimeOpts: BenchmarkRuntimeConfig) => void,
     log: (message: string) => void;
 }

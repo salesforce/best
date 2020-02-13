@@ -7,7 +7,7 @@
 
 import socketIO, { Server as SocketIoServer, Socket } from "socket.io";
 import { Server } from "http";
-import { BrowserSpec, Interruption, RemoteHubConfig, AgentConfig, RemoteClientConfig, BenchmarkResultsState, BenchmarkRuntimeConfig, BestAgentState } from "@best/types";
+import { BrowserSpec, Interruption, RemoteHubConfig, AgentConfig, RemoteClientConfig, BenchmarkRuntimeConfig, BestAgentState, BenchmarkUpdateState } from "@best/types";
 import { BEST_RPC } from "@best/shared";
 import { runBenchmarks, validateRunner, getBrowserSpecs } from '@best/runner';
 import { normalizeClientConfig } from '@best/utils';
@@ -185,7 +185,7 @@ export class Agent extends EventEmitter {
             this.emit(BEST_RPC.BENCHMARK_END, { agentId: this.id, clientId: remoteClient.getId(), benchmarkId });
         });
 
-        remoteClient.on(BEST_RPC.BENCHMARK_UPDATE, (benchmarkId: string, state: BenchmarkResultsState, opts: BenchmarkRuntimeConfig) => {
+        remoteClient.on(BEST_RPC.BENCHMARK_UPDATE, (benchmarkId: string, state: BenchmarkUpdateState, opts: BenchmarkRuntimeConfig) => {
             this.emit(BEST_RPC.BENCHMARK_UPDATE, { agentId: this.id, clientId: remoteClient.getId(), benchmarkId, state, opts });
         });
 

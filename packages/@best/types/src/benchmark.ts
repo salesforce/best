@@ -63,3 +63,8 @@ export interface BenchmarkResultsState {
     executedIterations: number,
     results: BenchmarkResultNode[];
 }
+
+export interface BenchmarkUpdateState {
+    executedTime: number;
+    executedIterations: number;
+}

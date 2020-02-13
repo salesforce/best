@@ -66,7 +66,8 @@ export default class Runner extends AbstractRunner {
             const executing = Date.now() - start;
             state.executedTime = executing;
             state.executedIterations = Math.round(executing / estimatedIterationTime);
-            runnerLogStream.updateBenchmarkProgress(benchmarkSignature, state, runtimeOptions);
+            const updatedState = { executedIterations: state.executedIterations, executedTime: state.executedTime };
+            runnerLogStream.updateBenchmarkProgress(benchmarkSignature, updatedState, runtimeOptions);
         }, UPDATE_INTERVAL);
 
         await browser.reloadPage();
@@ -92,7 +93,8 @@ export default class Runner extends AbstractRunner {
             if (root) {
                 state.results.push(root);
             }
-            runnnerLogStream.updateBenchmarkProgress(benchmarkSignature, state, runtimeOptions);
+            const updatedState = { executedIterations: state.executedIterations, executedTime: state.executedTime };
+            runnnerLogStream.updateBenchmarkProgress(benchmarkSignature, updatedState, runtimeOptions);
             return this.runIterations(benchmarkSignature, browser, state, runtimeOptions, runnnerLogStream, interruption);
         }
 

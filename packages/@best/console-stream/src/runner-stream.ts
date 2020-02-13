@@ -12,10 +12,10 @@ import trimPath from "./utils/trim-path";
 import countEOL from "./utils/count-eod";
 import { ProxiedStream, proxyStream } from "./utils/proxy-stream";
 import {
-    BenchmarkResultsState,
     BenchmarkRuntimeConfig,
     RunnerStream,
     BenchmarksBundle,
+    BenchmarkUpdateState,
 } from "@best/types";
 
 enum State {
@@ -61,7 +61,7 @@ function printProjectName(projectName: string) {
     return ' ' + chalk.reset.cyan.dim(`(${projectName})`);
 }
 
-function calculateBenchmarkProgress(progress: BenchmarkResultsState, { iterations, maxDuration, minSampleCount }: BenchmarkRuntimeConfig): BenchmarkProgress {
+function calculateBenchmarkProgress(progress: BenchmarkUpdateState, { iterations, maxDuration, minSampleCount }: BenchmarkRuntimeConfig): BenchmarkProgress {
     const { executedIterations, executedTime } = progress;
     const avgIteration = executedTime / executedIterations;
     const runtime = parseInt((executedTime / 1000) + '', 10);
@@ -268,7 +268,7 @@ export default class RunnerOutputStream implements RunnerStream {
         this.updateRunnerState(benchmarkSignature, State.ERROR);
     }
 
-    updateBenchmarkProgress(benchmarkSignature: string, updatedBenchmarkState: BenchmarkResultsState, runtimeOpts: BenchmarkRuntimeConfig) {
+    updateBenchmarkProgress(benchmarkSignature: string, updatedBenchmarkState: BenchmarkUpdateState, runtimeOpts: BenchmarkRuntimeConfig) {
         const progress = calculateBenchmarkProgress(updatedBenchmarkState, runtimeOpts);
         const benchmarkState = this._state.get(benchmarkSignature);
         benchmarkState!.progress = progress;
