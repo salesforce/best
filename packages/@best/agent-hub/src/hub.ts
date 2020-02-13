@@ -167,8 +167,15 @@ export class Hub extends EventEmitter {
     }
 
     runQueuedBenchmarks() {
-        // WIP!!
         Array.from(this.connectedClients).forEach((remoteClient) => {
+            if (!this.activeClients.has(remoteClient)) {
+                if (this.idleAgentMatchingSpecs(remoteClient)) {
+                    console.log(`[HUB] Client "${remoteClient.getId()}" has ${remoteClient.getPendingBenchmarks()} to run`);
+                    this.runBenchmarks(remoteClient);
+                } else {
+                    console.log(`[HUB] All matching agents still busy for ${remoteClient.getId()}`);
+                }
+            }
         });
     }
 

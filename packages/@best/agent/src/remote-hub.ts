@@ -14,7 +14,8 @@ const DEFAULT_SOCKET_CONFIG = {
 
 export default class RemoteHub extends EventEmitter {
     private hubSocket: SocketIOClient.Socket;
-    public connected: boolean = false;
+    private connected: boolean = false;
+    private hubUri: string;
 
     constructor(remoteHubConfig: RemoteHubConfig, agentUri: string, agentSpecs: BrowserSpec[]) {
         super();
@@ -28,7 +29,8 @@ export default class RemoteHub extends EventEmitter {
             }
         };
 
-        console.log(`[REMOTE_HUB] Connecting To Hub: ${uri}`);
+        this.hubUri = uri;
+
         this.hubSocket = socketIOClient(uri, socketOptions);
         RPC_METHODS.forEach((methodName) => this.hubSocket.on(methodName, (this as any)[methodName].bind(this)));
     }
@@ -41,13 +43,13 @@ export default class RemoteHub extends EventEmitter {
 
     [DISCONNECT](reason: string) {
         console.log(`${this.getId()} - socket:disconnect`, reason);
-        if (this.connected) {
-            this.disconnectFromHub();
-        }
+        // if (this.connected) {
+        //     this.disconnectFromHub();
+        // }
     }
 
     [CONNECT_ERROR](reason: string) {
-        console.log(`${this.getId()} - socket:connect_error`, reason);
+        console.log(`${this.getId()} - socket:connect_error`, typeof reason);
     }
 
     [ERROR](reason: string) {
@@ -77,10 +79,11 @@ export default class RemoteHub extends EventEmitter {
     }
 
     getId() {
-        return `REMOTE_HUB`;
+        return `[REMOTE_HUB(${this.hubUri})]`;
     }
 
     connectToHub() {
+        console.log(`[REMOTE_HUB] Connecting To Hub: ${this.hubUri}`);
         this.hubSocket.open();
     }
 
