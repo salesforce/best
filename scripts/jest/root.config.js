@@ -18,7 +18,6 @@ module.exports = {
         '<rootDir>/packages/@best/frontend',
         '<rootDir>/packages/@best/agent',
         '<rootDir>/packages/@best/agent-frontend',
-        '<rootDir>/packages/@best/agent-logger',
         '<rootDir>/packages/@best/config',
         '<rootDir>/packages/@best/builder',
         '<rootDir>/packages/@best/runner-headless',
