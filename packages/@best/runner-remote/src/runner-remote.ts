@@ -12,6 +12,8 @@ import {
     BenchmarkRuntimeConfig
 } from "@best/types";
 
+import { proxifiedSocketOptions } from '@best/utils';
+
 const { CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, AGENT_REJECTION, BENCHMARK_UPLOAD_REQUEST } = BEST_RPC;
 const { BENCHMARK_START, BENCHMARK_UPDATE, BENCHMARK_END, BENCHMARK_ERROR, BENCHMARK_LOG, BENCHMARK_RESULTS } = BEST_RPC;
 const RPC_METHODS = [CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, AGENT_REJECTION, BENCHMARK_UPLOAD_REQUEST, BENCHMARK_START, BENCHMARK_UPDATE, BENCHMARK_END, BENCHMARK_ERROR, BENCHMARK_LOG, BENCHMARK_RESULTS]
@@ -47,7 +49,7 @@ export class RunnerRemote {
             }
         };
         this.uri = uri;
-        this.socket = socketIO(uri, socketOptions);
+        this.socket = socketIO(uri, proxifiedSocketOptions(socketOptions));
         this.benchmarkBuilds = benchmarksBuilds;
         this.pendingBenchmarks = benchmarksBuilds.length;
         this.runnerLogStream = runnerLogStream;
