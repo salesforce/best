@@ -24,7 +24,7 @@ module.exports = {
             alias: "local-remote",
             config: {
                 uri: 'http://localhost:5001',
-                options: { token: 'agent' }
+                options: { authToken: 'agent' }
             }
         },
         {
@@ -32,7 +32,7 @@ module.exports = {
             alias: "local-hub",
             config: {
                 uri: 'http://localhost:5000',
-                options: { token: 'hub' }
+                options: { authToken: 'hub' }
             }
         }
     ]

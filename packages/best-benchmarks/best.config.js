@@ -7,7 +7,7 @@
 
 module.exports = {
     projectName: 'best-benchmark',
-    metrics: ['script', 'aggregate'],
+    metrics: ['script', 'aggregate', 'paint', 'layout'],
     specs: { name: 'chrome.headless', version: 80 },
     runners: [
         {
