@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "4.0.0-beta2",
+  "version": "4.0.0-beta3",
   "description": "Best Runner (Headless)",
   "keywords": [
     "Best",
@@ -13,8 +13,8 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@best/runner-abstract": "4.0.0-beta2",
-    "@best/types": "4.0.0-beta2",
+    "@best/runner-abstract": "4.0.0-beta3",
+    "@best/types": "4.0.0-beta3",
     "puppeteer": "~2.1.0"
   },
   "files": [

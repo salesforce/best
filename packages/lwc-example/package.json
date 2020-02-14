@@ -1,7 +1,7 @@
 {
   "name": "lwc-examples",
   "license": "MIT",
-  "version": "4.0.0-beta2",
+  "version": "4.0.0-beta3",
   "private": true,
   "scripts": {
     "start": "best",
@@ -10,7 +10,7 @@
   "dependencies": {
     "@lwc/engine": "~1.0.0",
     "@lwc/rollup-plugin": "~1.0.0",
-    "best": "4.0.0-beta2",
+    "best": "4.0.0-beta3",
     "rollup-plugin-replace": "~2.2.0"
   }
 }
