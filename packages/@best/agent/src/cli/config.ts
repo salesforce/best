@@ -1,7 +1,7 @@
 import { AgentConfig, RemoteHubConfig } from '@best/types';
 
 const AGENT_CONFIG = process.env.AGENT_CONFIG ? JSON.parse(process.env.AGENT_CONFIG): {};
-const AGENT_URI = process.env.AGENT_HOST;
+const AGENT_URI = process.env.AGENT_URI;
 const AGENT_RUNNER = process.env.AGENT_RUNNER;
 const AGENT_AUTH_TOKEN = process.env.AGENT_AUTH_TOKEN;
 
