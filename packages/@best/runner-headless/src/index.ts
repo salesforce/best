@@ -18,11 +18,11 @@ export default class Runner extends AbstractRunner {
     async run(benchmarkBuilds: BuildConfig[], projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream, interruption?: Interruption): Promise<BenchmarkResultsSnapshot[]> {
         const snapshotResults: BenchmarkResultsSnapshot[] = [];
         for (const benchmarkInfo of benchmarkBuilds) {
-            const { benchmarkEntry, benchmarkSignature } = benchmarkInfo;
+            const { benchmarkEntry, benchmarkRemoteEntry, benchmarkSignature } = benchmarkInfo;
             const { useHttp } = projectConfig;
             const runtimeOptions = this.getRuntimeOptions(projectConfig);
             const state = this.initializeBenchmarkState();
-            const { url, terminate } = await this.initializeServer(benchmarkEntry, useHttp);
+            const { url, terminate } = await this.initializeServer(benchmarkRemoteEntry || benchmarkEntry, useHttp);
             const browser = new HeadlessBrowser(url, projectConfig);
 
             try {

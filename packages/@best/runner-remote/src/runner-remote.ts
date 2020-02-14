@@ -109,8 +109,8 @@ export class RunnerRemote {
         log_rpc(`${BENCHMARK_UPLOAD_REQUEST} - Sending: ${benchmarkConfig.benchmarkSignature}`);
 
         this.socket.emit(BEST_RPC.BENCHMARK_UPLOAD_RESPONSE, benchmarkConfig, async (benchmarkSignature: string) => {
-            const { benchmarkName, benchmarkEntry } = benchmarkConfig;
-            const bundleDirname = path.dirname(benchmarkEntry);
+            const { benchmarkName, benchmarkEntry, benchmarkRemoteEntry } = benchmarkConfig;
+            const bundleDirname = path.dirname(benchmarkRemoteEntry || benchmarkEntry);
             const tarBundle = path.resolve(bundleDirname, `${benchmarkName}.tgz`);
 
             try {

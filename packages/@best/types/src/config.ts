@@ -187,6 +187,8 @@ export interface BuildConfig {
     benchmarkFolder: string,
     benchmarkSignature: string,
     benchmarkEntry: string,
+    benchmarkRemoteEntry?: string,
+    benchmarkRemoteFolder?: string,
     projectConfig: FrozenProjectConfig,
     globalConfig: FrozenGlobalConfig,
 }

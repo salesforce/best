@@ -85,8 +85,8 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
 
             // Modify the benchmark bundle to point to the new files
             const uploadDir = path.dirname(tarFile);
-            benchmarkConfig.benchmarkEntry = path.join(uploadDir, `${benchmarkName}.html`);
-            benchmarkConfig.benchmarkFolder = uploadDir;
+            benchmarkConfig.benchmarkRemoteEntry = path.join(uploadDir, `${benchmarkName}.html`);
+            benchmarkConfig.benchmarkRemoteFolder = uploadDir;
 
             console.log(`[AGENT_REMOTE_CLIENT] Completed upload for benchmark ${benchmarkConfig.benchmarkSignature} from socket ${this.socket.id}`);
             this.state = RemoteClientState.IDLE;

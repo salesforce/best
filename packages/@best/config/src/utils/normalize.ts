@@ -48,7 +48,12 @@ function normalizeRunnerConfig(runner: string, runners: RunnerConfig[], specs?: 
     if (runner === "default") {
         const defaultRunners = runners.filter((c: RunnerConfig) => c.alias === undefined || c.alias === 'default');
         if (defaultRunners.length > 0) {
-            return defaultRunners[0].config ? defaultRunners[0].config : {};
+            const selectedRunner = defaultRunners[0];
+            const selectedRunnerConfig = selectedRunner.config ? selectedRunner.config : {};
+            return {
+                ...selectedRunnerConfig,
+                specs: selectedRunner.specs || specs
+            };
         }
     }
 

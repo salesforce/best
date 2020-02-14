@@ -108,6 +108,7 @@ export async function runBest(globalConfig: FrozenGlobalConfig, configs: FrozenP
     try {
         runnerLogStream.init();
         benchmarkBundleResults = await runBenchmarks(benchmarksBuilds, runnerLogStream);
+        console.log(benchmarkBundleResults[0]);
     } finally {
         runnerLogStream.finish();
     }
