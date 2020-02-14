@@ -50,7 +50,7 @@ export class Agent extends EventEmitter {
 
         if (this.remoteHubConfig.uri) {
             this.once('ready', () => {
-                const remoteHub = this.setupNewHub(this.remoteHubConfig, this.uri, this.specs);
+                const remoteHub = this.setupNewHub(this.remoteHubConfig, this.specs, this.agentConfig);
                 remoteHub.connectToHub();
             });
         }
@@ -145,8 +145,8 @@ export class Agent extends EventEmitter {
         `;
     }
 
-    setupNewHub(remoteHubConfig: RemoteHubConfig, uri: string, specs: BrowserSpec[]): RemoteHub {
-        const remoteHub = new RemoteHub(remoteHubConfig, uri, specs);
+    setupNewHub(remoteHubConfig: RemoteHubConfig, specs: BrowserSpec[], agentConfig: AgentConfig): RemoteHub {
+        const remoteHub = new RemoteHub(remoteHubConfig, specs, agentConfig);
         remoteHub.on(BEST_RPC.AGENT_CONNECTED_HUB, (hubUri) => this.emit(BEST_RPC.AGENT_CONNECTED_HUB, hubUri));
         remoteHub.on(BEST_RPC.AGENT_DISCONNECTED_HUB, (hubUri) => this.emit(BEST_RPC.AGENT_DISCONNECTED_HUB, hubUri));
         return remoteHub;

@@ -110,7 +110,7 @@ export class Hub extends EventEmitter {
     onAgentConnect(agentSocket: Socket) {
         const query = agentSocket.handshake.query;
         const specs = normalizeSpecs(query);
-        const validToken = validateToken(query.token, this.hubConfig.authToken);
+        const validToken = validateToken(query.authToken, this.hubConfig.authToken);
         const hasSpecs = specs.length > 0;
 
         if (!validToken) {
@@ -128,17 +128,17 @@ export class Hub extends EventEmitter {
             return agentSocket.disconnect(true);
         }
 
-        const remoteAgent = this.setupNewAgent(agentSocket, query.agentUri, specs);
+        const remoteAgent = this.setupNewAgent(agentSocket, specs, {  agentUri: query.agentUri, agentToken: query.agentAuthToken });
 
         if (remoteAgent) {
             // If queued jobs with those specs, run them...
         }
     }
 
-    setupNewAgent(socketAgent: Socket, uri: string, specs: BrowserSpec[]): RemoteAgent {
+    setupNewAgent(socketAgent: Socket, specs: BrowserSpec[], { agentUri, agentToken }: any): RemoteAgent {
 
         // Create and new RemoteAgent and add it to the pool
-        const remoteAgent = new RemoteAgent(socketAgent, { uri, specs });
+        const remoteAgent = new RemoteAgent(socketAgent, { uri: agentUri, token: agentToken, specs });
         this.connectedAgents.add(remoteAgent);
 
         console.log(`[HUB] New Agent ${remoteAgent.getId()} connected with specs: ${JSON.stringify(remoteAgent.getSpecs())}`);

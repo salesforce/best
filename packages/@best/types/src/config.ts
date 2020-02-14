@@ -35,7 +35,7 @@ export interface RunnerConfig {
 export interface RemoteClientConfig {
     specs?: BrowserSpec;
     jobs: number;
-    token?: string;
+    authToken?: string;
 }
 
 export interface RemoteHubConfig {

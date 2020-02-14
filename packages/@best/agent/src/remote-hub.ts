@@ -1,6 +1,6 @@
 import { BEST_RPC } from "@best/shared";
 import { EventEmitter } from "events";
-import { RemoteHubConfig, BrowserSpec } from "@best/types";
+import { RemoteHubConfig, BrowserSpec, AgentConfig } from "@best/types";
 import socketIOClient from 'socket.io-client';
 
 const { CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECTING, RECONNECT_FAILED, AGENT_REJECTION } = BEST_RPC;
@@ -17,17 +17,22 @@ export default class RemoteHub extends EventEmitter {
     private connected: boolean = false;
     private hubUri: string;
 
-    constructor(remoteHubConfig: RemoteHubConfig, agentUri: string, agentSpecs: BrowserSpec[]) {
+    constructor(remoteHubConfig: RemoteHubConfig, agentSpecs: BrowserSpec[], agentConfig: AgentConfig) {
         super();
 
         const { uri } = remoteHubConfig;
-        const socketOptions = {
+        const socketOptions: any = {
             ...DEFAULT_SOCKET_CONFIG,
             query: {
-                agentUri,
-                specs: JSON.stringify(agentSpecs)
+                agentUri: agentConfig.uri,
+                agentAuthToken: agentConfig.authToken,
+                specs: JSON.stringify(agentSpecs),
             }
         };
+
+        if (remoteHubConfig.authToken) {
+            socketOptions.query.authToken = remoteHubConfig.authToken;
+        }
 
         this.hubUri = uri;
 

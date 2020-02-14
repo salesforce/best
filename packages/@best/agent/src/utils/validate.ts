@@ -15,7 +15,7 @@ function validateJobs(jobs: number) {
 }
 
 export function validateConfig(config: RemoteClientConfig, agentConfig: AgentConfig, runnerSpecs: BrowserSpec[], socketId: string): string | undefined {
-    if (!validateToken(config.token, agentConfig.authToken)) {
+    if (!validateToken(config.authToken, agentConfig.authToken)) {
         console.log(`[AGENT] Rejecting client (${socketId}): Token missmatch`);
         return `Unable to match token`;
     }

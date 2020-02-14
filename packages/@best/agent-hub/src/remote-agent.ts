@@ -17,17 +17,18 @@ export default class RemoteAgent extends EventEmitter {
     private socket: Socket;
     private uri: string;
     private specs: BrowserSpec[];
+    private token: string;
     public connected: boolean;
     private state: RemoteAgentState = RemoteAgentState.IDLE;
     private runner?: RunnerRemote;
 
-    constructor(socket: Socket, { uri, specs }: any) {
+    constructor(socket: Socket, { uri, specs, token }: any) {
         super();
         this.socket = socket;
         this.connected = this.socket.connected;
         this.specs = specs;
         this.uri = uri;
-
+        this.token = token;
         RPC_METHODS.forEach((methodName) => this.socket.on(methodName, (this as any)[methodName].bind(this)));
     }
 
@@ -61,7 +62,11 @@ export default class RemoteAgent extends EventEmitter {
         if (this.isIdle() && remoteClient.getPendingBenchmarks() > 0) {
             this.state = RemoteAgentState.BUSY;
             const iterator = Array.from(Array(jobsToRun), (x, index) => index + 1);
-            const runnerConfig = { uri: this.uri, specs: remoteClient.getSpecs(), jobs: 1 };
+            const runnerConfig: any = { uri: this.uri, specs: remoteClient.getSpecs(), jobs: 1, options: {} };
+            if (this.token) {
+                runnerConfig.options.authToken = this.token;
+            }
+
             try {
                 for (const job of iterator) {
                     console.log(`[REMOTE_AGENT] Running job ${job} of ${jobsToRun}`);

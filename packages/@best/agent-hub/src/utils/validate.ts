@@ -11,7 +11,7 @@ function validateSpecs(specs?: BrowserSpec, agentSpecs: BrowserSpec[] = []) {
 }
 
 export function validateConfig(config: RemoteClientConfig, agentConfig: HubConfig, agentSpecs: BrowserSpec[], socketId: string): string | undefined {
-    if (!validateToken(config.token, agentConfig.authToken)) {
+    if (!validateToken(config.authToken, agentConfig.authToken)) {
         console.log(`[AGENT] Rejecting client (${socketId}): Token missmatch`);
         return `Unable to match token`;
     }

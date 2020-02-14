@@ -36,7 +36,7 @@ export class RunnerRemote {
     private _onBenchmarksRunSuccess: Function = THROW_FUNCTION;
 
     constructor(benchmarksBuilds: BuildConfig[], runnerLogStream: RunnerStream, config: any ) {
-        const { uri, options, specs } = config;
+        const { uri, options, specs, token } = config;
 
         const socketOptions = {
             path: '/best',
@@ -48,6 +48,11 @@ export class RunnerRemote {
                 jobs: benchmarksBuilds.length
             }
         };
+
+        if (token) {
+            socketOptions.query.authToken = token;
+        }
+
         this.uri = uri;
         this.socket = socketIO(uri, proxifiedSocketOptions(socketOptions));
         this.benchmarkBuilds = benchmarksBuilds;

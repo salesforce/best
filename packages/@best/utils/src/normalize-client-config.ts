@@ -11,7 +11,7 @@ export function normalizeClientConfig(config: any): RemoteClientConfig {
         }
     }
 
-    return { jobs, specs, token: config.token };
+    return { jobs, specs, authToken: config.authToken };
 }
 
 export function normalizeSpecs(config: any) {
