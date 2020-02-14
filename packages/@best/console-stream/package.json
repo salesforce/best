@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "4.0.0-beta4",
+  "version": "4.0.0-beta5",
   "description": "Best stdout stream wrapper",
   "keywords": [
     "Best",
@@ -13,7 +13,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@best/utils": "4.0.0-beta4",
+    "@best/utils": "4.0.0-beta5",
     "chalk": "~2.4.2"
   },
   "files": [
