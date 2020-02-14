@@ -19,25 +19,23 @@ function normalizeModulePathPatterns(options: any, key: string) {
 }
 
 function normalizeRunner(runner: string, runners: RunnerConfig[]) {
-    const defaultRunners = runners.filter((c: RunnerConfig) => c.alias === undefined || c.alias === 'default');
+    const defaultRunners = runners.filter((c) => c.alias === undefined || c.alias === 'default');
     if (defaultRunners.length > 1) {
         throw new Error('Wrong configuration: More than one default configuration declared');
     }
 
     if (runner === "default") {
-        if (!defaultRunners.length) {
-            throw new Error('No default runner found');
+        if (defaultRunners.length) {
+            return defaultRunners[0].runner;
         }
-        return defaultRunners[0].runner;
+    } else {
+        const selectedRunner = runners.find((c) => c.alias === runner || c.runner === runner);
+        if (selectedRunner) {
+            return selectedRunner.runner;
+        }
     }
 
-    const selectedRunner = runners.find((c: RunnerConfig) => c.alias === runner || c.runner === runner);
-
-    if (!selectedRunner) {
-        throw new Error(`Unable to find a runner for ${runner}`);
-    }
-
-    return selectedRunner.runner;
+    return 'unknown';
 }
 
 function normalizeRunnerConfig(runner: string, runners: RunnerConfig[], specs?: BrowserSpec) {
@@ -45,30 +43,22 @@ function normalizeRunnerConfig(runner: string, runners: RunnerConfig[], specs?: 
         return {};
     }
 
+    let selectedRunner;
+
     if (runner === "default") {
         const defaultRunners = runners.filter((c: RunnerConfig) => c.alias === undefined || c.alias === 'default');
         if (defaultRunners.length > 0) {
-            const selectedRunner = defaultRunners[0];
-            const selectedRunnerConfig = selectedRunner.config ? selectedRunner.config : {};
-            return {
-                ...selectedRunnerConfig,
-                specs: selectedRunner.specs || specs
-            };
+            selectedRunner = defaultRunners[0];
         }
+    } else {
+        const selectedAliasRunner = runners.find((c: RunnerConfig) => c.alias === runner);
+        selectedRunner = selectedAliasRunner || runners.find((c: RunnerConfig) => c.runner === runner);
     }
 
-    const selectedAliasRunner = runners.find((c: RunnerConfig) => c.alias === runner);
-    const selectedRunner = selectedAliasRunner || runners.find((c: RunnerConfig) => c.runner === runner);
-
-    if (!selectedRunner) {
-        throw new Error(`Unable to find a runner for ${runner}`);
+    if (selectedRunner) {
+        const selectedRunnerConfig = selectedRunner.config || {};
+        return { ...selectedRunnerConfig, specs: selectedRunner.specs || specs };
     }
-
-    const selectedRunnerConfig = selectedRunner.config || {};
-    return {
-        ...selectedRunnerConfig,
-        specs: selectedRunner.specs || specs
-    };
 }
 
 function setCliOptionOverrides(initialOptions: UserConfig, argsCLI: CliConfig): UserConfig {
