@@ -78,7 +78,11 @@ export default class HeadlessBrowser {
         if (this.tracingEnabled) await removeTrace(this.tracePath);
 
         if (this.browser) {
-            return this.browser.close();
+            try {
+                await this.browser.close();
+            } catch(err) {
+                console.log('[pupeteer] - close error', err);
+            }
         }
     }
 
