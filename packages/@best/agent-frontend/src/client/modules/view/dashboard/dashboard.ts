@@ -4,7 +4,7 @@ import { BEST_RPC } from "@best/shared";
 import { BrowserSpec, BestAgentState, BenchmarkUpdateState, BenchmarkRuntimeConfig } from '@best/types';
 
 // eslint-disable-next-line no-undef
-const host = 'http://localhost:5000' || window.location.origin;
+const host = window.location.origin;
 const socketConfig = { path: '/frontend', query: { frontend: true } };
 
 interface DashboardClient {
