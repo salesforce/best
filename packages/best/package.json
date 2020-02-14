@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "4.0.0-beta3",
+  "version": "4.0.0-beta4",
   "description": "Best",
   "keywords": [
     "Best",
@@ -16,8 +16,8 @@
     "best-agent-hub": "./bin/best-agent-hub.js"
   },
   "dependencies": {
-    "@best/agent": "4.0.0-beta3",
-    "@best/agent-hub": "4.0.0-beta3",
-    "@best/cli": "4.0.0-beta3"
+    "@best/agent": "4.0.0-beta4",
+    "@best/agent-hub": "4.0.0-beta4",
+    "@best/cli": "4.0.0-beta4"
   }
 }
