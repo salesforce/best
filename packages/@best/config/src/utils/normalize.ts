@@ -9,7 +9,7 @@ import path from 'path';
 import chalk from 'chalk';
 import DEFAULT_CONFIG from './defaults';
 import { replacePathSepForRegex } from '@best/regex-util';
-import { CliConfig, UserConfig, NormalizedConfig, RunnerConfig } from '@best/types';
+import { CliConfig, UserConfig, NormalizedConfig, RunnerConfig, BrowserSpec } from '@best/types';
 
 const TARGET_COMMIT = process.env.TARGET_COMMIT;
 const BASE_COMMIT = process.env.BASE_COMMIT;
@@ -19,46 +19,46 @@ function normalizeModulePathPatterns(options: any, key: string) {
 }
 
 function normalizeRunner(runner: string, runners: RunnerConfig[]) {
-    const defaultRunners = runners.filter((c: RunnerConfig) => c.alias === undefined || c.alias === 'default');
+    const defaultRunners = runners.filter((c) => c.alias === undefined || c.alias === 'default');
     if (defaultRunners.length > 1) {
         throw new Error('Wrong configuration: More than one default configuration declared');
     }
 
     if (runner === "default") {
-        if (!defaultRunners.length) {
-            throw new Error('No default runner found');
+        if (defaultRunners.length) {
+            return defaultRunners[0].runner;
         }
-        return defaultRunners[0].runner;
+    } else {
+        const selectedRunner = runners.find((c) => c.alias === runner || c.runner === runner);
+        if (selectedRunner) {
+            return selectedRunner.runner;
+        }
     }
 
-    const selectedRunner = runners.find((c: RunnerConfig) => c.alias === runner || c.runner === runner);
-
-    if (!selectedRunner) {
-        throw new Error(`Unable to find a runner for ${runner}`);
-    }
-
-    return selectedRunner.runner;
+    return 'unknown';
 }
 
-function normalizeRunnerConfig(runner: string, runners?: RunnerConfig[]) {
+function normalizeRunnerConfig(runner: string, runners: RunnerConfig[], specs?: BrowserSpec) {
     if (!runners) {
         return {};
     }
 
+    let selectedRunner;
+
     if (runner === "default") {
         const defaultRunners = runners.filter((c: RunnerConfig) => c.alias === undefined || c.alias === 'default');
         if (defaultRunners.length > 0) {
-            return defaultRunners[0].config ? defaultRunners[0].config : {};
+            selectedRunner = defaultRunners[0];
         }
+    } else {
+        const selectedAliasRunner = runners.find((c: RunnerConfig) => c.alias === runner);
+        selectedRunner = selectedAliasRunner || runners.find((c: RunnerConfig) => c.runner === runner);
     }
 
-    const selectedRunner = runners.find((c: RunnerConfig) => c.alias === runner || c.runner === runner);
-
-    if (!selectedRunner) {
-        throw new Error(`Unable to find a runner for ${runner}`);
+    if (selectedRunner) {
+        const selectedRunnerConfig = selectedRunner.config || {};
+        return { ...selectedRunnerConfig, specs: selectedRunner.specs || specs };
     }
-
-    return selectedRunner ? selectedRunner.config : {};
 }
 
 function setCliOptionOverrides(initialOptions: UserConfig, argsCLI: CliConfig): UserConfig {
@@ -175,6 +175,7 @@ export function normalizeRegexPattern(names: string | string[] | RegExp) {
 export function normalizeConfig(userConfig: UserConfig, cliOptions: CliConfig): NormalizedConfig {
     const userCliMergedConfig = normalizeRootDir(setCliOptionOverrides(userConfig, cliOptions));
     const normalizedConfig: NormalizedConfig = { ...DEFAULT_CONFIG, ...userCliMergedConfig };
+    const aliasRunner = normalizedConfig.runner;
 
     Object.keys(normalizedConfig).reduce((mergeConfig: NormalizedConfig, key: string) => {
         switch (key) {
@@ -184,15 +185,18 @@ export function normalizeConfig(userConfig: UserConfig, cliOptions: CliConfig): 
             case 'plugins':
                 mergeConfig[key] = normalizePlugins(normalizedConfig[key], normalizedConfig);
                 break;
+            case 'runnerConfig':
+                mergeConfig['runnerConfig'] = normalizeRunnerConfig(aliasRunner, mergeConfig.runners, mergeConfig.specs);
+                break;
             case 'runner':
                 mergeConfig[key] = normalizeRunner(normalizedConfig[key], mergeConfig.runners);
-                break;
-            case 'runnerConfig':
-                mergeConfig[key] = normalizeRunnerConfig(normalizedConfig['runner'], mergeConfig.runners);
                 break;
             case 'compareStats':
                 mergeConfig[key] = normalizeCommits(normalizedConfig[key]);
                 break;
+            case 'specs':
+                    mergeConfig[key] = normalizedConfig['runnerConfig'].specs || mergeConfig[key];
+                    break;
             case 'apiDatabase': {
                 const apiDatabaseConfig = normalizedConfig[key];
                 mergeConfig[key] = apiDatabaseConfig ? normalizeObjectPathPatterns(apiDatabaseConfig, normalizedConfig.rootDir) : apiDatabaseConfig;

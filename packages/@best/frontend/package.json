@@ -4,15 +4,15 @@
     "publishConfig": {
         "access": "public"
     },
-    "version": "4.0.0-alpha14",
+    "version": "4.0.0-beta5",
     "main": "build/index.js",
     "types": "build/index.d.ts",
     "dependencies": {
-        "@best/api-db": "4.0.0-alpha14",
-        "@best/config": "4.0.0-alpha14",
-        "@best/console-stream": "4.0.0-alpha14",
-        "@best/github-integration": "4.0.0-alpha14",
-        "@best/types": "4.0.0-alpha14",
+        "@best/api-db": "4.0.0-beta5",
+        "@best/config": "4.0.0-beta5",
+        "@best/console-stream": "4.0.0-beta5",
+        "@best/github-integration": "4.0.0-beta5",
+        "@best/types": "4.0.0-beta5",
         "@lwc/compiler": "^1.0.0",
         "@lwc/engine": "^1.0.0",
         "@lwc/rollup-plugin": "^1.0.0",

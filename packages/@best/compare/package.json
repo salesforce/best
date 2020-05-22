@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "4.0.0-alpha14",
+  "version": "4.0.0-beta5",
   "description": "Best Comparer",
   "keywords": [
     "Best",
@@ -12,7 +12,7 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@best/analyzer": "4.0.0-alpha14",
+    "@best/analyzer": "4.0.0-beta5",
     "chalk": "~2.4.2"
   },
   "files": [

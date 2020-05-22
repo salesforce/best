@@ -6,6 +6,7 @@
 */
 
 import { BenchmarkMetricNames } from './benchmark';
+import { EventEmitter } from 'events';
 
 export interface GitConfig {
     lastCommit: { hash: string, date: string }
@@ -28,6 +29,36 @@ export interface RunnerConfig {
     alias: string;
     runner: string;
     config?: any;
+    specs?: BrowserSpec;
+}
+
+export interface RemoteClientConfig {
+    specs?: BrowserSpec;
+    jobs: number;
+    authToken?: string;
+}
+
+export interface RemoteHubConfig {
+    uri: string;
+    authToken: string;
+    pingTimeout: number;
+}
+
+export interface HubConfig {
+    name?: string;
+    uri: string;
+    options: { path: string };
+    authToken? : string;
+}
+
+export interface AgentConfig extends HubConfig {
+    runner: string;
+}
+
+export interface Interruption {
+    id?: string;
+    requestedInterruption: boolean;
+    requestInterruption() :void;
 }
 
 export interface ApiDatabaseConfig {
@@ -66,6 +97,7 @@ export interface CliConfig {
 
 export interface NormalizedConfig {
     nonFlagArgs: string[];
+    specs?: BrowserSpec;
     cache: boolean,
     cacheDirectory: string,
     compareStats?: string[],
@@ -155,11 +187,20 @@ export interface BuildConfig {
     benchmarkFolder: string,
     benchmarkSignature: string,
     benchmarkEntry: string,
+    benchmarkRemoteEntry?: string,
+    benchmarkRemoteFolder?: string,
     projectConfig: FrozenProjectConfig,
     globalConfig: FrozenGlobalConfig,
 }
 
-export interface BrowserConfig {
+export interface BenchmarksBundle {
+    projectName: string;
+    projectConfig: FrozenProjectConfig;
+    globalConfig: FrozenGlobalConfig;
+    benchmarkBuilds: BuildConfig[]
+}
+
+export interface BrowserSpec {
     version: string;
     name?: string;
     config?: { [key: string]: any }
@@ -185,7 +226,7 @@ export interface EnvironmentConfig {
     container: {
         load: { cpuLoad: number }
     },
-    browser: BrowserConfig;
+    browser: BrowserSpec;
     configuration: {
         project: {
             projectName: string;
@@ -201,4 +242,28 @@ export interface EnvironmentConfig {
             gitRepository: { owner: string, repo: string };
         }
     }
+}
+
+export interface BestAgentState {
+    connectedClients: {
+        clientId: string;
+        specs?: BrowserSpec;
+        jobs: number;
+        state: string;
+    }[],
+    connectedAgents: {
+        agentId: string;
+        state: string;
+        specs: BrowserSpec[];
+        uri: string;
+    }[],
+
+    activeClients: {
+        clientId: string;
+        agentId: string;
+    }[]
+}
+
+export interface BestAgent extends EventEmitter {
+    getState(): BestAgentState;
 }

@@ -12,12 +12,13 @@ const defaultOptions = {
     cache: true,
     gitIntegration: false,
     commentThreshold: 5,
+    specs: undefined,
     generateHTML: false,
     apiDatabase: {
         adapter: 'sql/sqlite',
         uri: '<rootDir>/__benchmarks_results__/best.sqlite'
     },
-    metrics: ['script', 'aggregate', 'paint', 'layout', 'system', 'idle'] as BenchmarkMetricNames[],
+    metrics: ['aggregate', 'script', 'recalculatestyles', 'layout', 'updatelayertree', 'paint', 'compositelayers', 'system', 'idle'] as BenchmarkMetricNames[],
     cacheDirectory: cacheDirectory(),
     useHttp: false,
     openPages: false,

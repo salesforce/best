@@ -9,12 +9,12 @@ import AbstractRunner from '@best/runner-abstract';
 import WebdriverBrowser from './webdriver';
 import { FrozenGlobalConfig,
     FrozenProjectConfig,
-    BenchmarkInfo,
     BenchmarkRuntimeConfig,
     BenchmarkResults,
     BenchmarkResultsState,
     BenchmarkResultsSnapshot,
-    RunnerStream
+    RunnerStream,
+    BuildConfig
 } from '@best/types';
 
 declare var BEST: any;
@@ -23,32 +23,33 @@ const UPDATE_INTERVAL = 300;
 
 export default class Runner extends AbstractRunner {
 
-    async run(benchmarkInfo: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot> {
-        const { benchmarkEntry } = benchmarkInfo;
-        const { useHttp } = projectConfig;
+    async run(benchmarkBuilds: BuildConfig[], projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
+        throw new Error('WIP');
+        // const { benchmarkEntry } = benchmarkInfo;
+        // const { useHttp } = projectConfig;
 
-        const runtimeOptions = this.getRuntimeOptions(projectConfig);
-        const state = this.initializeBenchmarkState();
+        // const runtimeOptions = this.getRuntimeOptions(projectConfig);
+        // const state = this.initializeBenchmarkState();
 
-        const { url, terminate } = await this.initializeServer(benchmarkEntry, useHttp);
-        const browser = new WebdriverBrowser(url, projectConfig);
+        // const { url, terminate } = await this.initializeServer(benchmarkEntry, useHttp);
+        // const browser = new WebdriverBrowser(url, projectConfig);
 
-        try {
-            await browser.initialize();
-            runnerLogStream.onBenchmarkStart(benchmarkEntry);
+        // try {
+        //     await browser.initialize();
+        //     runnerLogStream.onBenchmarkStart(benchmarkEntry);
 
-            const { results } = await this.runIterations(browser, state, runtimeOptions, runnerLogStream);
-            const environment = await this.getEnvironment({ version:browser.version() }, projectConfig, globalConfig);
+        //     const { results } = await this.runIterations(browser, state, runtimeOptions, runnerLogStream);
+        //     const environment = await this.getEnvironment({ version:browser.version() }, projectConfig, globalConfig);
 
-            return { results, environment, benchmarkInfo, projectConfig };
-        } catch (e) {
-            runnerLogStream.onBenchmarkError(benchmarkEntry);
-            throw e;
-        } finally {
-            runnerLogStream.onBenchmarkEnd(benchmarkEntry);
-            await browser.close();
-            terminate();
-        }
+        //     return { results, environment, benchmarkInfo, projectConfig };
+        // } catch (e) {
+        //     runnerLogStream.onBenchmarkError(benchmarkEntry);
+        //     throw e;
+        // } finally {
+        //     runnerLogStream.onBenchmarkEnd(benchmarkEntry);
+        //     await browser.close();
+        //     terminate();
+        // }
     }
 
     initializeBenchmarkState(): BenchmarkResultsState {
@@ -72,7 +73,7 @@ export default class Runner extends AbstractRunner {
             const executing = Date.now() - start;
             state.executedTime = executing;
             state.executedIterations = Math.round(executing / estimatedIterationTime);
-            runnerLogStream.updateBenchmarkProgress(state, runtimeOptions);
+            runnerLogStream.updateBenchmarkProgress('FIXME', state, runtimeOptions);
         }, UPDATE_INTERVAL);
 
         await browser.reloadPage();
@@ -93,7 +94,7 @@ export default class Runner extends AbstractRunner {
             if (root) {
                 state.results.push(root);
             }
-            runnnerLogStream.updateBenchmarkProgress(state, runtimeOptions);
+            runnnerLogStream.updateBenchmarkProgress('FIXME', state, runtimeOptions);
         }
 
         return state;

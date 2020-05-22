@@ -7,24 +7,27 @@
 
 module.exports = {
     projectName: 'best-benchmark',
-    metrics: ['script', 'aggregate'],
+    metrics: ['script', 'aggregate', 'paint', 'layout'],
+    specs: { name: 'chrome.headless', version: 80 },
     runners: [
         {
             runner: "@best/runner-headless",
-            alias: "default"
+            alias: "default",
         },
         {
-            runner: "@best/runner-hub",
-            alias: "heroku-hub",
+            runner: "@best/runner-remote",
+            alias: "local-remote",
             config: {
-                host: "https://hub.bestjs.dev",
-                options: {
-                    query: { token: process.env.BEST_HUB_CLIENT_TOKEN },
-                },
-                spec: {
-                    browser: "chrome",
-                    version: "76"
-                }
+                uri: 'http://localhost:5001',
+                options: { authToken: 'agent' }
+            }
+        },
+        {
+            runner: "@best/runner-remote",
+            alias: "local-hub",
+            config: {
+                uri: 'http://localhost:5000',
+                options: { authToken: 'hub' }
             }
         }
     ]

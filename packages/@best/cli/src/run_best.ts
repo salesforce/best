@@ -15,7 +15,7 @@ import { BuildOutputStream, RunnerOutputStream } from "@best/console-stream";
 import { storeBenchmarkResults } from '@best/store';
 import { saveBenchmarkSummaryInDB } from '@best/api-db';
 import { analyzeBenchmarks } from '@best/analyzer';
-import { BuildConfig, FrozenGlobalConfig, FrozenProjectConfig} from "@best/types";
+import { FrozenGlobalConfig, FrozenProjectConfig, BenchmarksBundle } from "@best/types";
 
 async function getBenchmarkPaths(config: FrozenProjectConfig): Promise<string[]> {
     const { testMatch, testPathIgnorePatterns, rootDir: cwd } = config;
@@ -64,13 +64,19 @@ async function getBenchmarkTests(projectConfigs: FrozenProjectConfig[], globalCo
     }));
 }
 
-async function buildBundleBenchmarks(benchmarksTests: { config: FrozenProjectConfig; matches: string[] }[], globalConfig: FrozenGlobalConfig, messager: BuildOutputStream) {
-    const benchmarkBuilds: BuildConfig[] = [];
+async function buildBundleBenchmarks(benchmarksTests: { config: FrozenProjectConfig; matches: string[] }[], globalConfig: FrozenGlobalConfig, messager: BuildOutputStream): Promise<BenchmarksBundle[]> {
+    const benchmarkBuilds: BenchmarksBundle[] = [];
     // We wait for each project to run before starting the next batch
     for (const benchmarkTest of benchmarksTests) {
         const { matches, config } = benchmarkTest;
         const result = await buildBenchmarks(matches, config, globalConfig, messager);
-        benchmarkBuilds.push(...result);
+
+        benchmarkBuilds.push({
+            projectName: config.projectName,
+            projectConfig: config,
+            globalConfig,
+            benchmarkBuilds: result
+        });
     }
 
     return benchmarkBuilds;
@@ -88,15 +94,23 @@ export async function runBest(globalConfig: FrozenGlobalConfig, configs: FrozenP
         return [];
     }
 
+    let benchmarksBuilds;
     const buildLogStream = new BuildOutputStream(benchmarksTests, outputStream, globalConfig.isInteractive);
-    buildLogStream.init();
-    const benchmarksBuilds = await buildBundleBenchmarks(benchmarksTests, globalConfig, buildLogStream);
-    buildLogStream.finish();
+    try {
+        buildLogStream.init();
+        benchmarksBuilds = await buildBundleBenchmarks(benchmarksTests, globalConfig, buildLogStream);
+    } finally {
+        buildLogStream.finish();
+    }
 
+    let benchmarkBundleResults;
     const runnerLogStream = new RunnerOutputStream(benchmarksBuilds, outputStream, globalConfig.isInteractive);
-    runnerLogStream.init();
-    const benchmarkBundleResults = await runBenchmarks(benchmarksBuilds, runnerLogStream);
-    runnerLogStream.finish();
+    try {
+        runnerLogStream.init();
+        benchmarkBundleResults = await runBenchmarks(benchmarksBuilds, runnerLogStream);
+    } finally {
+        runnerLogStream.finish();
+    }
 
     await analyzeBenchmarks(benchmarkBundleResults);
     await storeBenchmarkResults(benchmarkBundleResults, globalConfig);

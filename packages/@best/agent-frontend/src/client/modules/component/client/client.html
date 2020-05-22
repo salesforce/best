@@ -1,0 +1,13 @@
+<template>
+    <section class="card card-shadow">
+        <header>
+            <h2>Client {clientId}</h2>
+            <div class="state" data-state={state}>{state}</div>
+        </header>
+        <template if:true={specs}>
+            <div class="specs">
+                <p>Specs: {specs.name} {specs.version}</p>
+             </div>
+        </template>
+    </section>
+</template>

@@ -11,20 +11,23 @@ import { getSystemInfo } from '@best/utils';
 import {
     FrozenGlobalConfig,
     FrozenProjectConfig,
-    BenchmarkInfo,
     BenchmarkRuntimeConfig,
     BenchmarkResultsSnapshot,
-    BrowserConfig,
+    BrowserSpec,
     EnvironmentConfig,
     BuildConfig,
-    RunnerStream
+    RunnerStream,
+    Interruption
 } from '@best/types';
 
 export default abstract class AbstractRunner {
-    abstract async run(benchmarkInfo: BenchmarkInfo, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot>;
-    async runBenchmarksInBatch(benchmarksBuilds: BuildConfig[], messager: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
-        throw new Error('Runner does not support run in batch option');
+    abstract async run(benchmarkBuilds: BuildConfig[], projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream, interruption?: Interruption): Promise<BenchmarkResultsSnapshot[]>;
+
+    static async getBrowserSpecs(): Promise<BrowserSpec[]> {
+        throw new Error('Runner must implement getBrowserSpecs');
     }
+
+    static isRemote: boolean = false;
 
     initializeServer(benchmarkEntry: string, useHttp: boolean): Promise<{ terminate:Function, url: string }> {
         if (!useHttp) {
@@ -60,7 +63,7 @@ export default abstract class AbstractRunner {
         };
     }
 
-    async getEnvironment(browser: BrowserConfig, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig): Promise<EnvironmentConfig> {
+    async getEnvironment(browser: BrowserSpec, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig): Promise<EnvironmentConfig> {
         const { system, cpu, os, load } = await getSystemInfo();
         const {
             benchmarkOnClient,

@@ -5,70 +5,65 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
-import { BuildConfig, BenchmarkInfo, BenchmarkResultsSnapshot, RunnerStream } from "@best/types";
+import { BuildConfig, BenchmarkResultsSnapshot, RunnerStream, BrowserSpec, BenchmarksBundle, Interruption } from "@best/types";
 import AbstractRunner from "@best/runner-abstract";
+import { matchSpecs } from "@best/utils";
 
 interface ConcreteRunner extends AbstractRunner {
     new(config?: any): ConcreteRunner;
+    getBrowserSpecs(): Promise<BrowserSpec[]>
+    isRemote: boolean;
 }
 
-export async function runBenchmark(benchmarkBuild: BuildConfig, runnerLogStream: RunnerStream): Promise<BenchmarkResultsSnapshot> {
-    const { benchmarkName, benchmarkEntry, benchmarkFolder, benchmarkSignature, projectConfig, globalConfig } = benchmarkBuild;
-    const { benchmarkRunner } = projectConfig;
-    let RunnerCtor: ConcreteRunner, runnerInstance: ConcreteRunner;
+async function runBenchmarksBundle(benchmarkBuild: BenchmarksBundle, runnerLogStream: RunnerStream, interruption?: Interruption): Promise<BenchmarkResultsSnapshot[]> {
+    const { projectConfig, globalConfig, benchmarkBuilds } = benchmarkBuild;
+    const { benchmarkRunner, benchmarkRunnerConfig } = projectConfig;
 
-    try {
-        const RunnerModule: any = require(benchmarkRunner);
-        RunnerCtor = RunnerModule.Runner || RunnerModule.default || RunnerModule;
-    } catch (e) {
-        throw new Error(`Runner "${benchmarkRunner}" not found.`);
+    if (!benchmarkRunnerConfig.specs) {
+        throw new Error('You must provide specifications for the runner in your best config.')
     }
 
-    // Create a runner instance
-    try {
-        runnerInstance = new RunnerCtor(projectConfig.benchmarkRunnerConfig);
-    } catch (e) {
-        throw new Error(`Runner "${benchmarkRunner}" does not expose a constructor.`);
-    }
+    const RunnerCtor = loadRunnerModule(benchmarkRunner);
 
-    const benchmarkInfo: BenchmarkInfo = { benchmarkName, benchmarkEntry, benchmarkFolder, benchmarkSignature };
-    return runnerInstance.run(benchmarkInfo, projectConfig, globalConfig, runnerLogStream);
-}
-
-export async function runBenchmarksInBatch(benchmarksBuilds: BuildConfig[], messager: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
-    const { projectConfig } = benchmarksBuilds[0];
-    const { benchmarkRunner } = projectConfig;
-    let RunnerCtor: ConcreteRunner, runnerInstance: ConcreteRunner;
-
-    try {
-        const RunnerModule: any = require(benchmarkRunner);
-        RunnerCtor = RunnerModule.Runner || RunnerModule.default || RunnerModule;
-    } catch (e) {
-        throw new Error(`Runner "${benchmarkRunner}" not found.`);
-    }
-
-    // Create a runner instance
-    try {
-        runnerInstance = new RunnerCtor(projectConfig.benchmarkRunnerConfig);
-    } catch (e) {
-        throw new Error(`Runner "${benchmarkRunner}" does not expose a constructor.`);
-    }
-
-    // const benchmarkInfo: BenchmarkInfo = { benchmarkName, benchmarkEntry, benchmarkFolder, benchmarkSignature };
-    return runnerInstance.runBenchmarksInBatch(benchmarksBuilds, messager);
-}
-
-export async function runBenchmarks(benchmarksBuilds: BuildConfig[], messager: RunnerStream): Promise<BenchmarkResultsSnapshot[]> {
-    const { projectConfig } = benchmarksBuilds[0];
-    if (projectConfig.runInBatch) {
-        return runBenchmarksInBatch(benchmarksBuilds, messager);
-    } else {
-        const results = [];
-        for (const benchmarkBuild of benchmarksBuilds) {
-            const benchmarkResults = await runBenchmark(benchmarkBuild, messager);
-            results.push(benchmarkResults);
+    // If the runner is going to run locally, check the specification now
+    // Note that we avoid delegating the spec matching to the runner in case it does not implements it
+    if (!RunnerCtor.isRemote) {
+        const runnerSpecs = await RunnerCtor.getBrowserSpecs();
+        if (!matchSpecs(benchmarkRunnerConfig.specs, runnerSpecs)) {
+            throw new Error(`Specs: ${JSON.stringify(benchmarkRunnerConfig.specs)} do not match any avaible on the runner`);
         }
-
-        return results;
     }
+
+    const runnerInstance: ConcreteRunner = new RunnerCtor(projectConfig.benchmarkRunnerConfig);
+    return runnerInstance.run(benchmarkBuilds, projectConfig, globalConfig, runnerLogStream, interruption);
+}
+
+function loadRunnerModule(benchmarkRunner: string): ConcreteRunner {
+    try {
+        const RunnerModule: any = require(benchmarkRunner);
+        return RunnerModule.Runner || RunnerModule.default || RunnerModule;
+    } catch (e) {
+        throw new Error(`Runner "${benchmarkRunner}" not found.`);
+    }
+}
+
+export async function runBenchmarks(benchmarksBuilds: BenchmarksBundle[], messager: RunnerStream, interruption?: Interruption): Promise<BenchmarkResultsSnapshot[]> {
+    const results = [];
+
+    for (const benchmarkBundle of benchmarksBuilds) {
+        const benchmarkResults = await runBenchmarksBundle(benchmarkBundle, messager, interruption);
+        results.push(...benchmarkResults);
+    }
+
+    return results;
+}
+
+export async function getBrowserSpecs(runner: string | BuildConfig): Promise<BrowserSpec[]> {
+    const benchmarkRunner = typeof runner === 'string' ? runner: runner.projectConfig.benchmarkRunner;
+    const RunnerModule: ConcreteRunner = loadRunnerModule(benchmarkRunner);
+    return RunnerModule.getBrowserSpecs();
+}
+
+export function validateRunner(runner: string): void {
+    loadRunnerModule(runner);
 }

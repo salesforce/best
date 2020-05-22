@@ -1,0 +1,42 @@
+:host {
+    display: block;
+    position: relative;
+}
+
+h2 {
+    font-size: 1.2em;
+    margin: 0;
+}
+
+.state {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 1em;
+    padding: 0.2em 0.4em;
+}
+
+.state[data-state="IDLE"] {
+    background: rgba(0,0,0,0.12);
+}
+
+.state[data-state="BUSY"] {
+    background: rgba(255, 0, 0, 0.31);
+}
+
+.card {
+    background: rgba(199, 78, 247, 0.12);
+    border-radius: 5px;
+    margin: 1em;
+    position: relative;
+    padding: 1em;
+  }
+
+.card-shadow {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+  }
+
+  .card-shadow:hover {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  }

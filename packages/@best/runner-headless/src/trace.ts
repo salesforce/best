@@ -12,7 +12,8 @@ import { BenchmarkResults, BenchmarkMetrics, BenchmarkResultNode, BenchmarkMeasu
 const asyncReadFile = promisify(fs.readFile);
 const asyncUnlink = promisify(fs.unlink);
 const asyncExists = promisify(fs.exists);
-const TRACED_METRIC_EVENTS = ['Paint', 'Layout']
+const TRACED_METRIC_EVENTS = ['Paint', 'Layout', 'UpdateLayoutTree', 'UpdateLayerTree', 'CompositeLayers'];
+const TRACED_EVENT_NAME_ALIAS: any = { 'UpdateLayoutTree': 'RecalculateStyles' };
 
 interface TracedMetrics {
     [key: string]: BenchmarkMetrics
@@ -64,7 +65,7 @@ export const parseTrace = async (tracePath: string): Promise<TracedMetrics> => {
     let currentRun: string | false = false;
 
     for (const event of sortedEvents) {
-        if (TRACED_METRIC_EVENTS.includes(event.name) && currentRun) {
+        if (currentRun && TRACED_METRIC_EVENTS.includes(event.name)) {
             if (groupedEvents[currentRun][event.name]) {
                 groupedEvents[currentRun][event.name].push(event);
             } else {
@@ -83,7 +84,8 @@ export const parseTrace = async (tracePath: string): Promise<TracedMetrics> => {
     const tracedMetrics = Object.keys(groupedEvents).reduce((allMetrics, key): TracedMetrics => {
         const runName = key.replace((`${BenchmarkMeasureType.Execute}/`), '');
         const metrics = Object.keys(groupedEvents[key]).reduce((acc, eventName): BenchmarkMetrics => {
-            const name = eventName.toLowerCase();
+            const aliasEventName = TRACED_EVENT_NAME_ALIAS[eventName] || eventName;
+            const name = aliasEventName.toLowerCase();
             return {
                 ...acc,
                 [name]: (sumEventDurations(groupedEvents[key][eventName]) / 1000)

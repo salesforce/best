@@ -12,10 +12,10 @@ import trimPath from "./utils/trim-path";
 import countEOL from "./utils/count-eod";
 import { ProxiedStream, proxyStream } from "./utils/proxy-stream";
 import {
-    BenchmarkResultsState,
     BenchmarkRuntimeConfig,
-    BuildConfig,
     RunnerStream,
+    BenchmarksBundle,
+    BenchmarkUpdateState,
 } from "@best/types";
 
 enum State {
@@ -25,7 +25,7 @@ enum State {
     ERROR = 'ERROR',
 }
 
-interface BenchmarkStatus { state: State; displayPath: string; projectName: string }
+interface BenchmarkStatus { state: State; displayPath: string; projectName: string, progress?: BenchmarkProgress }
 type AllBencharkRunnerState = Map<string, BenchmarkStatus>
 
 interface BenchmarkProgress {
@@ -61,7 +61,7 @@ function printProjectName(projectName: string) {
     return ' ' + chalk.reset.cyan.dim(`(${projectName})`);
 }
 
-function calculateBenchmarkProgress(progress: BenchmarkResultsState, { iterations, maxDuration, minSampleCount }: BenchmarkRuntimeConfig): BenchmarkProgress {
+function calculateBenchmarkProgress(progress: BenchmarkUpdateState, { iterations, maxDuration, minSampleCount }: BenchmarkRuntimeConfig): BenchmarkProgress {
     const { executedIterations, executedTime } = progress;
     const avgIteration = executedTime / executedIterations;
     const runtime = parseInt((executedTime / 1000) + '', 10);
@@ -109,11 +109,10 @@ export default class RunnerOutputStream implements RunnerStream {
     _streamBuffer: string = '';
     _state: AllBencharkRunnerState;
     _innerLog: string = '';
-    _progress: BenchmarkProgress | null = null;
     _scheduled: NodeJS.Timeout | null = null;
     _proxyStream: ProxiedStream;
 
-    constructor(buildConfig: BuildConfig[], stream: NodeJS.WriteStream, isInteractive?: boolean) {
+    constructor(buildConfig: BenchmarksBundle[], stream: NodeJS.WriteStream, isInteractive?: boolean) {
         this.stdoutColumns = stream.columns || 80;
         this.stdoutWrite = stream.write.bind(stream);
         this.isInteractive = isInteractive !== undefined ? isInteractive : globaIsInteractive;
@@ -121,10 +120,10 @@ export default class RunnerOutputStream implements RunnerStream {
         this._proxyStream = proxyStream(stream, this.isInteractive);
     }
 
-    initState(buildConfigs: BuildConfig[]): AllBencharkRunnerState {
-        return buildConfigs.reduce((state: AllBencharkRunnerState): AllBencharkRunnerState => {
-            buildConfigs.forEach(({ benchmarkEntry, projectConfig: { projectName }}) => {
-                state.set(benchmarkEntry, {
+    initState(buildConfigs: BenchmarksBundle[]): AllBencharkRunnerState {
+        return buildConfigs.reduce((state: AllBencharkRunnerState, benchmarkBundle: BenchmarksBundle): AllBencharkRunnerState => {
+            benchmarkBundle.benchmarkBuilds.forEach(({ benchmarkEntry, benchmarkSignature, projectConfig: { projectName }}) => {
+                state.set(benchmarkSignature, {
                     projectName,
                     state: State.QUEUED,
                     displayPath: benchmarkEntry,
@@ -156,11 +155,12 @@ export default class RunnerOutputStream implements RunnerStream {
         this.stdoutWrite(str);
     }
 
-    updateRunnerState(benchmarkPath: string, state: State) {
-        const stateConfig = this._state.get(benchmarkPath);
+    updateRunnerState(benchmarkSignature: string, state: State) {
+        const stateConfig = this._state.get(benchmarkSignature);
         if (!stateConfig) {
-            throw new Error(`Unknown benchmark build started (${benchmarkPath})`);
+            throw new Error(`Unknown benchmark build started (${benchmarkSignature})`);
         }
+
         if (stateConfig.state !== State.ERROR) {
             stateConfig.state = state;
         }
@@ -187,35 +187,32 @@ export default class RunnerOutputStream implements RunnerStream {
         return `${ansiState} ${ansiProjectName} ${ansiDisplayname}\n`;
     }
 
-    printProgress(progress: BenchmarkProgress, { displayPath }: BenchmarkStatus, streamProxyBuffer?: string): string {
+    printProgress(progress: BenchmarkProgress, { displayPath }: BenchmarkStatus): string {
         const benchmarkName = chalk.bold.black(path.basename(displayPath));
         return [
             `\n${PROGRESS_TEXT} ${benchmarkName}`,
             chalk.bold.black('Avg iteration:        ') + progress.avgIteration.toFixed(2) + 'ms',
             chalk.bold.black('Completed iterations: ') + progress.executedIterations,
-            printProgressBar(progress.runtime, progress.estimated, 40),
-            streamProxyBuffer ? `Buffered console logs:\n ${streamProxyBuffer}` : ''
+            printProgressBar(progress.runtime, progress.estimated, 40)
         ].join('\n') + '\n\n';
     }
 
     updateStream() {
-        const progress = this._progress;
         let buffer = INIT_MSG;
-        let current: BenchmarkStatus | undefined;
+        let progressStr: string = '';
         for (const benchmarkState of this._state.values()) {
-            const { state, displayPath, projectName } = benchmarkState;
+            const { state, displayPath, projectName, progress } = benchmarkState;
             buffer += this.printBenchmarkState({ state, displayPath, projectName });
-            if (state === State.RUNNING) {
-                current = benchmarkState;
+            if (state === State.RUNNING && progress) {
+                progressStr += this.printProgress(progress, benchmarkState);
             }
         }
 
-        if (current && progress) {
-            buffer += this.printProgress(progress, current, this._proxyStream.readBuffer());
-        }
+        const streamProxyBuffer = this._proxyStream.readBuffer();
+        streamProxyBuffer ? `Buffered console logs:\n ${streamProxyBuffer}` : '';
 
         this.clearBufferStream();
-        this.writeBufferStream(buffer);
+        this.writeBufferStream(buffer + progressStr + streamProxyBuffer);
     }
 
     log(message: string) {
@@ -235,23 +232,23 @@ export default class RunnerOutputStream implements RunnerStream {
     }
 
     // -- Lifecycle
-    onBenchmarkStart(benchmarkPath: string) {
-        this.updateRunnerState(benchmarkPath, State.RUNNING);
+    onBenchmarkStart(benchmarkSignature: string) {
+        this.updateRunnerState(benchmarkSignature, State.RUNNING);
         if (this.isInteractive) {
             this.scheduleUpdate();
         } else {
-            const benchmarkState = this._state.get(benchmarkPath);
+            const benchmarkState = this._state.get(benchmarkSignature);
             if (benchmarkState) {
                 this.stdoutWrite(this.printBenchmarkState(benchmarkState));
             }
         }
     }
 
-    onBenchmarkEnd(benchmarkPath: string) {
-        this.updateRunnerState(benchmarkPath, State.DONE);
+    onBenchmarkEnd(benchmarkSignature: string) {
+        this.updateRunnerState(benchmarkSignature, State.DONE);
         this._innerLog = '';
 
-        const benchmarkState = this._state.get(benchmarkPath);
+        const benchmarkState = this._state.get(benchmarkSignature);
         if (benchmarkState) {
             if (this.isInteractive) {
                 if (benchmarkState.state === State.ERROR) {
@@ -267,12 +264,14 @@ export default class RunnerOutputStream implements RunnerStream {
         }
     }
 
-    onBenchmarkError(benchmarkPath: string) {
-        this.updateRunnerState(benchmarkPath, State.ERROR);
+    onBenchmarkError(benchmarkSignature: string) {
+        this.updateRunnerState(benchmarkSignature, State.ERROR);
     }
 
-    updateBenchmarkProgress(state: BenchmarkResultsState, runtimeOpts: BenchmarkRuntimeConfig) {
-        const progress = this._progress = calculateBenchmarkProgress(state, runtimeOpts);
+    updateBenchmarkProgress(benchmarkSignature: string, updatedBenchmarkState: BenchmarkUpdateState, runtimeOpts: BenchmarkRuntimeConfig) {
+        const progress = calculateBenchmarkProgress(updatedBenchmarkState, runtimeOpts);
+        const benchmarkState = this._state.get(benchmarkSignature);
+        benchmarkState!.progress = progress;
         const { executedIterations, avgIteration, estimated, runtime } = progress;
         const runIter = executedIterations.toString().padEnd(5, " ");
         const avgIter = `${avgIteration.toFixed(2)}ms`.padEnd(10, " ");
@@ -283,7 +282,7 @@ export default class RunnerOutputStream implements RunnerStream {
         } else {
             this.scheduleUpdate(2500, () => {
                 this.stdoutWrite(
-                    ` :: ran: ${runIter} | avg: ${avgIter} | remainingTime: ${remaining}s \n`
+                    ` :: ${benchmarkState!.displayPath} > ran: ${runIter} | avg: ${avgIter} | remainingTime: ${remaining}s \n`
                 );
             });
         }

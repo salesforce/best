@@ -1,10 +1,15 @@
 <template>
-    <header>
-        <h2>{name}</h2>
-    </header>
-    <div class="jobs">
-        <template for:each={jobs} for:item="job">
-            <component-job key={job.jobId} job={job}></component-job>
-        </template>
-    </div>
+    <section class="card card-shadow">
+        <header>
+            <h2>Agent {agentId} <a href={uri} target="_blank">{uri}</a></h2>
+            <div class="state" data-state={state}>{state}</div>
+        </header>
+        <div class="specs">
+            <ul>
+                <template for:each={specs} for:item="spec">
+                    <li key={spec.name}>{spec.name} {spec.version}</li>
+                </template>
+            </ul>
+        </div>
+    </section>
 </template>

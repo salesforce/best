@@ -1,10 +1,61 @@
-.container {
-    width: 800px;
-    margin: 40px auto;
+:host {
+    display: inherit;
 }
 
-header {
-    box-sizing: border-box;
+.container {
+    width: 90%;
+    margin: 100px auto;
+}
+
+/*  ==== HEADER ==== */
+
+.header {
+    background-color: #fff;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.1);
+    position: absolute;
+    width: 100%;
+}
+
+.header a:hover,
+.header a:active {
+    background-color: transparent;
+}
+
+.header ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.header li a {
+    display: block;
+    padding: 20px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
+
+.header li a:hover,
+.header .menu-btn:hover {
+    background-color: #f4f4f4;
+}
+
+.header li {
+    position: relative;
+    float: left;
+    margin-bottom: 0;
+}
+
+.header li a {
+    padding: 20px 30px;
+    font-weight: 300;
+}
+
+.header .menu li.active {
+    box-shadow: inset 0 -4px 0 var(--primary-color-blue);
 }
 
 .no-jobs {
@@ -14,30 +65,10 @@ header {
     padding: 8px 0;
 }
 
-.stats {
-    background: #ffe8be;
-    padding: 2px 12px;
-    text-align: right;
+.header .scoped {
+    position: absolute;
 }
 
-.stats:first-of-type {
-    border-radius: 4px 4px 0 0;
-}
-
-.stats:last-of-type {
-    border-radius: 0 0 4px 4px;
-}
-
-.stats span {
-    font-size: 14px;
-    text-align: right;
-    display:inline;
-    padding-right:5px;
-}
-
-.stats .label {
-    font-weight: bold;
-}
-.stats .value {
-    font-size: 12px;
+.header li.right {
+    float: right;
 }

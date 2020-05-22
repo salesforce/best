@@ -1,0 +1,17 @@
+{
+  "name": "@best/shared",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "4.0.0-beta5",
+  "description": "Best Shared",
+  "keywords": [
+    "Best",
+    "performance"
+  ],
+  "main": "build/index.js",
+  "files": [
+    "build/**/*.js"
+  ]
+}
