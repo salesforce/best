@@ -31,7 +31,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
-    "@babel/helpers": "^7.9.6",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/preset-typescript": "~7.3.3",
     "@commitlint/cli": "^8.0.0",
