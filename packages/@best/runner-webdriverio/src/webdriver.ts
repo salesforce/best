@@ -48,13 +48,15 @@ export default class WebdriverBrowser {
 
     async close() {
         if (this.browser) {
-            return await this.browser.closeWindow();
+            // TODO: (@jasonsilberman) these commands apperently dont exist anymore
+            // return await this.browser.closeWindow();
         }
     }
 
     async reloadPage() {
         if (this.browser) {
-            await this.browser.refresh();
+            // TODO: (@jasonsilberman) these commands apperently dont exist anymore
+            // await this.browser.refresh();
         }
     }
 
