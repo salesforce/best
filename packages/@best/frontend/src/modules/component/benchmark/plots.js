@@ -8,6 +8,9 @@ const colorForName = (name, fill) => {
         "layout": ['#27D046', 'rgba(39, 208, 70, 0.08)'],
         "system": ['#9DA39A', 'rgba(157, 163, 154, 0.08)'],
         "idle": ['#54494B', 'rgba(84, 73, 75, 0.08)'],
+        "recalculatestyles": ["#C490D1", "rgba(196, 144, 209, 0.8)"],
+        "updatelayertree": ["#D2BF55", "rgba(210, 191, 85, 0.8)"],
+        "compositelayers": ["#CEFF1A", "rgba(206, 255, 26, 0.8)"],
         'first-paint': ['#17BECF', 'rgba(23, 190, 207, 0.15)'], 'duration': ['#FF1E4E', 'rgba(255, 30, 78, 0.08)'] // old metrics
     }
 
