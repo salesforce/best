@@ -7,7 +7,7 @@
     },
     "version": "4.0.0-beta5",
     "dependencies": {
-        "pg": "^7.11.0",
+        "pg": "^8.2.1",
         "sqlite": "^3.0.3"
     },
     "devDependencies": {
