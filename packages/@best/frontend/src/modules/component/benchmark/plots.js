@@ -13,6 +13,10 @@ const colorForName = (name, fill) => {
 
     const colorIndex = fill ? 0 : 1;
 
+    if (! colors[normalizedName]) {
+        return 'rgba(0, 0, 0, 0)';
+    }
+
     return colors[normalizedName][colorIndex];
 }
 
@@ -137,7 +141,7 @@ export function buildTrends(benchmark, showsVariation = true) {
     if (showsVariation) {
         // create a combined dataset for graphing that has the low, high, and median values
         const combinedDatasets = buildCombinedValues(benchmark.metrics, benchmark);
-        
+
         // for each metric and then for each of (median, low, high) create the trend layout
         trends = combinedDatasets.flatMap(combined => combined.map(set => buildTrend(set, showsVariation)));
     } else {
