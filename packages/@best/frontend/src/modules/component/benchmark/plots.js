@@ -8,10 +8,17 @@ const colorForName = (name, fill) => {
         "layout": ['#27D046', 'rgba(39, 208, 70, 0.08)'],
         "system": ['#9DA39A', 'rgba(157, 163, 154, 0.08)'],
         "idle": ['#54494B', 'rgba(84, 73, 75, 0.08)'],
+        "recalculatestyles": ["#C490D1", "rgba(196, 144, 209, 0.8)"],
+        "updatelayertree": ["#D2BF55", "rgba(210, 191, 85, 0.8)"],
+        "compositelayers": ["#CEFF1A", "rgba(206, 255, 26, 0.8)"],
         'first-paint': ['#17BECF', 'rgba(23, 190, 207, 0.15)'], 'duration': ['#FF1E4E', 'rgba(255, 30, 78, 0.08)'] // old metrics
     }
 
     const colorIndex = fill ? 0 : 1;
+
+    if (! colors[normalizedName]) {
+        return 'rgba(0, 0, 0, 0)';
+    }
 
     return colors[normalizedName][colorIndex];
 }
@@ -137,7 +144,7 @@ export function buildTrends(benchmark, showsVariation = true) {
     if (showsVariation) {
         // create a combined dataset for graphing that has the low, high, and median values
         const combinedDatasets = buildCombinedValues(benchmark.metrics, benchmark);
-        
+
         // for each metric and then for each of (median, low, high) create the trend layout
         trends = combinedDatasets.flatMap(combined => combined.map(set => buildTrend(set, showsVariation)));
     } else {
