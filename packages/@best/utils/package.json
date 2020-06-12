@@ -12,7 +12,7 @@
   "main": "build/index.js",
   "dependencies": {
     "chalk": "~2.4.2",
-    "https-proxy-agent": "2.2.2",
+    "https-proxy-agent": "^5.0.0",
     "is-ci": "~2.0.0",
     "systeminformation": "~4.9.2"
   },

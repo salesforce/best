@@ -74,8 +74,8 @@ export default (config: FrontendConfig): Router => {
     })
 
     router.get('/:project/snapshots', cacheSuccesses, async (req, res): Promise<void> => {
-        const { project } = req.params
-        const { since } = req.query
+        const { project }: {project?: number} = req.params
+        const { since }: {since?: string} = req.query
 
         try {
             await db.migrate()
@@ -83,6 +83,10 @@ export default (config: FrontendConfig): Router => {
             let parsedSince: Date | undefined;
             if (since && since.length > 0) {
                 parsedSince = new Date(parseInt(since, 10))
+            }
+
+            if (! project) {
+                throw new Error("Please provide a project id.");
             }
             
             const snapshots = await db.fetchSnapshots(project, parsedSince)

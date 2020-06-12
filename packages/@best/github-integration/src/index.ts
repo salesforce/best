@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
-import Octokit from '@octokit/rest';
+import { Octokit } from '@octokit/rest';
 import { isCI } from '@best/utils';
 import { loadDbFromConfig } from '@best/api-db';
 import GithubApplicationFactory from './git-app';
