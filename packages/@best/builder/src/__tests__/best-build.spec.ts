@@ -175,4 +175,20 @@ describe('buildBenchmark', () => {
         expect(loaded.some(file => file === entry)).toBe(true);
         expect(transformed.some(file => file === entry)).toBe(true);
     });
+
+    test(`throw if bare module specifiers can't be resolved`, async () => {
+        await expect(() => buildBenchmark(
+            path.resolve(__dirname, 'fixtures', 'error-missing-external', 'error-missing-external.js'),
+            {
+                benchmarkOutput: tempDir(),
+                projectName,
+                rootDir
+            },
+            GLOBAL_CONFIG,
+            MOCK_MESSAGER,
+        )).rejects.toHaveProperty(
+            'message',
+            expect.stringMatching(/'x\/missing' is imported by .*, but could not be resolved – treating it as an external dependency/)
+        )
+    });
 });

@@ -6,7 +6,7 @@
 */
 
 import fs from 'fs';
-import { rollup, ModuleFormat } from 'rollup';
+import { rollup, OutputOptions } from 'rollup';
 import path from 'path';
 import crypto from 'crypto';
 import mkdirp from "mkdirp";
@@ -14,7 +14,7 @@ import benchmarkRollup from './rollup-plugin-benchmark-import';
 import generateHtml from './html-templating';
 import { FrozenGlobalConfig, FrozenProjectConfig, ProjectConfigPlugin, BuildConfig } from '@best/types';
 
-const BASE_ROLLUP_OUTPUT = { format: 'iife' as ModuleFormat };
+const BASE_ROLLUP_OUTPUT: OutputOptions = { format: 'iife' };
 const ROLLUP_CACHE = new Map();
 
 function md5(data: string) {
@@ -59,20 +59,25 @@ export async function buildBenchmark(entry: string, projectConfig: FrozenProject
     const benchmarkJSFileName = benchmarkName + ext;
     const benchmarkProjectFolder = path.join(benchmarkOutput, projectName);
 
-    const rollupInputOpts = {
+    buildLogStream.log('Bundling benchmark files...');
+    const bundle = await rollup({
         input: entry,
         plugins: [benchmarkRollup(), ...addResolverPlugins(projectConfig.plugins)],
         cache: ROLLUP_CACHE.get(projectName),
-        manualChunks: function () { /* guarantee one chunk */ return 'main_chunk'; }
-    };
+        manualChunks: function () { /* guarantee one chunk */ return 'main_chunk'; },
+        onwarn(warning, warn) {
+            // Make compilation fail, if any bare module can't be resolved.
+            if (typeof warning === 'object' && warning.code === 'UNRESOLVED_IMPORT') {
+                throw new Error(warning.message);
+            }
 
-    buildLogStream.log('Bundling benchmark files...');
-    const bundle = await rollup(rollupInputOpts);
+            warn(warning);
+        }
+    });
     ROLLUP_CACHE.set(projectName, bundle.cache);
 
     buildLogStream.log('Generating benchmark artifacts...');
-    const rollupOutputOpts = { ...BASE_ROLLUP_OUTPUT };
-    const { output } = await bundle.generate(rollupOutputOpts);
+    const { output } = await bundle.generate(BASE_ROLLUP_OUTPUT);
     const benchmarkSource = output[0].code; // We don't do code splitting so the first one will be the one we want
 
     // Benchmark artifacts vars
