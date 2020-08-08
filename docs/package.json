@@ -45,7 +45,7 @@
     "markdown-it-emoji": "~1.4.0",
     "markdown-link-check": "^3.7.3",
     "mkdirp": "~0.5.1",
-    "prismjs": "~1.16.0",
+    "prismjs": "~1.21.0",
     "reload": "~3.0.1",
     "watch": "^1.0.2"
   }
