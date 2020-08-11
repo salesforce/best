@@ -6,14 +6,14 @@
 */
 
 export const up = `
-CREATE TABLE projects (
+CREATE TABLE organizations (
     id SERIAL PRIMARY KEY,
     name character varying(100) NOT NULL,
     created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_release_date timestamp without time zone
 );
 
-CREATE UNIQUE INDEX projects_unique_name ON projects(name text_ops);
+CREATE UNIQUE INDEX org_unique_name ON organizations(name text_ops);
 `
 
-export const down = `DROP TABLE projects;`
+export const down = `DROP TABLE organizations;`

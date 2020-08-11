@@ -78,6 +78,10 @@ export function readConfigAndSetRootDir(configPath: string): UserConfig {
         configObject.rootDir = path.dirname(configPath);
     }
 
+    if (!configObject.orgName) {
+        throw new Error('A best project must have a orgName');
+    }
+
     if (!configObject.projectName) {
         throw new Error('A best project must have a projectName');
     }

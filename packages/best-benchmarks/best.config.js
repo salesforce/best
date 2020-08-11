@@ -6,6 +6,7 @@
 */
 
 module.exports = {
+    orgName: 'Salesforce',
     projectName: 'best-benchmark',
     metrics: ['script', 'aggregate', 'paint', 'layout'],
     specs: { name: 'chrome.headless', version: 80 },

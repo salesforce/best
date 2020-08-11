@@ -69,6 +69,7 @@ export const saveBenchmarkSummaryInDB = async (benchmarkResults: BenchmarkResult
         benchmarkResults.map(async (benchmarkResult) => {
             const { benchmarkInfo: { benchmarkSignature }, projectConfig, environment, stats } = benchmarkResult;
             const { projectName } = projectConfig;
+            const orgName  = globalConfig.orgName;
             const { lastCommit, branch } = globalConfig.gitInfo;
 
             const snapshotEnvironment = {
@@ -88,7 +89,7 @@ export const saveBenchmarkSummaryInDB = async (benchmarkResults: BenchmarkResult
 
             if (stats) {
                 const snapshots = generateSnapshots(runSettings, stats.results);
-                return db.saveSnapshots(snapshots, projectName);
+                return db.saveSnapshots(snapshots, projectName, orgName);
             } else {
                 return false;
             }

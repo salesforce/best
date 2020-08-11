@@ -7,8 +7,16 @@
 
 import { ApiDatabaseConfig } from '@best/types';
 
+export interface organization {
+    id: number;
+    name: string;
+    createdAt: string;
+    lastReleaseDate: string;
+}
+
 export interface Project {
     id: number;
+    organizationId: number;
     name: string;
     createdAt: string;
     lastReleaseDate: string;
@@ -40,6 +48,10 @@ export interface Snapshot extends TemporarySnapshot {
 export class ApiDBAdapter {
     constructor(config: ApiDatabaseConfig) {}
 
+    fetchorganizations(): Promise<organization[]> {
+        throw new Error('ApiDB.fetchorganizations() not implemented')
+    }
+
     fetchProjects(): Promise<Project[]> {
         throw new Error('ApiDB.fetchProjects() not implemented')
     }
@@ -48,7 +60,7 @@ export class ApiDBAdapter {
         throw new Error('ApiDB.fetchSnapshots() not implemented')
     }
 
-    saveSnapshots(snapshots: TemporarySnapshot[], projectName: string): Promise<boolean> {
+    saveSnapshots(snapshots: TemporarySnapshot[], projectName: string, orgName: string): Promise<boolean> {
         throw new Error('ApiDB.saveSnapshots() not implemented')
     }
 
