@@ -39,8 +39,8 @@ export const options: { [key: string]: Options } = {
     clearCache: {
         default: undefined,
         description:
-            'Clears the configured Jest cache directory and then exits. ' +
-            'Default directory can be found by calling jest --showConfig',
+            'Clears the configured Best cache directory and then exits. ' +
+            'Default directory can be found by calling best --showConfig',
         type: 'boolean',
     },
     clearResults: {
