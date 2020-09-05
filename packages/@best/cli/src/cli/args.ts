@@ -14,7 +14,7 @@ export const check = () => {
 };
 
 export const usage = 'Usage: $0 [--config=<pathToConfigFile>] [BenchmarkPathPattern]';
-export const docs = 'Documentation: https://best.lwcjs.org';
+export const docs = 'Documentation: https://bestjs.dev';
 
 export const options: { [key: string]: Options } = {
     config: {
