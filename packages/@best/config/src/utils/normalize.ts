@@ -72,7 +72,9 @@ function setCliOptionOverrides(initialOptions: UserConfig, argsCLI: CliConfig): 
                     options.isInteractive = argsCLI[key] !== undefined ? false : undefined;
                     break;
                 case 'iterations':
-                    options.benchmarkIterations = argsCLI[key];
+                    if (argsCLI[key] !== undefined) {
+                        options.benchmarkIterations = argsCLI[key];
+                    }
                     break;
                 case 'runInBatch':
                     options.runInBatch = !!argsCLI[key];
