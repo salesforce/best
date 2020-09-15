@@ -6,30 +6,23 @@
 */
 
 module.exports = {
-    orgName: 'Salesforce',
-    projectName: 'best-benchmark',
-    metrics: ['script', 'aggregate', 'paint', 'layout'],
-    specs: { name: 'chrome.headless', version: 80 },
+    orgName: "lightning",
+    projectName: 'builder-framework-benchmarks-repo',
+    specs: { name: 'chrome.headless', version: '80' },
+    benchmarkIterations: 60,
     runners: [
-        {
-            runner: "@best/runner-headless",
-            alias: "default",
-        },
-        {
-            runner: "@best/runner-remote",
-            alias: "local-remote",
-            config: {
-                uri: 'http://localhost:5001',
-                options: { authToken: 'agent' }
-            }
-        },
-        {
-            runner: "@best/runner-remote",
-            alias: "local-hub",
-            config: {
-                uri: 'http://localhost:5000',
-                options: { authToken: 'hub' }
-            }
-        }
-    ]
-};
+      {
+        alias: 'default',
+        runner: '@best/runner-headless',
+      },
+    ],
+    apiDatabase: {
+      adapter: 'sql/postgres',
+      uri: 'postgresql://postgres:123456@localhost:5432/postgres',
+      ssl: false,
+    },
+    githubConfig: {
+      owner: 'sutturu',
+      repo: 'builder-framework',
+    },
+  };  

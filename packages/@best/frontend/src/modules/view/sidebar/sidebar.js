@@ -1,9 +1,10 @@
 import { LightningElement, track, wire } from 'lwc';
 
 import { connectStore, store } from 'store/store';
-import { selectProject } from 'store/actions';
+import { selectProject, selectOrganization } from 'store/actions';
 
 export default class ViewSidebar extends LightningElement {
+    @track Organization = [];
     @track projects = [];
     @track selectedId;
 
@@ -32,6 +33,14 @@ export default class ViewSidebar extends LightningElement {
         }
     }
 
+    selectOrganization(event) {
+        const organizationId = parseInt(event.target.dataset.id,10);
+        const organization = this.organizations.find(org => org.id === organizationId);
+        if (organization) {
+            store.disptach(selectOrganization(organization, true));
+        }
+    }
+    
     selectProject(event) {
         const projectId = parseInt(event.target.dataset.id, 10);
         const project = this.projects.find(proj => proj.id === projectId);

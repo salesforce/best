@@ -18,6 +18,12 @@ function timeQuery(project, timing) {
     return '';
 }
 
+export async function fetchOrganizations() {
+    const response = await fetch(createURL('organizations'));
+    const { organizations } = await response.json();
+    return organizations || [];
+}
+
 export async function fetchProjects() {
     const response = await fetch(createURL('projects'));
     const { projects } = await response.json();
