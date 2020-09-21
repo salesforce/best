@@ -4,9 +4,9 @@ import { connectStore, store } from 'store/store';
 import { selectProject, selectOrganization } from 'store/actions';
 
 export default class ViewSidebar extends LightningElement {
-    @track Organization = [];
+    @track organization = [];
     @track projects = [];
-    @track selectedId;
+    @track selectedId;  
 
     hasSelectedInitialProject = false;
 

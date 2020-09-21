@@ -9,8 +9,6 @@ export const up = `
 CREATE TABLE projects (
     id SERIAL PRIMARY KEY,
     name character varying(100) NOT NULL,
-    organization_id integer NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
-    name character varying(100) NOT NULL,
     created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_release_date timestamp without time zone
 );

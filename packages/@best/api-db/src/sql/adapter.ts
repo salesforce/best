@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
-import { ApiDBAdapter, Project, organization, TemporarySnapshot, Snapshot } from '../types'
+import { ApiDBAdapter, Project, Organization, TemporarySnapshot, Snapshot } from '../types'
 import transformer from './transformer'
 import { SQLDatabase } from './db'
 import { ApiDatabaseConfig } from '@best/types';
@@ -16,8 +16,8 @@ export class SQLAdapter extends ApiDBAdapter {
         super(config)
         this.db = db
     }
-    async fetchorganizations(): Promise<organization[]> {
-        const results = await this.db.fetchorganizations()
+    async fetchOrganizations(): Promise<Organization[]> {
+        const results = await this.db.fetchOrganizations()
 
         return transformer.organizations(results)
     }
@@ -36,12 +36,15 @@ export class SQLAdapter extends ApiDBAdapter {
 
     async saveSnapshots(snapshots: TemporarySnapshot[], projectName: string, orgName: string): Promise<boolean> {
         
-        let orgResults = await this.db.fetchorganization(orgName);
-        if (orgResults.rows.length < 1) {
-            await this.db.createorganization(orgName, true);
-            orgResults = await this.db.fetchorganization(orgName);
-        }
+        let orgResults = await this.db.fetchOrganization(orgName);
         let projectResult = await this.db.fetchProject(projectName);
+        if (orgResults.rows.length < 1) {
+            await this.db.createOrganization(orgName, true);
+            orgResults = await this.db.fetchOrganization(orgName);
+            if (projectResult.rows.length > 0) {
+                await this.db.updateProject(projectName,orgResults.rows[0].id)
+            }
+        }
         if (projectResult.rows.length < 1) {
             await this.db.createProject(projectName, orgResults.rows[0].id, true)
             projectResult = await this.db.fetchProject(projectName)

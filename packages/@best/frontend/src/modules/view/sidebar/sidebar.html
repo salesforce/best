@@ -7,7 +7,7 @@
     <section class="Organizations">
         <h3>Organization</h3>
         <template for:each={organizations} for:item="organization">
-            <div onclict={selectOrganization} key={organization.id} data-id={organization.id} class={organization.classes}>
+            <div onclick={selectOrganization} key={organization.id} data-id={organization.id} class={organization.classes}>
                 <span data-id={organization.id}>{organization.name}</span>
             </div>
             <template for:each={projects} for:item="project">

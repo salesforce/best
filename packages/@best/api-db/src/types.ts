@@ -7,7 +7,7 @@
 
 import { ApiDatabaseConfig } from '@best/types';
 
-export interface organization {
+export interface Organization {
     id: number;
     name: string;
     createdAt: string;
@@ -48,8 +48,8 @@ export interface Snapshot extends TemporarySnapshot {
 export class ApiDBAdapter {
     constructor(config: ApiDatabaseConfig) {}
 
-    fetchorganizations(): Promise<organization[]> {
-        throw new Error('ApiDB.fetchorganizations() not implemented')
+    fetchOrganizations(): Promise<Organization[]> {
+        throw new Error('ApiDB.fetchOrganizations() not implemented')
     }
 
     fetchProjects(): Promise<Project[]> {

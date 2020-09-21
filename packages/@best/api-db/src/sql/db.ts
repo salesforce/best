@@ -25,11 +25,11 @@ export interface SQLQueryResult {
 export abstract class SQLDatabase {
     abstract query(text: string, params: any[]): Promise<SQLQueryResult>
 
-    fetchorganizations(): Promise<SQLQueryResult> {
+    fetchOrganizations(): Promise<SQLQueryResult> {
         return this.query('SELECT * FROM organizations ORDER BY created_at', [])
     }
 
-    fetchorganization(name: string): Promise<SQLQueryResult> {
+    fetchOrganization(name: string): Promise<SQLQueryResult> {
         return this.query('SELECT * FROM organizations WHERE "name" = $1 LIMIT 1', [name])
     }
 
@@ -48,17 +48,23 @@ export abstract class SQLDatabase {
     fetchProject(name: string): Promise<SQLQueryResult> {
         return this.query('SELECT * FROM projects WHERE "name" = $1 LIMIT 1', [name])
     }
-    async createorganization(name: string, swallowNonUniqueErrors: boolean = false): Promise<SQLQueryResult> {
+
+    updateProject(name: string, organization_id: number): Promise<SQLQueryResult> {
+        return this.query('UPDATE projects SET "organization_id" = $1 WHERE "name" = $2 and organization_id IS NULL', [organization_id, name]);
+    }
+
+    async createOrganization(name: string, swallowNonUniqueErrors: boolean = false): Promise<SQLQueryResult> {
         try {
             return await this.query('INSERT INTO organizations("name") VALUES ($1)', [name]);
         }
         catch (err) {
             if (swallowNonUniqueErrors && (err.constraint === 'org_unique_name' || err.code === 'SQLITE_CONSTRAINT')) {
-                return this.fetchorganization(name);
+                return this.fetchOrganization(name);
             }
             throw err;
         }
     }
+
     async createProject(name: string, organization_id: number, swallowNonUniqueErrors: boolean = false): Promise<SQLQueryResult> {
         try {
             return await this.query('INSERT INTO projects("name","organization_id") VALUES ($1, $2)', [name, organization_id]);

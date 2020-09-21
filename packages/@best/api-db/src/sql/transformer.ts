@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
-import { Project, Snapshot, Metric, organization } from '../types';
+import { Project, Snapshot, Metric, Organization } from '../types';
 
 const denormalizeMetrics = (metrics: any): Metric[] => {
     return Object.keys(metrics).map((key): Metric => ({
@@ -16,8 +16,8 @@ const denormalizeMetrics = (metrics: any): Metric[] => {
 }
 
 export default {
-    organizations: (query: any): organization[] => {
-        return query.rows.map((row: any): organization => ({
+    organizations: (query: any): Organization[] => {
+        return query.rows.map((row: any): Organization => ({
             id: row.id,
             name: row.name,
             createdAt: row.created_at,
