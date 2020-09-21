@@ -1,4 +1,6 @@
 import {
+    ORGANIZATIONS_RECEIVED,
+    ORGANIZATIONS_SELECTED,
     PROJECTS_RECEIVED,
     PROJECT_SELECTED,
     CLEAR_BENCHMARKS,
@@ -11,6 +13,30 @@ import {
     VIEW_RESET,
     COMMIT_INFO_RECEIVED
 } from 'store/shared';
+
+export function organizations(
+    state = {
+        items: [],
+        selectedOrganizationId: undefined
+    },
+    action
+) {
+    switch (action.type) {
+        case ORGANIZATIONS_RECEIVED:
+            return {
+                ...state,
+                items: action.organizations
+            };
+        case ORGANIZATIONS_SELECTED:
+            return {
+                ...state,
+                selectedOrganizationId: action.id
+            };
+        default:
+            return state;
+    }
+}
+
 
 export function projects(
     state = {

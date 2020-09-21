@@ -22,6 +22,7 @@ export interface UserConfig {
     [key: string]: any;
     rootDir: string;
     projectName: string;
+    orgName: string;
     nonFlagArgs: string[];
 }
 
@@ -115,6 +116,7 @@ export interface NormalizedConfig {
     moduleFileExtensions: string[],
     moduleNameMapper: { [moduleName:string]: string },
     modulePathIgnorePatterns: string[],
+    orgName: string,
     projectName: string,
     projects: string[],
     plugins: ProjectConfigPlugin[],
@@ -138,6 +140,7 @@ export interface NormalizedConfig {
 
 export interface GlobalConfig {
     gitIntegration: boolean;
+    orgName: string;
     projects: string[];
     rootDir: string;
     runInBand: boolean;
@@ -164,6 +167,7 @@ export interface ProjectConfig {
     benchmarkIterations: number;
     benchmarkCustomAssets: string;
     cacheDirectory: string;
+    orgName: string;
     projectName: string;
     plugins: ProjectConfigPlugin[];
     metrics: BenchmarkMetricNames[];

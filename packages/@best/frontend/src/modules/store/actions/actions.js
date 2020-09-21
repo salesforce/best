@@ -1,4 +1,6 @@
 import {
+    ORGANIZATIONS_RECEIVED,
+    ORGANIZATION_SELECTED,
     PROJECTS_RECEIVED,
     PROJECT_SELECTED,
     CLEAR_BENCHMARKS,
@@ -17,6 +19,31 @@ import * as transformer from 'store/transformer';
 
 function normalizeCommit(commit) {
     return commit.slice(0, 7);
+}
+
+function shouldFetchOrganizations(state) {
+    return !state.organizations.items.length;
+}
+
+function organizationsReceived(organizations) {
+    return {type: ORGANIZATIONS_RECEIVED, organizations};
+}
+
+function fetchOrganizations() {
+    return async (dispatch) => {
+        const organizations = await api.fetchOrganizations();
+        dispatch(organizationsReceived(organizations));
+    }
+}
+
+export function fetchOrganizationsIfNeeded() {
+    return (dispatch, getState) => {
+        if (shouldFetchOrganizations(getState())) {
+            return dispatch(fetchOrganizations());
+        }
+
+        return Promise.resolve()
+    };
 }
 
 function shouldFetchProjects(state) {
@@ -108,6 +135,15 @@ export function fetchComparison(benchmarkName, commits) {
         const results = filterSnapshotsForCommits(benchmarkName, commits, getState());
         dispatch(comparisonChanged({ results, commits, benchmarkName }))
     }
+}
+
+export function selectOrganization(organization, shouldResetView) {
+    
+    if (shouldResetView) { dispatch(resetView()) }
+
+    dispatch({ type: ORGANIZATION_SELECTED, id: organization.id });
+    
+    return dispatch(fetchProjects(organization));
 }
 
 export function selectProject(project, shouldResetView) {

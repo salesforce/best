@@ -4,6 +4,10 @@ function getMocked() {
     return INSERT_MOCKED_DATA;
 }
 
+export async function fetchOrganizations() {
+    return getMocked().organizations;
+}
+
 export async function fetchProjects() {
     return getMocked().projects;
 }
