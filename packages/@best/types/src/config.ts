@@ -64,6 +64,7 @@ export interface Interruption {
 export interface ApiDatabaseConfig {
     adapter: string;
     uri: string;
+    ssl?: any;
 }
 
 export interface FrontendConfig {
