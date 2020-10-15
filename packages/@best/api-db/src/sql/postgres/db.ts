@@ -18,9 +18,7 @@ export default class PostgresDatabase extends SQLDatabase {
         super()
         this.pool = new Pool({
             connectionString: config.uri,
-            ssl: {
-                rejectUnauthorized: false
-            }
+            ssl: config.ssl
         })
     }
 
