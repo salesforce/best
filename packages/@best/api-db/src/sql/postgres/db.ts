@@ -10,15 +10,17 @@ import { SQLDatabase, SQLQueryResult } from '../db'
 import { ApiDatabaseConfig } from '@best/types';
 import { migrate } from './migrate';
 
+const PGSSLMODE = process.env.PGSSLMODE;
+
 export default class PostgresDatabase extends SQLDatabase {
     pool: Pool
     migrated = false;
 
     constructor(config: ApiDatabaseConfig) {
-        super()
+        super();
         this.pool = new Pool({
             connectionString: config.uri,
-            ssl: config.ssl
+            ssl: config.ssl || PGSSLMODE ? { rejectUnauthorized: false } : false
         })
     }
 
