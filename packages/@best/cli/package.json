@@ -34,7 +34,7 @@
     "rimraf": "~2.6.2",
     "simple-git": "~1.113.0",
     "simple-statistics": "^6.0.1",
-    "yargs": "~11.0.0"
+    "yargs": "^16.1.0"
   },
   "devDependencies": {
     "ansi-regex": "^4.1.0"
