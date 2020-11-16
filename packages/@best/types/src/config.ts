@@ -61,10 +61,15 @@ export interface Interruption {
     requestInterruption() :void;
 }
 
+export interface ApiDatabaseFilteringConfig {
+    allowTemporary?: boolean;
+}
+
 export interface ApiDatabaseConfig {
     adapter: string;
     uri: string;
     ssl?: any;
+    filtering?: ApiDatabaseFilteringConfig;
 }
 
 export interface FrontendConfig {

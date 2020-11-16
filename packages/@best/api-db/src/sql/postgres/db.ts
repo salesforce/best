@@ -17,7 +17,7 @@ export default class PostgresDatabase extends SQLDatabase {
     migrated = false;
 
     constructor(config: ApiDatabaseConfig) {
-        super();
+        super(config);
         this.pool = new Pool({
             connectionString: config.uri,
             ssl: config.ssl || PGSSLMODE ? { rejectUnauthorized: false } : false

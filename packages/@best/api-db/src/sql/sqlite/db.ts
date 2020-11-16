@@ -15,7 +15,7 @@ export default class SQLiteDatabase extends SQLDatabase {
     migrated = false;
 
     constructor(config: ApiDatabaseConfig) {
-        super()
+        super(config);
         this.dbPromise = sqlite.open(config.uri, { verbose: true })
     }
 
