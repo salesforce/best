@@ -23,6 +23,19 @@ const colorForName = (name, fill) => {
     return colors[normalizedName][colorIndex];
 }
 
+function buildCommitNames({ commits, isTemporary }) {
+    const indices = {};
+    const baseNames = commits.map((commit, index) => {
+        const commitName = commit.slice(0, 7);
+        (indices[commitName] = indices[commitName] || []).push(index);
+        return commitName;
+    });
+
+    return baseNames.map((commit, index) => {
+        return isTemporary[index] ? `${commit}-${indices[commit].indexOf(index)}` : commit;
+    });
+}
+
 export function buildLayout(title, isFirst) {
     return {
         height: isFirst ? 400 * 1.15 : 400,
@@ -57,7 +70,7 @@ export function buildLayout(title, isFirst) {
 function buildLineTrend({ dates, values, name, commits }, showsVariation) {
     return {
         y: values,
-        x: commits.map(commit => commit.slice(0, 7)),
+        x: commits,
         text: dates,
         mode: 'lines+markers',
         name,
@@ -77,7 +90,7 @@ function buildLineTrend({ dates, values, name, commits }, showsVariation) {
 function buildVarianceTrend({ dates, values, name, commits }) {
     return {
         y: values,
-        x: commits.map(commit => commit.slice(0, 7)),
+        x: commits,
         text: dates,
         mode: 'lines',
         name: name,
@@ -141,14 +154,30 @@ export function normalizeTitle(benchmarkName) {
 
 export function buildTrends(benchmark, showsVariation = true) {
     let trends;
+
+    const labeledBenchmark = {
+        ...benchmark,
+        commits: buildCommitNames(benchmark)
+    };
+
     if (showsVariation) {
         // create a combined dataset for graphing that has the low, high, and median values
-        const combinedDatasets = buildCombinedValues(benchmark.metrics, benchmark);
+        const combinedDatasets = buildCombinedValues(benchmark.metrics, labeledBenchmark);
 
         // for each metric and then for each of (median, low, high) create the trend layout
         trends = combinedDatasets.flatMap(combined => combined.map(set => buildTrend(set, showsVariation)));
     } else {
-        trends = benchmark.metrics.map(metric => buildLineTrend({ commits: benchmark.commits, keys: benchmark.commitDates, values: metric.durations, name: metric.name }, showsVariation));
+        trends = benchmark.metrics.map(
+            metric => buildLineTrend(
+                {
+                    commits: labeledBenchmark.commits,
+                    keys: benchmark.commitDates,
+                    values: metric.durations,
+                    name: metric.name
+                },
+                showsVariation
+            )
+        );
     }
 
     return trends;
