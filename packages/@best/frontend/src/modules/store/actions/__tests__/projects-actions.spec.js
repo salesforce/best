@@ -30,7 +30,9 @@ const mockFetchProjects = () => {
     return { expectedAction, response }
 }
 
-const mockSelectProject = () => {
+const cloneSortSnapshots = (snapshots) => [...snapshots].sort((a, b) => a.id - b.id);
+
+const mockSelectProject = (withTemporary = false) => {
     const projectId = 1
 
     const projects = {
@@ -48,28 +50,55 @@ const mockSelectProject = () => {
         commit: 'aaaaaaa',
         commitDate: '2019-06-21 17:23:24',
         metrics: [{'name': 'metric-a', 'duration': 5, 'stdDeviation': 1}],
+        temporary: false,
         environmentHash: 'asdf',
         similarityHash: 'asdf'
     }]
+
+    const responseWithTemporary = [
+        {
+            id: 2,
+            projectId,
+            name: 'bench-1',
+            commit: 'aaaaaaa',
+            commitDate: '2019-06-21 17:27:30',
+            metrics: [{'name': 'metric-a', 'duration': 6, 'stdDeviation': 2}],
+            temporary: true,
+            environmentHash: 'asdf',
+            similarityHash: 'asdf'
+        },
+        ...response
+    ]
 
     const transformedResponse = [{
         commitDates: ['June 21'],
         commits: ['aaaaaaa'],
         environmentHashes: ['asdf'],
         similarityHashes: ['asdf'],
+        isTemporary: [false],
         metrics: [{'name': 'metric-a', 'durations': [5], 'stdDeviations': [1]}],
         name: 'bench-1'
     }]
 
+    const transformedResponseWithTemporary = [{
+        commitDates: ['June 21', 'June 21'],
+        commits: ['aaaaaaa', 'aaaaaaa'],
+        environmentHashes: ['asdf', 'asdf'],
+        similarityHashes: ['asdf', 'asdf'],
+        isTemporary: [false, true],
+        metrics: [{'name': 'metric-a', 'durations': [5, 6], 'stdDeviations': [1, 2]}],
+        name: 'bench-1'
+    }]
+
     fetchMock.getOnce(/snapshots/, {
-        body: { snapshots: response },
+        body: { snapshots: withTemporary ? responseWithTemporary : response },
         headers: { 'content-type': 'application/json' }
     })
 
     const benchmarksReceived = {
         type: types.BENCHMARKS_RECEIVED,
-        snapshots: response,
-        benchmarks: transformedResponse
+        snapshots: cloneSortSnapshots(withTemporary ? responseWithTemporary : response),
+        benchmarks: withTemporary ? transformedResponseWithTemporary : transformedResponse
     }
 
     const clearBenchmarks = {
@@ -114,12 +143,22 @@ describe('projects actions', () => {
     })
 
     describe('selectProject', () => {
-        it('should dispatch: clearBenchmarks, resetView, benchmarksReceived, and projectSelected', async () => {
-            const { expectedActions, projects, projectId } = mockSelectProject();
+        describe('should dispatch: clearBenchmarks, resetView, benchmarksReceived, and projectSelected', () => {
+            it('for normal responses', async () => {
+                const { expectedActions, projects, projectId } = mockSelectProject();
 
-            const store = mockStore({ projects, view: { timing: 'all' } })
-            await store.dispatch(actions.selectProject({ id: projectId }, true))
-            expect(store.getActions()).toEqual(expectedActions)
+                const store = mockStore({ projects, view: { timing: 'all' } })
+                await store.dispatch(actions.selectProject({ id: projectId }, true))
+                expect(store.getActions()).toEqual(expectedActions)
+            })
+
+            it('for unsorted responses that include temporary results', async () => {
+                const { expectedActions, projects, projectId } = mockSelectProject(true);
+
+                const store = mockStore({ projects, view: { timing: 'all' } })
+                await store.dispatch(actions.selectProject({ id: projectId }, true))
+                expect(store.getActions()).toEqual(expectedActions)
+            })
         })
     })
 })

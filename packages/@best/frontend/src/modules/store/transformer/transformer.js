@@ -44,6 +44,7 @@ const normalizeBenchmark = (benchmark) => {
 }
 
 export const snapshotsToBenchmarks = (snapshots) => {
+    snapshots.sort((a, b) => a.id - b.id);
     const benchesByKeys = snapshots.reduce((acc, snap) => ({
         ...acc,
         [snap.name]: {
@@ -52,6 +53,7 @@ export const snapshotsToBenchmarks = (snapshots) => {
             commitDates: [...accumulateProperty(snap, acc[snap.name], 'commitDate')],
             environmentHashes: [...accumulateProperty(snap, acc[snap.name], 'environmentHash', 'environmentHashes')],
             similarityHashes: [...accumulateProperty(snap, acc[snap.name], 'similarityHash', 'similarityHashes')],
+            isTemporary: [...accumulateProperty(snap, acc[snap.name], 'temporary', 'isTemporary')],
             metrics: mergeMetrics(snap, acc[snap.name])
         }
     }), {})

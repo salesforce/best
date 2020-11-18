@@ -5,6 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
+import { ApiDatabaseConfig } from '@best/types';
 import { TemporarySnapshot } from '../types'
 
 const normalizeMetrics = (metrics: any) => {
@@ -23,6 +24,12 @@ export interface SQLQueryResult {
 }
 
 export abstract class SQLDatabase {
+    private config: ApiDatabaseConfig;
+
+    protected constructor(config: ApiDatabaseConfig) {
+        this.config = config;
+    }
+
     abstract query(text: string, params: any[]): Promise<SQLQueryResult>
 
     fetchProjects(): Promise<SQLQueryResult> {
@@ -30,11 +37,14 @@ export abstract class SQLDatabase {
     }
 
     fetchSnapshots(projectId: number, since: Date | undefined): Promise<SQLQueryResult> {
+        const filtering = this.config.filtering || {};
+        const temporaryFilter = filtering.allowTemporary ? '' : `AND "temporary" = '0'`;
+
         if (since) {
-            return this.query(`SELECT * FROM snapshots WHERE "project_id" = $1 AND "temporary" = '0' AND "commit_date" > $2 ORDER BY commit_date, name`, [projectId, since])
+            return this.query(`SELECT * FROM snapshots WHERE "project_id" = $1 ${temporaryFilter} AND "commit_date" > $2 ORDER BY commit_date, name`, [projectId, since])
         }
 
-        return this.query(`SELECT * FROM snapshots WHERE "project_id" = $1 AND "temporary" = '0' ORDER BY commit_date, name`, [projectId])
+        return this.query(`SELECT * FROM snapshots WHERE "project_id" = $1 ${temporaryFilter} ORDER BY commit_date, name`, [projectId])
     }
 
     fetchProject(name: string): Promise<SQLQueryResult> {
