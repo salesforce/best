@@ -24,11 +24,15 @@ const BROWSER_ARGS = [
     '--enable-precise-memory-info',
 ];
 
-const PUPPETEER_OPTIONS = { args: BROWSER_ARGS };
+const PUPPETEER_OPTIONS: puppeteer.LaunchOptions = { args: BROWSER_ARGS };
 
 function tempDir() {
     const TEMP_DIR_PREFIX = 'runner-headless-temp';
     return fs.mkdtempSync(path.join(os.tmpdir(), TEMP_DIR_PREFIX));
+}
+
+interface HeadlessRunnerConfig {
+    readonly launchOptions?: Readonly<puppeteer.LaunchOptions>;
 }
 
 export default class HeadlessBrowser {
@@ -48,7 +52,9 @@ export default class HeadlessBrowser {
     }
 
     async initialize() {
-        this.browser = await puppeteer.launch(PUPPETEER_OPTIONS);
+        const runnerConfig: HeadlessRunnerConfig = this.projectConfig.benchmarkRunnerConfig || {};
+        const { launchOptions = {} } = runnerConfig;
+        this.browser = await puppeteer.launch({ ...PUPPETEER_OPTIONS, ...launchOptions });
         this.page = await this.browser.newPage();
         this.page.on('pageerror', (error: Error) => this.pageError = error);
         await this.page.goto(this.pageUrl);
