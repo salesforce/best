@@ -119,6 +119,21 @@ The Best configuration file (`best.config.js`) supports the following options.
 }
 ```
 
+With `filtering.allowTemporary` set to true, the SQL database adapters (both Postgres and SQLite) will include temporary results in the snapshots available via the frontend API.
+
+```js
+{
+    apiDatabase: {
+        adapter: 'sql/postgres',
+        uri: `postgresql://localhost`,
+        ssl: false,
+        filtering: {
+            allowTemporary: true
+        }
+    }
+}
+```
+
 ### `commentThreshold`
 
 `number` For use with the [GitHub Integration](/guide/github-integration), this specifies the threshold for when Best posts a comment about performance on the pull request.
