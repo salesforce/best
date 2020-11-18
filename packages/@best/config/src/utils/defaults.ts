@@ -21,6 +21,7 @@ const defaultOptions = {
     metrics: ['aggregate', 'script', 'recalculatestyles', 'layout', 'updatelayertree', 'paint', 'compositelayers', 'system', 'idle'] as BenchmarkMetricNames[],
     cacheDirectory: cacheDirectory(),
     useHttp: false,
+    assets: [],
     openPages: false,
     moduleDirectories: ['node_modules'],
     moduleFileExtensions: ['js'],

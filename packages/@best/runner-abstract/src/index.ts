@@ -5,6 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
+import fs from 'fs';
 import { dirname, basename } from 'path';
 import express from 'express';
 import { getSystemInfo } from '@best/utils';
@@ -29,7 +30,9 @@ export default abstract class AbstractRunner {
 
     static isRemote: boolean = false;
 
-    initializeServer(benchmarkEntry: string, useHttp: boolean): Promise<{ terminate:Function, url: string }> {
+    initializeServer(benchmarkEntry: string, projectConfig: FrozenProjectConfig): Promise<{ terminate:Function, url: string }> {
+        const { assets, useHttp } = projectConfig;
+
         if (!useHttp) {
             return Promise.resolve({ url: `file://${benchmarkEntry}`, terminate: () => {}});
         }
@@ -37,6 +40,21 @@ export default abstract class AbstractRunner {
         return new Promise((resolve) => {
             const app = express();
             app.use(express.static(dirname(benchmarkEntry)));
+
+            if (Array.isArray(assets)) {
+                for (const { path: assetDir, alias } of assets) {
+                    if (!assetDir || !fs.existsSync(assetDir)) {
+                        throw new Error(`Invalid asset path: '${assetDir}'`);
+                    }
+
+                    if (alias) {
+                        app.use(`/${alias}`, express.static(assetDir));
+                    } else {
+                        app.use(express.static(assetDir));
+                    }
+                }
+            }
+
             const server = app.listen(() => {
                 const { port }: any = server.address();
                 resolve({
