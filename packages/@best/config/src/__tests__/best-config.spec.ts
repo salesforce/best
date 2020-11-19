@@ -9,6 +9,7 @@ import path from 'path';
 import { readConfig } from '../index';
 
 const CONFIG_FIXTURE = path.resolve(__dirname, 'fixtures', 'best_config_js');
+const CONFIG_FIXTURE_OVERRIDES = path.resolve(__dirname, 'fixtures', 'best_config_overrides_js');
 
 describe('config file resolution', () => {
     test('throw if not config is found in the directory', async () => {
@@ -48,5 +49,17 @@ describe('config normalization', () => {
         const iterations = 100;
         const config = await readConfig({ iterations }, CONFIG_FIXTURE);
         expect(config.projectConfig.benchmarkIterations).toBe(iterations);
+    });
+
+    describe('mainBranch', () => {
+        test('has the expected fallback', async () => {
+            const config = await readConfig({}, CONFIG_FIXTURE);
+            expect(config.globalConfig.mainBranch).toBe('master');
+        });
+
+        test('can be configured', async () => {
+            const config = await readConfig({}, CONFIG_FIXTURE_OVERRIDES);
+            expect(config.globalConfig.mainBranch).toBe('test-branch');
+        });
     });
 });
