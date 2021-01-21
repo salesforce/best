@@ -18,7 +18,7 @@
     "@best/runner-remote": "4.0.0-beta8",
     "@best/utils": "4.0.0-beta8",
     "express": "~4.16.2",
-    "socket.io": "~2.2.0",
+    "socket.io": "~2.4.0",
     "socket.io-file": "~2.0.31",
     "yargs": "^16.1.0"
   },
