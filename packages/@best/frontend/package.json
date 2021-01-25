@@ -16,7 +16,6 @@
         "@lwc/compiler": "^1.0.0",
         "@lwc/engine": "^1.0.0",
         "@lwc/rollup-plugin": "^1.0.0",
-        "apicache": "^1.4.0",
         "compression": "^1.7.4",
         "express": "^4.17.1",
         "lwc-services": "^1",
@@ -30,7 +29,6 @@
         "rollup-plugin-terser": "^5.0.0"
     },
     "devDependencies": {
-        "@types/apicache": "^1.2.0",
         "@types/compression": "^0.0.36",
         "@types/express": "^4.16.1",
         "@types/helmet": "^0.0.43",
