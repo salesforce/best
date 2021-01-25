@@ -152,12 +152,20 @@ The Best configuration file (`best.config.js`) supports the following options.
 
 `array` The list of runners to run benchmarks.
 
+For the headless runner, [Puppeteer launch options](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#puppeteerlaunchoptions) can be provided using the `launchOptions` property in the runner config.
+
 ```js
 {
     runners: [
         {
             runner: "@best/runner-headless",
-            alias: "default"
+            alias: "default",
+            config: {
+                launchOptions: {
+                    headless: false,
+                    devtools: true
+                }
+            }
         },
         {
             runner: "@best/runner-remote",
