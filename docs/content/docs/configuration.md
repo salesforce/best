@@ -98,6 +98,12 @@ The Best configuration file (`best.config.js`) supports the following options.
 
 `string` Specifies the name of the benchmarking project.
 
+### `mainBranch`
+
+`string` Specifies the name of the main branch, defaults to `master`.
+
+When best is not run on the main branch the snapshot is marked as temporary.
+
 ### `externalStorage`
 
 `string` Allows saving the results in an arbitrary storage system. Specify the external storage adapter to use. Currently Best supports AWS with the `@best/store-aws` adapter.

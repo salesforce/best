@@ -11,6 +11,7 @@ import { BenchmarkMetricNames } from '@best/types';
 const defaultOptions = {
     cache: true,
     gitIntegration: false,
+    mainBranch: 'master',
     commentThreshold: 5,
     specs: undefined,
     generateHTML: false,

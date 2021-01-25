@@ -113,6 +113,7 @@ export interface NormalizedConfig {
     isInteractive?: boolean,
     runInBatch?: boolean;
     openPages: boolean,
+    mainBranch: string;
     moduleDirectories: string[],
     moduleFileExtensions: string[],
     moduleNameMapper: { [moduleName:string]: string },
@@ -141,6 +142,7 @@ export interface NormalizedConfig {
 export interface GlobalConfig {
     gitIntegration: boolean;
     projects: string[];
+    mainBranch: string;
     rootDir: string;
     runInBand: boolean;
     compareStats?: string[];

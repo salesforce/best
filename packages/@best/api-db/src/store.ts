@@ -83,8 +83,8 @@ export const saveBenchmarkSummaryInDB = async (benchmarkResults: BenchmarkResult
                 commit: lastCommit.hash,
                 commitDate: lastCommit.date,
                 environmentHash,
-                temporary: branch !== 'master'
-            }
+                temporary: branch !== globalConfig.mainBranch
+            };
 
             if (stats) {
                 const snapshots = generateSnapshots(runSettings, stats.results);
