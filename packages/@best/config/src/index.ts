@@ -39,6 +39,7 @@ function generateProjectConfigs(options: NormalizedConfig, isRoot: boolean, gitI
         cache: options.cache,
         cacheDirectory: options.cacheDirectory,
         useHttp: options.useHttp,
+        assets: options.assets,
         moduleDirectories: options.moduleDirectories,
         moduleFileExtensions: options.moduleFileExtensions,
         plugins: options.plugins,

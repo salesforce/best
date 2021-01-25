@@ -119,6 +119,25 @@ The Best configuration file (`best.config.js`) supports the following options.
 }
 ```
 
+### `assets`
+
+`array` The list of static asset sources to configure.
+
+If `alias` is not specified the assets are served from `/`.
+
+When `alias` is specified the assets are served from that path, for example `/assets`.
+
+```js
+{
+    assets: [{
+        path: './public/'
+    }, {
+        alias: '/assets',
+        path: '/path/to/node_modules/my-static-assets/dist/'
+    }]
+}
+```
+
 ### `commentThreshold`
 
 `number` For use with the [GitHub Integration](/guide/github-integration), this specifies the threshold for when Best posts a comment about performance on the pull request.

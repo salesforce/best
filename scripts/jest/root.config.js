@@ -20,6 +20,7 @@ module.exports = {
         '<rootDir>/packages/@best/agent-frontend',
         '<rootDir>/packages/@best/config',
         '<rootDir>/packages/@best/builder',
+        '<rootDir>/packages/@best/runner-abstract',
         '<rootDir>/packages/@best/runner-headless',
         '<rootDir>/packages/@best/cli',
     ]

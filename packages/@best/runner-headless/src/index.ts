@@ -19,10 +19,9 @@ export default class Runner extends AbstractRunner {
         const snapshotResults: BenchmarkResultsSnapshot[] = [];
         for (const benchmarkInfo of benchmarkBuilds) {
             const { benchmarkEntry, benchmarkRemoteEntry, benchmarkSignature } = benchmarkInfo;
-            const { useHttp } = projectConfig;
             const runtimeOptions = this.getRuntimeOptions(projectConfig);
             const state = this.initializeBenchmarkState();
-            const { url, terminate } = await this.initializeServer(benchmarkRemoteEntry || benchmarkEntry, useHttp);
+            const { url, terminate } = await this.initializeServer(benchmarkRemoteEntry || benchmarkEntry, projectConfig);
             const browser = new HeadlessBrowser(url, projectConfig);
 
             try {

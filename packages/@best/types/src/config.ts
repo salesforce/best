@@ -105,6 +105,7 @@ export interface NormalizedConfig {
     gitIntegration: boolean,
     generateHTML: boolean,
     useHttp: boolean,
+    assets: AssetConfig[],
     externalStorage?: string,
     apiDatabase: ApiDatabaseConfig,
     commentThreshold: number,
@@ -153,7 +154,13 @@ export interface GlobalConfig {
 
 export type ProjectConfigPlugin = string | [string, { [key : string]: any }]
 
+export type AssetConfig = {
+    alias?: string;
+    path: string;
+}
+
 export interface ProjectConfig {
+    assets: AssetConfig[];
     useHttp: boolean;
     benchmarkRunner: string;
     benchmarkEnvironment: any;
