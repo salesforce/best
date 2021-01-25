@@ -14,7 +14,7 @@ export const check = () => {
 };
 
 export const usage = 'Usage: $0 [--config=<pathToConfigFile>] [BenchmarkPathPattern]';
-export const docs = 'Documentation: https://best.lwcjs.org';
+export const docs = 'Documentation: https://bestjs.dev';
 
 export const options: { [key: string]: Options } = {
     config: {
@@ -39,8 +39,8 @@ export const options: { [key: string]: Options } = {
     clearCache: {
         default: undefined,
         description:
-            'Clears the configured Jest cache directory and then exits. ' +
-            'Default directory can be found by calling jest --showConfig',
+            'Clears the configured Best cache directory and then exits. ' +
+            'Default directory can be found by calling best --showConfig',
         type: 'boolean',
     },
     clearResults: {
