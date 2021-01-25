@@ -53,7 +53,7 @@ export async function buildBenchmark(entry: string, projectConfig: FrozenProject
     buildLogStream.onBenchmarkBuildStart(entry);
 
     const { gitInfo: { lastCommit: { hash: gitHash }, localChanges } } = globalConfig;
-    const { projectName, benchmarkOutput, rootDir } = projectConfig;
+    const { projectName, benchmarkOutput } = projectConfig;
     const ext = path.extname(entry);
     const benchmarkName = path.basename(entry, ext);
     const benchmarkJSFileName = benchmarkName + ext;
@@ -96,8 +96,8 @@ export async function buildBenchmark(entry: string, projectConfig: FrozenProject
 
     return {
         benchmarkName,
-        benchmarkFolder: path.relative(rootDir, benchmarkFolder),
-        benchmarkEntry: path.relative(rootDir, benchmarkEntry),
+        benchmarkFolder,
+        benchmarkEntry,
         benchmarkSignature,
         projectConfig,
         globalConfig,

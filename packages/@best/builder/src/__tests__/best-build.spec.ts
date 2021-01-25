@@ -73,7 +73,9 @@ describe('buildBenchmark', () => {
 
         expect(benchmarkName).toBe('single-file');
         expect(benchmarkFolder.endsWith(`single-file_${hash}`)).toBe(true);
+        expect(fs.existsSync(benchmarkFolder)).toBe(true);
         expect(benchmarkEntry.endsWith(`single-file_${hash}/artifacts/single-file.html`)).toBe(true);
+        expect(fs.existsSync(benchmarkEntry)).toBe(true);
         expect(typeof benchmarkSignature).toBe('string');
     });
 
