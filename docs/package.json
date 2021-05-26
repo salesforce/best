@@ -11,8 +11,8 @@
     "build:notfound": "node scripts/generate-notfound.js",
     "build:docs": "node scripts/generate-documentation.js",
     "build:blog": "node scripts/generate-blog.js",
-    "build": "npm run build:assets && npm run build:home && npm run build:blog && npm",
-    "watch": "cross-env WATCH=1 npm start",
+    "build": "npm run build:assets && npm run build:home && npm run build:blog && npm run build:docs && npm run build:notfound",
+    "watch": "cross-env WATCH=1 yarn start",
     "start": "node ./src/server/index.js"
   },
   "dependencies": {
