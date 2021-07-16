@@ -13,18 +13,13 @@ import mkdirp from "mkdirp";
 import benchmarkRollup from './rollup-plugin-benchmark-import';
 import generateHtml from './html-templating';
 import { FrozenGlobalConfig, FrozenProjectConfig, ProjectConfigPlugin, BuildConfig } from '@best/types';
+import { req } from '@best/utils';
 
 const BASE_ROLLUP_OUTPUT: OutputOptions = { format: 'iife' };
 const ROLLUP_CACHE = new Map();
 
 function md5(data: string) {
     return crypto.createHash('md5').update(data).digest('hex');
-}
-
-// Handles default exports for both ES5 and ES6 syntax
-function req(id: string) {
-    const r = require(id);
-    return r.default || r;
 }
 
 function addResolverPlugins(plugins: ProjectConfigPlugin[]): any[] {
