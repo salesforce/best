@@ -228,7 +228,7 @@ export interface EnvironmentConfig {
             brand: string;
             family: string;
             model: string;
-            speed: string;
+            speed: number;
             cores: number;
         },
         os: { platform: string, distro: string, release: string, kernel: string, arch: string };

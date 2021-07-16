@@ -20,7 +20,7 @@ test('getSystemInfo', async () => {
                 brand: expect.any(String),
                 family: expect.any(String),
                 model: expect.any(String),
-                speed: expect.any(String),
+                speed: expect.any(Number),
                 cores: expect.any(Number),
             },
             os: {
