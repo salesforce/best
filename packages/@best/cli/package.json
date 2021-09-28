@@ -37,7 +37,7 @@
     "yargs": "^16.1.0"
   },
   "devDependencies": {
-    "ansi-regex": "^4.1.0"
+    "ansi-regex": "^5.0.1"
   },
   "files": [
     "build/**/*.js",
