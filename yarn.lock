@@ -3458,13 +3458,6 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
   integrity sha512-l42BggppR6zLmpfU6fq9HEa2oGPEI8yrSPL3GITjfRInppYFahObbIQOQK3UGxEnyQpltZLaPe75046NOZQikw==
 
-"@types/systeminformation@^3.23.1":
-  version "3.54.1"
-  resolved "https://registry.yarnpkg.com/@types/systeminformation/-/systeminformation-3.54.1.tgz#bbc1b9e4ae2e60d45f75906029c6fb5436e1c5cb"
-  integrity sha512-vvisj2mdWygyc0jk/5XtSVq9gtxCmF3nrGwv8wVway8pwNRhtPji/MU9dc1L0F6rl0F/NFIHa4ScRU7wmNaHmg==
-  dependencies:
-    systeminformation "*"
-
 "@types/tar@^4.0.0":
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/@types/tar/-/tar-4.0.3.tgz#e2cce0b8ff4f285293243f5971bd7199176ac489"
@@ -5643,6 +5636,11 @@ ci-info@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-2.0.0.tgz#67a9e964be31a51e15e5010d58e6f12834002f46"
   integrity sha512-5tK7EtrZ0N+OLFMthtqOj4fI2Jeb88C4CAZPu25LDVUgXJ0A3Js4PMGqrn0JU1W0Mh1/Z8wZzYPxqUrXeBboCQ==
+
+ci-info@^3.1.1:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-3.2.0.tgz#2876cb948a498797b5236f0095bc057d0dca38b6"
+  integrity sha512-dVqRX7fLUm8J6FgHJ418XuIgDLZDkYcDFTeL6TA2gt5WlIZUQrrH6EZrNClwT/H0FateUsZkGIOPRrLbP+PR9A==
 
 cipher-base@^1.0.0, cipher-base@^1.0.1, cipher-base@^1.0.3:
   version "1.0.4"
@@ -10069,12 +10067,19 @@ is-ci@^1.0.10:
   dependencies:
     ci-info "^1.5.0"
 
-is-ci@^2.0.0, is-ci@~2.0.0:
+is-ci@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/is-ci/-/is-ci-2.0.0.tgz#6bc6334181810e04b5c22b3d589fdca55026404c"
   integrity sha512-YfJT7rkpQB0updsdHLGWrvhBJfcfzNNawYDNIyQXJz0IViGf75O8EBPKSdvw2rF+LGCsX4FZ8tcr3b19LcZq4w==
   dependencies:
     ci-info "^2.0.0"
+
+is-ci@~3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/is-ci/-/is-ci-3.0.0.tgz#c7e7be3c9d8eef7d0fa144390bd1e4b88dc4c994"
+  integrity sha512-kDXyttuLeslKAHYL/K28F2YkM3x5jvFPEw3yXbRptXydjD9rpLEz+C5K5iutY9ZiUu6AP41JdvRQwF4Iqs4ZCQ==
+  dependencies:
+    ci-info "^3.1.1"
 
 is-data-descriptor@^0.1.4:
   version "0.1.4"
@@ -16971,10 +16976,10 @@ synchronous-promise@^2.0.6:
   resolved "https://registry.yarnpkg.com/synchronous-promise/-/synchronous-promise-2.0.9.tgz#b83db98e9e7ae826bf9c8261fd8ac859126c780a"
   integrity sha512-LO95GIW16x69LuND1nuuwM4pjgFGupg7pZ/4lU86AmchPKrhk0o2tpMU2unXRrqo81iAFe1YJ0nAGEVwsrZAgg==
 
-systeminformation@*, systeminformation@~4.27.11:
-  version "4.27.11"
-  resolved "https://registry.yarnpkg.com/systeminformation/-/systeminformation-4.27.11.tgz#6dbe96e48091444f80dab6c05ee1901286826b60"
-  integrity sha512-U7bigXbOnsB8k1vNHS0Y13RCsRz5/UohiUmND+3mMUL6vfzrpbe/h4ZqewowB+B+tJNnmGFDj08Z8xGfYo45dQ==
+systeminformation@~5.9.4:
+  version "5.9.4"
+  resolved "https://registry.yarnpkg.com/systeminformation/-/systeminformation-5.9.4.tgz#1f0e29e0aa376dec8f69cc517eeefc5cdcda411a"
+  integrity sha512-FOsiTn0CyJZoj9kIhla11ndsMzbbwwuriul81wpqIBt9IpbxHZ6P/oZCphIFgJrwqjTnme0Qp1HDzIkUD9Xr/g==
 
 table@^5.2.3:
   version "5.4.0"

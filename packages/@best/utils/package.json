@@ -13,11 +13,8 @@
   "dependencies": {
     "chalk": "~2.4.2",
     "https-proxy-agent": "^5.0.0",
-    "is-ci": "~2.0.0",
-    "systeminformation": "~4.27.11"
-  },
-  "devDependencies": {
-    "@types/systeminformation": "^3.23.1"
+    "is-ci": "~3.0.0",
+    "systeminformation": "~5.9.4"
   },
   "files": [
     "build/**/*.js"
