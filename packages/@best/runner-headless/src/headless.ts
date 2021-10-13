@@ -24,7 +24,8 @@ const BROWSER_ARGS = [
     '--enable-precise-memory-info',
 ];
 
-const PUPPETEER_OPTIONS: puppeteer.LaunchOptions = { args: BROWSER_ARGS };
+
+const PUPPETEER_OPTIONS: puppeteer.BrowserLaunchArgumentOptions = { args: BROWSER_ARGS };
 
 function tempDir() {
     const TEMP_DIR_PREFIX = 'runner-headless-temp';
