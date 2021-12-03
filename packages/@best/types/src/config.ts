@@ -65,6 +65,7 @@ export interface ApiDatabaseConfig {
     adapter: string;
     uri: string;
     ssl?: any;
+    token?: string;
 }
 
 export interface FrontendConfig {
@@ -93,7 +94,8 @@ export interface CliConfig {
     compareStats: string[] | undefined,
     generateHTML: boolean | undefined,
     dbAdapter: string | undefined,
-    dbURI: string | undefined
+    dbURI: string | undefined,
+    dbToken: string | undefined
 }
 
 export interface NormalizedConfig {

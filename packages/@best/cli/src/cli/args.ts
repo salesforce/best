@@ -104,6 +104,11 @@ export const options: { [key: string]: Options } = {
         description: 'Provide a connection URI or path to be passed to the database adapter',
         type: 'string',
     },
+    dbToken: {
+        default: undefined,
+        description: 'Some database providers (e.g. rest/frontend) communicate over HTTP(S) and this token is used for authorization.',
+        type: 'string',
+    },
     runner: {
         default: 'default',
         description:
@@ -125,7 +130,7 @@ export const options: { [key: string]: Options } = {
 };
 
 export function normalize(args: { [x: string]: any; _: string[]; $0: string }): CliConfig {
-    const { _, help, clearCache, clearResults, showConfigs, disableInteractive, gitIntegration, generateHTML, useHttp, externalStorage, runner, runnerConfig, config, projects, iterations, compareStats, dbAdapter, dbURI, runInBatch, runInBand } = args;
+    const { _, help, clearCache, clearResults, showConfigs, disableInteractive, gitIntegration, generateHTML, useHttp, externalStorage, runner, runnerConfig, config, projects, iterations, compareStats, dbAdapter, dbURI, dbToken, runInBatch, runInBand } = args;
 
     return {
         _,
@@ -147,6 +152,7 @@ export function normalize(args: { [x: string]: any; _: string[]; $0: string }): 
         iterations: iterations ? parseInt(iterations, 10): undefined,
         compareStats,
         dbAdapter,
-        dbURI
+        dbURI,
+        dbToken
     };
 }
