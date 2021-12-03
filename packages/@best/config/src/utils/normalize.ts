@@ -98,10 +98,15 @@ function setCliOptionOverrides(initialOptions: UserConfig, argsCLI: CliConfig): 
                     break;
                 case 'dbAdapter':
                     if (argsCLI[key] !== undefined) {
-                        options.apiDatabase ={ adapter: argsCLI[key], uri: argsCLI['dbURI'] }
+                        options.apiDatabase = { 
+                            adapter: argsCLI[key], 
+                            uri: argsCLI['dbURI'],
+                            token: argsCLI['dbToken']
+                        }
                     }
                     break;
                 case 'dbURI':
+                case 'dbToken':
                     break
                 default:
                     options[key] = argsCLI[key];
