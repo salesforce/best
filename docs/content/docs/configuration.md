@@ -78,6 +78,10 @@ Command-line arguments override the same option specified in the configuration f
 
 `string` Specifies a connection URI or path to pass to the database adapter.
 
+### `--dbToken`
+
+`string` Some database providers (e.g. rest/frontend) communicate over HTTP(S) and this token is used for authorization.
+
 ### `--runner`
 
 `string` Selects the runner to execute the benchmarks. Requires the `runnerConfig` option in the Best config file. By default, Best uses `@best/runner-headless`.

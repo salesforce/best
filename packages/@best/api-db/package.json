@@ -8,10 +8,12 @@
     "version": "4.0.0-beta10",
     "dependencies": {
         "pg": "^8.4.1",
-        "sqlite": "^3.0.3"
+        "sqlite": "^3.0.3",
+        "node-fetch": "~2.6.1"
     },
     "devDependencies": {
-        "@types/pg": "^7.4.14"
+        "@types/pg": "^7.4.14",
+        "@types/node-fetch": "2.5.12"
     },
     "main": "build/index.js",
     "files": [
