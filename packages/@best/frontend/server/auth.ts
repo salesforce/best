@@ -17,11 +17,7 @@ const REVOKED_TOKENS = (process.env.REVOKED_TOKENS || "").split("\n");
  * @returns true if token is revoked, otherwise false
  */
 function isRevoked(token: string): boolean {
-    if (REVOKED_TOKENS.includes(token)) {
-        return true;
-    }
-
-    return false;
+    return REVOKED_TOKENS.includes(token);
 }
 
 /**
