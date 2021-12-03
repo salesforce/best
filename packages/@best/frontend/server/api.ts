@@ -6,9 +6,10 @@
 */
 
 import { Router } from 'express'
-import { loadDbFromConfig } from '@best/api-db'
+import { loadDbFromConfig, TemporarySnapshot } from '@best/api-db'
 import { GithubApplicationFactory } from '@best/github-integration'
 import { FrontendConfig } from '@best/types';
+import { authorizeRequest } from './auth';
 
 export default (config: FrontendConfig): Router => {
     const db = loadDbFromConfig(config);
@@ -91,6 +92,20 @@ export default (config: FrontendConfig): Router => {
             })
         } catch (err) {
             res.send({ err })
+        }
+    })
+
+    router.post('/:projectName/snapshots', authorizeRequest, async (req, res): Promise<void> => {
+        const { projectName }: { projectName?: string } = req.params
+        const { body: snapshots }: { body: TemporarySnapshot[] } = req
+
+        try {
+            await db.migrate()
+            await db.saveSnapshots(snapshots, projectName)
+
+            res.status(200).end()
+        } catch (err) {
+            res.status(500).json({ error: err.message })
         }
     })
 

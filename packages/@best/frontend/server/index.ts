@@ -24,6 +24,7 @@ export const Frontend = (config: FrontendConfig): express.Application => {
     const app: express.Application = express()
 
     app.use(compression())
+    app.use(express.json())
 
     // API
 

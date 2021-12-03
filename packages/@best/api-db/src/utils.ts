@@ -9,7 +9,7 @@ import path from 'path';
 import { FrozenGlobalConfig, FrontendConfig } from '@best/types';
 import { ApiDBAdapter } from './types';
 
-const LOCAL_ADAPTERS = ['sql/postgres', 'sql/sqlite'];
+const LOCAL_ADAPTERS = ['sql/postgres', 'sql/sqlite', 'rest/frontend'];
 
 // Handles default exports for both ES5 and ES6 syntax
 function req(id: string) {
