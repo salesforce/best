@@ -24,9 +24,9 @@ const rl = readline.createInterface({
      output: process.stdout
 });
 
-function generateNewToken() {
-    rl.question("Who are you generating this token for? ", function (user) {
-        rl.question("How long should this token last for? (e.g. '1 year', '2 days', '24 hours', '5 minutes') ", function (validFor) {
+const generateNewToken = () => {
+    rl.question("Who are you generating this token for? ", (user) => {
+        rl.question("How long should this token last for? (e.g. '1 year', '2 days', '24 hours', '5 minutes') ", (validFor) => {
             const token = jwt.sign({ user }, process.env.TOKEN_SECRET, { expiresIn: validFor });
             const expiration = new Date(jwt.decode(token).exp * 1000);
             console.log(`Token generated for '${user}' expires on ${expiration}:\n${token}`);
@@ -35,8 +35,8 @@ function generateNewToken() {
     });
 }
 
-function verifyToken() {
-    rl.question("Enter token: ", function (token) {
+const verifyToken = () => {
+    rl.question("Enter token: ", (token) => {
         try {
             const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
             const user = decoded.user;
@@ -62,10 +62,12 @@ function verifyToken() {
     });
 }
 
-rl.question("(1) Generate New Token\n(2) Verify Existing Token\n(3) Exit\n", function (option) {
+rl.question("(1) Generate New Token\n(2) Verify Existing Token\n(3) Exit\n", (option) => {
     if (option === "1") {
         generateNewToken();
     } else if (option === "2") {
         verifyToken();
+    } else {
+        process.exit(0);
     }
 });
