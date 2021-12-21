@@ -45,7 +45,6 @@
     "@types/mkdirp": "^0.5.2",
     "@types/ncp": "^2.0.1",
     "@types/node": "~10.14.7",
-    "@types/puppeteer": "^2.0.0",
     "@types/rimraf": "^2.0.2",
     "@types/socket.io": "^2.1.2",
     "@types/socket.io-client": "^1.4.32",
