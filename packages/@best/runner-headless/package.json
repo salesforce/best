@@ -15,7 +15,10 @@
   "dependencies": {
     "@best/runner-abstract": "4.1.0",
     "@best/types": "4.1.0",
-    "puppeteer": "^5.3.1"
+    "puppeteer": "13.0.0"
+  },
+  "devDependencies": {
+    "@types/puppeteer": "5.4.4"
   },
   "files": [
     "build/**/*.js"
