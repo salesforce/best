@@ -1,3 +1,14 @@
+# [5.0.0](https://github.com/salesforce/best/compare/v4.1.0...v5.0.0) (2021-12-21)
+
+* fix!: upgrade `puppeteer` to `v13.0.0` ([a8238b8](https://github.com/salesforce/best/commit/a8238b88995413d2209d0fdbb7900b9dfda700a9)), closes [#292](https://github.com/salesforce/best/issues/292)
+
+
+### BREAKING CHANGES
+
+* Upgrade the headless Chrome version to `v97.0.4691.0`.
+
+
+
 # [4.1.0](https://github.com/salesforce/best/compare/v4.0.0-alpha12...v4.1.0) (2021-12-06)
 
 
