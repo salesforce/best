@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Best Runner (Headless)",
   "keywords": [
     "Best",
@@ -13,9 +13,9 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@best/console-stream": "5.0.0",
-    "@best/runner-abstract": "5.0.0",
-    "@best/shared": "5.0.0",
+    "@best/console-stream": "5.0.1",
+    "@best/runner-abstract": "5.0.1",
+    "@best/shared": "5.0.1",
     "debug": "^4.1.1",
     "socket.io-client": "~2.2.0",
     "tar": "~4.4.10"

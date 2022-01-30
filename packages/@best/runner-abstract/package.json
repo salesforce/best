@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Best Runner (Abstract)",
   "keywords": [
     "Best",
@@ -14,7 +14,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@best/utils": "5.0.0",
+    "@best/utils": "5.0.1",
     "express": "~4.16.2"
   },
   "files": [
