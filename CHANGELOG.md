@@ -1,3 +1,11 @@
+# [5.0.1](https://github.com/salesforce/best/compare/v5.0.0...v5.0.1) (2022-01-30)
+
+### Bug Fixes
+
+* make Best work with Node v16 ([495628b](https://github.com/salesforce/best/commit/495628b3705943ba8f7b458be4db30036f572200))
+
+
+
 # [5.0.0](https://github.com/salesforce/best/compare/v4.1.0...v5.0.0) (2021-12-21)
 
 * fix!: upgrade `puppeteer` to `v13.0.0` ([a8238b8](https://github.com/salesforce/best/commit/a8238b88995413d2209d0fdbb7900b9dfda700a9)), closes [#292](https://github.com/salesforce/best/issues/292)
