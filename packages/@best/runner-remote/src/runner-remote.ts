@@ -52,7 +52,8 @@ export class RunnerRemote {
                 ...options,
                 specs: JSON.stringify(specs),
                 jobs: benchmarksBuilds.length
-            }
+            },
+            pfx: []
         };
 
         if (token) {
