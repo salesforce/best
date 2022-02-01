@@ -1,3 +1,23 @@
+# [5.0.1](https://github.com/salesforce/best/compare/v5.0.0...v5.0.1) (2022-01-30)
+
+### Bug Fixes
+
+* make Best work with Node v16 ([9a528af](https://github.com/salesforce/best/commit/9a528af6a3c188c3ae25995e504cd0c6c9a242e5))
+
+
+
+# [5.0.0](https://github.com/salesforce/best/compare/v4.1.0...v5.0.0) (2021-12-21)
+
+
+* fix!: upgrade `puppeteer` to `v13.0.0` ([f31bb92](https://github.com/salesforce/best/commit/f31bb92928158ee49a8f3565c1159fc1efbc3c2b)), closes [#292](https://github.com/salesforce/best/issues/292)
+
+
+### BREAKING CHANGES
+
+* Upgrade the headless Chrome version to `v97.0.4691.0`.
+
+
+
 # [4.1.0](https://github.com/salesforce/best/compare/v4.0.0-alpha12...v4.1.0) (2021-12-06)
 
 
@@ -6,6 +26,7 @@
 * add ssl default config ([c9b339a](https://github.com/salesforce/best/commit/c9b339a35d90363914c7ff15674a11095197c4de))
 * add support for new metrics and fallback for unknown metrics ([#225](https://github.com/salesforce/best/issues/225)) ([512a049](https://github.com/salesforce/best/commit/512a049220fc514032efcb0447f7c2b76d052276))
 * allow self signed certs in pg ([#232](https://github.com/salesforce/best/issues/232)) ([e90fb40](https://github.com/salesforce/best/commit/e90fb40bd72972b179d50f2711e66444d59f127f))
+* **builder:** keep absolute paths ([#255](https://github.com/salesforce/best/issues/255)) ([03b09cc](https://github.com/salesforce/best/commit/03b09cc61f584b84184ade3d67d12168875973fe))
 * check for benchmarkIterations in CLI  args ([#245](https://github.com/salesforce/best/issues/245)) ([f4327b2](https://github.com/salesforce/best/commit/f4327b28ea8469280132ec45858ab05adeece831))
 * configurable pg config ([#249](https://github.com/salesforce/best/issues/249)) ([d118711](https://github.com/salesforce/best/commit/d118711278e8d602c096fed97a8e89c4e4c3144b))
 * Fail compilation is bare module specifier is missing ([#233](https://github.com/salesforce/best/issues/233)) ([0c63282](https://github.com/salesforce/best/commit/0c6328255681a6ebc66b32d446132a7bb31dee64))
@@ -15,18 +36,17 @@
 * remove check for `.git` in git remote url ([#243](https://github.com/salesforce/best/issues/243)) ([e2125a8](https://github.com/salesforce/best/commit/e2125a8aed7031287d08b76c1a8ebfbc22306b8f))
 * rename messenger to runnerStream ([f25c38d](https://github.com/salesforce/best/commit/f25c38db4dd2fb5eb48fa17a9a849cc1ab21deaa))
 * upgrade deps ([#231](https://github.com/salesforce/best/issues/231)) ([d875fa7](https://github.com/salesforce/best/commit/d875fa74e6cb4104b5b9fb42261e6f79507ee28d))
-* upgrade utils ([b4159a7](https://github.com/salesforce/best/commit/b4159a7c47453fbf21b29f160692125c05466daa))
-* **builder:** keep absolute paths ([#255](https://github.com/salesforce/best/issues/255)) ([03b09cc](https://github.com/salesforce/best/commit/03b09cc61f584b84184ade3d67d12168875973fe))
 * upgrade node ([#265](https://github.com/salesforce/best/issues/265)) ([e55aaa1](https://github.com/salesforce/best/commit/e55aaa160819a086950d0726d87df21eb433b204))
+* upgrade utils ([b4159a7](https://github.com/salesforce/best/commit/b4159a7c47453fbf21b29f160692125c05466daa))
 
 
 ### Features
 
 * add frontend api for snapshots upload ([04c67b1](https://github.com/salesforce/best/commit/04c67b1e3e606853256ded25c5d0b068c9763ecf)), closes [#294](https://github.com/salesforce/best/issues/294) [#294](https://github.com/salesforce/best/issues/294)
 * **config:** configurable main branch ([#259](https://github.com/salesforce/best/issues/259)) ([f27a8bc](https://github.com/salesforce/best/commit/f27a8bcdd769e13a7ea1773d2486387207a0c486))
+* rewrite of Agents, Hubs, Remotes and Algo ([#217](https://github.com/salesforce/best/issues/217)) ([0c1ef01](https://github.com/salesforce/best/commit/0c1ef01d3750318f707c89d85ed07a68718874be))
 * **runner-headless:** config to serve static assets ([#257](https://github.com/salesforce/best/issues/257)) ([9fa802f](https://github.com/salesforce/best/commit/9fa802fee96a63a614e4f4bc593bbf29843e5cc8))
 * **runner-headless:** configurable launch options ([#256](https://github.com/salesforce/best/issues/256)) ([4a98dd6](https://github.com/salesforce/best/commit/4a98dd6e8fc9adde3effe65730dbd1fa2b109442))
-* rewrite of Agents, Hubs, Remotes and Algo ([#217](https://github.com/salesforce/best/issues/217)) ([0c1ef01](https://github.com/salesforce/best/commit/0c1ef01d3750318f707c89d85ed07a68718874be))
 
 
 
@@ -299,11 +319,11 @@
 
 * added meta tag with highest doc mode support in IE ([13a68c8](https://github.com/salesforce/best/commit/13a68c868fceb127cb98968063e598a4f4fb762c))
 * any number of project configs is processed ([#114](https://github.com/salesforce/best/issues/114)) ([c72dced](https://github.com/salesforce/best/commit/c72dced78c2cb515127eca0962f24fcde48ff5ce))
+* **best:** Normalize name patterns ([f1fb00c](https://github.com/salesforce/best/commit/f1fb00cbbf39cbddb316cfb16a230d00e8f16bf8))
+* **best:** simple-statistics and asciitable dependencies ([6e42893](https://github.com/salesforce/best/commit/6e42893758f8f6a0632cdcde50e05e95ee50123d))
 * better path pattern matching ([#111](https://github.com/salesforce/best/issues/111)) ([6294d67](https://github.com/salesforce/best/commit/6294d67c9798babed3a047c902b144b58d94e85b))
 * parsing error timeout ([#121](https://github.com/salesforce/best/issues/121)) ([d283352](https://github.com/salesforce/best/commit/d283352eb6297499a2d68fa0dfeabd5df505c631))
 * Upgrade pupeteer and fix trend ([#122](https://github.com/salesforce/best/issues/122)) ([d041743](https://github.com/salesforce/best/commit/d041743cd2ea6a5a014283be58d8f03ad16b75d2))
-* **best:** Normalize name patterns ([f1fb00c](https://github.com/salesforce/best/commit/f1fb00cbbf39cbddb316cfb16a230d00e8f16bf8))
-* **best:** simple-statistics and asciitable dependencies ([6e42893](https://github.com/salesforce/best/commit/6e42893758f8f6a0632cdcde50e05e95ee50123d))
 
 
 ### Features
@@ -374,8 +394,8 @@
 ### Features
 
 * Allow local (fs) comparison ([#96](https://github.com/salesforce/best/issues/96)) ([5781d55](https://github.com/salesforce/best/commit/5781d556afedd1232c379d34bf655cefe3280875))
-* Refactor git and cli table display ([#97](https://github.com/salesforce/best/issues/97)) ([0fc095f](https://github.com/salesforce/best/commit/0fc095f6b44471376f70ab372628ddecc05a5e9e))
 * **commit:** add commit validation ([#94](https://github.com/salesforce/best/issues/94)) ([e1bdbb7](https://github.com/salesforce/best/commit/e1bdbb7cf8777bf450e20bed91e740a364458f6b))
+* Refactor git and cli table display ([#97](https://github.com/salesforce/best/issues/97)) ([0fc095f](https://github.com/salesforce/best/commit/0fc095f6b44471376f70ab372628ddecc05a5e9e))
 
 
 
