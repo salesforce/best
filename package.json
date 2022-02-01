@@ -63,7 +63,7 @@
     "lerna": "^3.18.3",
     "prettier": "^1.17.1",
     "rimraf": "^2.6.3",
-    "typescript": "^3.5.1"
+    "typescript": "3.9.10"
   },
   "resolutions": {
     "js-yaml": "^3.13.1"
