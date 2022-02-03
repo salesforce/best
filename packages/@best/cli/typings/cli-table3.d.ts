@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
-declare module 'cli-table' {
+declare module 'cli-table3' {
     export default class Table {
         constructor(obj: any)
         push(rows: string[]): void
