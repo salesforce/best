@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
-import Table from 'cli-table';
+import Table from 'cli-table3';
 import chalk from 'chalk';
 import Histogram from './histogram';
 
@@ -160,7 +160,9 @@ export default class Output {
     compare(result: BenchmarkComparison) {
         const { baseCommit, targetCommit } = result;
 
-        type GroupedTables = { [projectName: string]: Table[] }
+        type GroupedTables = {
+            [projectName: string]: Table[]
+        }
 
         const tables: GroupedTables = result.comparisons.reduce((tables, node): GroupedTables => {
             if (node.type === "project" || node.type === "group") {
