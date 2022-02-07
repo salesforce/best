@@ -15,7 +15,7 @@
   "dependencies": {
     "@best/runner-abstract": "5.0.1",
     "@best/types": "5.0.1",
-    "puppeteer": "13.0.0"
+    "puppeteer": "13.2.0"
   },
   "devDependencies": {
     "@types/puppeteer": "5.4.4"
