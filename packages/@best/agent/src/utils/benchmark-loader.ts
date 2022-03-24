@@ -7,13 +7,12 @@
 
 import path from "path";
 import SocketIOFile from "socket.io-file";
-import { cacheDirectory } from '@best/utils';
+import { cacheDirectory, randomAlphanumeric } from '@best/utils';
 import { x as extractTar } from 'tar';
 import { Socket } from "socket.io";
 
 // This is all part of the initialization
-const LOADER_CONFIG = {
-    uploadDir: path.join(cacheDirectory('best_agent'), 'uploads'),
+const LOADER_CONFIG_DEFAULTS = {
     accepts: [],
     maxFileSize: 52428800, // 50 mb
     chunkSize: 10240, // 10kb
@@ -21,11 +20,17 @@ const LOADER_CONFIG = {
     overwrite: true,
 };
 
-// In order to make the uploader singleton, but yet allow multiple file downloads we need to do some manual cleanup
-// The assumption is only one upload can occurr at the time, otherwise this code might not work as expected
-
 export function getUploaderInstance(socket: Socket): SocketIOFile {
-    const uploader: any = new SocketIOFile(socket, LOADER_CONFIG);
+    // In case multiple agents are connected to the same hub and multiple benchmarks are invoked concurrently,
+    // if more than one benchmark has the exact same name, an error could occur because of a race condition.
+    // This race condition is triggered when one client is uploading to the hub while the hub is uploading
+    // same-named benchmark to the agent. When this happens, the agent may get a partial file or the hub may fail
+    // because there is a lock on the same-named file.
+    const config = Object.assign({}, LOADER_CONFIG_DEFAULTS, {
+        uploadDir: path.join(cacheDirectory('best_agent'), 'uploads', randomAlphanumeric(16))
+    });
+
+    const uploader: any = new SocketIOFile(socket, config);
     uploader.load = function () {
         return new Promise((resolve, reject) => {
             uploader.on('complete', (info: any) => {
