@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Best Hub",
   "keywords": [
     "Best",
@@ -13,10 +13,10 @@
   ],
   "main": "build/cli/index.js",
   "dependencies": {
-    "@best/agent": "5.0.1",
-    "@best/agent-frontend": "5.0.1",
-    "@best/runner-remote": "5.0.1",
-    "@best/utils": "5.0.1",
+    "@best/agent": "5.0.2",
+    "@best/agent-frontend": "5.0.2",
+    "@best/runner-remote": "5.0.2",
+    "@best/utils": "5.0.2",
     "express": "4.17.2",
     "socket.io": "~2.2.0",
     "socket.io-file": "~2.0.31",
