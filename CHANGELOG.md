@@ -1,8 +1,16 @@
+# [5.0.2](https://github.com/salesforce/best/compare/v5.0.1...v5.0.2) (2022-03-24)
+
+### Bug Fixes
+
+* Update various dependencies.
+
+
+
 # [5.0.1](https://github.com/salesforce/best/compare/v5.0.0...v5.0.1) (2022-01-30)
 
 ### Bug Fixes
 
-* make Best work with Node v16 ([495628b](https://github.com/salesforce/best/commit/495628b3705943ba8f7b458be4db30036f572200))
+* make Best work with Node v16 ([563cee2](https://github.com/salesforce/best/commit/563cee248a2b10676325b23fb0b5918c891e94c3))
 
 
 

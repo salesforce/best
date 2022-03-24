@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Best config",
   "keywords": [
     "Best",
@@ -13,8 +13,8 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@best/regex-util": "5.0.1",
-    "@best/utils": "5.0.1",
+    "@best/regex-util": "5.0.2",
+    "@best/utils": "5.0.2",
     "chalk": "~2.4.2",
     "simple-git": "~1.113.0"
   },

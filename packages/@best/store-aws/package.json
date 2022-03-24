@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Best Store AWS",
   "keywords": [
     "Best",
@@ -12,8 +12,8 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@best/types": "5.0.1",
-    "aws-sdk": "~2.444.0",
+    "@best/types": "5.0.2",
+    "aws-sdk": "2.1066.0",
     "chalk": "~2.4.2",
     "mime-types": "~2.1.24",
     "node-fetch": "~2.6.1"
