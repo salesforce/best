@@ -122,8 +122,8 @@ export default class HeadlessBrowser {
     static async getSpecs(): Promise<BrowserSpec[]> {
         // TODO: Create pupeteer test so we fail when upgrading
         return [
-            { name: 'chrome.headless', version: '99' },
-            { name: 'chrome', version: '99' }
+            { name: 'chrome.headless', version: '100' },
+            { name: 'chrome', version: '100' }
         ];
     }
 }
