@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "Best Github Integration",
   "keywords": [
     "Best",
@@ -12,9 +12,9 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@best/api-db": "6.0.0",
-    "@best/types": "6.0.0",
-    "@best/utils": "6.0.0",
+    "@best/api-db": "6.0.1",
+    "@best/types": "6.0.1",
+    "@best/utils": "6.0.1",
     "@octokit/rest": "^16.28.2",
     "base-64": "^0.1.0",
     "expand-tilde": "~2.0.2",
