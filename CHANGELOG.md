@@ -1,12 +1,18 @@
-# [5.0.2](https://github.com/salesforce/best/compare/v5.0.1...v5.0.2) (2022-03-24)
+# [5.0.4](https://github.com/salesforce/best/compare/v5.0.2...v5.0.4) (2022-03-24)
+
 
 ### Bug Fixes
 
-* Update various dependencies.
+* store temporary files in unique folder to avoid race conditions ([7306e48](https://github.com/salesforce/best/commit/7306e48463b0799b5d00e7219ca05cb9ab4face7))
 
 
 
-# [5.0.1](https://github.com/salesforce/best/compare/v5.0.0...v5.0.1) (2022-01-30)
+## [5.0.2](https://github.com/salesforce/best/compare/v5.0.1...v5.0.2) (2022-03-24)
+
+
+
+## [5.0.1](https://github.com/salesforce/best/compare/v5.0.0...v5.0.1) (2022-01-30)
+
 
 ### Bug Fixes
 
