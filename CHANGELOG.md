@@ -1,4 +1,16 @@
-# [5.0.4](https://github.com/salesforce/best/compare/v5.0.2...v5.0.4) (2022-03-24)
+# [6.0.0](https://github.com/salesforce/best/compare/v5.0.4...v6.0.0) (2022-03-24)
+
+
+* feat!: upgrade `puppeteer` to `v13.5.1` ([8205940](https://github.com/salesforce/best/commit/82059409dfe3fefacdeda04e8fee58bc0f4c7935))
+
+
+### BREAKING CHANGES
+
+* Upgrade the headless Chrome version to `v100.0.4889.0`.
+
+
+
+## [5.0.4](https://github.com/salesforce/best/compare/v5.0.2...v5.0.4) (2022-03-24)
 
 
 ### Bug Fixes
