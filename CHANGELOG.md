@@ -1,4 +1,13 @@
-# [5.0.4](https://github.com/salesforce/best/compare/v5.0.2...v5.0.4) (2022-03-24)
+# [5.1.0](https://github.com/salesforce/best/compare/v5.0.4...v5.1.0) (2022-04-01)
+
+
+### Features
+
+* add support for http proxy in REST DB Adapter ([f2ecaa5](https://github.com/salesforce/best/commit/f2ecaa513351907d67f8adc1967bb93c35d15ae7)), closes [#302](https://github.com/salesforce/best/issues/302)
+
+
+
+## [5.0.4](https://github.com/salesforce/best/compare/v5.0.2...v5.0.4) (2022-03-25)
 
 
 ### Bug Fixes
