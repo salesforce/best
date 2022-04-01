@@ -7,7 +7,8 @@
 
 import { ApiDBAdapter, TemporarySnapshot } from '../../types'
 import { ApiDatabaseConfig } from '@best/types';
-import fetch from 'node-fetch';
+import https from 'https';
+import HttpsProxyAgent from 'https-proxy-agent';
 
 /**
  * An implementation for a REST-based DB adapter.
@@ -21,21 +22,53 @@ export default class FrontendRestDbAdapter extends ApiDBAdapter {
         this.config = config;
     }
 
+    request(url: string | URL, options: https.RequestOptions, payload: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            // The 'https' library does not natively support requests over a proxy.
+            // We can still add proxy support by setting `options.agent` to an instance of `https-proxy-agent` agent.
+            // More details on what an agent is responsible for can be found here: https://nodejs.org/docs/latest-v14.x/api/http.html#http_class_http_agent
+            const proxy = process.env.HTTP_PROXY;
+            if (proxy) {
+                // @ts-ignore
+                options.agent = new HttpsProxyAgent(proxy);
+            }
+
+            const req = https.request(url, options, (response) => {
+                let responseBody = '';
+
+                response.on('data', (chunk) => {
+                    responseBody += chunk;
+                });
+
+                response.on('end', () => {
+                    resolve({ ok: true, body: responseBody });
+                });
+            });
+
+            req.on('error', (error) => {
+                reject({ ok: false, error });
+            });
+
+            req.write(payload)
+            req.end();
+        });
+    }
+
     async saveSnapshots(snapshots: TemporarySnapshot[], projectName: string): Promise<boolean> {
         const requestUrl = `${this.config.uri}/api/v1/${projectName}/snapshots`;
-
-        const response = await fetch(requestUrl, {
-            method: 'post',
-            body: JSON.stringify(snapshots),
+        const payload = JSON.stringify(snapshots);
+        const options = {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${this.config.token}`
-            },
-        });
+            }
+        }
 
-        // Log the response body for troubleshooting purposes
+        const response = await this.request(requestUrl, options, payload);
+
         if (!response.ok) {
-            console.error(await response.text());
+            console.error(response.error);
             return false;
         }
 
