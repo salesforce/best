@@ -115,6 +115,7 @@ const CUSTOM_IGNORED_PATTERNS = [
     'docs/config.js',
     'docs/src/client/',
     'packages/@best/agent-frontend/src/client/modules/',
+    'packages/@best/agent/src/utils/socket.io-file.ts',
     'packages/@best/frontend/src/modules',
     '/integration-tests/src/(.(?!.*.spec.js$))*$',
     '/integration-karma/test/.*$',

@@ -3,13 +3,14 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
-import path from "path";
-import SocketIOFile from "socket.io-file";
+import path from 'path';
 import { cacheDirectory, randomAlphanumeric } from '@best/utils';
 import { x as extractTar } from 'tar';
-import { Socket } from "socket.io";
+import { Socket } from 'socket.io';
+import SocketFile from './socket.io-file';
+import type SocketIOFile from 'socket.io-file'
 
 // This is all part of the initialization
 const LOADER_CONFIG_DEFAULTS = {
@@ -27,11 +28,12 @@ export function getUploaderInstance(socket: Socket): SocketIOFile {
     // same-named benchmark to the agent. When this happens, the agent may get a partial file or the hub may fail
     // because there is a lock on the same-named file.
     const config = Object.assign({}, LOADER_CONFIG_DEFAULTS, {
-        uploadDir: path.join(cacheDirectory('best_agent'), 'uploads', randomAlphanumeric(16))
+        uploadDir: path.join(cacheDirectory('best_agent'), 'uploads', randomAlphanumeric(16)),
     });
 
-    const uploader: any = new SocketIOFile(socket, config);
-    uploader.load = function () {
+    const uploader: any = new (SocketFile as any)(socket, config);
+
+    uploader.load = function() {
         return new Promise((resolve, reject) => {
             uploader.on('complete', (info: any) => {
                 uploader.removeAllListeners('complete');
@@ -43,7 +45,7 @@ export function getUploaderInstance(socket: Socket): SocketIOFile {
                 reject(err);
             });
         });
-    }
+    };
 
     return uploader;
 }
