@@ -1,4 +1,8 @@
-# [5.1.1](https://github.com/salesforce/best/compare/v5.1.0...v5.1.1) (2022-04-07)
+# [5.1.2](https://github.com/salesforce/best/compare/v5.1.1...v5.1.2) (2022-04-07)
+
+* Update various dependencies.
+
+## [5.1.1](https://github.com/salesforce/best/compare/v5.1.0...v5.1.1) (2022-04-07)
 
 
 ### Bug Fixes
