@@ -15,7 +15,7 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@best/utils": "5.1.1",
-    "express": "4.17.2"
+    "express": "4.17.3"
   },
   "files": [
     "build/**/*.js"

@@ -16,7 +16,7 @@
     "@best/runner": "5.1.1",
     "@best/shared": "5.1.1",
     "@best/utils": "5.1.1",
-    "express": "4.17.2",
+    "express": "4.17.3",
     "mime": "^1.3.4",
     "socket.io": "~2.2.0",
     "tar": "6.1.11"
