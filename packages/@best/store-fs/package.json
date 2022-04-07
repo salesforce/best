@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "6.1.1",
+  "version": "6.1.2",
   "description": "Best Store - File System",
   "keywords": [
     "Best",
@@ -12,7 +12,7 @@
   ],
   "main": "build/index.js",
   "dependencies": {
-    "@best/types": "6.1.1",
+    "@best/types": "6.1.2",
     "chalk": "~2.4.2",
     "globby": "~9.2.0"
   },

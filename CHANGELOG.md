@@ -1,4 +1,10 @@
-# [6.1.1](https://github.com/salesforce/best/compare/v6.1.0...v6.1.1) (2022-04-07)
+# [6.1.2](https://github.com/salesforce/best/compare/v6.1.1...v6.1.2) (2022-04-07)
+
+### Bug Fixes
+
+Update various dependencies.
+
+## [6.1.1](https://github.com/salesforce/best/compare/v6.1.0...v6.1.1) (2022-04-07)
 
 
 ### Bug Fixes
