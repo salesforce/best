@@ -162,7 +162,7 @@ export function SocketIOFile(socket, options) {
 
             const endTime = new Date();
 
-            const mimeType = mime.lookup(uploadDir);
+            const mimeType = mime.getType(uploadDir);
             const emitObj = {
                 name: filename,
                 size: uploadingFiles[id].size,
