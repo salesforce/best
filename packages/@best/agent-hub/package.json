@@ -17,7 +17,7 @@
     "@best/agent-frontend": "6.1.1",
     "@best/runner-remote": "6.1.1",
     "@best/utils": "6.1.1",
-    "express": "4.17.2",
+    "express": "4.17.3",
     "socket.io": "~2.2.0",
     "socket.io-file": "~2.0.31",
     "yargs": "^16.1.0"
