@@ -1,4 +1,13 @@
-# [6.1.0](https://github.com/salesforce/best/compare/v6.0.1...v6.1.0) (2022-04-02)
+# [6.1.1](https://github.com/salesforce/best/compare/v6.1.0...v6.1.1) (2022-04-07)
+
+
+### Bug Fixes
+
+* vulnerabilities in the `socket.io-file` package ([1f2516e](https://github.com/salesforce/best/commit/1f2516e932e275fcef22ab23f1595eb6cc36d2e3))
+
+
+
+# [6.1.0](https://github.com/salesforce/best/compare/v6.0.1...v6.1.0) (2022-04-07)
 
 
 ### Features
@@ -7,7 +16,7 @@
 
 
 
-## [6.0.1](https://github.com/salesforce/best/compare/v6.0.0...v6.0.1) (2022-03-25)
+## [6.0.1](https://github.com/salesforce/best/compare/v6.0.0...v6.0.1) (2022-04-07)
 
 
 ### Bug Fixes
@@ -16,10 +25,10 @@
 
 
 
-# [6.0.0](https://github.com/salesforce/best/compare/v5.0.4...v6.0.0) (2022-03-25)
+# [6.0.0](https://github.com/salesforce/best/compare/v5.0.4...v6.0.0) (2022-04-07)
 
 
-* feat!: upgrade `puppeteer` to `v13.5.1` ([8205940](https://github.com/salesforce/best/commit/82059409dfe3fefacdeda04e8fee58bc0f4c7935))
+* feat!: upgrade `puppeteer` to `v13.5.1` ([0beeb1a](https://github.com/salesforce/best/commit/0beeb1aa88b694e1b95cc9eb98e676850e9ae070))
 
 
 ### BREAKING CHANGES
@@ -28,7 +37,7 @@
 
 
 
-## [5.0.4](https://github.com/salesforce/best/compare/v5.0.2...v5.0.4) (2022-03-25)
+## [5.0.4](https://github.com/salesforce/best/compare/v5.0.2...v5.0.4) (2022-04-07)
 
 
 ### Bug Fixes
@@ -37,11 +46,11 @@
 
 
 
-## [5.0.2](https://github.com/salesforce/best/compare/v5.0.1...v5.0.2) (2022-03-24)
+## [5.0.2](https://github.com/salesforce/best/compare/v5.0.1...v5.0.2) (2022-04-07)
 
 
 
-## [5.0.1](https://github.com/salesforce/best/compare/v5.0.0...v5.0.1) (2022-01-30)
+## [5.0.1](https://github.com/salesforce/best/compare/v5.0.0...v5.0.1) (2022-04-07)
 
 
 ### Bug Fixes
@@ -50,7 +59,8 @@
 
 
 
-# [5.0.0](https://github.com/salesforce/best/compare/v4.1.0...v5.0.0) (2021-12-21)
+# [5.0.0](https://github.com/salesforce/best/compare/v4.1.0...v5.0.0) (2022-04-07)
+
 
 * fix!: upgrade `puppeteer` to `v13.0.0` ([a8238b8](https://github.com/salesforce/best/commit/a8238b88995413d2209d0fdbb7900b9dfda700a9)), closes [#292](https://github.com/salesforce/best/issues/292)
 
@@ -61,7 +71,7 @@
 
 
 
-# [4.1.0](https://github.com/salesforce/best/compare/v4.0.0-alpha12...v4.1.0) (2021-12-06)
+# [4.1.0](https://github.com/salesforce/best/compare/v4.0.0-alpha12...v4.1.0) (2022-04-07)
 
 
 ### Bug Fixes
