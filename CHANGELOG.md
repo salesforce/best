@@ -1,13 +1,22 @@
-# [5.1.0](https://github.com/salesforce/best/compare/v5.0.4...v5.1.0) (2022-04-01)
+# [5.1.1](https://github.com/salesforce/best/compare/v5.1.0...v5.1.1) (2022-04-07)
+
+
+### Bug Fixes
+
+* vulnerabilities in the `socket.io-file` package ([0a00378](https://github.com/salesforce/best/commit/0a003785aa25a357db9c3961cab44974167efbed))
+
+
+
+# [5.1.0](https://github.com/salesforce/best/compare/v5.0.4...v5.1.0) (2022-04-07)
 
 
 ### Features
 
-* add support for http proxy in REST DB Adapter ([f2ecaa5](https://github.com/salesforce/best/commit/f2ecaa513351907d67f8adc1967bb93c35d15ae7)), closes [#302](https://github.com/salesforce/best/issues/302)
+* add support for http proxy in REST DB Adapter ([f87f332](https://github.com/salesforce/best/commit/f87f332e96ba3b0360006e57c8fbe9adbfcd05c6)), closes [#302](https://github.com/salesforce/best/issues/302)
 
 
 
-## [5.0.4](https://github.com/salesforce/best/compare/v5.0.2...v5.0.4) (2022-03-25)
+## [5.0.4](https://github.com/salesforce/best/compare/v5.0.2...v5.0.4) (2022-04-07)
 
 
 ### Bug Fixes
@@ -16,11 +25,11 @@
 
 
 
-## [5.0.2](https://github.com/salesforce/best/compare/v5.0.1...v5.0.2) (2022-03-24)
+## [5.0.2](https://github.com/salesforce/best/compare/v5.0.1...v5.0.2) (2022-04-07)
 
 
 
-## [5.0.1](https://github.com/salesforce/best/compare/v5.0.0...v5.0.1) (2022-01-30)
+## [5.0.1](https://github.com/salesforce/best/compare/v5.0.0...v5.0.1) (2022-04-07)
 
 
 ### Bug Fixes
@@ -29,7 +38,8 @@
 
 
 
-# [5.0.0](https://github.com/salesforce/best/compare/v4.1.0...v5.0.0) (2021-12-21)
+# [5.0.0](https://github.com/salesforce/best/compare/v4.1.0...v5.0.0) (2022-04-07)
+
 
 * fix!: upgrade `puppeteer` to `v13.0.0` ([a8238b8](https://github.com/salesforce/best/commit/a8238b88995413d2209d0fdbb7900b9dfda700a9)), closes [#292](https://github.com/salesforce/best/issues/292)
 
@@ -40,7 +50,7 @@
 
 
 
-# [4.1.0](https://github.com/salesforce/best/compare/v4.0.0-alpha12...v4.1.0) (2021-12-06)
+# [4.1.0](https://github.com/salesforce/best/compare/v4.0.0-alpha12...v4.1.0) (2022-04-07)
 
 
 ### Bug Fixes
