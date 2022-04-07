@@ -43,7 +43,7 @@
     "markdown-it-chain": "~1.3.0",
     "markdown-it-container": "2.0.0",
     "markdown-it-emoji": "~1.4.0",
-    "markdown-link-check": "^3.7.3",
+    "markdown-link-check": "3.10.0",
     "mkdirp": "~0.5.1",
     "prismjs": "~1.21.0",
     "reload": "~3.0.1",
