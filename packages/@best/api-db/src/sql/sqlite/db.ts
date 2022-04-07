@@ -5,10 +5,13 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
-import sqlite, { Database } from 'sqlite'
+import { open, Database } from 'sqlite'
+import sqlite3 from 'sqlite3'
 import { SQLDatabase, SQLQueryResult } from '../db'
 import { migrate } from './migrate';
 import { ApiDatabaseConfig } from '@best/types';
+
+sqlite3.verbose() // enable verbose mode
 
 export default class SQLiteDatabase extends SQLDatabase {
     dbPromise: Promise<Database>
@@ -16,7 +19,7 @@ export default class SQLiteDatabase extends SQLDatabase {
 
     constructor(config: ApiDatabaseConfig) {
         super()
-        this.dbPromise = sqlite.open(config.uri, { verbose: true })
+        this.dbPromise = open({ filename: config.uri, driver: sqlite3.Database })
     }
 
     async query(text: string, params: any[]): Promise<SQLQueryResult> {

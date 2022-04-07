@@ -9,7 +9,8 @@
     "dependencies": {
         "https-proxy-agent": "^5.0.0",
         "pg": "^8.4.1",
-        "sqlite": "^3.0.3"
+        "sqlite": "^4.0.25",
+        "sqlite3": "^5.0.2"
     },
     "devDependencies": {
         "@types/pg": "^7.4.14"
