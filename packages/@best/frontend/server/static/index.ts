@@ -28,7 +28,7 @@ export const buildStaticFrontend = async (results: BenchmarkResultsSnapshot[], g
 
     const options = {
         projectNames,
-        timingOptions: ['all', '2-months', 'last-release'],
+        timingOptions: ['2-months', 'last-release', 'all'],
         config: { apiDatabase: globalConfig.apiDatabase }
     }
 

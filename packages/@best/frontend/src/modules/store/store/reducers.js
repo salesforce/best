@@ -60,7 +60,7 @@ export function benchmarks(
 
 export function view(
     state = {
-        timing: 'last-release',
+        timing: '2-months',
         benchmark: 'all',
         metric: 'all',
         zoom: {}, // this goes directly to/from plotly,

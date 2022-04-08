@@ -68,7 +68,7 @@ export default class ViewBenchmarks extends LightningElement {
         if (! bench) {
             return '';
         }
-        
+
         let date;
         if (zoom) {
             const beginIndex = Math.ceil(zoom[0]);
@@ -86,7 +86,7 @@ export default class ViewBenchmarks extends LightningElement {
         if (! bench) {
             return '';
         }
-        
+
         let date;
         if (zoom) {
             const endIndex = Math.floor(zoom[1]);

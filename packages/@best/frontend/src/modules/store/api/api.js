@@ -28,7 +28,7 @@ export async function fetchSnapshots(project, timing) {
     const timeParams = timeQuery(project, timing);
     const response = await fetch(createURL(`${project.id}/snapshots?${timeParams}`));
     const { snapshots } = await response.json();
-    return snapshots || []; 
+    return snapshots || [];
 }
 
 export async function fetchCommitInfo(commit) {
