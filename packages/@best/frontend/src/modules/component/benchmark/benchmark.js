@@ -43,7 +43,7 @@ export default class ComponentBenchmark extends LightningElement {
 
         if (this.element) {
             relayout(this.element, this.currentLayout);
-            
+
             // eslint-disable-next-line lwc/no-raf, @lwc/lwc/no-async-operation
             window.requestAnimationFrame(() => {
                 this.updateGraphZoom();
@@ -141,7 +141,7 @@ export default class ComponentBenchmark extends LightningElement {
 
     rawClickHandler(event) {
         const grandParent = event.target.parentElement.parentElement;
-        
+
         if (grandParent !== this.element && this.recentHoverData) {
             this.traceClicked();
         }
@@ -199,7 +199,7 @@ export default class ComponentBenchmark extends LightningElement {
                     this.selectedPoints[idx] = { ...pastPoint, pendingCompare: false };
                     return false;
                 }
-    
+
                 return true;
             })
         } else {
@@ -210,7 +210,7 @@ export default class ComponentBenchmark extends LightningElement {
                     this.selectedPoints[idx] = { ...pastPoint, hidden: true, pendingCompare: true };
                     return false;
                 }
-    
+
                 return true;
             })
         }

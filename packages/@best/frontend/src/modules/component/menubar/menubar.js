@@ -29,11 +29,11 @@ export default class ComponentMenubar extends LightningElement {
     get timingOptions() {
         const items = [
             {
-                title: 'Since Last Release',
-                id: 'last-release'
-            }, {
                 title: 'Past 2 Months',
                 id: '2-months'
+            }, {
+                title: 'Since Last Release',
+                id: 'last-release'
             }, {
                 title: 'All Time',
                 id: 'all'
