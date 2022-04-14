@@ -174,6 +174,13 @@ export class Agent extends EventEmitter {
                     this.interruption.requestInterruption();
                 }
             }
+
+            /*
+             * Once the disconnect happens, the agent is now able to
+             * take on new tasks, hence, mark its state as "idle".
+             */
+
+            this.state = AgentState.IDLE;
         });
 
         // Forward events from the Client to the Agent
