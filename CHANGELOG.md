@@ -1,8 +1,16 @@
-# [6.1.2](https://github.com/salesforce/best/compare/v6.1.1...v6.1.2) (2022-04-07)
+# [6.1.3](https://github.com/salesforce/best/compare/v6.1.2...v6.1.3) (2022-04-14)
+
 
 ### Bug Fixes
 
-Update various dependencies.
+* make front-end show by default the results for the last 2 months ([fb6f9ff](https://github.com/salesforce/best/commit/fb6f9ffabdb66f36f7cce76e7584914225414c92))
+* set the correct state for the agent when a client disconnects ([382bcf3](https://github.com/salesforce/best/commit/382bcf36c97354bc84c10f71a262f58e13a5b84d))
+
+
+
+## [6.1.2](https://github.com/salesforce/best/compare/v6.1.1...v6.1.2) (2022-04-07)
+
+
 
 ## [6.1.1](https://github.com/salesforce/best/compare/v6.1.0...v6.1.1) (2022-04-07)
 
