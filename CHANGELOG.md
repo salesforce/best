@@ -1,6 +1,16 @@
-# [5.1.2](https://github.com/salesforce/best/compare/v5.1.1...v5.1.2) (2022-04-07)
+# [5.1.3](https://github.com/salesforce/best/compare/v5.1.2...v5.1.3) (2022-04-14)
 
-* Update various dependencies.
+
+### Bug Fixes
+
+* make front-end show by default the results for the last 2 months ([c41217e](https://github.com/salesforce/best/commit/c41217e6a2b3e6d15c375784245c912f7297f0bc))
+* set the correct state for the agent when a client disconnects ([4450abc](https://github.com/salesforce/best/commit/4450abcfda7c26017bcab58c918dc9a3a7c6468c))
+
+
+
+## [5.1.2](https://github.com/salesforce/best/compare/v5.1.1...v5.1.2) (2022-04-07)
+
+
 
 ## [5.1.1](https://github.com/salesforce/best/compare/v5.1.0...v5.1.1) (2022-04-07)
 
