@@ -12,9 +12,9 @@
   "main": "build/index.js",
   "dependencies": {
     "chalk": "~2.4.2",
-    "https-proxy-agent": "^5.0.0",
+    "https-proxy-agent": "5.0.1",
     "is-ci": "^3.0.1",
-    "systeminformation": "^5.9.16"
+    "systeminformation": "5.11.12"
   },
   "files": [
     "build/**/*.js"
