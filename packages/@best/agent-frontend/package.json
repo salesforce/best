@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@best/shared": "6.1.3",
+    "@best/shared": "6.1.4",
     "express": "4.17.3",
     "lwc-services": "~1.3.12",
     "socket.io": "~2.2.0",
@@ -25,5 +25,5 @@
     "build:development": "lwc-services build",
     "watch": "lwc-services watch"
   },
-  "version": "6.1.3"
+  "version": "6.1.4"
 }

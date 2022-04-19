@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@best/analyzer": "6.1.3",
+    "@best/analyzer": "6.1.4",
     "chalk": "~2.4.2"
   },
   "description": "Best Comparer",
@@ -17,5 +17,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "6.1.3"
+  "version": "6.1.4"
 }
