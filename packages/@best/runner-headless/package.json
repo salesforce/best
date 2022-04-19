@@ -1,26 +1,26 @@
 {
-  "name": "@best/runner-headless",
-  "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
-  "version": "6.1.3",
-  "description": "Best Runner (Headless)",
-  "keywords": [
-    "Best",
-    "Runner",
-    "performance"
-  ],
-  "main": "build/index.js",
   "dependencies": {
     "@best/runner-abstract": "6.1.3",
     "@best/types": "6.1.3",
     "puppeteer": "13.5.2"
   },
+  "description": "Best Runner (Headless)",
   "devDependencies": {
     "@types/puppeteer": "5.4.5"
   },
   "files": [
     "build/**/*.js"
-  ]
+  ],
+  "keywords": [
+    "Best",
+    "Runner",
+    "performance"
+  ],
+  "license": "MIT",
+  "main": "build/index.js",
+  "name": "@best/runner-headless",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "6.1.3"
 }

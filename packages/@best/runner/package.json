@@ -1,24 +1,24 @@
 {
-  "name": "@best/runner",
-  "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
-  "version": "6.1.3",
-  "description": "Best Runner",
-  "keywords": [
-    "Best",
-    "performance"
-  ],
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
   "dependencies": {
     "@best/console-stream": "6.1.3",
     "@best/runner-abstract": "6.1.3",
     "@best/utils": "6.1.3",
     "chalk": "~2.4.2"
   },
+  "description": "Best Runner",
   "files": [
     "build/**/*.js"
-  ]
+  ],
+  "keywords": [
+    "Best",
+    "performance"
+  ],
+  "license": "MIT",
+  "main": "build/index.js",
+  "name": "@best/runner",
+  "publishConfig": {
+    "access": "public"
+  },
+  "types": "build/index.d.ts",
+  "version": "6.1.3"
 }

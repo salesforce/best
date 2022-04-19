@@ -1,17 +1,4 @@
 {
-  "name": "@best/builder",
-  "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
-  "version": "6.1.3",
-  "description": "Best build package",
-  "keywords": [
-    "Best",
-    "performance"
-  ],
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
   "dependencies": {
     "@best/runtime": "6.1.3",
     "@best/utils": "6.1.3",
@@ -22,7 +9,20 @@
     "rollup-plugin-compat": "^0.21.7",
     "worker-farm": "~1.7.0"
   },
+  "description": "Best build package",
   "files": [
     "build/**/*.js"
-  ]
+  ],
+  "keywords": [
+    "Best",
+    "performance"
+  ],
+  "license": "MIT",
+  "main": "build/index.js",
+  "name": "@best/builder",
+  "publishConfig": {
+    "access": "public"
+  },
+  "types": "build/index.d.ts",
+  "version": "6.1.3"
 }

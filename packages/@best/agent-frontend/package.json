@@ -1,29 +1,29 @@
 {
-    "name": "@best/agent-frontend",
-    "license": "MIT",
-    "publishConfig": {
-        "access": "public"
-    },
-    "version": "6.1.3",
-    "main": "build/server/index.js",
-    "dependencies": {
-        "@best/shared": "6.1.3",
-        "express": "4.17.3",
-        "lwc-services": "~1.3.12",
-        "socket.io": "~2.2.0",
-        "socket.io-client": "~2.2.0"
-    },
-    "devDependencies": {
-        "husky": "^2.3",
-        "lint-staged": "^8.1.5"
-    },
-    "scripts": {
-        "build": "lwc-services build -m production",
-        "build:development": "lwc-services build",
-        "watch": "lwc-services watch"
-    },
-    "files": [
-        "build/**/*.js",
-        "dist/**/*"
-    ]
+  "dependencies": {
+    "@best/shared": "6.1.3",
+    "express": "4.17.3",
+    "lwc-services": "~1.3.12",
+    "socket.io": "~2.2.0",
+    "socket.io-client": "~2.2.0"
+  },
+  "devDependencies": {
+    "husky": "^2.3",
+    "lint-staged": "^8.1.5"
+  },
+  "files": [
+    "build/**/*.js",
+    "dist/**/*"
+  ],
+  "license": "MIT",
+  "main": "build/server/index.js",
+  "name": "@best/agent-frontend",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "lwc-services build -m production",
+    "build:development": "lwc-services build",
+    "watch": "lwc-services watch"
+  },
+  "version": "6.1.3"
 }

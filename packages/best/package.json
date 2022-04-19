@@ -1,15 +1,4 @@
 {
-  "name": "best",
-  "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
-  "version": "6.1.3",
-  "description": "Best",
-  "keywords": [
-    "Best",
-    "performance"
-  ],
   "bin": {
     "best": "./bin/best.js",
     "best-agent": "./bin/best-agent.js",
@@ -19,5 +8,16 @@
     "@best/agent": "6.1.3",
     "@best/agent-hub": "6.1.3",
     "@best/cli": "6.1.3"
-  }
+  },
+  "description": "Best",
+  "keywords": [
+    "Best",
+    "performance"
+  ],
+  "license": "MIT",
+  "name": "best",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "6.1.3"
 }

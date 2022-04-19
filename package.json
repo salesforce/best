@@ -1,32 +1,7 @@
 {
-  "name": "best-monorepo",
-  "private": true,
-  "description": "Benchmark & Performance tool",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/salesforce/best.git"
-  },
-  "license": "MIT",
-  "scripts": {
-    "test": "jest --config ./scripts/jest/root.config.js",
-    "clean": "lerna run clean && lerna clean --yes && rimraf -g packages/**/build && rimraf packages/**/tsconfig.tsbuildinfo && rimraf -g packages/**/dist && rimraf -g packages/**/node_modules",
-    "lint": "eslint packages/ --ext=js,ts",
-    "prettier": "prettier --write '**/*.{js,md}'",
-    "prepare": "yarn build && yarn build:frontends",
-    "build": "tsc -b",
-    "build:frontends": "lerna exec --scope **/agent-frontend --scope **/frontend -- yarn build",
-    "build:docs": "cd docs && yarn build",
-    "watch:docs": "cd docs && yarn watch",
-    "release": "lerna version -m 'chore(release): publish %s' --exact --force-publish=* --no-git-tag-version --no-push --no-commit-hooks",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-    "publish": "lerna publish from-package",
-    "perf": "cd packages/best-benchmarks/ && yarn start",
-    "deploy:docs": "git subtree push --prefix docs heroku-docs master",
-    "start": "node ./scripts/start.js"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -e $GIT_PARAMS"
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
     }
   },
   "devDependencies": {
@@ -64,25 +39,47 @@
     "rimraf": "3.0.2",
     "typescript": "3.9.10"
   },
-  "resolutions": {
-    "js-yaml": "^3.13.1"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "workspaces": [
-    "packages/@best/*",
-    "packages/*",
-    "docs"
-  ],
   "engines": {
     "node": ">=14.15.4 <17.0.0",
     "yarn": ">=1.22.0 <2.0.0"
   },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -e $GIT_PARAMS"
+    }
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/salesforce/best.git"
+  },
+  "resolutions": {
+    "js-yaml": "^3.13.1"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "build:docs": "cd docs && yarn build",
+    "build:frontends": "lerna exec --scope **/agent-frontend --scope **/frontend -- yarn build",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "clean": "lerna run clean && lerna clean --yes && rimraf -g packages/**/build && rimraf packages/**/tsconfig.tsbuildinfo && rimraf -g packages/**/dist && rimraf -g packages/**/node_modules",
+    "deploy:docs": "git subtree push --prefix docs heroku-docs master",
+    "lint": "eslint packages/ --ext=js,ts",
+    "perf": "cd packages/best-benchmarks/ && yarn start",
+    "prepare": "yarn build && yarn build:frontends",
+    "prettier": "prettier --write '**/*.{js,md}'",
+    "publish": "lerna publish from-package",
+    "release": "lerna version -m 'chore(release): publish %s' --exact --force-publish=* --no-git-tag-version --no-push --no-commit-hooks",
+    "start": "node ./scripts/start.js",
+    "test": "jest --config ./scripts/jest/root.config.js",
+    "watch:docs": "cd docs && yarn watch"
+  },
   "volta": {
     "node": "14.15.4",
     "yarn": "1.22.5"
-  }
+  },
+  "workspaces": [
+    "docs",
+    "packages/*",
+    "packages/@best/*"
+  ]
 }

@@ -1,19 +1,7 @@
 {
-  "name": "@best/cli",
-  "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
-  "version": "6.1.3",
-  "description": "Best CLI",
-  "keywords": [
-    "Best",
-    "performance"
-  ],
   "bin": {
     "best": "./bin/best.js"
   },
-  "main": "build/index.js",
   "dependencies": {
     "@best/analyzer": "6.1.3",
     "@best/api-db": "6.1.3",
@@ -36,11 +24,23 @@
     "simple-statistics": "^6.0.1",
     "yargs": "^16.1.0"
   },
+  "description": "Best CLI",
   "devDependencies": {
     "ansi-regex": "^4.1.0"
   },
   "files": [
-    "build/**/*.js",
-    "bin/"
-  ]
+    "bin/",
+    "build/**/*.js"
+  ],
+  "keywords": [
+    "Best",
+    "performance"
+  ],
+  "license": "MIT",
+  "main": "build/index.js",
+  "name": "@best/cli",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "6.1.3"
 }

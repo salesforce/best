@@ -1,22 +1,22 @@
 {
-  "name": "@best/utils",
-  "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
-  "version": "6.1.3",
-  "description": "Best Utils",
-  "keywords": [
-    "Best"
-  ],
-  "main": "build/index.js",
   "dependencies": {
     "chalk": "~2.4.2",
     "https-proxy-agent": "5.0.1",
     "is-ci": "^3.0.1",
     "systeminformation": "5.11.12"
   },
+  "description": "Best Utils",
   "files": [
     "build/**/*.js"
-  ]
+  ],
+  "keywords": [
+    "Best"
+  ],
+  "license": "MIT",
+  "main": "build/index.js",
+  "name": "@best/utils",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "6.1.3"
 }

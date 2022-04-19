@@ -1,17 +1,17 @@
 {
-  "name": "@best/regex-util",
-  "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
-  "version": "6.1.3",
   "description": "Best Regex util",
+  "files": [
+    "build/**/*.js"
+  ],
   "keywords": [
     "Best",
     "performance"
   ],
+  "license": "MIT",
   "main": "build/index.js",
-  "files": [
-    "build/**/*.js"
-  ]
+  "name": "@best/regex-util",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "6.1.3"
 }

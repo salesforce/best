@@ -1,19 +1,19 @@
 {
-  "name": "@best/runtime",
-  "license": "MIT",
-  "publishConfig": {
-    "access": "public"
+  "dependencies": {
+    "chalk": "~2.4.2"
   },
-  "version": "6.1.3",
   "description": "Best Runtime",
+  "files": [
+    "dist/**/*.js"
+  ],
   "keywords": [
     "Best",
     "performance"
   ],
-  "dependencies": {
-    "chalk": "~2.4.2"
+  "license": "MIT",
+  "name": "@best/runtime",
+  "publishConfig": {
+    "access": "public"
   },
-  "files": [
-    "dist/**/*.js"
-  ]
+  "version": "6.1.3"
 }
