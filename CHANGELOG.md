@@ -1,4 +1,13 @@
-# [6.1.4](https://github.com/salesforce/best/compare/v6.1.3...v6.1.4) (2022-04-19)
+# [6.2.0](https://github.com/salesforce/best/compare/v6.1.4...v6.2.0) (2022-04-20)
+
+
+### Features
+
+* upgrade `puppeteer` to `v13.6.0` ([8029da5](https://github.com/salesforce/best/commit/8029da5e6ef6dcabfe896e55ea814a323f83dfa3))
+
+
+
+## [6.1.4](https://github.com/salesforce/best/compare/v6.1.3...v6.1.4) (2022-04-19)
 
 
 
