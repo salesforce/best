@@ -137,8 +137,8 @@ describe('AbstractRunner', () => {
 
             (existsSync as jest.Mock).mockReturnValue(true);
             const result = await runner.initializeServer(benchmarkEntry, projectConfig);
-            expect(__test__.app.use).toHaveBeenNthCalledWith(1, 'testFolder');
-            expect(__test__.app.use).toHaveBeenNthCalledWith(2, assetPath);
+            expect(__test__.app.use).toHaveBeenNthCalledWith(2, 'testFolder');
+            expect(__test__.app.use).toHaveBeenNthCalledWith(3, assetPath);
             expect(result).toStrictEqual({ terminate: expect.any(Function), url: `http://127.0.0.1:28080/testEntry` });
         });
 
@@ -151,8 +151,8 @@ describe('AbstractRunner', () => {
 
             (existsSync as jest.Mock).mockReturnValue(true);
             const result = await runner.initializeServer(benchmarkEntry, projectConfig);
-            expect(__test__.app.use).toHaveBeenNthCalledWith(1, 'testFolder');
-            expect(__test__.app.use).toHaveBeenNthCalledWith(2, '/testAlias', assetPath);
+            expect(__test__.app.use).toHaveBeenNthCalledWith(2, 'testFolder');
+            expect(__test__.app.use).toHaveBeenNthCalledWith(3, '/testAlias', assetPath);
             expect(result).toStrictEqual({ terminate: expect.any(Function), url: `http://127.0.0.1:28080/testEntry` });
         });
 
