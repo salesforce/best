@@ -20,6 +20,7 @@ import {
     RunnerStream,
     Interruption
 } from '@best/types';
+import { crossOriginIsolation } from './cross-origin-isolation';
 
 export default abstract class AbstractRunner {
     abstract async run(benchmarkBuilds: BuildConfig[], projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream, interruption?: Interruption): Promise<BenchmarkResultsSnapshot[]>;
@@ -39,6 +40,7 @@ export default abstract class AbstractRunner {
 
         return new Promise((resolve) => {
             const app = express();
+            app.use(crossOriginIsolation());
             app.use(express.static(dirname(benchmarkEntry)));
 
             if (Array.isArray(assets)) {
