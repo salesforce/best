@@ -9,6 +9,7 @@ import express from 'express'
 import compression from 'compression'
 import * as path from 'path'
 import { FrontendConfig } from '@best/types';
+import { crossOriginIsolation } from "./cross-origin-isolation";
 
 import api from './api'
 
@@ -23,6 +24,7 @@ export const Frontend = (config: FrontendConfig): express.Application => {
 
     const app: express.Application = express()
 
+    app.use(crossOriginIsolation())
     app.use(compression())
     app.use(express.json())
 
