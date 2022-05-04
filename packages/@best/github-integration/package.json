@@ -7,7 +7,10 @@
     "base-64": "^0.1.0",
     "expand-tilde": "~2.0.2",
     "json2md": "~1.5.11",
-    "jsonwebtoken": "8.1.0"
+    "jsonwebtoken": "8.5.1"
+  },
+  "devDependencies": {
+    "@types/json2md": "1.5.1"
   },
   "description": "Best Github Integration",
   "files": [

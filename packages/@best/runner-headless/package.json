@@ -6,7 +6,7 @@
   },
   "description": "Best Runner (Headless)",
   "devDependencies": {
-    "@types/puppeteer": "5.4.5"
+    "@types/puppeteer": "5.4.6"
   },
   "files": [
     "build/**/*.js"
