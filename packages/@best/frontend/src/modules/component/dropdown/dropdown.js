@@ -15,18 +15,20 @@ export default class ComponentDropdown extends LightningElement {
     }
 
     get hasItems() {
-        return (!!this.options && !!this.options.items.length);
+        return !!this.options && !!this.options.items.length;
     }
 
     itemSelected(event) {
         const itemIndex = parseInt(event.target.dataset.index, 10);
         const item = this.options.items[itemIndex];
 
-        this.dispatchEvent(new CustomEvent('selection', {
-            detail: {
-                selectedItems: [item]
-            }
-        }));
+        this.dispatchEvent(
+            new CustomEvent('selection', {
+                detail: {
+                    selectedItems: [item],
+                },
+            }),
+        );
 
         this.toggleItems();
     }

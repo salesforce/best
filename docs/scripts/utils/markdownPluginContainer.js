@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 // Copied from https://github.com/vuepress/vuepress-plugin-container/blob/master/src/index.js
 const container = require('markdown-it-container');
@@ -17,33 +17,20 @@ function call(target, ...args) {
 }
 
 function extendMarkdown(md, options) {
-    const {
-        validate,
-        marker,
-        before,
-        after,
-        type = '',
-        defaultTitle = type.toUpperCase(),
-    } = options;
+    const { validate, marker, before, after, type = '', defaultTitle = type.toUpperCase() } = options;
 
     let { render } = options;
     if (!render) {
         if (before !== undefined && after !== undefined) {
             render = (tokens, index) => {
-                const info = tokens[index].info
-                    .trim()
-                    .slice(type.length)
-                    .trim();
+                const info = tokens[index].info.trim().slice(type.length).trim();
                 return tokens[index].nesting === 1 ? call(before, info) : call(after, info);
             };
         } else {
             render = (tokens, index, _, env) => {
                 const token = tokens[index];
                 const { relativePath = '' } = env;
-                let title = token.info
-                    .trim()
-                    .slice(type.length)
-                    .trim();
+                let title = token.info.trim().slice(type.length).trim();
                 if (!title && defaultTitle) {
                     if (typeof defaultTitle === 'string') {
                         title = defaultTitle;
@@ -71,6 +58,6 @@ function extendMarkdown(md, options) {
 
 module.exports = (md, options) => {
     if (options && options.length) {
-        options.forEach(opt => extendMarkdown(md, opt));
+        options.forEach((opt) => extendMarkdown(md, opt));
     }
 };

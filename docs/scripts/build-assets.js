@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 const fs = require('fs');
 const path = require('path');
@@ -27,19 +27,12 @@ function buildAndCompileStyles(dist) {
         return (str += fs.readFileSync(abs, 'utf-8'));
     }, '');
 
-    const hash = crypto
-        .createHash('md5')
-        .update(bundleSrc)
-        .digest('hex');
+    const hash = crypto.createHash('md5').update(bundleSrc).digest('hex');
     mkdirp.sync(PAGE_STYLESHEETS_PROD_DIR);
-    fs.writeFileSync(
-        path.join(PAGE_STYLESHEETS_PROD_DIR, `bundle.${hash}.css`),
-        bundleSrc,
-        'utf-8',
-    );
+    fs.writeFileSync(path.join(PAGE_STYLESHEETS_PROD_DIR, `bundle.${hash}.css`), bundleSrc, 'utf-8');
 }
 
-module.exports = async function() {
+module.exports = async function () {
     // Copy all assets
     await cpy(['**', '!images/favicon.ico'], path.join(DIST_DIR, 'assets'), {
         cwd: path.resolve(SRC_DIR, 'assets'),

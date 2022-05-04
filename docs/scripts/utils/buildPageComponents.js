@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 const path = require('path');
 const { rollup } = require('rollup');
@@ -72,5 +72,5 @@ module.exports = async function buildWebComponents(pageDoc, { modulesDir }) {
         sourcemap: false,
     });
 
-    return results.output.map(r => r.fileName);
+    return results.output.map((r) => r.fileName);
 };

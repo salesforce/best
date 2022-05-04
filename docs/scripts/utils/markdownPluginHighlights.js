@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 const prism = require('prismjs');
 const loadLanguages = require('prismjs/components/index');

@@ -10,4 +10,4 @@ export const findInconsistencies = (set, property) => {
         return badSet;
     }, []);
     return inconsistencies;
-}
+};

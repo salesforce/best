@@ -7,7 +7,7 @@ title: Understanding Best
 Best came out of our need to consistently benchmark Javascript the same way we unit test our code. In pursuit of this goal, Best follows an opinionated model of performance benchmarking. Read on to learn how Best can help you create performant code and, most important, keep it performant over time.
 
 ::: note
-The name of the project *Best* was inspired by *Jest* - changing the *"J"* to a *"B"* for *"benchmarks."* The idea was that running benchmarks and doing perf testing should be as easy as unit testing.
+The name of the project _Best_ was inspired by _Jest_ - changing the _"J"_ to a _"B"_ for _"benchmarks."_ The idea was that running benchmarks and doing perf testing should be as easy as unit testing.
 :::
 
 ## The Best Manifesto
@@ -62,10 +62,10 @@ Additionally, since CI runs on all of your commits you can create consistent sna
 
 Best helps you understand your code's performance with its many metrics.
 
-- `aggregate` The total time your benchmark took to run. If you look at one metric it should be this one.
-- `script` The time it took to evaluate your benchmark code. This is useful to confirm your benchmark code is running as quickly as you expect.
-- `paint` If your benchmark involves the DOM, Best measures how much time the browser spends on painting. This is useful to make your UI code paths more efficient.
-- `layout` If your benchmark involves the DOM, Best measures how much time the browser spends on layouts. This gives you a picture of how complex of DOM structure you are using.
+-   `aggregate` The total time your benchmark took to run. If you look at one metric it should be this one.
+-   `script` The time it took to evaluate your benchmark code. This is useful to confirm your benchmark code is running as quickly as you expect.
+-   `paint` If your benchmark involves the DOM, Best measures how much time the browser spends on painting. This is useful to make your UI code paths more efficient.
+-   `layout` If your benchmark involves the DOM, Best measures how much time the browser spends on layouts. This gives you a picture of how complex of DOM structure you are using.
 
 ::: note
 The `paint` and `layout` metrics are only available when using `runner-headless` because Best gets these directly from Chrome Dev Tools tracing.

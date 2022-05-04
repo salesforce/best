@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 const dateformat = require('dateformat');
 module.exports = function buildBlogPostHeader({ title, subtitle, created_at, author, twitter }) {

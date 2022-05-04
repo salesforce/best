@@ -4,7 +4,7 @@ export function connectStore(store) {
     return store.getState();
 }
 
-register(connectStore, eventTarget => {
+register(connectStore, (eventTarget) => {
     let store;
     let subscription;
 
@@ -24,7 +24,7 @@ register(connectStore, eventTarget => {
         }
     });
 
-    eventTarget.addEventListener('config', config => {
+    eventTarget.addEventListener('config', (config) => {
         store = config.store;
     });
 });

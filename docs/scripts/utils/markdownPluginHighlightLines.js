@@ -3,14 +3,14 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 // Modified from https://github.com/egoist/markdown-it-highlight-lines
 
 const RE = /{([\d,-]+)}/;
 const wrapperRE = /^<pre .*?><code>/;
 
-module.exports = md => {
+module.exports = (md) => {
     const fence = md.renderer.rules.fence;
     md.renderer.rules.fence = (...args) => {
         const [tokens, idx, options] = args;
@@ -28,12 +28,10 @@ module.exports = md => {
 
             token.lineNumbers = RE.exec(rawInfo)[1]
                 .split(',')
-                .map(v => v.split('-').map(v => parseInt(v, 10)));
+                .map((v) => v.split('-').map((v) => parseInt(v, 10)));
         }
 
-        const code = options.highlight
-            ? options.highlight(token.content, token.info)
-            : token.content;
+        const code = options.highlight ? options.highlight(token.content, token.info) : token.content;
 
         const rawCode = code.replace(wrapperRE, '');
         const highlightLinesCode = rawCode

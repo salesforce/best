@@ -22,7 +22,7 @@ export default class ComponentCommitInfo extends LightningElement {
     }
 
     get hasCommitInfo() {
-        return (this.commitInfo && Object.keys(this.commitInfo).length > 0);
+        return this.commitInfo && Object.keys(this.commitInfo).length > 0;
     }
 
     get styleTag() {
@@ -38,19 +38,23 @@ export default class ComponentCommitInfo extends LightningElement {
     }
 
     close() {
-        this.dispatchEvent(new CustomEvent('close', {
-            detail: {
-                commit: this.commit
-            }
-        }))
+        this.dispatchEvent(
+            new CustomEvent('close', {
+                detail: {
+                    commit: this.commit,
+                },
+            }),
+        );
     }
 
     compare() {
-        this.dispatchEvent(new CustomEvent('compare', {
-            detail: {
-                commit: this.commit
-            }
-        }))
+        this.dispatchEvent(
+            new CustomEvent('compare', {
+                detail: {
+                    commit: this.commit,
+                },
+            }),
+        );
     }
 
     connectedCallback() {

@@ -1,10 +1,10 @@
 /* eslint-disable no-undef */
 // -- globalThis polyfill -----------------------------------------------------
-(function() {
+(function () {
     if (typeof globalThis === 'object') return;
     // eslint-disable-next-line no-extend-native
     Object.defineProperty(Object.prototype, '__magic__', {
-        get: function() {
+        get: function () {
             return this;
         },
         configurable: true,
@@ -16,11 +16,7 @@
 // -- https://github.com/nolanlawson/promise-worker/blob/master/register.js
 function isPromise(obj) {
     // via https://unpkg.com/is-promise@2.1.0/index.js
-    return (
-        !!obj &&
-        (typeof obj === 'object' || typeof obj === 'function') &&
-        typeof obj.then === 'function'
-    );
+    return !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.then === 'function';
 }
 
 function registerPromiseWorker(callback) {
@@ -72,10 +68,10 @@ function registerPromiseWorker(callback) {
             postOutgoingMessage(e, messageId, null, result.res);
         } else {
             result.res.then(
-                function(finalResult) {
+                function (finalResult) {
                     postOutgoingMessage(e, messageId, null, finalResult);
                 },
-                function(finalError) {
+                function (finalError) {
                     postOutgoingMessage(e, messageId, finalError);
                 },
             );
@@ -106,7 +102,7 @@ function registerPromiseWorker(callback) {
 importScripts('/assets/js/lwc/compiler_v100.js');
 const compile = globalThis.compile;
 
-registerPromiseWorker(async function({ operation, options }) {
+registerPromiseWorker(async function ({ operation, options }) {
     if (operation === 'ping') {
         return 'ready';
     }

@@ -5,10 +5,13 @@ This is the database adapter that the frontend uses to display results. The resu
 Below you can find instructions for using either Postgres or SQLite. By default Best uses a local SQLite file, however we recommend using Postgres if you are running on anything other than your local machine.
 
 ## SQLite
+
 SQLite is configured by default, but if you would like to provide a custom path you can use the following configuration.
 
 ### Config
+
 Inside your `best.config.js` you need to have the following:
+
 ```
 {
     apiDatabase: {
@@ -23,7 +26,9 @@ You do not need to create your own sqlite file, the adapter will handle that for
 ## Postgres
 
 ### Config
+
 Inside your `best.config.js` you need to have the following:
+
 ```
 {
     apiDatabase: {

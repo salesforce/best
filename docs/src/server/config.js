@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 const fs = require('fs');
 const path = require('path');
@@ -19,7 +19,7 @@ const DIST_DIR = path.resolve(__dirname, '../../dist');
 const CONTENT_DIR = path.resolve(__dirname, '../../content');
 const BLOG_DIR = path.join(CONTENT_DIR, 'blog');
 
-const BLOG_LIST = fs.readdirSync(BLOG_DIR).map(file => path.basename(file, '.md'));
+const BLOG_LIST = fs.readdirSync(BLOG_DIR).map((file) => path.basename(file, '.md'));
 
 // Augment the pages of the config
 SITE_CONFIG.blog.pages = BLOG_LIST;

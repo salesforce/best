@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 const path = require('path');
 const fs = require('fs');
@@ -58,7 +58,7 @@ function createServer() {
         try {
             const app = await require('../src/server/server').createApp();
             const server = http.createServer(app);
-            server.listen(PORT, function() {
+            server.listen(PORT, function () {
                 resolve();
             });
         } catch (e) {
@@ -73,7 +73,7 @@ async function run() {
 }
 
 run()
-    .catch(err => {
+    .catch((err) => {
         console.log(err);
         process.exit(1);
     })

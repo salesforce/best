@@ -1,66 +1,66 @@
-import * as types from 'store/shared'
-import { benchmarksChanged, metricsChanged, zoomChanged, resetView, comparisonChanged } from 'store/actions'
+import * as types from 'store/shared';
+import { benchmarksChanged, metricsChanged, zoomChanged, resetView, comparisonChanged } from 'store/actions';
 
 describe('view actions', () => {
     describe('benchmarksChanged', () => {
         it('should create an action for benchmarks changing', () => {
-            const benchmark = 'test'
-    
+            const benchmark = 'test';
+
             const expectedAction = {
                 type: types.VIEW_BENCHMARKS_CHANGED,
-                benchmark
-            }
-    
-            expect(benchmarksChanged(benchmark)).toEqual(expectedAction)
-        })
-    })
+                benchmark,
+            };
+
+            expect(benchmarksChanged(benchmark)).toEqual(expectedAction);
+        });
+    });
 
     describe('metricsChanged', () => {
         it('should create an action for metrics changing', () => {
-            const metric = 'duration'
-    
+            const metric = 'duration';
+
             const expectedAction = {
                 type: types.VIEW_METRICS_CHANGED,
-                metric
-            }
-    
-            expect(metricsChanged(metric)).toEqual(expectedAction)
-        })
-    })
+                metric,
+            };
+
+            expect(metricsChanged(metric)).toEqual(expectedAction);
+        });
+    });
 
     describe('zoomChanged', () => {
         it('should create an action for zoom changing', () => {
-            const zoom = { auto: true }
-    
+            const zoom = { auto: true };
+
             const expectedAction = {
                 type: types.VIEW_ZOOM_CHANGED,
-                zoom
-            }
-    
-            expect(zoomChanged(zoom)).toEqual(expectedAction)
-        })
-    })
+                zoom,
+            };
+
+            expect(zoomChanged(zoom)).toEqual(expectedAction);
+        });
+    });
 
     describe('comparisonChanged', () => {
         it('should create an action for the comparison changing', () => {
-            const comparison = { commits: ['a', 'b'], results: {}, benchmarkName: 'test' }
-            
+            const comparison = { commits: ['a', 'b'], results: {}, benchmarkName: 'test' };
+
             const expectedAction = {
                 type: types.VIEW_COMPARISON_CHANGED,
-                comparison
-            }
+                comparison,
+            };
 
-            expect(comparisonChanged(comparison)).toEqual(expectedAction)
-        })
-    })
+            expect(comparisonChanged(comparison)).toEqual(expectedAction);
+        });
+    });
 
     describe('resetView', () => {
         it('should create an action for view resetting', () => {
             const expectedAction = {
-                type: types.VIEW_RESET
-            }
-    
-            expect(resetView()).toEqual(expectedAction)
-        })
-    })
-})
+                type: types.VIEW_RESET,
+            };
+
+            expect(resetView()).toEqual(expectedAction);
+        });
+    });
+});

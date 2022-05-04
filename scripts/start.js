@@ -22,13 +22,13 @@ if (BEST_SERVICE_TYPE === 'hub') {
     const feConfig = {
         apiDatabase: {
             adapter: 'sql/postgres',
-            uri: process.env.DATABASE_URL
+            uri: process.env.DATABASE_URL,
         },
         githubConfig: {
             owner: process.env.GITHUB_OWNER,
-            repo: process.env.GITHUB_REPO
-        }
-    }
+            repo: process.env.GITHUB_REPO,
+        },
+    };
 
     const PORT = process.env.PORT || 3000;
     const app = require('express')();
@@ -37,7 +37,6 @@ if (BEST_SERVICE_TYPE === 'hub') {
     app.listen(PORT, () => {
         console.log(`Best Frontend listening on port: ${PORT}`);
     });
-
 } else {
     console.log('Invalid Best Service Type. Values: [hub, agent, frontend]');
 }

@@ -5,6 +5,6 @@ import { fetchProjectsIfNeeded } from 'store/actions';
 
 export default class App extends LightningElement {
     connectedCallback() {
-        store.dispatch(fetchProjectsIfNeeded())
+        store.dispatch(fetchProjectsIfNeeded());
     }
 }

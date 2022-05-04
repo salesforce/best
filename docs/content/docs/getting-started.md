@@ -22,7 +22,7 @@ Now that you have Best installed, you can start writing some benchmarks. We reco
 
 Let's look at some examples of what a benchmark might look like. Your benchmarks should be in a file ending in `.benchmark.js`.
 
-This is a very simple example of what a benchmark might look like. 
+This is a very simple example of what a benchmark might look like.
 
 ```js
 import fib from '../fib';
@@ -31,15 +31,15 @@ describe('js-execution', () => {
     benchmark('fibonacci 15', () => {
         run(() => {
             return fib(15);
-        })
-    })
+        });
+    });
 
     benchmark('fibonacci 38', () => {
         run(() => {
             return fib(38);
-        })
-    })
-})
+        });
+    });
+});
 ```
 
 Now let's look at one that uses [Lightning Web Components](https://lwc.dev) that interacts with the DOM.
@@ -55,12 +55,12 @@ describe('simple-item', () => {
             element = createElement('simple-item', { is: SimpleItem });
             element.flavor = 'red';
             document.body.appendChild(element);
-        })
+        });
         after(() => {
             return element && element.parentElement.removeChild(element);
-        })
-    })
-})
+        });
+    });
+});
 ```
 
 Here we have also added an `after` block to clean up the DOM after our test. This resets the state properly between each benchmark.
@@ -75,8 +75,8 @@ There is one last step before you can run the benchmarks: create a `best.config.
 
 ```js
 module.exports = {
-    projectName: 'my-benchmarks'
-}
+    projectName: 'my-benchmarks',
+};
 ```
 
 To further customize your Best setup, read about [configuration](/guide/configuration#best-configuration).

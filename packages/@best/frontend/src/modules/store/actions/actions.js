@@ -9,7 +9,7 @@ import {
     VIEW_ZOOM_CHANGED,
     VIEW_COMPARISON_CHANGED,
     VIEW_RESET,
-    COMMIT_INFO_RECEIVED
+    COMMIT_INFO_RECEIVED,
 } from 'store/shared';
 
 import * as api from 'store/api';
@@ -31,7 +31,7 @@ function fetchProjects() {
     return async (dispatch) => {
         const projects = await api.fetchProjects();
         dispatch(projectsReceived(projects));
-    }
+    };
 }
 
 export function fetchProjectsIfNeeded() {
@@ -40,7 +40,7 @@ export function fetchProjectsIfNeeded() {
             return dispatch(fetchProjects());
         }
 
-        return Promise.resolve()
+        return Promise.resolve();
     };
 }
 
@@ -62,7 +62,7 @@ function fetchBenchmarks(project) {
 }
 
 function findSelectedProject({ projects }) {
-    return projects.items.find(proj => proj.id === projects.selectedProjectId);
+    return projects.items.find((proj) => proj.id === projects.selectedProjectId);
 }
 
 export function comparisonChanged(comparison) {
@@ -93,12 +93,16 @@ export function timingChanged(timing) {
         const selectedProject = findSelectedProject(getState());
         dispatch(clearBenchmarks());
         dispatch(fetchBenchmarks(selectedProject));
-    }
+    };
 }
 
 function filterSnapshotsForCommits(benchmarkName, commits, state) {
-    const snapshotsForCommit = state.benchmarks.snapshots.filter(snap => commits.includes(normalizeCommit(snap.commit)));
-    const benchmark = transformer.snapshotsToBenchmarks(snapshotsForCommit).find(bench => bench.name === benchmarkName);
+    const snapshotsForCommit = state.benchmarks.snapshots.filter((snap) =>
+        commits.includes(normalizeCommit(snap.commit)),
+    );
+    const benchmark = transformer
+        .snapshotsToBenchmarks(snapshotsForCommit)
+        .find((bench) => bench.name === benchmarkName);
 
     return benchmark;
 }
@@ -106,25 +110,27 @@ function filterSnapshotsForCommits(benchmarkName, commits, state) {
 export function fetchComparison(benchmarkName, commits) {
     return (dispatch, getState) => {
         const results = filterSnapshotsForCommits(benchmarkName, commits, getState());
-        dispatch(comparisonChanged({ results, commits, benchmarkName }))
-    }
+        dispatch(comparisonChanged({ results, commits, benchmarkName }));
+    };
 }
 
 export function selectProject(project, shouldResetView) {
     return async (dispatch) => {
         dispatch(clearBenchmarks());
-        
-        if (shouldResetView) { dispatch(resetView()) }
+
+        if (shouldResetView) {
+            dispatch(resetView());
+        }
 
         dispatch({ type: PROJECT_SELECTED, id: project.id });
-        
+
         return dispatch(fetchBenchmarks(project));
     };
 }
 
 /*
  * COMMIT INFO
-*/
+ */
 
 function shouldFetchCommitInfo(state, commit) {
     return !state.commitInfo.hasOwnProperty(normalizeCommit(commit));
@@ -138,7 +144,7 @@ function fetchCommitInfo(commit) {
     return async (dispatch) => {
         const commitInfo = await api.fetchCommitInfo(commit);
         dispatch(commitInfoReceived(commit, commitInfo));
-    }
+    };
 }
 
 export function fetchCommitInfoIfNeeded(commit) {
@@ -147,6 +153,6 @@ export function fetchCommitInfoIfNeeded(commit) {
             return dispatch(fetchCommitInfo(commit));
         }
 
-        return Promise.resolve()
-    }
+        return Promise.resolve();
+    };
 }

@@ -34,16 +34,16 @@ You can create your own server to host the front end. Follow [this template](htt
 
     ```js
     import express from 'express';
-    import { Frontend } from '@best/frontend'
-    import config from './best-frontend.config'
+    import { Frontend } from '@best/frontend';
+    import config from './best-frontend.config';
 
-    const PORT = process.env.PORT || 3000
+    const PORT = process.env.PORT || 3000;
 
-    const app = express()
+    const app = express();
 
-    app.use(Frontend(config))
+    app.use(Frontend(config));
 
-    app.listen(PORT)
+    app.listen(PORT);
     ```
 
 1. This code is the `best-frontend.confg` configuration file.
@@ -52,13 +52,14 @@ You can create your own server to host the front end. Follow [this template](htt
     export default {
         apiDatabase: {
             adapter: 'sql/postgres',
-            uri: 'postgresql://localhost' // Provide the connection URI to your hosted postgres database
+            uri: 'postgresql://localhost', // Provide the connection URI to your hosted postgres database
         },
-        githubConfig: { // (optional) Allows the frontend to fetch commit info directly from GitHub
+        githubConfig: {
+            // (optional) Allows the frontend to fetch commit info directly from GitHub
             owner: 'salesforce',
-            repo: 'best'
-        }
-    }
+            repo: 'best',
+        },
+    };
     ```
 
 1. Start the server and point your browser as its URL.

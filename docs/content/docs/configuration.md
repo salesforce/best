@@ -6,9 +6,9 @@ title: Configuration
 
 Best is highly configurable through command-line arguments, the Best configuration file, and environment variables.
 
-- [Command Line Arguments](#command-line-arguments)
-- [Best Configuration File](#best-configuration-file)
-- [Environment Variables](#environment-variables)
+-   [Command Line Arguments](#command-line-arguments)
+-   [Best Configuration File](#best-configuration-file)
+-   [Environment Variables](#environment-variables)
 
 ## Command Line Arguments
 
@@ -139,12 +139,15 @@ When `alias` is specified the assets are served from that path, for example `/as
 
 ```js
 {
-    assets: [{
-        path: './public/'
-    }, {
-        alias: '/assets',
-        path: '/path/to/node_modules/my-static-assets/dist/'
-    }]
+    assets: [
+        {
+            path: './public/',
+        },
+        {
+            alias: '/assets',
+            path: '/path/to/node_modules/my-static-assets/dist/',
+        },
+    ];
 }
 ```
 
@@ -169,7 +172,7 @@ When `alias` is specified the assets are served from that path, for example `/as
     plugins: [
         ['@lwc/rollup-plugin', { rootDir: '<rootDir>/src/' }],
         ['rollup-plugin-replace', { 'process.env.NODE_ENV': JSON.stringify('production') }],
-    ]
+    ];
 }
 ```
 
@@ -187,25 +190,25 @@ For the headless runner, [Puppeteer launch options](https://github.com/puppeteer
 {
     runners: [
         {
-            runner: "@best/runner-headless",
-            alias: "default",
+            runner: '@best/runner-headless',
+            alias: 'default',
             config: {
                 launchOptions: {
                     headless: false,
-                    devtools: true
-                }
-            }
+                    devtools: true,
+                },
+            },
         },
         {
-            runner: "@best/runner-remote",
-            alias: "remote-agent",
+            runner: '@best/runner-remote',
+            alias: 'remote-agent',
             config: {
-                host: "http://localhost:5000",
-                options: { path: "/best" },
-                remoteRunner: "@best/runner-headless"
-            }
+                host: 'http://localhost:5000',
+                options: { path: '/best' },
+                remoteRunner: '@best/runner-headless',
+            },
         },
-    ]
+    ];
 }
 ```
 

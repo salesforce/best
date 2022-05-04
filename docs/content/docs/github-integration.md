@@ -12,9 +12,9 @@ Best relies on a GitHub app to interact with your repositories. Follow [GitHub's
 
 The GitHub App requires these permissions:
 
-- **Checks**: Read/Write
-- **Issues**: Read/Write
-- **Pull Requests**: Read/Write
+-   **Checks**: Read/Write
+-   **Issues**: Read/Write
+-   **Pull Requests**: Read/Write
 
 Set these environment variables so Best can authenticate and interact with your GitHub App. We recommended setting these environment variables in your CI.
 
@@ -46,6 +46,6 @@ By default, Best comments on a pull request when the average performance across 
 
 ```js
 {
-    commentThreshold: 5
+    commentThreshold: 5;
 }
 ```

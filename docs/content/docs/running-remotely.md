@@ -46,15 +46,15 @@ module.exports = {
     runner: 'remote-agent',
     runners: [
         {
-            runner: "@best/runner-remote",
-            alias: "remote-agent",
+            runner: '@best/runner-remote',
+            alias: 'remote-agent',
             config: {
-                host: "https://agent-url.herokuapp.com",
-                remoteRunner: "@best/runner-headless"
+                host: 'https://agent-url.herokuapp.com',
+                remoteRunner: '@best/runner-headless',
             },
         },
-    ]
-}
+    ],
+};
 ```
 
 ## Hubs
@@ -121,21 +121,21 @@ module.exports = {
     runner: 'hub',
     runners: [
         {
-            runner: "@best/runner-hub",
-            alias: "hub",
+            runner: '@best/runner-hub',
+            alias: 'hub',
             config: {
-                host: "https://hub-url.herokuapp.com",
+                host: 'https://hub-url.herokuapp.com',
                 options: {
-                    query: { token: process.env.HUB_TOKEN }
+                    query: { token: process.env.HUB_TOKEN },
                 },
                 spec: {
-                    browser: "chrome",
-                    version: "76"
-                }
-            }
-        }
-    ]
-}
+                    browser: 'chrome',
+                    version: '76',
+                },
+            },
+        },
+    ],
+};
 ```
 
 This is similar to configuring Best to run on an Agent, except that you have added a `spec` configuration option. Like you added information about the browser and version to the Agents, you can tell the Hub which browser and version to run your benchmarks.

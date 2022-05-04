@@ -9,26 +9,26 @@ import {
     VIEW_ZOOM_CHANGED,
     VIEW_COMPARISON_CHANGED,
     VIEW_RESET,
-    COMMIT_INFO_RECEIVED
+    COMMIT_INFO_RECEIVED,
 } from 'store/shared';
 
 export function projects(
     state = {
         items: [],
-        selectedProjectId: undefined
+        selectedProjectId: undefined,
     },
-    action
+    action,
 ) {
     switch (action.type) {
         case PROJECTS_RECEIVED:
             return {
                 ...state,
-                items: action.projects
+                items: action.projects,
             };
         case PROJECT_SELECTED:
             return {
                 ...state,
-                selectedProjectId: action.id
+                selectedProjectId: action.id,
             };
         default:
             return state;
@@ -38,20 +38,20 @@ export function projects(
 export function benchmarks(
     state = {
         items: [],
-        snapshots: []
+        snapshots: [],
     },
-    action
+    action,
 ) {
     switch (action.type) {
         case CLEAR_BENCHMARKS:
             return {
                 items: [],
-                snapshots: []
+                snapshots: [],
             };
         case BENCHMARKS_RECEIVED:
             return {
                 items: action.benchmarks,
-                snapshots: action.snapshots
+                snapshots: action.snapshots,
             };
         default:
             return state;
@@ -64,54 +64,51 @@ export function view(
         benchmark: 'all',
         metric: 'all',
         zoom: {}, // this goes directly to/from plotly,
-        comparison: { commits: [], results: {}, benchmarkName: null }
+        comparison: { commits: [], results: {}, benchmarkName: null },
     },
-    action
+    action,
 ) {
     switch (action.type) {
         case VIEW_TIMING_CHANGED:
             return {
                 ...state,
-                timing: action.timing
-            }
+                timing: action.timing,
+            };
         case VIEW_BENCHMARKS_CHANGED:
             return {
                 ...state,
-                benchmark: action.benchmark
-            }
+                benchmark: action.benchmark,
+            };
         case VIEW_METRICS_CHANGED:
             return {
                 ...state,
-                metric: action.metric
-            }
+                metric: action.metric,
+            };
         case VIEW_ZOOM_CHANGED:
             return {
                 ...state,
-                zoom: action.zoom
-            }
+                zoom: action.zoom,
+            };
         case VIEW_COMPARISON_CHANGED:
             return {
                 ...state,
-                comparison: action.comparison || { commits: [], results: {}, benchmarkName: null }
-            }
+                comparison: action.comparison || { commits: [], results: {}, benchmarkName: null },
+            };
         case VIEW_RESET:
-            return view(undefined, {}) // returns default state
+            return view(undefined, {}); // returns default state
         default:
-            return state
+            return state;
     }
 }
 
-export function commitInfo(
-    state = {},
-    action
-) {
+export function commitInfo(state = {}, action) {
     switch (action.type) {
         case COMMIT_INFO_RECEIVED:
             return {
                 ...state,
-                [action.commit]: action.commitInfo
-            }
+                [action.commit]: action.commitInfo,
+            };
         default:
-            return state
+            return state;
     }
 }

@@ -1,7 +1,8 @@
 .github/
-build/
-coverage/
 __benchmarks_results__/
-public/
-examples
+build/
 CHANGELOG.md
+coverage/
+examples
+fixtures/
+public/

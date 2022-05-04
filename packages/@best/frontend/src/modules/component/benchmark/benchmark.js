@@ -47,7 +47,7 @@ export default class ComponentBenchmark extends LightningElement {
             // eslint-disable-next-line lwc/no-raf, @lwc/lwc/no-async-operation
             window.requestAnimationFrame(() => {
                 this.updateGraphZoom();
-            })
+            });
         }
     }
 
@@ -98,22 +98,25 @@ export default class ComponentBenchmark extends LightningElement {
     }
 
     get comparisonModalTitle() {
-        return `Comparing on ${this.comparisonName}`
+        return `Comparing on ${this.comparisonName}`;
     }
 
     // METHODS
 
     handleRelayout(update) {
         const firstKey = Object.keys(update).shift();
-        if (this.first && firstKey && firstKey.includes('xaxis')) { // make sure we are talking about zoom updates
-            this.dispatchEvent(new CustomEvent('zoom', {
-                detail: {
-                    update: {
-                        ...update,
-                        origin: this.benchmark.name
-                    }
-                }
-            }))
+        if (this.first && firstKey && firstKey.includes('xaxis')) {
+            // make sure we are talking about zoom updates
+            this.dispatchEvent(
+                new CustomEvent('zoom', {
+                    detail: {
+                        update: {
+                            ...update,
+                            origin: this.benchmark.name,
+                        },
+                    },
+                }),
+            );
         }
     }
 
@@ -128,7 +131,7 @@ export default class ComponentBenchmark extends LightningElement {
 
         this.selectedPoints.every((point, idx) => {
             if (point.commit === commit) {
-                if (! point.pendingCompare) {
+                if (!point.pendingCompare) {
                     this.currentLayout = removeAnnotation(this.element, commit);
                 }
                 this.selectedPoints.splice(idx, 1);
@@ -136,7 +139,7 @@ export default class ComponentBenchmark extends LightningElement {
             }
 
             return true;
-        })
+        });
     }
 
     rawClickHandler(event) {
@@ -153,7 +156,13 @@ export default class ComponentBenchmark extends LightningElement {
         const { x: commit } = point;
         const top = this.first ? 400 * 1.15 : 400;
         const left = point.xaxis.l2p(point.xaxis.d2c(point.x)) + point.xaxis._offset;
-        const commitInfo = { commit, top, left, hidden: false, pendingCompare: this.pendingCommitsToCompare.has(commit) };
+        const commitInfo = {
+            commit,
+            top,
+            left,
+            hidden: false,
+            pendingCompare: this.pendingCommitsToCompare.has(commit),
+        };
 
         const needsInsertion = this.selectedPoints.every((pastPoint, idx) => {
             if (pastPoint.commit === commit && !pastPoint.hidden) {
@@ -164,7 +173,7 @@ export default class ComponentBenchmark extends LightningElement {
             }
 
             return true;
-        })
+        });
 
         if (needsInsertion && !this.comparing) {
             this.selectedPoints.push(commitInfo);
@@ -182,7 +191,10 @@ export default class ComponentBenchmark extends LightningElement {
 
     updateVisibleTrends() {
         if (this.allTrends.length > 0) {
-            this.visibleTrends = this.metric === 'all' ? this.allTrends : this.allTrends.filter(trend => trend.name.includes(this.metric));
+            this.visibleTrends =
+                this.metric === 'all'
+                    ? this.allTrends
+                    : this.allTrends.filter((trend) => trend.name.includes(this.metric));
         }
     }
 
@@ -192,7 +204,7 @@ export default class ComponentBenchmark extends LightningElement {
         const beingCompared = this.pendingCommitsToCompare.has(commit);
 
         if (beingCompared) {
-            this.pendingCommitsToCompare.delete(commit)
+            this.pendingCommitsToCompare.delete(commit);
 
             this.selectedPoints.every((pastPoint, idx) => {
                 if (pastPoint.commit === commit) {
@@ -201,7 +213,7 @@ export default class ComponentBenchmark extends LightningElement {
                 }
 
                 return true;
-            })
+            });
         } else {
             this.pendingCommitsToCompare.add(commit);
 
@@ -212,7 +224,7 @@ export default class ComponentBenchmark extends LightningElement {
                 }
 
                 return true;
-            })
+            });
         }
     }
 
@@ -221,9 +233,9 @@ export default class ComponentBenchmark extends LightningElement {
     }
 
     cancelComparison() {
-        this.pendingCommitsToCompare.forEach(commit => {
+        this.pendingCommitsToCompare.forEach((commit) => {
             this.currentLayout = removeAnnotation(this.element, commit);
-        })
+        });
 
         this.pendingCommitsToCompare = new Set();
         this.selectedPoints = [];
@@ -243,11 +255,11 @@ export default class ComponentBenchmark extends LightningElement {
 
         if (!this.hasRegisteredHandlers) {
             this.hasRegisteredHandlers = true;
-            this.element.addEventListener('click', event => this.rawClickHandler(event));
+            this.element.addEventListener('click', (event) => this.rawClickHandler(event));
 
-            this.element.on('plotly_hover', data => this.hoverHandler(data));
+            this.element.on('plotly_hover', (data) => this.hoverHandler(data));
 
-            this.element.on('plotly_relayout', update => this.handleRelayout(update));
+            this.element.on('plotly_relayout', (update) => this.handleRelayout(update));
         }
 
         if (!this.hasSetInitialZoom) {
@@ -262,12 +274,12 @@ export default class ComponentBenchmark extends LightningElement {
         }
 
         if (this.showingComparison && this.hasComparisonResults) {
-            if (! this.comparisonElement) this.comparisonElement = this.template.querySelector('.comparison-graph');
+            if (!this.comparisonElement) this.comparisonElement = this.template.querySelector('.comparison-graph');
 
             if (this.comparisonElement) {
                 const comparisonTrend = buildTrends(this.comparisonResults, true, true);
                 const initialComparisonLayout = buildLayout(this.comparisonResults.name, false);
-                await drawPlot(this.comparisonElement, comparisonTrend, initialComparisonLayout)
+                await drawPlot(this.comparisonElement, comparisonTrend, initialComparisonLayout);
             }
         }
     }

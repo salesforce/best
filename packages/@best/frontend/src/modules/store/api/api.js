@@ -12,7 +12,7 @@ function timeQuery(project, timing) {
     } else if (timing === '2-months') {
         let date = new Date();
         date.setMonth(date.getMonth() - 2);
-        return `since=${date.getTime()}`
+        return `since=${date.getTime()}`;
     }
 
     return '';

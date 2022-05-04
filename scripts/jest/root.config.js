@@ -23,5 +23,5 @@ module.exports = {
         '<rootDir>/packages/@best/runner-abstract',
         '<rootDir>/packages/@best/runner-headless',
         '<rootDir>/packages/@best/cli',
-    ]
+    ],
 };

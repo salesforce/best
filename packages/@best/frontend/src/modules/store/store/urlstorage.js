@@ -4,7 +4,7 @@ const DEBOUNCE_DURATION = 500;
 
 function debounce(fn, duration) {
     let timer;
-    return function(...args) {
+    return function (...args) {
         const thisValue = this;
 
         if (timer) {
@@ -21,11 +21,11 @@ function debounce(fn, duration) {
 
 function updateProjectsPathIfNeeded(projectId) {
     if (!projectId) return;
-    
+
     const newPath = `/${projectId}`;
 
     if (window.location.pathname !== newPath) {
-        window.history.pushState(null, null, newPath)
+        window.history.pushState(null, null, newPath);
     }
 }
 
@@ -49,13 +49,13 @@ function updateViewQueryIfNeeded(view) {
     const friendlyView = {
         ...view,
         zoom: friendlyZoom(view.zoom),
-        comparison: view.comparison.commits
-    }
+        comparison: view.comparison.commits,
+    };
 
     if (view.comparison.benchmarkName) {
         friendlyView.comparisonBenchmark = view.comparison.benchmarkName;
     }
-    
+
     const newQuery = queryString.stringify(friendlyView, { arrayFormat: 'comma' });
 
     if (window.location.hash !== `#${newQuery}`) {
@@ -66,12 +66,12 @@ function updateViewQueryIfNeeded(view) {
 function loadFriendlyZoom(zoomQuery) {
     if (typeof zoomQuery === 'string' && zoomQuery === 'auto') {
         return {
-            'xaxis.autorange': true
+            'xaxis.autorange': true,
         };
     } else if (zoomQuery.length > 1) {
         return {
-            'xaxis.range': zoomQuery
-        }
+            'xaxis.range': zoomQuery,
+        };
     }
 
     return {};
@@ -89,8 +89,12 @@ function loadViewFromQuery() {
             timing: parsedQuery.timing,
             metric: parsedQuery.metric,
             zoom: loadFriendlyZoom(parsedQuery.zoom),
-            comparison: { commits: parsedQuery.comparison || [], results: {}, benchmarkName: parsedQuery.comparisonBenchmark }
-        }
+            comparison: {
+                commits: parsedQuery.comparison || [],
+                results: {},
+                benchmarkName: parsedQuery.comparisonBenchmark,
+            },
+        };
 
         return view;
     }
@@ -109,20 +113,20 @@ export const loadState = () => {
             ...state,
             projects: {
                 items: [],
-                selectedProjectId: parseInt(projectId, 10)
-            }
-        }
+                selectedProjectId: parseInt(projectId, 10),
+            },
+        };
     }
 
     if (view) {
         state = {
             ...state,
-            view
-        }
+            view,
+        };
     }
 
     return state;
-}
+};
 
 export const saveState = ({ projects: { selectedProjectId }, view }) => {
     try {
@@ -131,11 +135,11 @@ export const saveState = ({ projects: { selectedProjectId }, view }) => {
         // log error or something
     }
     updateViewQueryIfNeeded(view);
-}
+};
 
 const debouncedSave = debounce(saveState, DEBOUNCE_DURATION);
 
-export const middleware = store => next => action => {
+export const middleware = (store) => (next) => (action) => {
     next(action);
     debouncedSave(store.getState());
 };

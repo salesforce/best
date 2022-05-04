@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 /* eslint-disable no-console */
 const reloadLib = require('reload');
@@ -36,7 +36,7 @@ async function watchDirectory(dir, opts = { interval: 1 }, onChange) {
 module.exports = function watchDocChanges(app) {
     const opts = { interval: 1 };
     return reloadLib(app)
-        .then(function({ reload }) {
+        .then(function ({ reload }) {
             const update = {
                 assets: async () => {
                     await buildAssets();
@@ -53,7 +53,7 @@ module.exports = function watchDocChanges(app) {
                 blog: async () => {
                     await buildBlog();
                     reload();
-                }
+                },
             };
 
             // Watch Asssets
@@ -64,16 +64,12 @@ module.exports = function watchDocChanges(app) {
 
             // Watch Docs
             watchDirectory('content/docs', opts, update.docs);
-            watchDirectory(
-                'src/client/modules',
-                { ...opts, filter: f => !f.endsWith('tutorial') },
-                update.docs,
-            );
+            watchDirectory('src/client/modules', { ...opts, filter: (f) => !f.endsWith('tutorial') }, update.docs);
 
             // Watch blog
             watchDirectory('content/blog', opts, update.blog);
         })
-        .catch(function(err) {
+        .catch(function (err) {
             console.error('Reload could not start, could not start server/sample app', err);
         });
 };

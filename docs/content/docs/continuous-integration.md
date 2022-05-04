@@ -29,11 +29,11 @@ To see an example, look at Best's own CircleCI [`config.yml`](https://github.com
 
 ```yml
 - run:
-    name: Run BEST Benchmarks
-    command: yarn perf
+      name: Run BEST Benchmarks
+      command: yarn perf
 - run:
-    name: Compare BEST Benchmarks
-    command: yarn perf --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --gitIntegration
+      name: Compare BEST Benchmarks
+      command: yarn perf --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --gitIntegration
 ```
 
 The Yarn command `perf` is essentially an alias to the Best CLI. Best is first run to benchmark the code of the new Pull Request. Then `best --compareStats` is run with a base commit from `master` and a target commit from the PR. The `--gitIntegration` flag causes Best to post the results on the pull request on GitHub.

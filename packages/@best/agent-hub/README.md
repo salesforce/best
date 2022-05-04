@@ -18,8 +18,8 @@ node bin/best-agent-hub.js
 
 This command will start the hub server using the following configuration:
 
-- Running port: `6000`. It can be overridden by setting `env.PORT` to the desired port.
-- Tokens secret: `secret`. It's recommended to override it by setting `env.TOKEN_SECRET` to the desired secret used authenticate clients.
+-   Running port: `6000`. It can be overridden by setting `env.PORT` to the desired port.
+-   Tokens secret: `secret`. It's recommended to override it by setting `env.TOKEN_SECRET` to the desired secret used authenticate clients.
 
 ### Configuring hub in startup.
 
@@ -32,37 +32,37 @@ const config = {
     agents: [
         {
             spec: {
-                browser: "chrome", // Browser name
-                version: "76" // Browser version (major)
+                browser: 'chrome', // Browser name
+                version: '76', // Browser version (major)
             },
-            host: "http://localhost:5000", // Required. Url used to connect to the agent.
-            options: { path: "/best" }, // Connection 
-            remoteRunner: "@best/runner-headless", // Required. The runner which the agent will use when running the job. 
+            host: 'http://localhost:5000', // Required. Url used to connect to the agent.
+            options: { path: '/best' }, // Connection
+            remoteRunner: '@best/runner-headless', // Required. The runner which the agent will use when running the job.
             remoteRunnerConfig: {}, // Required (may be an empty object). The Runner config for the remote runner in the agent.
         },
         {
             spec: {
-                browser: "ie",
-                version: "11"
+                browser: 'ie',
+                version: '11',
             },
-            host: "http://127.0.0.1:5002",
-            options: { path: "/best" },
-            remoteRunner: "@best/runner-webdriver",
+            host: 'http://127.0.0.1:5002',
+            options: { path: '/best' },
+            remoteRunner: '@best/runner-webdriver',
             remoteRunnerConfig: {
-                "webdriverOptions": {
-                    "desiredCapabilities": {
-                        "platform": "WINDOWS",
-                        "browserName": "internet explorer",
-                        "version": "11",
-                        "ignoreZoomSetting": true,
-                        "initialBrowserUrl": "about:blank",
-                        "nativeEvents": false,
-                    }
-                }
+                webdriverOptions: {
+                    desiredCapabilities: {
+                        platform: 'WINDOWS',
+                        browserName: 'internet explorer',
+                        version: '11',
+                        ignoreZoomSetting: true,
+                        initialBrowserUrl: 'about:blank',
+                        nativeEvents: false,
+                    },
+                },
             },
-        }
-    ]
-}
+        },
+    ],
+};
 
 // set env.CONFIG=JSON.stringify(config);
 ```
@@ -75,50 +75,51 @@ Add a new runner config section on your best.config:
 
 ```javascript
 // Replace this token with a generated one for the used TOKEN_SECRET when starting the hub server
-const hubAuthenticationToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6ImNsaWVudCIsImlhdCI6MTU2MTYwNzI1OCwiZXhwIjoxNTY0MTk5MjU4fQ.BER-PIIlsf6NWNBctWrmS1YWB4QkI2aYiNp0BE6aASU';
+const hubAuthenticationToken =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6ImNsaWVudCIsImlhdCI6MTU2MTYwNzI1OCwiZXhwIjoxNTY0MTk5MjU4fQ.BER-PIIlsf6NWNBctWrmS1YWB4QkI2aYiNp0BE6aASU';
 
 module.exports = {
     projectName: 'simple-benchmark-chrome',
     benchmarkOnClient: true,
-    "runnerConfig": [
+    runnerConfig: [
         {
-            "runner": "@best/runner-headless",
-            "alias": "default"
+            runner: '@best/runner-headless',
+            alias: 'default',
         },
         // Configs to use the hub
         {
-            "runner": "@best/runner-hub",
-            "alias": "hub-chrome",
-            "config": {
-                "host": "http://localhost:6000",
-                "options": {
-                    path: "/hub",
-                    query: {                        
-                        token: hubAuthenticationToken
-                    }
+            runner: '@best/runner-hub',
+            alias: 'hub-chrome',
+            config: {
+                host: 'http://localhost:6000',
+                options: {
+                    path: '/hub',
+                    query: {
+                        token: hubAuthenticationToken,
+                    },
                 },
-                "spec": {
-                    "browser": "chrome",
-                    "version": "76"
-                }
-            }
+                spec: {
+                    browser: 'chrome',
+                    version: '76',
+                },
+            },
         },
         {
-            "runner": "@best/runner-hub",
-            "alias": "hub-ie11",
-            "config": {
-                "host": "http://localhost:6000",
-                "options": {
-                    path: "/hub",
+            runner: '@best/runner-hub',
+            alias: 'hub-ie11',
+            config: {
+                host: 'http://localhost:6000',
+                options: {
+                    path: '/hub',
                     query: {
-                        token: hubAuthenticationToken
-                    }
+                        token: hubAuthenticationToken,
+                    },
                 },
-                "spec": {
-                    "browser": "ie",
-                    "version": "11"
-                }
-            }
+                spec: {
+                    browser: 'ie',
+                    version: '11',
+                },
+            },
         },
     ],
 };

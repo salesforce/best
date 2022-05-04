@@ -14,6 +14,6 @@ export async function fetchSnapshots(project, timing) {
 
 export async function fetchCommitInfo() {
     return {
-        reason: 'Not connected to server.'
-    }
+        reason: 'Not connected to server.',
+    };
 }

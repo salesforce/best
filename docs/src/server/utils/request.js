@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 const request = require('request');
 
@@ -21,7 +21,7 @@ function logRequest(uri, response) {
     });
 }
 
-module.exports = function(uri) {
+module.exports = function (uri) {
     return new Promise((resolve, reject) => {
         request(
             {

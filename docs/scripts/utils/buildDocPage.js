@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 const path = require('path');
 const buildSidebar = require('./buildSidebar');
@@ -18,7 +18,7 @@ const modulesDir = path.resolve(SRC_DIR, 'modules');
 
 function buildHtml(pageDoc, sidebarData, opts) {
     const { html } = pageDoc;
-    const index = sidebarData.findIndex(d => d.id === pageDoc.docName);
+    const index = sidebarData.findIndex((d) => d.id === pageDoc.docName);
     const prev = sidebarData[index - 1];
     const next = sidebarData[index + 1];
 

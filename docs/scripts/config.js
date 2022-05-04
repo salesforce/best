@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 const fs = require('fs');
 const path = require('path');
@@ -45,9 +45,7 @@ const DOCS_LIST = SITE_CONFIG.docs.pages;
 function getStyleSheets() {
     if (__PROD__) {
         if (fs.existsSync(PAGE_STYLESHEETS_PROD_DIR)) {
-            return fs
-                .readdirSync(PAGE_STYLESHEETS_PROD_DIR)
-                .map(f => path.join('/assets/css/prod', f));
+            return fs.readdirSync(PAGE_STYLESHEETS_PROD_DIR).map((f) => path.join('/assets/css/prod', f));
         } else {
             return [];
         }

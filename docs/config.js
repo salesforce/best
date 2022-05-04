@@ -8,11 +8,11 @@ module.exports = {
             'continuous-integration',
             'github-integration',
             'frontend',
-            'configuration'
+            'configuration',
         ],
     },
     blog: {
-        latest: 'welcome_to_best'
+        latest: 'welcome_to_best',
         // pages are discovered and ordered automatically
     },
 };

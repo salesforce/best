@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 // -- modules ---------------------------------------------------------------------------
 const path = require('path');
@@ -56,10 +56,10 @@ async function generatePageHtml(pageDoc, sidebarData, template, opts) {
 module.exports = async function buildDocumentation() {
     // For every markdown document file generate a
     // page representation that holds all the metadata
-    const BLOG_LIST = fs.readdirSync(BLOG_DIR).map(file => path.basename(file, '.md'));
-    const pageDocList = BLOG_LIST.map(doc =>
-        parseDocument(doc, BLOG_DIR, MD_INSTANCE, { beforeRender }),
-    ).sort(sortBlogPages);
+    const BLOG_LIST = fs.readdirSync(BLOG_DIR).map((file) => path.basename(file, '.md'));
+    const pageDocList = BLOG_LIST.map((doc) => parseDocument(doc, BLOG_DIR, MD_INSTANCE, { beforeRender })).sort(
+        sortBlogPages,
+    );
 
     // We will process each page independently
     for (const pageDocument of pageDocList) {
