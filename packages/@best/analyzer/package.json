@@ -14,5 +14,5 @@
     "access": "public"
   },
   "types": "build/index.d.ts",
-  "version": "6.2.0"
+  "version": "6.3.0"
 }
