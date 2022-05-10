@@ -17,10 +17,20 @@ export function run() {
     const hubConfig = getHubConfig();
 
     const app = express();
-    serveFrontend(app);
     const server = http.createServer(app);
-    const agent = new Hub(server, hubConfig);
-    observeAgent(server, agent);
+    const hub = new Hub(server, hubConfig);
+
+    app.get("/api/agents/:agentId", (req, res) => {
+        const { agentId } = req.params;
+        res.json(hub.getAgent(agentId));
+    });
+
+    app.get("/api/agents", (req, res) => {
+        res.json(hub.getAgents());
+    });
+
+    serveFrontend(app);
+    observeAgent(server, hub);
 
     server.listen(PORT);
     process.stdout.write(`Best Hub listening in port ${PORT}...\n`);

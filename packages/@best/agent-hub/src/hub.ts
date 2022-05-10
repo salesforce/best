@@ -244,4 +244,33 @@ export class Hub extends EventEmitter {
             activeClients
         };
     }
+
+    /**
+     * Gets a list of all agents connected to the hub
+     * @returns an array with connected agents
+     */
+    getAgents() {
+        return Array.from(this.connectedAgents).map(agent => agent.getState());
+    }
+
+    /**
+     * Gets agent info based on specified identifier.
+     * @param id a unique identifier of an agent
+     * @returns agent info
+     */
+    getAgent(id: string) {
+        const agents = Array.from(this.connectedAgents)
+                            .filter((agent) => agent.getId() === id)
+                            .map(agent => agent.getState());
+
+        if (!agents || agents.length === 0) {
+            return;
+        }
+
+        if (agents.length > 1) {
+            throw new Error(`Multiple agents with the same ID found. ID: ${id}`);
+        }
+
+        return agents[0];
+    }
 }
