@@ -1,4 +1,13 @@
-# [v6.3.0](https://github.com/salesforce/best/compare/v6.2.0...v6.3.0) (2022-05-04)
+# [6.4.0](https://github.com/salesforce/best/compare/v6.3.0...v6.4.0) (2022-05-11)
+
+
+### Features
+
+* add rest APIs for agent info to the hub ([a150a86](https://github.com/salesforce/best/commit/a150a86ef43008abb953153643cc66426ea8ab30))
+
+
+
+# [6.3.0](https://github.com/salesforce/best/compare/v6.2.0...v6.3.0) (2022-05-04)
 
 
 ### Features
