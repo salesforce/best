@@ -1,3 +1,12 @@
+# [6.5.0](https://github.com/salesforce/best/compare/v6.4.0...v6.5.0) (2022-05-18)
+
+
+### Features
+
+* add support for hub with self-signed certs ([956eeb4](https://github.com/salesforce/best/commit/956eeb406dfccec9bcdd3b02a54cd544a6fa2cd6))
+
+
+
 # [6.4.0](https://github.com/salesforce/best/compare/v6.3.0...v6.4.0) (2022-05-11)
 
 
