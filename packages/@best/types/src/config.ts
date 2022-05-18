@@ -42,6 +42,7 @@ export interface RemoteHubConfig {
     uri: string;
     authToken: string;
     pingTimeout: number;
+    acceptSelfSignedCert: boolean;
 }
 
 export interface HubConfig {

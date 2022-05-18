@@ -15,3 +15,4 @@ export { matchSpecs } from './match-specs';
 export { RunnerInterruption } from './runner-interruption';
 export { normalizeClientConfig, normalizeSpecs } from './normalize-client-config';
 export { randomAlphanumeric } from './random';
+export { coalesce } from './coalesce';
