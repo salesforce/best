@@ -40,6 +40,14 @@ export default class RemoteHub extends EventEmitter {
             socketOptions.query.authToken = remoteHubConfig.authToken;
         }
 
+        if (remoteHubConfig.acceptSelfSignedCert != null) {
+            // When the hub is using a self-signed cert to enable HTTPS,
+            // SocketIO by default would reject connections to such endpoints.
+            // To allow connections to the hub with a self-signed cert, the
+            // `rejectUnauthorized` property has to false.
+            socketOptions.rejectUnauthorized = !remoteHubConfig.acceptSelfSignedCert;
+        }
+
         this.hubUri = uri;
 
         this.hubSocket = socketIOClient(uri, socketOptions);
