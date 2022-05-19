@@ -1,4 +1,13 @@
-# [5.1.3](https://github.com/salesforce/best/compare/v5.1.2...v5.1.3) (2022-04-14)
+# [5.2.0](https://github.com/salesforce/best/compare/v5.1.3...v5.2.0) (2022-05-19)
+
+
+### Features
+
+* add support for hub with self-signed certs ([78f3c7f](https://github.com/salesforce/best/commit/78f3c7fb113a4eccbf142dbc6c4a783ac741b443))
+
+
+
+## [5.1.3](https://github.com/salesforce/best/compare/v5.1.2...v5.1.3) (2022-04-14)
 
 
 ### Bug Fixes
@@ -12,59 +21,7 @@
 
 
 
-## [5.1.1](https://github.com/salesforce/best/compare/v5.1.0...v5.1.1) (2022-04-07)
-
-
-### Bug Fixes
-
-* vulnerabilities in the `socket.io-file` package ([0a00378](https://github.com/salesforce/best/commit/0a003785aa25a357db9c3961cab44974167efbed))
-
-
-
-# [5.1.0](https://github.com/salesforce/best/compare/v5.0.4...v5.1.0) (2022-04-07)
-
-
-### Features
-
-* add support for http proxy in REST DB Adapter ([f87f332](https://github.com/salesforce/best/commit/f87f332e96ba3b0360006e57c8fbe9adbfcd05c6)), closes [#302](https://github.com/salesforce/best/issues/302)
-
-
-
-## [5.0.4](https://github.com/salesforce/best/compare/v5.0.2...v5.0.4) (2022-04-07)
-
-
-### Bug Fixes
-
-* store temporary files in unique folder to avoid race conditions ([465ed44](https://github.com/salesforce/best/commit/465ed4427481d2f970ccdf72787d64e3cf0db3ad))
-
-
-
-## [5.0.2](https://github.com/salesforce/best/compare/v5.0.1...v5.0.2) (2022-04-07)
-
-
-
-## [5.0.1](https://github.com/salesforce/best/compare/v5.0.0...v5.0.1) (2022-04-07)
-
-
-### Bug Fixes
-
-* make Best work with Node v16 ([563cee2](https://github.com/salesforce/best/commit/563cee248a2b10676325b23fb0b5918c891e94c3))
-
-
-
-# [5.0.0](https://github.com/salesforce/best/compare/v4.1.0...v5.0.0) (2022-04-07)
-
-
-* fix!: upgrade `puppeteer` to `v13.0.0` ([a8238b8](https://github.com/salesforce/best/commit/a8238b88995413d2209d0fdbb7900b9dfda700a9)), closes [#292](https://github.com/salesforce/best/issues/292)
-
-
-### BREAKING CHANGES
-
-* Upgrade the headless Chrome version to `v97.0.4691.0`.
-
-
-
-# [4.1.0](https://github.com/salesforce/best/compare/v4.0.0-alpha12...v4.1.0) (2022-04-07)
+## [5.1.1](https://github.com/salesforce/best/compare/v4.0.0-alpha12...v5.1.1) (2022-04-07)
 
 
 ### Bug Fixes
@@ -78,21 +35,33 @@
 * Fail compilation is bare module specifier is missing ([#233](https://github.com/salesforce/best/issues/233)) ([0c63282](https://github.com/salesforce/best/commit/0c6328255681a6ebc66b32d446132a7bb31dee64))
 * fix cookie consent JS path ([#276](https://github.com/salesforce/best/issues/276)) ([567ac2f](https://github.com/salesforce/best/commit/567ac2f8710b4857e5ddb4a689cad2cceecbfc75))
 * fix yarn lock dependency on nexus ([b47bba7](https://github.com/salesforce/best/commit/b47bba792bd98b44cd6c8003f8d3ea111ce86c78))
+* make Best work with Node v16 ([563cee2](https://github.com/salesforce/best/commit/563cee248a2b10676325b23fb0b5918c891e94c3))
 * missing log method in runner output stream ([7ba77c3](https://github.com/salesforce/best/commit/7ba77c330fb480adc711f2d00885d95cb14d63ca))
 * remove check for `.git` in git remote url ([#243](https://github.com/salesforce/best/issues/243)) ([e2125a8](https://github.com/salesforce/best/commit/e2125a8aed7031287d08b76c1a8ebfbc22306b8f))
 * rename messenger to runnerStream ([f25c38d](https://github.com/salesforce/best/commit/f25c38db4dd2fb5eb48fa17a9a849cc1ab21deaa))
+* store temporary files in unique folder to avoid race conditions ([465ed44](https://github.com/salesforce/best/commit/465ed4427481d2f970ccdf72787d64e3cf0db3ad))
 * upgrade deps ([#231](https://github.com/salesforce/best/issues/231)) ([d875fa7](https://github.com/salesforce/best/commit/d875fa74e6cb4104b5b9fb42261e6f79507ee28d))
 * upgrade node ([#265](https://github.com/salesforce/best/issues/265)) ([e55aaa1](https://github.com/salesforce/best/commit/e55aaa160819a086950d0726d87df21eb433b204))
 * upgrade utils ([b4159a7](https://github.com/salesforce/best/commit/b4159a7c47453fbf21b29f160692125c05466daa))
+* vulnerabilities in the `socket.io-file` package ([0a00378](https://github.com/salesforce/best/commit/0a003785aa25a357db9c3961cab44974167efbed))
+
+
+* fix!: upgrade `puppeteer` to `v13.0.0` ([a8238b8](https://github.com/salesforce/best/commit/a8238b88995413d2209d0fdbb7900b9dfda700a9)), closes [#292](https://github.com/salesforce/best/issues/292)
 
 
 ### Features
 
 * add frontend api for snapshots upload ([a198ce5](https://github.com/salesforce/best/commit/a198ce57af0cacf5436b22080e6180972d612e1a)), closes [#294](https://github.com/salesforce/best/issues/294) [#294](https://github.com/salesforce/best/issues/294)
+* add support for http proxy in REST DB Adapter ([f87f332](https://github.com/salesforce/best/commit/f87f332e96ba3b0360006e57c8fbe9adbfcd05c6)), closes [#302](https://github.com/salesforce/best/issues/302)
 * **config:** configurable main branch ([#259](https://github.com/salesforce/best/issues/259)) ([f27a8bc](https://github.com/salesforce/best/commit/f27a8bcdd769e13a7ea1773d2486387207a0c486))
 * rewrite of Agents, Hubs, Remotes and Algo ([#217](https://github.com/salesforce/best/issues/217)) ([0c1ef01](https://github.com/salesforce/best/commit/0c1ef01d3750318f707c89d85ed07a68718874be))
 * **runner-headless:** config to serve static assets ([#257](https://github.com/salesforce/best/issues/257)) ([9fa802f](https://github.com/salesforce/best/commit/9fa802fee96a63a614e4f4bc593bbf29843e5cc8))
 * **runner-headless:** configurable launch options ([#256](https://github.com/salesforce/best/issues/256)) ([4a98dd6](https://github.com/salesforce/best/commit/4a98dd6e8fc9adde3effe65730dbd1fa2b109442))
+
+
+### BREAKING CHANGES
+
+* Upgrade the headless Chrome version to `v97.0.4691.0`.
 
 
 
