@@ -1,3 +1,15 @@
+# [7.0.0](https://github.com/salesforce/best/compare/v6.5.0...v7.0.0) (2022-07-25)
+
+
+* feat!: upgrade `puppeteer` to `v15.5.0` ([a0aa5bc](https://github.com/salesforce/best/commit/a0aa5bc8436f070db905305df08921e0a4457fbe))
+
+
+### BREAKING CHANGES
+
+* Upgrade the Chrome version to `v105.0.5173.0`.
+
+
+
 # [6.5.0](https://github.com/salesforce/best/compare/v6.4.0...v6.5.0) (2022-05-18)
 
 

@@ -1,8 +1,8 @@
 {
   "dependencies": {
-    "@best/console-stream": "6.5.0",
-    "@best/runner-abstract": "6.5.0",
-    "@best/shared": "6.5.0",
+    "@best/console-stream": "7.0.0",
+    "@best/runner-abstract": "7.0.0",
+    "@best/shared": "7.0.0",
     "debug": "^4.1.1",
     "socket.io-client": "~2.2.0",
     "tar": "6.1.11"
@@ -22,5 +22,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "6.5.0"
+  "version": "7.0.0"
 }

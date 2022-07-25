@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "@best/runner-abstract": "6.5.0",
-    "@best/types": "6.5.0",
+    "@best/runner-abstract": "7.0.0",
+    "@best/types": "7.0.0",
     "deepmerge": "^4.0.0",
     "webdriverio": "^5.13.2"
   },
@@ -20,5 +20,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "6.5.0"
+  "version": "7.0.0"
 }
