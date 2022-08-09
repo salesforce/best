@@ -1,6 +1,6 @@
 import { LightningElement, track, wire } from 'lwc';
 
-import { connectStore, store } from 'store/store';
+import { ConnectStore, store } from 'store/store';
 import { selectProject } from 'store/actions';
 
 export default class ViewSidebar extends LightningElement {
@@ -9,7 +9,8 @@ export default class ViewSidebar extends LightningElement {
 
     hasSelectedInitialProject = false;
 
-    @wire(connectStore, { store })
+    // eslint-disable-next-line @lwc/lwc/no-unknown-wire-adapters
+    @wire(ConnectStore, { store })
     storeChange({ projects }) {
         this.selectedId = projects.selectedProjectId;
 

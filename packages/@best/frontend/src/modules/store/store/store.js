@@ -22,4 +22,4 @@ export const store = createStore(
     applyMiddleware(thunk, urlstorage.middleware),
 );
 
-export { connectStore } from './wire-adapter';
+export { ConnectStore } from './wire-adapter';

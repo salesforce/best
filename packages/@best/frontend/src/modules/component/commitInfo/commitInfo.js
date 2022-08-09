@@ -1,6 +1,6 @@
 import { LightningElement, api, track, wire } from 'lwc';
 
-import { connectStore, store } from 'store/store';
+import { ConnectStore, store } from 'store/store';
 import { fetchCommitInfoIfNeeded } from 'store/actions';
 
 export default class ComponentCommitInfo extends LightningElement {
@@ -12,7 +12,8 @@ export default class ComponentCommitInfo extends LightningElement {
 
     @track commitInfo = {};
 
-    @wire(connectStore, { store })
+    // eslint-disable-next-line @lwc/lwc/no-unknown-wire-adapters
+    @wire(ConnectStore, { store })
     storeChanged({ commitInfo }) {
         this.commitInfo = commitInfo[this.commit];
     }

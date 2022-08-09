@@ -1,6 +1,6 @@
 import { LightningElement, track, wire } from 'lwc';
 
-import { connectStore, store } from 'store/store';
+import { ConnectStore, store } from 'store/store';
 import { timingChanged, benchmarksChanged, metricsChanged, zoomChanged } from 'store/actions';
 
 export default class ComponentMenubar extends LightningElement {
@@ -12,7 +12,8 @@ export default class ComponentMenubar extends LightningElement {
     @track viewMetric;
     @track viewZoom = {};
 
-    @wire(connectStore, { store })
+    // eslint-disable-next-line @lwc/lwc/no-unknown-wire-adapters
+    @wire(ConnectStore, { store })
     storeChange({ benchmarks, view }) {
         this.benchmarkNames = benchmarks.items.map((bench) => bench.name);
 

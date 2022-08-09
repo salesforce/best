@@ -1,7 +1,7 @@
 import { LightningElement, track, api, wire } from 'lwc';
 import { drawPlot, buildTrends, buildLayout, relayout, createAnnotation, removeAnnotation } from './plots';
 
-import { connectStore, store } from 'store/store';
+import { ConnectStore, store } from 'store/store';
 import { fetchComparison, comparisonChanged } from 'store/actions';
 
 export default class ComponentBenchmark extends LightningElement {
@@ -22,11 +22,13 @@ export default class ComponentBenchmark extends LightningElement {
 
     @api metric = 'all';
 
-    @wire(connectStore, { store })
+    // eslint-disable-next-line @lwc/lwc/no-unknown-wire-adapters
+    @wire(ConnectStore, { store })
     storeChanged({ view }) {
         this.comparisonResults = view.comparison.results;
         this.viewComparisonCommits = view.comparison.commits;
         this.comparisonName = view.comparison.benchmarkName;
+        // eslint-disable-next-line @lwc/lwc/no-api-reassignments
         this.metric = view.metric;
     }
 

@@ -1,6 +1,6 @@
 import { LightningElement, track, wire } from 'lwc';
 
-import { connectStore, store } from 'store/store';
+import { ConnectStore, store } from 'store/store';
 import { zoomChanged } from 'store/actions';
 
 export default class ViewBenchmarks extends LightningElement {
@@ -11,7 +11,8 @@ export default class ViewBenchmarks extends LightningElement {
 
     @track viewZoom;
 
-    @wire(connectStore, { store })
+    // eslint-disable-next-line @lwc/lwc/no-unknown-wire-adapters
+    @wire(ConnectStore, { store })
     storeChange({ benchmarks, view }) {
         if (view.benchmark === 'all') {
             this.visibleBenchmarks = benchmarks.items;
