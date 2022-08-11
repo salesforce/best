@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@best/utils": "7.0.0",
+    "@best/utils": "7.0.1",
     "express": "4.18.1"
   },
   "description": "Best Runner (Abstract)",
@@ -19,5 +19,5 @@
     "access": "public"
   },
   "types": "build/index.d.ts",
-  "version": "7.0.0"
+  "version": "7.0.1"
 }

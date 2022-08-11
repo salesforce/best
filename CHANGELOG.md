@@ -1,3 +1,12 @@
+# [7.0.1](https://github.com/salesforce/best/compare/v7.0.0...v7.0.1) (2022-08-11)
+
+
+### Bug Fixes
+
+* remove dependency on packages that are fetched from GitHub ([8a93201](https://github.com/salesforce/best/commit/8a9320141dc50607f588ef651c68813186570245))
+
+
+
 # [7.0.0](https://github.com/salesforce/best/compare/v6.5.0...v7.0.0) (2022-07-25)
 
 
