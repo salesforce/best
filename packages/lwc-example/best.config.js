@@ -14,7 +14,7 @@ module.exports = {
                 rootDir: '<rootDir>/src/',
             },
         ],
-        ['rollup-plugin-replace', { 'process.env.NODE_ENV': JSON.stringify('production') }],
+        ['@rollup/plugin-replace', { 'process.env.NODE_ENV': JSON.stringify('production') }],
     ],
     specs: { name: 'chrome.headless', version: 105 },
     runners: [

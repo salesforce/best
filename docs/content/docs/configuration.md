@@ -171,7 +171,7 @@ When `alias` is specified the assets are served from that path, for example `/as
 {
     plugins: [
         ['@lwc/rollup-plugin', { rootDir: '<rootDir>/src/' }],
-        ['rollup-plugin-replace', { 'process.env.NODE_ENV': JSON.stringify('production') }],
+        ['@rollup/plugin-replace', { 'process.env.NODE_ENV': JSON.stringify('production') }],
     ];
 }
 ```
