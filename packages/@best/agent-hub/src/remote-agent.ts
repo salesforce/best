@@ -7,14 +7,9 @@
 import { BEST_RPC } from "@best/shared";
 import { EventEmitter } from "events";
 import { Socket } from "socket.io";
-import { BrowserSpec } from "@best/types";
+import { AgentState, BrowserSpec } from "@best/types";
 import { RemoteClient } from "@best/agent";
 import { RunnerRemote } from "@best/runner-remote";
-
-enum RemoteAgentState {
-    IDLE,
-    BUSY
-}
 
 const { DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED } = BEST_RPC;
 const RPC_METHODS = [ DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED];
@@ -25,7 +20,7 @@ export default class RemoteAgent extends EventEmitter {
     private specs: BrowserSpec[];
     private token: string;
     public connected: boolean;
-    private state: RemoteAgentState = RemoteAgentState.IDLE;
+    private state: AgentState = AgentState.IDLE;
     private runner?: RunnerRemote;
 
     constructor(socket: Socket, { uri, specs, token }: any) {
@@ -66,7 +61,7 @@ export default class RemoteAgent extends EventEmitter {
 
     async runBenchmarks(remoteClient: RemoteClient, jobsToRun: number = remoteClient.getPendingBenchmarks()) {
         if (this.isIdle() && remoteClient.getPendingBenchmarks() > 0) {
-            this.state = RemoteAgentState.BUSY;
+            this.state = AgentState.BUSY;
             const iterator = Array.from(Array(jobsToRun), (x, index) => index + 1);
             const runnerConfig: any = { uri: this.uri, specs: remoteClient.getSpecs(), jobs: 1, options: {} };
             if (this.token) {
@@ -84,7 +79,7 @@ export default class RemoteAgent extends EventEmitter {
 
                 }
             } finally {
-                 this.state = RemoteAgentState.IDLE;
+                 this.state = AgentState.IDLE;
                  this.runner = undefined;
             }
         }
@@ -96,12 +91,12 @@ export default class RemoteAgent extends EventEmitter {
         }
     }
 
-    isBusy() {
-        return this.state === RemoteAgentState.BUSY;
+    isBusy(): boolean {
+        return this.state === AgentState.BUSY;
     }
 
-    isIdle() {
-        return this.state === RemoteAgentState.IDLE;
+    isIdle(): boolean {
+        return this.state === AgentState.IDLE;
     }
 
     disconnectAgent(reason?: string) {
@@ -131,7 +126,7 @@ export default class RemoteAgent extends EventEmitter {
     getState() {
         return {
             agentId: this.getId(),
-            state: this.isIdle() ? 'IDLE': 'BUSY',
+            state: this.isIdle() ? AgentState.IDLE: AgentState.BUSY,
             specs: this.specs,
             uri: this.uri
         };

@@ -8,7 +8,7 @@ import { BEST_RPC } from "@best/shared";
 import { EventEmitter } from "events";
 import { Socket } from "socket.io";
 import { getUploaderInstance, extractBenchmarkTarFile } from "./utils/benchmark-loader";
-import { BrowserSpec, BuildConfig, RunnerStream, BenchmarkRuntimeConfig, BenchmarkUpdateState } from "@best/types";
+import { BrowserSpec, BuildConfig, RunnerStream, BenchmarkRuntimeConfig, BenchmarkUpdateState, AgentState } from "@best/types";
 import path from "path";
 import { RemoteClientConfig } from "@best/types";
 import SocketIOFile from "socket.io-file";
@@ -245,7 +245,7 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
             clientId: this.toString(),
             specs: this.specs,
             jobs: this.getPendingBenchmarks(),
-            state: this.isIdle() ? 'IDLE' : 'BUSY'
+            state: this.isIdle() ? AgentState.IDLE : AgentState.BUSY
         };
     }
 

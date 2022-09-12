@@ -7,7 +7,7 @@
 
 import socketIO, { Server as SocketIoServer, Socket } from "socket.io";
 import { Server } from "http";
-import { BrowserSpec, Interruption, RemoteHubConfig, AgentConfig, RemoteClientConfig, BenchmarkRuntimeConfig, BestAgentState, BenchmarkUpdateState } from "@best/types";
+import { AgentState, BrowserSpec, Interruption, RemoteHubConfig, AgentConfig, RemoteClientConfig, BenchmarkRuntimeConfig, BestAgentState, BenchmarkUpdateState } from "@best/types";
 import { BEST_RPC } from "@best/shared";
 import { runBenchmarks, validateRunner, getBrowserSpecs } from '@best/runner';
 import { normalizeClientConfig } from '@best/utils';
@@ -17,11 +17,6 @@ import RemoteClient from "./remote-client";
 import { RunnerInterruption } from "@best/utils";
 import { EventEmitter } from "events";
 import RemoteHub from "./remote-hub";
-
-enum AgentState {
-    IDLE = 'IDLE',
-    BUSY = 'BUSY',
-}
 
 export class Agent extends EventEmitter {
     private id: string;
@@ -217,7 +212,7 @@ export class Agent extends EventEmitter {
             connectedClients,
             connectedAgents: [{
                 agentId: this.id,
-                state: this.idleState ? 'IDLE': 'BUSY',
+                state: this.idleState ? AgentState.IDLE: AgentState.BUSY,
                 specs: this.specs,
                 uri: this.uri
             }],

@@ -5,8 +5,10 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
-import { BenchmarkMetricNames } from './benchmark';
 import { EventEmitter } from 'events';
+
+import { AgentState } from './agent';
+import { BenchmarkMetricNames } from './benchmark';
 
 export interface GitConfig {
     lastCommit: { hash: string, date: string }
@@ -262,11 +264,11 @@ export interface BestAgentState {
         clientId: string;
         specs?: BrowserSpec;
         jobs: number;
-        state: string;
+        state: AgentState;
     }[],
     connectedAgents: {
         agentId: string;
-        state: string;
+        state: AgentState;
         specs: BrowserSpec[];
         uri: string;
     }[],
