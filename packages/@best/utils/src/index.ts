@@ -5,6 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
+export { Logger } from './logger';
 export { isInteractive, isCI } from './is-interactive';
 export { default as clearLine } from './clear-line';
 export { default as cacheDirectory } from './cache-directory';
