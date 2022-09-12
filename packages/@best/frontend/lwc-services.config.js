@@ -9,5 +9,5 @@
 // https://github.com/muenzpraeger/create-lwc-app/blob/main/packages/lwc-services/example/lwc-services.config.js
 module.exports = {
     resources: [{ from: 'src/resources/', to: 'dist/resources/' }],
-    moduleDir: './src/modules'
+    moduleDir: './src/modules',
 };
