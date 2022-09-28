@@ -5,6 +5,7 @@ executors:
     docker:
       - image: cimg/node:lts-browsers
     working_directory: ~/best
+    resource_class: large
 
 jobs:
   build_and_test:
