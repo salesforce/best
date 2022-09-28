@@ -16,16 +16,18 @@ import RemoteAgent from "./remote-agent";
 import { validateConfig, validateToken } from './utils/validate';
 
 export class Hub extends EventEmitter {
-    private hubConfig: HubConfig;
-    private clientsSocketServer: SocketIoServer;
-    private agentsSocketServer: SocketIoServer;
-    private connectedClients = new Set<RemoteClient>();
-    private connectedAgents = new Set<RemoteAgent>();
     private activeClients: Map<RemoteClient, RemoteAgent> = new Map();
+    private agentsSocketServer: SocketIoServer;
+    private clientsSocketServer: SocketIoServer;
+    private connectedAgents = new Set<RemoteAgent>();
+    private connectedClients = new Set<RemoteClient>();
+    private hubConfig: HubConfig;
 
     constructor(server: Server, hubConfig: HubConfig) {
         super();
+
         this.hubConfig = hubConfig;
+
         this.clientsSocketServer = socketIO(server, { path: '/best' });
         this.clientsSocketServer.on('connect', this.onClientConnect.bind(this));
 
@@ -234,6 +236,7 @@ export class Hub extends EventEmitter {
     }
 
     // -- Public API ---------------------------------------------------------------
+
     getState(): BestAgentState {
         const connectedClients = Array.from(this.connectedClients).map((client) => client.getState());
         const connectedAgents = Array.from(this.connectedAgents).map(agent => agent.getState());

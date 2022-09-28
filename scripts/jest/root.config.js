@@ -13,6 +13,7 @@ module.exports = {
     projects: [
         '<rootDir>/packages/@best/agent-frontend',
         '<rootDir>/packages/@best/agent',
+        '<rootDir>/packages/@best/agent-hub',
         '<rootDir>/packages/@best/builder',
         '<rootDir>/packages/@best/cli',
         '<rootDir>/packages/@best/config',
