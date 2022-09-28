@@ -1,6 +1,7 @@
-<h1 align="center">🏆 Best Performance Benchmarks 🏆</h1>
+🏆 Best Performance Benchmarks 🏆
+================================
 
-[![circleci badge](https://circleci.com/gh/salesforce/best/tree/master.svg)](https://circleci.com/gh/salesforce/best/tree/master) [![npm version](https://badge.fury.io/js/best.svg)](https://badge.fury.io/js/best) [![best badge](https://img.shields.io/badge/Performance%20By-Best-5100B9?labelColor=lightgrey)](https://perf.bestjs.dev)
+ [![Build Status][build icon]][build url]
 
 Best allows you to write benchmarks in the same way you write unit
 tests. This allows you to integrate Best into your CI workflow to
@@ -40,4 +41,6 @@ that](.github/CONTRIBUTING.md) too.
 This project is licensed under the [MIT license](LICENSE).
 
 [best introduction]: https://bestjs.dev/guide/introduction
+[build icon]: https://github.com/salesforce/best/actions/workflows/tests.yml/badge.svg
+[build url]: https://github.com/salesforce/best/actions/workflows/tests.yml
 [getting started]: https://bestjs.dev/guide/getting-started
