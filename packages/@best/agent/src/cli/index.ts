@@ -3,13 +3,15 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
+
+import http from 'http';
 
 import express from 'express';
-import { Agent, RemoteClient } from '../agent';
+
 import { serveFrontend, observeAgent } from '@best/agent-frontend';
+import { Agent, RemoteClient } from '../agent';
 import { getAgentConfig, getRemoteHubConfig } from './config';
-import http from "http";
 
 const PORT = process.env.PORT || 5001;
 

@@ -4,18 +4,21 @@
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
  */
-import { BEST_RPC } from "@best/shared";
-import { EventEmitter } from "events";
-import { RemoteHubConfig, BrowserSpec, AgentConfig } from "@best/types";
+
+import { EventEmitter } from 'events';
+
 import socketIOClient from 'socket.io-client';
 
+import { BEST_RPC } from '@best/shared';
+import { RemoteHubConfig, BrowserSpec, AgentConfig } from '@best/types';
+
 const { CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECTING, RECONNECT_FAILED, AGENT_REJECTION } = BEST_RPC;
-const RPC_METHODS = [ CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECTING, RECONNECT_FAILED, AGENT_REJECTION];
+const RPC_METHODS = [CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECTING, RECONNECT_FAILED, AGENT_REJECTION];
 
 const DEFAULT_SOCKET_CONFIG = {
     path: '/agents',
     reconnection: true,
-    autoConnect: false
+    autoConnect: false,
 };
 
 export default class RemoteHub extends EventEmitter {
@@ -33,7 +36,7 @@ export default class RemoteHub extends EventEmitter {
                 agentUri: agentConfig.uri,
                 agentAuthToken: agentConfig.authToken,
                 specs: JSON.stringify(agentSpecs),
-            }
+            },
         };
 
         if (remoteHubConfig.authToken) {
@@ -55,22 +58,24 @@ export default class RemoteHub extends EventEmitter {
     }
 
     // -- Socket lifecycle ------------------------------------------------------------
+
+    [AGENT_REJECTION](reason: string) {
+        console.log(`${this.getId()} - socket:agent_rejection`, reason);
+    }
+
     [CONNECT]() {
         console.log(`${this.getId()} - socket:connect`);
         this.connected = true;
         this.emit(BEST_RPC.AGENT_CONNECTED_HUB, this.hubUri);
     }
 
+    [CONNECT_ERROR](reason: any) {
+        console.log(`${this.getId()} - socket:connect_error`, reason.message || reason);
+    }
+
     [DISCONNECT](reason: string) {
         console.log(`${this.getId()} - socket:disconnect`, reason);
         this.emit(BEST_RPC.AGENT_DISCONNECTED_HUB);
-    }
-    [RECONNECTING]() {
-        console.log(`${this.getId()} - socket:reconnecting`);
-    }
-
-    [CONNECT_ERROR](reason: any) {
-        console.log(`${this.getId()} - socket:connect_error`, reason.message || reason);
     }
 
     [ERROR](reason: string) {
@@ -84,11 +89,16 @@ export default class RemoteHub extends EventEmitter {
         console.log(`${this.getId()} - socket:reconnect_failed`, reason);
     }
 
-    [AGENT_REJECTION](reason: string) {
-        console.log(`${this.getId()} - socket:agent_rejection`, reason);
+    [RECONNECTING]() {
+        console.log(`${this.getId()} - socket:reconnecting`);
     }
 
     // -- Specific Best RPC Commands ------------------------------------------------------------
+
+    connectToHub() {
+        console.log(`[REMOTE_HUB] Connecting To Hub: ${this.hubUri}`);
+        this.hubSocket.open();
+    }
 
     disconnectFromHub(reason?: string) {
         if (this.connected) {
@@ -101,11 +111,6 @@ export default class RemoteHub extends EventEmitter {
 
     getId() {
         return `[REMOTE_HUB(${this.hubUri})]`;
-    }
-
-    connectToHub() {
-        console.log(`[REMOTE_HUB] Connecting To Hub: ${this.hubUri}`);
-        this.hubSocket.open();
     }
 
     toString() {
