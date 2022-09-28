@@ -4,23 +4,34 @@
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
  */
-import { BEST_RPC } from "@best/shared";
-import { EventEmitter } from "events";
-import { Socket } from "socket.io";
-import { getUploaderInstance, extractBenchmarkTarFile } from "./utils/benchmark-loader";
-import { BrowserSpec, BuildConfig, RunnerStream, BenchmarkRuntimeConfig, BenchmarkUpdateState, AgentState } from "@best/types";
-import path from "path";
-import { RemoteClientConfig } from "@best/types";
-import SocketIOFile from "socket.io-file";
+
+import { EventEmitter } from 'events';
+import path from 'path';
+
+import { Socket } from 'socket.io';
+import SocketIOFile from 'socket.io-file';
+
+import { BEST_RPC } from '@best/shared';
+import {
+    BrowserSpec,
+    BuildConfig,
+    RunnerStream,
+    BenchmarkRuntimeConfig,
+    BenchmarkUpdateState,
+    AgentState,
+} from '@best/types';
+import { RemoteClientConfig } from '@best/types';
+
+import { getUploaderInstance, extractBenchmarkTarFile } from './utils/benchmark-loader';
 
 enum RemoteClientState {
     IDLE = 'IDLE',
     REQUESTING_JOB_INFO = 'REQUESTING_JOB_INFO',
-    REQUESTING_JOB_PAYLOAD = 'REQUESTING_JOB_PAYLOAD'
+    REQUESTING_JOB_PAYLOAD = 'REQUESTING_JOB_PAYLOAD',
 }
 
 const { DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, BENCHMARK_UPLOAD_RESPONSE } = BEST_RPC;
-const RPC_METHODS = [ DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, BENCHMARK_UPLOAD_RESPONSE];
+const RPC_METHODS = [DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, BENCHMARK_UPLOAD_RESPONSE];
 
 export default class RemoteClient extends EventEmitter implements RunnerStream {
     private socket: Socket;
@@ -31,7 +42,9 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
     private pendingResultsToSend: number = 0;
     private state: RemoteClientState = RemoteClientState.IDLE;
     private _requestJobSuccess: Function = function () {};
-    private _requestJobError: Function = function (err: any) { throw new Error(err) };
+    private _requestJobError: Function = function (err: any) {
+        throw new Error(err);
+    };
     private debounce?: any;
 
     constructor(socket: Socket, { specs, jobs }: RemoteClientConfig) {
@@ -46,16 +59,16 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
 
     // -- Socket lifecycle ------------------------------------------------------------
 
+    [CONNECT_ERROR](reason: string) {
+        console.log(`${this.getId()} - socket:connect_error`, reason);
+        this.disconnectClient(reason);
+    }
+
     [DISCONNECT](reason: string) {
         if (this.connected) {
             console.log(`${this.getId()} - socket:disconnect`, reason);
             this.disconnectClient(reason);
         }
-    }
-
-    [CONNECT_ERROR](reason: string) {
-        console.log(`${this.getId()} - socket:connect_error`, reason);
-        this.disconnectClient(reason);
     }
 
     [ERROR](reason: string) {
@@ -76,7 +89,9 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
             this._requestJobError('Unexpected upload response');
         }
 
-        console.log(`[AGENT_REMOTE_CLIENT] Receiving benchmark ${benchmarkConfig.benchmarkSignature} from socket ${this.socket.id}`);
+        console.log(
+            `[AGENT_REMOTE_CLIENT] Receiving benchmark ${benchmarkConfig.benchmarkSignature} from socket ${this.socket.id}`,
+        );
 
         const { benchmarkEntry, benchmarkName, benchmarkSignature } = benchmarkConfig;
         const uploader = this.getUploader();
@@ -94,7 +109,9 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
             benchmarkConfig.benchmarkRemoteEntry = path.join(uploadDir, `${benchmarkName}.html`);
             benchmarkConfig.benchmarkRemoteFolder = uploadDir;
 
-            console.log(`[AGENT_REMOTE_CLIENT] Completed upload for benchmark ${benchmarkConfig.benchmarkSignature} from socket ${this.socket.id}`);
+            console.log(
+                `[AGENT_REMOTE_CLIENT] Completed upload for benchmark ${benchmarkConfig.benchmarkSignature} from socket ${this.socket.id}`,
+            );
             this.state = RemoteClientState.IDLE;
             this.pendingBenchmarksToUpload -= 1;
             this.pendingResultsToSend += 1;
@@ -102,13 +119,10 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
 
             // Notify upload updates
             this.emit(BEST_RPC.REMOTE_CLIENT_UPLOAD_COMPLETED);
-
-        } catch(err) {
-            this.disconnectClient(err);
+        } catch (err) {
+            this.disconnectClient(err as any);
             this._requestJobError(err);
-        }
-
-        finally {
+        } finally {
             this.state = RemoteClientState.IDLE;
         }
     }
@@ -130,19 +144,17 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
 
     // -- RunnerStream methods ----------------------------------------------------------
 
-    init() {
-        console.log(`[AGENT_REMOTE_CLIENT] startingRunner`);
-    }
-
     finish() {
         console.log(`[AGENT_REMOTE_CLIENT] finishingRunner`);
     }
 
-    onBenchmarkStart(benchmarkSignature: string) {
+    init() {
+        console.log(`[AGENT_REMOTE_CLIENT] startingRunner`);
+    }
+
+    log(message: string) {
         if (this.socket.connected) {
-            console.log(`[AGENT_REMOTE_CLIENT] benchmarkStart(${benchmarkSignature})`);
-            this.socket.emit(BEST_RPC.BENCHMARK_START, benchmarkSignature);
-            this.emit(BEST_RPC.BENCHMARK_START, benchmarkSignature);
+            this.socket.emit(BEST_RPC.BENCHMARK_LOG, message);
         }
     }
 
@@ -163,22 +175,26 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
         }
     }
 
+    onBenchmarkStart(benchmarkSignature: string) {
+        if (this.socket.connected) {
+            console.log(`[AGENT_REMOTE_CLIENT] benchmarkStart(${benchmarkSignature})`);
+            this.socket.emit(BEST_RPC.BENCHMARK_START, benchmarkSignature);
+            this.emit(BEST_RPC.BENCHMARK_START, benchmarkSignature);
+        }
+    }
+
     updateBenchmarkProgress(benchmarkSignature: string, state: BenchmarkUpdateState, opts: BenchmarkRuntimeConfig) {
         if (!this.debounce && this.socket.connected) {
             this.debounce = setTimeout(() => {
                 this.debounce = undefined;
                 if (this.socket.connected) {
-                    console.log(`[AGENT_REMOTE_CLIENT] benchmarkProgress(${benchmarkSignature}) | iterations: ${state.executedIterations}`);
+                    console.log(
+                        `[AGENT_REMOTE_CLIENT] benchmarkProgress(${benchmarkSignature}) | iterations: ${state.executedIterations}`,
+                    );
                     this.socket.emit(BEST_RPC.BENCHMARK_UPDATE, benchmarkSignature, state, opts);
                     this.emit(BEST_RPC.BENCHMARK_UPDATE, benchmarkSignature, state, opts);
                 }
             }, 1000);
-        }
-    }
-
-    log(message: string) {
-        if (this.socket.connected) {
-            this.socket.emit(BEST_RPC.BENCHMARK_LOG, message);
         }
     }
 
@@ -192,6 +208,39 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
             this.socket.disconnect(true);
             this.emit(BEST_RPC.DISCONNECT, reason);
         }
+    }
+
+    getId() {
+        return `REMOTE_CLIENT_${this.socket.id}`;
+    }
+
+    getPendingBenchmarks() {
+        return this.pendingBenchmarksToUpload;
+    }
+
+    getSpecs() {
+        return this.specs;
+    }
+
+    getState() {
+        return {
+            clientId: this.toString(),
+            specs: this.specs,
+            jobs: this.getPendingBenchmarks(),
+            state: this.isIdle() ? AgentState.IDLE : AgentState.BUSY,
+        };
+    }
+
+    getStatusInfo() {
+        return `remining jobs: ${this.pendingBenchmarksToUpload} | specs: ${this.specs} | state: ${this.state}`;
+    }
+
+    isBusy() {
+        return !this.isIdle();
+    }
+
+    isIdle() {
+        return this.state === RemoteClientState.IDLE;
     }
 
     requestJob(): Promise<BuildConfig> {
@@ -216,40 +265,7 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
         }
     }
 
-    isIdle() {
-        return this.state === RemoteClientState.IDLE;
-    }
-
-    isBusy() {
-        return !this.isIdle();
-    }
-
-    getPendingBenchmarks() {
-        return this.pendingBenchmarksToUpload;
-    }
-
     toString() {
         return this.getId();
-    }
-
-    getId() {
-        return `REMOTE_CLIENT_${this.socket.id}`;
-    }
-
-    getStatusInfo() {
-        return `remining jobs: ${this.pendingBenchmarksToUpload} | specs: ${this.specs} | state: ${this.state}`;
-    }
-
-    getState() {
-        return {
-            clientId: this.toString(),
-            specs: this.specs,
-            jobs: this.getPendingBenchmarks(),
-            state: this.isIdle() ? AgentState.IDLE : AgentState.BUSY
-        };
-    }
-
-    getSpecs() {
-        return this.specs;
     }
 }
