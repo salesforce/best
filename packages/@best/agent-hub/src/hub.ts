@@ -8,7 +8,7 @@ import { EventEmitter } from "events";
 import { Server } from "http";
 import { HubConfig, RemoteClientConfig, BrowserSpec, BenchmarkRuntimeConfig, BestAgentState, BenchmarkUpdateState } from "@best/types";
 import { normalizeClientConfig , normalizeSpecs } from '@best/utils';
-import socketIO, { Server as SocketIoServer, Socket } from "socket.io";
+import { Server as SocketIOServer, Socket } from "socket.io";
 import { BEST_RPC } from "@best/shared";
 import { RemoteClient } from "@best/agent";
 import { matchSpecs } from "@best/utils";
@@ -17,8 +17,8 @@ import { validateConfig, validateToken } from './utils/validate';
 
 export class Hub extends EventEmitter {
     private activeClients: Map<RemoteClient, RemoteAgent> = new Map();
-    private agentsSocketServer: SocketIoServer;
-    private clientsSocketServer: SocketIoServer;
+    private agentsSocketServer: SocketIOServer;
+    private clientsSocketServer: SocketIOServer;
     private connectedAgents = new Set<RemoteAgent>();
     private connectedClients = new Set<RemoteClient>();
     private hubConfig: HubConfig;
@@ -28,10 +28,10 @@ export class Hub extends EventEmitter {
 
         this.hubConfig = hubConfig;
 
-        this.clientsSocketServer = socketIO(server, { path: '/best' });
+        this.clientsSocketServer = new SocketIOServer(server, { path: '/best' });
         this.clientsSocketServer.on('connect', this.onClientConnect.bind(this));
 
-        this.agentsSocketServer = socketIO(server, { path: '/agents' });
+        this.agentsSocketServer = new SocketIOServer(server, { path: '/agents' });
         this.agentsSocketServer.on('connect', this.onAgentConnect.bind(this));
     }
 
@@ -118,7 +118,7 @@ export class Hub extends EventEmitter {
     onAgentConnect(agentSocket: Socket) {
         const query = agentSocket.handshake.query;
         const specs = normalizeSpecs(query);
-        const validToken = validateToken(query.authToken, this.hubConfig.authToken);
+        const validToken = validateToken(query.authToken as string, this.hubConfig.authToken);
         const hasSpecs = specs.length > 0;
 
         if (!validToken) {

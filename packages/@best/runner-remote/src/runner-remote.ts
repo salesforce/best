@@ -4,27 +4,48 @@
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
  */
+
+import debug from 'debug';
 import path from 'path';
-import debug from "debug";
-import socketIO from 'socket.io-client';
-import SocketIOFile from './utils/file-uploader';
-import { createTarBundle } from './utils/create-tar';
-import { BEST_RPC } from "@best/shared";
+
+import { io as Client, Socket as ClientSocket } from 'socket.io-client';
+
+import { BEST_RPC } from '@best/shared';
 import {
     BenchmarkResultsSnapshot,
     RunnerStream,
     BuildConfig,
     BenchmarkResultsState,
-    BenchmarkRuntimeConfig
-} from "@best/types";
-
+    BenchmarkRuntimeConfig,
+} from '@best/types';
 import { proxifiedSocketOptions } from '@best/utils';
 
-const { CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, AGENT_REJECTION, BENCHMARK_UPLOAD_REQUEST } = BEST_RPC;
-const { BENCHMARK_START, BENCHMARK_UPDATE, BENCHMARK_END, BENCHMARK_ERROR, BENCHMARK_LOG, BENCHMARK_RESULTS } = BEST_RPC;
-const RPC_METHODS = [CONNECT, DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, AGENT_REJECTION, BENCHMARK_UPLOAD_REQUEST, BENCHMARK_START, BENCHMARK_UPDATE, BENCHMARK_END, BENCHMARK_ERROR, BENCHMARK_LOG, BENCHMARK_RESULTS]
+import SocketIOFile from './utils/file-uploader';
+import { createTarBundle } from './utils/create-tar';
 
-const THROW_FUNCTION = function (err: any) { throw new Error(err || 'unknown error'); };
+const { AGENT_REJECTION, BENCHMARK_UPLOAD_REQUEST, CONNECT_ERROR, CONNECT, DISCONNECT, ERROR, RECONNECT_FAILED } =
+    BEST_RPC;
+const { BENCHMARK_END, BENCHMARK_ERROR, BENCHMARK_LOG, BENCHMARK_RESULTS, BENCHMARK_START, BENCHMARK_UPDATE } =
+    BEST_RPC;
+const RPC_METHODS = [
+    AGENT_REJECTION,
+    BENCHMARK_END,
+    BENCHMARK_ERROR,
+    BENCHMARK_LOG,
+    BENCHMARK_RESULTS,
+    BENCHMARK_START,
+    BENCHMARK_UPDATE,
+    BENCHMARK_UPLOAD_REQUEST,
+    CONNECT_ERROR,
+    CONNECT,
+    DISCONNECT,
+    ERROR,
+    RECONNECT_FAILED,
+];
+
+const THROW_FUNCTION = function (err: any) {
+    throw new Error(err || 'unknown error');
+};
 
 const log_rpc = debug('runner-remote:rpc');
 
@@ -33,7 +54,7 @@ export class RunnerRemote {
     private running: boolean = false;
     private uploader?: SocketIOFile;
     private pendingBenchmarks: number;
-    private socket: SocketIOClient.Socket;
+    private socket: ClientSocket;
     private benchmarkBuilds: BuildConfig[];
     private runnerLogStream: RunnerStream;
     private benchmarkResults: BenchmarkResultsSnapshot[] = [];
@@ -41,7 +62,7 @@ export class RunnerRemote {
     private _onBenchmarkError: Function = THROW_FUNCTION;
     private _onBenchmarksRunSuccess: Function = THROW_FUNCTION;
 
-    constructor(benchmarksBuilds: BuildConfig[], runnerLogStream: RunnerStream, config: any ) {
+    constructor(benchmarksBuilds: BuildConfig[], runnerLogStream: RunnerStream, config: any) {
         const { uri, options, specs, token } = config;
 
         const socketOptions = {
@@ -51,9 +72,9 @@ export class RunnerRemote {
             query: {
                 ...options,
                 specs: JSON.stringify(specs),
-                jobs: benchmarksBuilds.length
+                jobs: benchmarksBuilds.length,
             },
-            pfx: []
+            pfx: [],
         };
 
         if (token) {
@@ -61,7 +82,7 @@ export class RunnerRemote {
         }
 
         this.uri = uri;
-        this.socket = socketIO(uri, proxifiedSocketOptions(socketOptions));
+        this.socket = Client(uri, proxifiedSocketOptions(socketOptions));
         this.benchmarkBuilds = benchmarksBuilds;
         this.pendingBenchmarks = benchmarksBuilds.length;
         this.runnerLogStream = runnerLogStream;
@@ -124,7 +145,7 @@ export class RunnerRemote {
                 await createTarBundle(bundleDirname, benchmarkName);
                 const uploader = await this._getUploaderInstance();
                 uploader.upload(tarBundle);
-            } catch(err) {
+            } catch (err) {
                 return this._triggerBenchmarkError(err);
             }
         });

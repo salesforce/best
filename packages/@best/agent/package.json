@@ -6,8 +6,8 @@
     "@best/utils": "7.0.1",
     "express": "4.18.1",
     "mime": "3.0.0",
-    "socket.io": "2.2.0",
-    "socket.io-client": "2.2.0",
+    "socket.io": "4.5.2",
+    "socket.io-client": "4.5.2",
     "tar": "6.1.11"
   },
   "description": "Best Agent",

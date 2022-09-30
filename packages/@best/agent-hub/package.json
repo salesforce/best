@@ -5,8 +5,8 @@
     "@best/runner-remote": "7.0.1",
     "@best/utils": "7.0.1",
     "express": "4.18.1",
-    "socket.io": "~2.2.0",
-    "socket.io-file": "~2.0.31",
+    "socket.io": "4.5.2",
+    "socket.io-file": "2.0.31",
     "yargs": "^16.1.0"
   },
   "description": "Best Hub",

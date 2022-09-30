@@ -3,14 +3,16 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
-import path from 'path';
-import express from 'express';
-import socketIO, { Socket } from "socket.io";
 import { Server } from 'http';
-import { BestAgent } from "@best/types";
-import { BEST_RPC } from "@best/shared";
+import path from 'path';
+
+import express from 'express';
+import { Server as SocketIOServer, Socket as ServerSocket } from 'socket.io';
+
+import { BEST_RPC } from '@best/shared';
+import { BestAgent } from '@best/types';
 
 export function serveFrontend(app: express.Application) {
     const DIST_DIR = path.resolve(__dirname, '../../dist');
@@ -19,7 +21,7 @@ export function serveFrontend(app: express.Application) {
     app.get('*', (req, res) => res.sendFile(path.resolve(DIST_DIR, 'index.html')));
 }
 
-const FrontendSockets: Set<Socket> = new Set();
+const FrontendSockets: Set<ServerSocket> = new Set();
 
 function forwardEvent(eventType: string, ...args: any[]) {
     for (const socket of FrontendSockets) {
@@ -27,18 +29,36 @@ function forwardEvent(eventType: string, ...args: any[]) {
     }
 }
 
-const { HUB_CONNECTED_AGENT, HUB_DISCONNECTED_AGENT,AGENT_QUEUED_CLIENT, AGENT_CONNECTED_CLIENT, AGENT_DISCONNECTED_CLIENT, BENCHMARK_START, BENCHMARK_UPDATE, BENCHMARK_END } = BEST_RPC;
-const FORWARD_EVENTS = [HUB_CONNECTED_AGENT, AGENT_QUEUED_CLIENT, HUB_DISCONNECTED_AGENT, AGENT_CONNECTED_CLIENT, AGENT_DISCONNECTED_CLIENT, BENCHMARK_START, BENCHMARK_UPDATE, BENCHMARK_END];
+const {
+    AGENT_CONNECTED_CLIENT,
+    AGENT_DISCONNECTED_CLIENT,
+    AGENT_QUEUED_CLIENT,
+    BENCHMARK_END,
+    BENCHMARK_START,
+    BENCHMARK_UPDATE,
+    HUB_CONNECTED_AGENT,
+    HUB_DISCONNECTED_AGENT,
+} = BEST_RPC;
+const FORWARD_EVENTS = [
+    AGENT_CONNECTED_CLIENT,
+    AGENT_DISCONNECTED_CLIENT,
+    AGENT_QUEUED_CLIENT,
+    BENCHMARK_END,
+    BENCHMARK_START,
+    BENCHMARK_UPDATE,
+    HUB_CONNECTED_AGENT,
+    HUB_DISCONNECTED_AGENT,
+];
 
 export function observeAgent(server: Server, agent: BestAgent) {
     // Instanciate a new socketServer on a dedicated path
-    const socketServer = socketIO(server, { path: '/frontend' });
+    const socketServer = new SocketIOServer(server, { path: '/frontend' });
 
     // Listen for the needed events on the agent
     FORWARD_EVENTS.forEach((event) => agent.on(event, forwardEvent.bind(null, event)));
 
     // Manage connections
-    socketServer.on('connect', (socket: SocketIO.Socket) => {
+    socketServer.on('connect', (socket: ServerSocket) => {
         console.log(`[AGENT_FE] Adding Frontend socket ${socket.id} | active: ${FrontendSockets.size}`);
         socket.emit(BEST_RPC.AGENT_STATE, agent.getState());
         FrontendSockets.add(socket);

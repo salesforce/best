@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
  */
 
-import SocketIOServer, { Socket } from 'socket.io';
+import { Server, Socket as ServerSocket } from 'socket.io';
 
 import { BEST_RPC } from '@best/shared';
 import { AgentConfig, BrowserSpec, RemoteHubConfig } from '@best/types';
@@ -63,8 +63,8 @@ const generateLogMessage = (eventName: string) =>
 
 describe('Agent - Remote Hub', () => {
     let clientSocketManager: RemoteHub;
-    let server: SocketIOServer.Server;
-    let serverSocket: Socket;
+    let server: Server;
+    let serverSocket: ServerSocket;
 
     describe('disconnectFromHub()', () => {
         afterEach(() => {
@@ -86,11 +86,11 @@ describe('Agent - Remote Hub', () => {
 
         test('Should disconnect', async () => {
             // Create server.
-            server = SocketIOServer(TEST_CONFIGS.SERVER_PORT, {
+            server = new Server(TEST_CONFIGS.SERVER_PORT, {
                 path: TEST_CONFIGS.SOCKET_PATH,
             });
 
-            const serverConnection = (): Promise<Socket> =>
+            const serverConnection = (): Promise<ServerSocket> =>
                 new Promise((resolve) => {
                     server.on('connection', resolve);
                 });
@@ -183,11 +183,11 @@ describe('Agent - Remote Hub', () => {
 
         beforeEach(() => {
             // Create server.
-            server = SocketIOServer(TEST_CONFIGS.SERVER_PORT, {
+            server = new Server(TEST_CONFIGS.SERVER_PORT, {
                 path: TEST_CONFIGS.SOCKET_PATH,
             });
 
-            serverConnection = (): Promise<Socket> =>
+            serverConnection = (): Promise<ServerSocket> =>
                 new Promise((resolve) => {
                     server.on('connection', resolve);
                 });
@@ -232,9 +232,8 @@ describe('Agent - Remote Hub', () => {
         });
 
         /*
-         * The other events are reserved and should not be emitted
-         * as above (+ in more recent versions of Socket.IO emitting
-         * then throws an error).
+         * The other events are reserved.
+         * See: https://socket.io/docs/v4/emit-cheatsheet/#reserved-events
          *
          * TODO: Find a way to trigger them?
          *       See also: https://socket.io/docs/v4/middlewares/#handling-middleware-error

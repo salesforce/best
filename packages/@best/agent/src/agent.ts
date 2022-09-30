@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
 */
 
-import socketIO, { Server as SocketIoServer, Socket } from "socket.io";
+import { Server as SocketIOServer, Socket as ServerSocket } from "socket.io";
 import { Server } from "http";
 import { AgentState, BrowserSpec, Interruption, RemoteHubConfig, AgentConfig, RemoteClientConfig, BenchmarkRuntimeConfig, BestAgentState, BenchmarkUpdateState } from "@best/types";
 import { BEST_RPC } from "@best/shared";
@@ -21,7 +21,7 @@ import RemoteHub from "./remote-hub";
 export class Agent extends EventEmitter {
     private id: string;
     private uri: string;
-    private socketServer: SocketIoServer;
+    private socketServer: SocketIOServer;
     private state: AgentState;
     private specs: BrowserSpec[] = [];
     private agentConfig: AgentConfig;
@@ -38,7 +38,7 @@ export class Agent extends EventEmitter {
         this.id = agentConfig.name || `Agent[${Date.now()}]`;
         this.agentConfig = agentConfig;
         this.remoteHubConfig = remoteHubConfig;
-        this.socketServer = socketIO(server, { path: '/best' });
+        this.socketServer = new SocketIOServer(server, { path: '/best' });
         this.socketServer.on('connect', this.onClientConnect.bind(this));
         this.state = AgentState.IDLE;
         this.loadRunnerSpecs();
@@ -57,7 +57,7 @@ export class Agent extends EventEmitter {
         this.emit('ready');
     }
 
-    onClientConnect(socketClient: Socket) {
+    onClientConnect(socketClient: ServerSocket) {
         const query = socketClient.handshake.query;
         const config = normalizeClientConfig(query);
         const invalidConfig = validateConfig(config, this.agentConfig, this.specs, socketClient.id);
@@ -147,7 +147,7 @@ export class Agent extends EventEmitter {
         return remoteHub;
     }
 
-    setupNewClient(socketClient: Socket, clientConfig: RemoteClientConfig): RemoteClient {
+    setupNewClient(socketClient: ServerSocket, clientConfig: RemoteClientConfig): RemoteClient {
 
         // Create and new RemoteClient and add it to the pool
         const remoteClient = new RemoteClient(socketClient, clientConfig);

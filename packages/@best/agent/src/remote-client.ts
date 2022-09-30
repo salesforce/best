@@ -8,7 +8,7 @@
 import { EventEmitter } from 'events';
 import path from 'path';
 
-import { Socket } from 'socket.io';
+import { Socket as ServerSocket } from 'socket.io';
 import SocketIOFile from 'socket.io-file';
 
 import { BEST_RPC } from '@best/shared';
@@ -34,7 +34,7 @@ const { DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, BENCHMARK_UPLOAD_RES
 const RPC_METHODS = [DISCONNECT, CONNECT_ERROR, ERROR, RECONNECT_FAILED, BENCHMARK_UPLOAD_RESPONSE];
 
 export default class RemoteClient extends EventEmitter implements RunnerStream {
-    private socket: Socket;
+    private socket: ServerSocket;
     private uploader?: SocketIOFile;
     private specs?: BrowserSpec;
     public connected: boolean;
@@ -47,7 +47,7 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
     };
     private debounce?: any;
 
-    constructor(socket: Socket, { specs, jobs }: RemoteClientConfig) {
+    constructor(socket: ServerSocket, { specs, jobs }: RemoteClientConfig) {
         super();
         this.socket = socket;
         this.connected = this.socket.connected;

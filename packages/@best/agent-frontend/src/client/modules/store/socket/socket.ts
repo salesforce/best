@@ -1,5 +1,5 @@
-import io from 'socket.io-client';
+import { io } from 'socket.io-client';
 
 export const connect = (...args: any[]) => {
-    return io.connect(...args);
+    return io(...args);
 }

@@ -7,7 +7,7 @@
 
 import { EventEmitter } from 'events';
 
-import socketIOClient from 'socket.io-client';
+import { io as Client, Socket as ClientSocket } from 'socket.io-client';
 
 import { BEST_RPC } from '@best/shared';
 import { RemoteHubConfig, BrowserSpec, AgentConfig } from '@best/types';
@@ -22,7 +22,7 @@ const DEFAULT_SOCKET_CONFIG = {
 };
 
 export default class RemoteHub extends EventEmitter {
-    private hubSocket: SocketIOClient.Socket;
+    private hubSocket: ClientSocket;
     private connected: boolean = false;
     private hubUri: string;
 
@@ -53,7 +53,7 @@ export default class RemoteHub extends EventEmitter {
 
         this.hubUri = uri;
 
-        this.hubSocket = socketIOClient(uri, socketOptions);
+        this.hubSocket = Client(uri, socketOptions);
         RPC_METHODS.forEach((methodName) => this.hubSocket.on(methodName, (this as any)[methodName].bind(this)));
     }
 

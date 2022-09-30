@@ -2,11 +2,11 @@
  * Copyright (c) 2019, salesforce.com, inc.
  * All rights reserved.
  * SPDX-License-Identifier: MIT
- * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+ * For full  license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
  */
 
-import SocketIOServer, { Socket } from 'socket.io';
-import SocketIOClient from 'socket.io-client';
+import { Server, Socket as ServerSocket } from 'socket.io';
+import { io as Client, Socket as ClientSocket } from 'socket.io-client';
 
 import { RemoteClient } from '@best/agent';
 import { BEST_RPC } from '@best/shared';
@@ -43,9 +43,9 @@ const getConfigs = () => {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 describe('Agent Hub - Remote Agent', () => {
-    let clientSocket: SocketIOClient.Socket;
-    let server: SocketIOServer.Server;
-    let serverSocket: Socket;
+    let clientSocket: ClientSocket;
+    let server: Server;
+    let serverSocket: ServerSocket;
     let serverSocketManager: RemoteAgent;
 
     afterEach(async () => {
@@ -70,17 +70,17 @@ describe('Agent Hub - Remote Agent', () => {
 
     beforeEach(async () => {
         // Create the server.
-        server = SocketIOServer(TEST_CONFIGS.SERVER_PORT, {
+        server = new Server(TEST_CONFIGS.SERVER_PORT, {
             path: TEST_CONFIGS.SOCKET_PATH,
         });
 
-        const serverConnection = (): Promise<Socket> =>
+        const serverConnection = (): Promise<ServerSocket> =>
             new Promise((resolve) => {
                 server.on('connection', resolve);
             });
 
         // Create the client.
-        clientSocket = SocketIOClient(TEST_CONFIGS.SERVER_URL, {
+        clientSocket = Client(TEST_CONFIGS.SERVER_URL, {
             path: TEST_CONFIGS.SOCKET_PATH,
 
             /*
@@ -159,10 +159,8 @@ describe('Agent Hub - Remote Agent', () => {
             // Socket should be disconnected.
             expect(serverSocket.disconnected).toBe(true);
 
-            expect(serverSocketEmitSpy).toHaveBeenCalledTimes(3);
+            expect(serverSocketEmitSpy).toHaveBeenCalledTimes(1);
             expect(serverSocketEmitSpy).toHaveBeenNthCalledWith(1, BEST_RPC.AGENT_REJECTION, disconnectReason);
-            expect(serverSocketEmitSpy).toHaveBeenNthCalledWith(2, 'disconnecting', 'server namespace disconnect');
-            expect(serverSocketEmitSpy).toHaveBeenNthCalledWith(3, 'disconnect', 'server namespace disconnect');
 
             expect(serverSocketManagerEmitSpy).toHaveBeenCalledTimes(1);
             expect(serverSocketManagerEmitSpy).toHaveBeenNthCalledWith(1, BEST_RPC.DISCONNECT, disconnectReason);

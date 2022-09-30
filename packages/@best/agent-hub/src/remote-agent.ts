@@ -7,7 +7,7 @@
 
 import { EventEmitter } from 'events';
 
-import { Socket } from 'socket.io';
+import { Socket as ServerSocket } from 'socket.io';
 
 import { RemoteClient } from '@best/agent';
 import { RunnerRemote } from '@best/runner-remote';
@@ -19,7 +19,7 @@ const RPC_METHODS = [CONNECT_ERROR, DISCONNECT, ERROR, RECONNECT_FAILED];
 
 export default class RemoteAgent extends EventEmitter {
     private runner?: RunnerRemote;
-    private socket: Socket;
+    private socket: ServerSocket;
     private specs: BrowserSpec[];
     private state: AgentState = AgentState.IDLE;
     private token: string;
@@ -27,7 +27,7 @@ export default class RemoteAgent extends EventEmitter {
 
     public connected: boolean;
 
-    constructor(socket: Socket, { uri, specs, token }: any) {
+    constructor(socket: ServerSocket, { uri, specs, token }: any) {
         super();
 
         this.socket = socket;
