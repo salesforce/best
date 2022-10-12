@@ -3,10 +3,10 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import json2md from 'json2md';
-import {EnvironmentConfig} from "@best/types";
+import { EnvironmentConfig } from '@best/types';
 
 const ENV_TEXT = 'Benchmark Environment';
 
@@ -18,7 +18,7 @@ export function formatEnvironment(env: EnvironmentConfig) {
     const jsonMd = Object.keys(env)
         .sort()
         .reduce(
-            (md:any, k1: string) => {
+            (md: any, k1: string) => {
                 const nKey = capitalizeFirstLetter(k1);
                 const value = env[k1 as keyof EnvironmentConfig];
                 md.push({ h2: nKey });
@@ -27,7 +27,7 @@ export function formatEnvironment(env: EnvironmentConfig) {
                 } else if (Array.isArray(value)) {
                     md.push({ ul: value });
                 } else {
-                    Object.keys(value).forEach(k2 => {
+                    Object.keys(value).forEach((k2) => {
                         const subKey = capitalizeFirstLetter(k2);
                         const subValue = value[k2 as keyof typeof value];
                         if (typeof subValue === 'string') {
@@ -35,7 +35,7 @@ export function formatEnvironment(env: EnvironmentConfig) {
                         } else if (Array.isArray(subValue)) {
                             md.push({ h3: subKey }, { ul: subValue });
                         } else {
-                            const rows = Object.entries(subValue).map(row =>
+                            const rows = Object.entries(subValue).map((row) =>
                                 row.map((item: any) => (item ? item.toString() : '-')),
                             );
 

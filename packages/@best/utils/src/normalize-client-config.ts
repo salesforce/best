@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
  */
-import { RemoteClientConfig } from "@best/types";
+import { RemoteClientConfig } from '@best/types';
 
 export function normalizeClientConfig(config: any): RemoteClientConfig {
     const jobs = config.jobs ? parseInt(config.jobs, 10) : 0;

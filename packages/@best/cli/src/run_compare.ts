@@ -3,16 +3,21 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import { compareBenchmarkStats } from '@best/compare';
-import { beginBenchmarkComparisonCheck, completeBenchmarkComparisonCheck, failedBenchmarkComparisonCheck, updateLatestRelease } from '@best/github-integration';
+import {
+    beginBenchmarkComparisonCheck,
+    completeBenchmarkComparisonCheck,
+    failedBenchmarkComparisonCheck,
+    updateLatestRelease,
+} from '@best/github-integration';
 import { runBest } from './run_best';
 import git from 'simple-git/promise';
 import { FrozenProjectConfig, FrozenGlobalConfig, BenchmarkComparison } from '@best/types';
 
 const STORAGE_FS = '@best/store-fs';
-const isHex = (x:string) => /^[0-9a-fA-F]+$/.test(x);
+const isHex = (x: string) => /^[0-9a-fA-F]+$/.test(x);
 const normalizeCommit = async (commit: string, gitCLI: any) => {
     if (commit === 'current') {
         const result = await gitCLI.log();
@@ -27,8 +32,18 @@ const normalizeCommit = async (commit: string, gitCLI: any) => {
     return commit.slice(0, 7);
 };
 
-export async function runCompare(globalConfig: FrozenGlobalConfig, configs: FrozenProjectConfig[], outputStream: NodeJS.WriteStream): Promise<BenchmarkComparison | undefined> {
-    const { gitInfo: { localChanges }, rootDir, gitIntegration, externalStorage, compareStats = [] } = globalConfig;
+export async function runCompare(
+    globalConfig: FrozenGlobalConfig,
+    configs: FrozenProjectConfig[],
+    outputStream: NodeJS.WriteStream,
+): Promise<BenchmarkComparison | undefined> {
+    const {
+        gitInfo: { localChanges },
+        rootDir,
+        gitIntegration,
+        externalStorage,
+        compareStats = [],
+    } = globalConfig;
     const gitCLI = git(rootDir);
     const status = await gitCLI.status();
     const initialBranch = status.current;
@@ -75,7 +90,17 @@ export async function runCompare(globalConfig: FrozenGlobalConfig, configs: Froz
 
             // Run base commit.
             await gitCLI.checkout(baseCommit);
-            await runBest({ ...runConfig, gitInfo: { ...runConfig.gitInfo, lastCommit: { ...runConfig.gitInfo.lastCommit, hash: baseCommit }} }, configs, outputStream);
+            await runBest(
+                {
+                    ...runConfig,
+                    gitInfo: {
+                        ...runConfig.gitInfo,
+                        lastCommit: { ...runConfig.gitInfo.lastCommit, hash: baseCommit },
+                    },
+                },
+                configs,
+                outputStream,
+            );
 
             // Run local changes or compare commit.
             if (compareCommit === 'local') {
@@ -86,7 +111,17 @@ export async function runCompare(globalConfig: FrozenGlobalConfig, configs: Froz
             } else {
                 await gitCLI.checkout(compareCommit);
             }
-            await runBest({ ...runConfig, gitInfo: { ...runConfig.gitInfo, lastCommit: { ...runConfig.gitInfo.lastCommit, hash: compareCommit }} }, configs, outputStream);
+            await runBest(
+                {
+                    ...runConfig,
+                    gitInfo: {
+                        ...runConfig.gitInfo,
+                        lastCommit: { ...runConfig.gitInfo.lastCommit, hash: compareCommit },
+                    },
+                },
+                configs,
+                outputStream,
+            );
 
             // Return local files to their initial state no matter what happens.
             await gitCLI.checkout(initialBranch);

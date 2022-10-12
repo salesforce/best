@@ -154,7 +154,8 @@ img {
     max-width: 100%;
 }
 
-p code, li code {
+p code,
+li code {
     font-family: monospace, monospace;
     font-size: 0.9em;
     background-color: rgba(206, 206, 206, 0.3);

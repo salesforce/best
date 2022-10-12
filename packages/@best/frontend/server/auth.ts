@@ -3,12 +3,12 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
-import { Request, Response, NextFunction } from "express";
+ */
+import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 const TOKEN_SECRET = process.env.TOKEN_SECRET as string;
-const REVOKED_TOKENS = (process.env.REVOKED_TOKENS || "").split("\n");
+const REVOKED_TOKENS = (process.env.REVOKED_TOKENS || '').split('\n');
 
 /**
  * Checks if the provided token has been revoked based on the revocation list provided
@@ -30,13 +30,13 @@ export function authorizeRequest(req: Request, res: Response, next: NextFunction
 
     // Send unauthorized response if token is not provided in the request
     if (authHeader == null) {
-        res.status(401).send("Unauthorized: You must provide your token in authorization header.");
+        res.status(401).send('Unauthorized: You must provide your token in authorization header.');
         return;
     }
 
     const authHeaderParts = authHeader.split(' ');
-    if (authHeaderParts.length !== 2 || authHeaderParts[0] !== "Bearer") {
-        res.status(401).send("Unauthorized: Unrecognized authorization header format. Accepted format: Bearer <token>");
+    if (authHeaderParts.length !== 2 || authHeaderParts[0] !== 'Bearer') {
+        res.status(401).send('Unauthorized: Unrecognized authorization header format. Accepted format: Bearer <token>');
         return;
     }
 
@@ -49,7 +49,7 @@ export function authorizeRequest(req: Request, res: Response, next: NextFunction
 
     // Block request if token has been revoked
     if (isRevoked(token)) {
-        res.status(403).send("Forbidden: Your token has been revoked.");
+        res.status(403).send('Forbidden: Your token has been revoked.');
         return;
     }
 
@@ -62,15 +62,15 @@ export function authorizeRequest(req: Request, res: Response, next: NextFunction
             // Always send with status 403 Forbidden
             res.status(403);
 
-            // Respond back with specific reasons for denial if reason is known. 
+            // Respond back with specific reasons for denial if reason is known.
             if (err instanceof jwt.TokenExpiredError) {
                 res.send(`Token ending in '${partialToken}' expired on ${err.expiredAt}`);
             } else if (err instanceof jwt.JsonWebTokenError) {
-                res.send(`Token ending in '${partialToken}' cannot be parsed. Error: ${err.message}`)
+                res.send(`Token ending in '${partialToken}' cannot be parsed. Error: ${err.message}`);
             } else {
-                res.send(`Error while authorizing request with token ending in '${partialToken}': ${err}`)
+                res.send(`Error while authorizing request with token ending in '${partialToken}': ${err}`);
             }
-            
+
             return;
         }
 

@@ -3,14 +3,14 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import path from 'path';
 import { formatEnvironment } from './md-formatter';
 import { stringify } from './pretty-json';
 import fs from 'fs';
 import chalk from 'chalk';
-import { BenchmarkResultsSnapshot, FrozenGlobalConfig } from "@best/types";
+import { BenchmarkResultsSnapshot, FrozenGlobalConfig } from '@best/types';
 
 function formatJSON(json: any) {
     return stringify(json, { indent: 2, maxLength: 90 });
@@ -20,8 +20,8 @@ function getStoredFileMapping(benchmarkFolder: string, artifactsFolder: string):
     const WHITELIST = ['.js', '.html', '.css', '.json'];
 
     const currentFiles = fs.readdirSync(benchmarkFolder);
-    const artifactFiles = fs.readdirSync(artifactsFolder).map(p => path.join('artifacts', p));
-    const files = [...currentFiles, ...artifactFiles].filter(p => WHITELIST.includes(path.extname(p)));
+    const artifactFiles = fs.readdirSync(artifactsFolder).map((p) => path.join('artifacts', p));
+    const files = [...currentFiles, ...artifactFiles].filter((p) => WHITELIST.includes(path.extname(p)));
 
     return files.reduce((map: { [key: string]: string }, file: string) => {
         map[file] = path.join(benchmarkFolder, file);
@@ -32,7 +32,12 @@ function getStoredFileMapping(benchmarkFolder: string, artifactsFolder: string):
 export function storeBenchmarkResults(benchmarkResults: BenchmarkResultsSnapshot[], globalConfig: FrozenGlobalConfig) {
     return Promise.all(
         benchmarkResults.map(async (benchmarkResult: BenchmarkResultsSnapshot) => {
-            const { environment, results, stats, benchmarkInfo: { benchmarkFolder } } = benchmarkResult;
+            const {
+                environment,
+                results,
+                stats,
+                benchmarkInfo: { benchmarkFolder },
+            } = benchmarkResult;
             const { externalStorage } = globalConfig;
 
             const artifactsFolder = path.join(benchmarkFolder, 'artifacts');

@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import fs from 'fs';
 import { dirname, basename } from 'path';
@@ -18,12 +18,18 @@ import {
     EnvironmentConfig,
     BuildConfig,
     RunnerStream,
-    Interruption
+    Interruption,
 } from '@best/types';
 import { crossOriginIsolation } from './cross-origin-isolation';
 
 export default abstract class AbstractRunner {
-    abstract async run(benchmarkBuilds: BuildConfig[], projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, runnerLogStream: RunnerStream, interruption?: Interruption): Promise<BenchmarkResultsSnapshot[]>;
+    abstract async run(
+        benchmarkBuilds: BuildConfig[],
+        projectConfig: FrozenProjectConfig,
+        globalConfig: FrozenGlobalConfig,
+        runnerLogStream: RunnerStream,
+        interruption?: Interruption,
+    ): Promise<BenchmarkResultsSnapshot[]>;
 
     static async getBrowserSpecs(): Promise<BrowserSpec[]> {
         throw new Error('Runner must implement getBrowserSpecs');
@@ -31,11 +37,14 @@ export default abstract class AbstractRunner {
 
     static isRemote: boolean = false;
 
-    initializeServer(benchmarkEntry: string, projectConfig: FrozenProjectConfig): Promise<{ terminate:Function, url: string }> {
+    initializeServer(
+        benchmarkEntry: string,
+        projectConfig: FrozenProjectConfig,
+    ): Promise<{ terminate: Function; url: string }> {
         const { assets, useHttp } = projectConfig;
 
         if (!useHttp) {
-            return Promise.resolve({ url: `file://${benchmarkEntry}`, terminate: () => {}});
+            return Promise.resolve({ url: `file://${benchmarkEntry}`, terminate: () => {} });
         }
 
         return new Promise((resolve) => {
@@ -61,7 +70,9 @@ export default abstract class AbstractRunner {
                 const { port }: any = server.address();
                 resolve({
                     url: `http://127.0.0.1:${port}/${basename(benchmarkEntry)}`,
-                    terminate: () => { server.close(); }
+                    terminate: () => {
+                        server.close();
+                    },
                 });
             });
         });
@@ -83,15 +94,14 @@ export default abstract class AbstractRunner {
         };
     }
 
-    async getEnvironment(browser: BrowserSpec, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig): Promise<EnvironmentConfig> {
+    async getEnvironment(
+        browser: BrowserSpec,
+        projectConfig: FrozenProjectConfig,
+        globalConfig: FrozenGlobalConfig,
+    ): Promise<EnvironmentConfig> {
         const { system, cpu, os, load } = await getSystemInfo();
-        const {
-            benchmarkOnClient,
-            benchmarkRunner,
-            benchmarkEnvironment,
-            benchmarkIterations,
-            projectName,
-        } = projectConfig;
+        const { benchmarkOnClient, benchmarkRunner, benchmarkEnvironment, benchmarkIterations, projectName } =
+            projectConfig;
 
         return {
             hardware: { system, cpu, os },

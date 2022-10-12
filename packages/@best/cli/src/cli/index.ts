@@ -3,17 +3,17 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import { normalize, usage, options, docs, check } from './args';
 import Output from './output';
 import yargs from 'yargs';
 import rimraf from 'rimraf';
 import { OutputStream } from '@best/console-stream';
-import { logError } from "@best/utils";
+import { logError } from '@best/utils';
 import { runBest } from '../run_best';
 import { runCompare } from '../run_compare';
-import { getConfigs } from "@best/config";
+import { getConfigs } from '@best/config';
 import { ProjectConfigs, FrozenProjectConfig, CliConfig } from '@best/types';
 
 export function buildArgs(maybeArgv?: string[]): CliConfig {
@@ -77,7 +77,7 @@ export async function runCLI(argsCLI: CliConfig, projects: string[]) {
     }
 
     if (argsCLI.clearCache) {
-        configs.forEach((config : FrozenProjectConfig) => {
+        configs.forEach((config: FrozenProjectConfig) => {
             rimraf.sync(config.cacheDirectory);
             outputStream.writeln(`Cleared ${config.cacheDirectory}`);
         });
@@ -113,7 +113,9 @@ export async function runCLI(argsCLI: CliConfig, projects: string[]) {
                 const projectConfig = configs[0];
                 await buildStaticFrontend(results, globalConfig, projectConfig, process.stdout);
             } catch (err) {
-                throw new Error('You passed the `--generateHTML` flag, but `@best/frontend` is not a dependency. Make sure you include it as a dependency.');
+                throw new Error(
+                    'You passed the `--generateHTML` flag, but `@best/frontend` is not a dependency. Make sure you include it as a dependency.',
+                );
             }
         }
     }

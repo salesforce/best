@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import path from 'path';
 import chalk from 'chalk';
@@ -15,7 +15,9 @@ const TARGET_COMMIT = process.env.TARGET_COMMIT;
 const BASE_COMMIT = process.env.BASE_COMMIT;
 
 function normalizeModulePathPatterns(options: any, key: string) {
-    return options[key].map((pattern: any) => replacePathSepForRegex(normalizeRootDirPattern(pattern, options.rootDir)));
+    return options[key].map((pattern: any) =>
+        replacePathSepForRegex(normalizeRootDirPattern(pattern, options.rootDir)),
+    );
 }
 
 function normalizeRunner(runner: string, runners: RunnerConfig[]) {
@@ -24,7 +26,7 @@ function normalizeRunner(runner: string, runners: RunnerConfig[]) {
         throw new Error('Wrong configuration: More than one default configuration declared');
     }
 
-    if (runner === "default") {
+    if (runner === 'default') {
         if (defaultRunners.length) {
             return defaultRunners[0].runner;
         }
@@ -45,7 +47,7 @@ function normalizeRunnerConfig(runner: string, runners: RunnerConfig[], specs?: 
 
     let selectedRunner;
 
-    if (runner === "default") {
+    if (runner === 'default') {
         const defaultRunners = runners.filter((c: RunnerConfig) => c.alias === undefined || c.alias === 'default');
         if (defaultRunners.length > 0) {
             selectedRunner = defaultRunners[0];
@@ -62,58 +64,57 @@ function normalizeRunnerConfig(runner: string, runners: RunnerConfig[], specs?: 
 }
 
 function setCliOptionOverrides(initialOptions: UserConfig, argsCLI: CliConfig): UserConfig {
-    const argvToOptions = Object.keys(argsCLI)
-        .reduce((options: any, key: string) => {
-            switch (key) {
-                case '_':
-                    options.nonFlagArgs = argsCLI[key] || [];
-                    break;
-                case 'disableInteractive':
-                    options.isInteractive = argsCLI[key] !== undefined ? false : undefined;
-                    break;
-                case 'iterations':
-                    if (argsCLI[key] !== undefined) {
-                        options.benchmarkIterations = argsCLI[key];
-                    }
-                    break;
-                case 'runInBatch':
-                    options.runInBatch = !!argsCLI[key];
-                    break;
-                case 'runInBand':
-                    options.runInBand = !!argsCLI[key];
-                    break;
-                case 'projects':
-                    if (argsCLI.projects && argsCLI.projects.length) {
-                        options.projects = argsCLI.projects;
-                    }
-                    break;
-                case 'compareStats':
-                    options.compareStats = argsCLI.compareStats && argsCLI.compareStats.filter(Boolean);
-                    break;
-                case 'gitIntegration':
-                    options.gitIntegration = Boolean(argsCLI[key]);
-                    break;
-                case 'generateHTML':
-                    options.generateHTML = Boolean(argsCLI[key]);
-                    break;
-                case 'dbAdapter':
-                    if (argsCLI[key] !== undefined) {
-                        options.apiDatabase = { 
-                            adapter: argsCLI[key], 
-                            uri: argsCLI['dbURI'],
-                            token: argsCLI['dbToken']
-                        }
-                    }
-                    break;
-                case 'dbURI':
-                case 'dbToken':
-                    break
-                default:
-                    options[key] = argsCLI[key];
-                    break;
-            }
-            return options;
-        }, {});
+    const argvToOptions = Object.keys(argsCLI).reduce((options: any, key: string) => {
+        switch (key) {
+            case '_':
+                options.nonFlagArgs = argsCLI[key] || [];
+                break;
+            case 'disableInteractive':
+                options.isInteractive = argsCLI[key] !== undefined ? false : undefined;
+                break;
+            case 'iterations':
+                if (argsCLI[key] !== undefined) {
+                    options.benchmarkIterations = argsCLI[key];
+                }
+                break;
+            case 'runInBatch':
+                options.runInBatch = !!argsCLI[key];
+                break;
+            case 'runInBand':
+                options.runInBand = !!argsCLI[key];
+                break;
+            case 'projects':
+                if (argsCLI.projects && argsCLI.projects.length) {
+                    options.projects = argsCLI.projects;
+                }
+                break;
+            case 'compareStats':
+                options.compareStats = argsCLI.compareStats && argsCLI.compareStats.filter(Boolean);
+                break;
+            case 'gitIntegration':
+                options.gitIntegration = Boolean(argsCLI[key]);
+                break;
+            case 'generateHTML':
+                options.generateHTML = Boolean(argsCLI[key]);
+                break;
+            case 'dbAdapter':
+                if (argsCLI[key] !== undefined) {
+                    options.apiDatabase = {
+                        adapter: argsCLI[key],
+                        uri: argsCLI['dbURI'],
+                        token: argsCLI['dbToken'],
+                    };
+                }
+                break;
+            case 'dbURI':
+            case 'dbToken':
+                break;
+            default:
+                options[key] = argsCLI[key];
+                break;
+        }
+        return options;
+    }, {});
 
     return { ...initialOptions, ...argvToOptions };
 }
@@ -156,8 +157,8 @@ function normalizeCommits(commits?: string[]): string[] | undefined {
     }
 
     let [base, target] = commits;
-    base = (base || BASE_COMMIT || '');
-    target = (target || TARGET_COMMIT || '');
+    base = base || BASE_COMMIT || '';
+    target = target || TARGET_COMMIT || '';
     return [base.slice(0, 7), target.slice(0, 7)];
 }
 
@@ -170,7 +171,7 @@ export function normalizeRegexPattern(names: string | string[] | RegExp) {
         names = names.split(',');
     }
     if (Array.isArray(names)) {
-        names = names.map(name => name.replace(/\*/g, '.*'));
+        names = names.map((name) => name.replace(/\*/g, '.*'));
         names = new RegExp(`^(${names.join('|')})$`);
     }
     if (!(names instanceof RegExp)) {
@@ -193,7 +194,11 @@ export function normalizeConfig(userConfig: UserConfig, cliOptions: CliConfig): 
                 mergeConfig[key] = normalizePlugins(normalizedConfig[key], normalizedConfig);
                 break;
             case 'runnerConfig':
-                mergeConfig['runnerConfig'] = normalizeRunnerConfig(aliasRunner, mergeConfig.runners, mergeConfig.specs);
+                mergeConfig['runnerConfig'] = normalizeRunnerConfig(
+                    aliasRunner,
+                    mergeConfig.runners,
+                    mergeConfig.specs,
+                );
                 break;
             case 'runner':
                 mergeConfig[key] = normalizeRunner(normalizedConfig[key], mergeConfig.runners);
@@ -202,11 +207,13 @@ export function normalizeConfig(userConfig: UserConfig, cliOptions: CliConfig): 
                 mergeConfig[key] = normalizeCommits(normalizedConfig[key]);
                 break;
             case 'specs':
-                    mergeConfig[key] = normalizedConfig['runnerConfig'].specs || mergeConfig[key];
-                    break;
+                mergeConfig[key] = normalizedConfig['runnerConfig'].specs || mergeConfig[key];
+                break;
             case 'apiDatabase': {
                 const apiDatabaseConfig = normalizedConfig[key];
-                mergeConfig[key] = apiDatabaseConfig ? normalizeObjectPathPatterns(apiDatabaseConfig, normalizedConfig.rootDir) : apiDatabaseConfig;
+                mergeConfig[key] = apiDatabaseConfig
+                    ? normalizeObjectPathPatterns(apiDatabaseConfig, normalizedConfig.rootDir)
+                    : apiDatabaseConfig;
                 break;
             }
             default:

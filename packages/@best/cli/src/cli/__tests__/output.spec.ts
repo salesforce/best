@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import fs from 'fs';
 import path from 'path';
@@ -30,6 +30,6 @@ describe('Output', () => {
             const expected = fs.readFileSync(path.resolve(__dirname, 'fixtures/comparison1-table.txt'), 'utf8');
 
             expect(actual.trim()).toEqual(expected.trim());
-        })
-    })
-})
+        });
+    });
+});

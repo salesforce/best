@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 export const up = `
 CREATE TABLE projects (
@@ -14,6 +14,6 @@ CREATE TABLE projects (
 );
 
 CREATE UNIQUE INDEX projects_unique_name ON projects(name text_ops);
-`
+`;
 
-export const down = `DROP TABLE projects;`
+export const down = `DROP TABLE projects;`;

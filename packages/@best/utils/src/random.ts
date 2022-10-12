@@ -3,9 +3,9 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
-const ALPHANUMERIC_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+const ALPHANUMERIC_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 const ALPHANUMERIC_CHARACTERS_LENGTH = ALPHANUMERIC_CHARACTERS.length;
 
 /**
@@ -15,10 +15,10 @@ const ALPHANUMERIC_CHARACTERS_LENGTH = ALPHANUMERIC_CHARACTERS.length;
  */
 export const randomAlphanumeric = (length: Number): string => {
     if (length < 1) {
-        return "";
+        return '';
     }
 
-    let randomString = "";
+    let randomString = '';
 
     for (let i = 0; i < length; i++) {
         // Note: Math.random returns a decimal value between 0 (inclusive) and 1 (exclusive).
@@ -29,4 +29,4 @@ export const randomAlphanumeric = (length: Number): string => {
     }
 
     return randomString;
-}
+};

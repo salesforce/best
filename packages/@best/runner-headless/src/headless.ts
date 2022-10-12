@@ -3,13 +3,13 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
 import puppeteer from 'puppeteer';
-import { parseTrace, removeTrace, mergeTracedMetrics } from './trace'
+import { parseTrace, removeTrace, mergeTracedMetrics } from './trace';
 import { FrozenProjectConfig, BrowserSpec } from '@best/types';
 
 const BROWSER_ARGS = [
@@ -23,7 +23,6 @@ const BROWSER_ARGS = [
     '--ignore-certificate-errors',
     '--enable-precise-memory-info',
 ];
-
 
 const PUPPETEER_OPTIONS: puppeteer.BrowserLaunchArgumentOptions = { args: BROWSER_ARGS };
 
@@ -57,7 +56,7 @@ export default class HeadlessBrowser {
         const { launchOptions = {} } = runnerConfig;
         this.browser = await puppeteer.launch({ ...PUPPETEER_OPTIONS, ...launchOptions });
         this.page = await this.browser.newPage();
-        this.page.on('pageerror', (error: Error) => this.pageError = error);
+        this.page.on('pageerror', (error: Error) => (this.pageError = error));
         await this.page.goto(this.pageUrl);
         this.checkForErrors();
     }
@@ -71,7 +70,7 @@ export default class HeadlessBrowser {
     }
 
     async processTrace(result: any) {
-        if (! this.page) return result;
+        if (!this.page) return result;
 
         if (this.tracingEnabled) {
             const traces = await parseTrace(this.tracePath);
@@ -87,7 +86,7 @@ export default class HeadlessBrowser {
         if (this.browser) {
             try {
                 await this.browser.close();
-            } catch(err) {
+            } catch (err) {
                 console.log('[pupeteer] - close error', err);
             }
         }
@@ -116,14 +115,14 @@ export default class HeadlessBrowser {
     }
 
     version() {
-        return this.browser ? this.browser.version(): Promise.resolve('unknown');
+        return this.browser ? this.browser.version() : Promise.resolve('unknown');
     }
 
     static async getSpecs(): Promise<BrowserSpec[]> {
         // TODO: Create pupeteer test so we fail when upgrading
         return [
             { name: 'chrome.headless', version: '105' },
-            { name: 'chrome', version: '105' }
+            { name: 'chrome', version: '105' },
         ];
     }
 }

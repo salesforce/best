@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import { EventEmitter } from 'events';
 
@@ -11,13 +11,13 @@ import { AgentState } from './agent';
 import { BenchmarkMetricNames } from './benchmark';
 
 export interface GitConfig {
-    lastCommit: { hash: string, date: string }
-    localChanges: boolean,
-    branch: string,
+    lastCommit: { hash: string; date: string };
+    localChanges: boolean;
+    branch: string;
     repo: {
-        owner: string,
-        repo: string
-    }
+        owner: string;
+        repo: string;
+    };
 }
 
 export interface UserConfig {
@@ -51,7 +51,7 @@ export interface HubConfig {
     name?: string;
     uri: string;
     options: { path: string };
-    authToken? : string;
+    authToken?: string;
 }
 
 export interface AgentConfig extends HubConfig {
@@ -61,7 +61,7 @@ export interface AgentConfig extends HubConfig {
 export interface Interruption {
     id?: string;
     requestedInterruption: boolean;
-    requestInterruption() :void;
+    requestInterruption(): void;
 }
 
 export interface ApiDatabaseConfig {
@@ -76,72 +76,72 @@ export interface FrontendConfig {
     githubConfig?: {
         repo: string;
         owner: string;
-    }
+    };
 }
 
 export interface CliConfig {
-    [key: string]: any,
-    _: string[],
-    help: boolean,
-    clearCache: boolean,
-    clearResults: boolean,
-    gitIntegration?: string,
-    useHttp: boolean,
-    externalStorage?: string,
-    runner: string,
-    runnerConfig: { [x:string]: any },
-    runInBand: boolean,
-    config: string | undefined,
-    projects: string[],
-    iterations?: number,
-    compareStats: string[] | undefined,
-    generateHTML: boolean | undefined,
-    dbAdapter: string | undefined,
-    dbURI: string | undefined,
-    dbToken: string | undefined
+    [key: string]: any;
+    _: string[];
+    help: boolean;
+    clearCache: boolean;
+    clearResults: boolean;
+    gitIntegration?: string;
+    useHttp: boolean;
+    externalStorage?: string;
+    runner: string;
+    runnerConfig: { [x: string]: any };
+    runInBand: boolean;
+    config: string | undefined;
+    projects: string[];
+    iterations?: number;
+    compareStats: string[] | undefined;
+    generateHTML: boolean | undefined;
+    dbAdapter: string | undefined;
+    dbURI: string | undefined;
+    dbToken: string | undefined;
 }
 
 export interface NormalizedConfig {
     nonFlagArgs: string[];
     specs?: BrowserSpec;
-    cache: boolean,
-    cacheDirectory: string,
-    compareStats?: string[],
-    gitIntegration: boolean,
-    generateHTML: boolean,
-    useHttp: boolean,
-    assets: AssetConfig[],
-    externalStorage?: string,
-    apiDatabase: ApiDatabaseConfig,
-    commentThreshold: number,
-    metrics: BenchmarkMetricNames[],
-    isInteractive?: boolean,
+    cache: boolean;
+    cacheDirectory: string;
+    compareStats?: string[];
+    gitIntegration: boolean;
+    generateHTML: boolean;
+    useHttp: boolean;
+    assets: AssetConfig[];
+    externalStorage?: string;
+    apiDatabase: ApiDatabaseConfig;
+    commentThreshold: number;
+    metrics: BenchmarkMetricNames[];
+    isInteractive?: boolean;
     runInBatch?: boolean;
-    openPages: boolean,
+    openPages: boolean;
     mainBranch: string;
-    moduleDirectories: string[],
-    moduleFileExtensions: string[],
-    moduleNameMapper: { [moduleName:string]: string },
-    modulePathIgnorePatterns: string[],
-    projectName: string,
-    projects: string[],
-    plugins: ProjectConfigPlugin[],
-    runInBand: boolean,
-    runner: string,
-    runners: RunnerConfig[],
-    runnerConfig: any,
-    benchmarkEnvironment: string,
-    benchmarkEnvironmentOptions: {[key:string]: string },
-    benchmarkMaxDuration: number,
-    benchmarkMinIterations: number,
-    benchmarkOnClient: boolean,
-    benchmarkIterations: number,
-    benchmarkOutput: string,
-    benchmarkCustomAssets: string,
-    testMatch: string[],
-    testPathIgnorePatterns: string[],
+    moduleDirectories: string[];
+    moduleFileExtensions: string[];
+    moduleNameMapper: { [moduleName: string]: string };
+    modulePathIgnorePatterns: string[];
+    projectName: string;
+    projects: string[];
+    plugins: ProjectConfigPlugin[];
+    runInBand: boolean;
+    runner: string;
+    runners: RunnerConfig[];
+    runnerConfig: any;
+    benchmarkEnvironment: string;
+    benchmarkEnvironmentOptions: { [key: string]: string };
+    benchmarkMaxDuration: number;
+    benchmarkMinIterations: number;
+    benchmarkOnClient: boolean;
+    benchmarkIterations: number;
+    benchmarkOutput: string;
+    benchmarkCustomAssets: string;
+    testMatch: string[];
+    testPathIgnorePatterns: string[];
     samplesQuantileThreshold: number;
-    rootDir: string
+    rootDir: string;
 }
 
 export interface GlobalConfig {
@@ -159,12 +159,12 @@ export interface GlobalConfig {
     externalStorage?: string;
 }
 
-export type ProjectConfigPlugin = string | [string, { [key : string]: any }]
+export type ProjectConfigPlugin = string | [string, { [key: string]: any }];
 
 export type AssetConfig = {
     alias?: string;
     path: string;
-}
+};
 
 export interface ProjectConfig {
     assets: AssetConfig[];
@@ -193,41 +193,40 @@ export type FrozenGlobalConfig = Readonly<GlobalConfig>;
 export type FrozenProjectConfig = Readonly<ProjectConfig>;
 
 export interface ProjectConfigs {
-    globalConfig: FrozenGlobalConfig,
-    configs: FrozenProjectConfig[]
+    globalConfig: FrozenGlobalConfig;
+    configs: FrozenProjectConfig[];
 }
 
 export interface BuildConfig {
-    benchmarkName: string,
-    benchmarkFolder: string,
-    benchmarkSignature: string,
-    benchmarkEntry: string,
-    benchmarkRemoteEntry?: string,
-    benchmarkRemoteFolder?: string,
-    projectConfig: FrozenProjectConfig,
-    globalConfig: FrozenGlobalConfig,
+    benchmarkName: string;
+    benchmarkFolder: string;
+    benchmarkSignature: string;
+    benchmarkEntry: string;
+    benchmarkRemoteEntry?: string;
+    benchmarkRemoteFolder?: string;
+    projectConfig: FrozenProjectConfig;
+    globalConfig: FrozenGlobalConfig;
 }
 
 export interface BenchmarksBundle {
     projectName: string;
     projectConfig: FrozenProjectConfig;
     globalConfig: FrozenGlobalConfig;
-    benchmarkBuilds: BuildConfig[]
+    benchmarkBuilds: BuildConfig[];
 }
 
 export interface BrowserSpec {
     version: string;
     name?: string;
-    config?: { [key: string]: any }
+    config?: { [key: string]: any };
 }
-
 
 export interface EnvironmentConfig {
     hardware: {
         system: {
-            manufacturer: string,
-            model: string,
-        },
+            manufacturer: string;
+            model: string;
+        };
         cpu: {
             manufacturer: string;
             brand: string;
@@ -235,12 +234,12 @@ export interface EnvironmentConfig {
             model: string;
             speed: number;
             cores: number;
-        },
-        os: { platform: string, distro: string, release: string, kernel: string, arch: string };
-    },
+        };
+        os: { platform: string; distro: string; release: string; kernel: string; arch: string };
+    };
     container: {
-        load: { cpuLoad: number }
-    },
+        load: { cpuLoad: number };
+    };
     browser: BrowserSpec;
     configuration: {
         project: {
@@ -249,14 +248,14 @@ export interface EnvironmentConfig {
             benchmarkRunner: string;
             benchmarkEnvironment: any;
             benchmarkIterations: number;
-        },
+        };
         global: {
             gitCommitHash: string;
             gitHasLocalChanges: boolean;
             gitBranch: string;
-            gitRepository: { owner: string, repo: string };
-        }
-    }
+            gitRepository: { owner: string; repo: string };
+        };
+    };
 }
 
 export interface BestAgentState {
@@ -265,18 +264,18 @@ export interface BestAgentState {
         specs?: BrowserSpec;
         jobs: number;
         state: AgentState;
-    }[],
+    }[];
     connectedAgents: {
         agentId: string;
         state: AgentState;
         specs: BrowserSpec[];
         uri: string;
-    }[],
+    }[];
 
     activeClients: {
         clientId: string;
         agentId: string;
-    }[]
+    }[];
 }
 
 export interface BestAgent extends EventEmitter {

@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 export interface BenchmarkInfo {
     benchmarkName: string;
@@ -20,18 +20,18 @@ export interface BenchmarkRuntimeConfig {
 }
 
 export enum BenchmarkMeasureType {
-    Execute = "BEST/execute",
-    Before = "BEST/before",
-    After = "BEST/after"
+    Execute = 'BEST/execute',
+    Before = 'BEST/before',
+    After = 'BEST/after',
 }
 
-export type BenchmarkMetricNames = "script" | "aggregate" | "paint" | "layout" | "system" | "idle";
+export type BenchmarkMetricNames = 'script' | 'aggregate' | 'paint' | 'layout' | 'system' | 'idle';
 
 export type BenchmarkMetrics = {
     [key in BenchmarkMetricNames]?: number;
-}
+};
 
-export type ResultNodeTypes = "group" | "benchmark";
+export type ResultNodeTypes = 'group' | 'benchmark';
 export interface BenchmarkResultNodeBase {
     type: ResultNodeTypes;
     name: string;
@@ -40,12 +40,12 @@ export interface BenchmarkResultNodeBase {
 }
 
 export interface BenchmarkResultGroupNode extends BenchmarkResultNodeBase {
-    type: "group";
-    nodes : BenchmarkResultNode[];
+    type: 'group';
+    nodes: BenchmarkResultNode[];
 }
 
 export interface BenchmarkResultBenchmarkNode extends BenchmarkResultNodeBase {
-    type: "benchmark";
+    type: 'benchmark';
     metrics: BenchmarkMetrics;
 }
 
@@ -59,8 +59,8 @@ export interface BenchmarkResults {
 }
 
 export interface BenchmarkResultsState {
-    executedTime: number,
-    executedIterations: number,
+    executedTime: number;
+    executedIterations: number;
     results: BenchmarkResultNode[];
 }
 

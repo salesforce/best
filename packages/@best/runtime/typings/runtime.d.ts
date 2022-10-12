@@ -3,9 +3,9 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
-type NodeTypes = "group" | "benchmark" | "run";
+type NodeTypes = 'group' | 'benchmark' | 'run';
 
 interface RuntimeHook {
     type: string;
@@ -22,23 +22,23 @@ interface RuntimeNode {
     aggregate: number;
 }
 interface RuntimeNodeDescribe extends RuntimeNode {
-    type: "group";
+    type: 'group';
     mode?: string;
     parent: any;
     children: RuntimeNode[];
 }
 
 interface RuntimeNodeBenchmark extends RuntimeNode {
-    type: "benchmark",
+    type: 'benchmark';
     mode?: string;
     parent: RuntimeNodeDescribe;
     run?: RuntimeNodeRunner;
 }
 interface RuntimeNodeRunner extends RuntimeNode {
-    type: "run";
+    type: 'run';
     fn: Function;
     parent: RuntimeNodeBenchmark;
-    metrics: { [key: string]: number }
+    metrics: { [key: string]: number };
 }
 
 type RuntimeNode = RuntimeNodeDescribe | RuntimeNodeBenchmark | RuntimeNodeRunner;
@@ -69,8 +69,8 @@ interface PrimitiveNode {
 
 interface BenchmarkConfig {
     autoStart?: boolean;
-    iterations: number,
-    iterateOnClient: boolean,
-    minSampleCount: number,
-    maxDuration: number
+    iterations: number;
+    iterateOnClient: boolean;
+    minSampleCount: number;
+    maxDuration: number;
 }

@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 /*
  * This code is a slight modification of VueJS next-tick
@@ -32,7 +32,7 @@ function handleError(e: any, ctx: any, type: any) {
 }
 
 let microTimerFunc: Function;
-let macroTimerFunc : Function;
+let macroTimerFunc: Function;
 let useMacroTask = false;
 
 // Determine (macro) Task defer implementation.
@@ -115,9 +115,11 @@ export function nextTick(cb?: any, ctx?: any) {
         }
     }
 
-    return cb ? null : new Promise(resolve => {
-        _resolve = resolve;
-    });
+    return cb
+        ? null
+        : new Promise((resolve) => {
+              _resolve = resolve;
+          });
 }
 
 export const time = window.performance.now.bind(window.performance);

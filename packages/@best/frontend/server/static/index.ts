@@ -3,22 +3,29 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
-import path from 'path'
-import fs from 'fs'
-import { promisify } from 'util'
-import { rollup } from 'rollup'
+import path from 'path';
+import fs from 'fs';
+import { promisify } from 'util';
+import { rollup } from 'rollup';
 import { BenchmarkResultsSnapshot, FrozenGlobalConfig, FrozenProjectConfig } from '@best/types';
 import { OutputStream } from '@best/console-stream';
 
-import { buildRollupConfig } from './rollup.config'
-import html from './static-template.html'
+import { buildRollupConfig } from './rollup.config';
+import html from './static-template.html';
 
 const asyncWrite = promisify(fs.writeFile);
 
-export const buildStaticFrontend = async (results: BenchmarkResultsSnapshot[], globalConfig: FrozenGlobalConfig, projectConfig: FrozenProjectConfig, stream: NodeJS.WriteStream): Promise<boolean> => {
-    if (! globalConfig.apiDatabase) { throw new Error('No database configured') }
+export const buildStaticFrontend = async (
+    results: BenchmarkResultsSnapshot[],
+    globalConfig: FrozenGlobalConfig,
+    projectConfig: FrozenProjectConfig,
+    stream: NodeJS.WriteStream,
+): Promise<boolean> => {
+    if (!globalConfig.apiDatabase) {
+        throw new Error('No database configured');
+    }
 
     const outputStream = new OutputStream(stream, globalConfig.isInteractive);
 
@@ -29,8 +36,8 @@ export const buildStaticFrontend = async (results: BenchmarkResultsSnapshot[], g
     const options = {
         projectNames,
         timingOptions: ['2-months', 'last-release', 'all'],
-        config: { apiDatabase: globalConfig.apiDatabase }
-    }
+        config: { apiDatabase: globalConfig.apiDatabase },
+    };
 
     const rollupConfig = buildRollupConfig(projectConfig);
 
@@ -51,4 +58,4 @@ export const buildStaticFrontend = async (results: BenchmarkResultsSnapshot[], g
     }
 
     return true;
-}
+};

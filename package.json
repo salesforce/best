@@ -65,7 +65,7 @@
     "lint": "eslint packages/ --ext=js,ts",
     "perf": "cd packages/best-benchmarks/ && yarn start",
     "prepare": "yarn build && yarn build:frontends",
-    "prettier": "prettier --write '**/*.{js,md}'",
+    "prettier": "prettier --write '**/*.{css,js,md,ts}'",
     "publish": "lerna publish from-package",
     "release": "lerna version -m 'chore(release): publish %s' --exact --force-publish=* --no-git-tag-version --no-push --no-commit-hooks",
     "start": "node ./scripts/start.js",

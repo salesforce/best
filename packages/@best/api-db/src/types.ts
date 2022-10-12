@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import { ApiDatabaseConfig } from '@best/types';
 
@@ -41,22 +41,22 @@ export class ApiDBAdapter {
     constructor(config: ApiDatabaseConfig) {}
 
     fetchProjects(): Promise<Project[]> {
-        throw new Error('ApiDB.fetchProjects() not implemented')
+        throw new Error('ApiDB.fetchProjects() not implemented');
     }
 
     fetchSnapshots(projectId: number, since: Date | undefined): Promise<Snapshot[]> {
-        throw new Error('ApiDB.fetchSnapshots() not implemented')
+        throw new Error('ApiDB.fetchSnapshots() not implemented');
     }
 
     saveSnapshots(snapshots: TemporarySnapshot[], projectName: string): Promise<boolean> {
-        throw new Error('ApiDB.saveSnapshots() not implemented')
+        throw new Error('ApiDB.saveSnapshots() not implemented');
     }
 
     updateLastRelease(projectName: string, release: string | Date): Promise<boolean> {
-        throw new Error('ApiDB.updateLastRelease() not implemented')
+        throw new Error('ApiDB.updateLastRelease() not implemented');
     }
 
     migrate() {
-        throw new Error('ApiDB.migrate() not implemented')
+        throw new Error('ApiDB.migrate() not implemented');
     }
 }

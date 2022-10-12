@@ -3,30 +3,38 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import json2md from 'json2md';
-import { BenchmarkComparison, ResultComparison, BenchmarkMetricNames, BenchmarkStats, ResultComparisonBenchmark, ResultComparisonGroup, ResultComparisonProject } from '@best/types';
+import {
+    BenchmarkComparison,
+    ResultComparison,
+    BenchmarkMetricNames,
+    BenchmarkStats,
+    ResultComparisonBenchmark,
+    ResultComparisonGroup,
+    ResultComparisonProject,
+} from '@best/types';
 
 interface MarkdownTable {
     table: {
         headers: string[];
         rows: string[][];
-    }
+    };
 }
 
 interface SignificantlyChangedSummary {
-    improved: string[][]
-    regressed: string[][]
+    improved: string[][];
+    regressed: string[][];
 }
 
-type GroupedTables = { [projectName: string]: MarkdownTable[] }
+type GroupedTables = { [projectName: string]: MarkdownTable[] };
 
 function padding(n: number) {
     return n > 0
         ? Array.apply(null, Array((n - 1) * 3))
-            .map(() => ' ')
-            .join('') + '└─ '
+              .map(() => ' ')
+              .join('') + '└─ '
         : '';
 }
 
@@ -35,7 +43,7 @@ function generateMarkdownFromGroupedTables(tables: GroupedTables) {
         groups.push({ h2: `*${projectName}*` });
         groups.push(...tables[projectName]);
         return groups;
-    }, <json2md.DataObject[]>[])
+    }, <json2md.DataObject[]>[]);
 
     return json2md(flattenedTables);
 }
@@ -47,7 +55,7 @@ function generateRow(
         targetStats: BenchmarkStats;
         samplesComparison: 0 | 1 | -1;
     },
-    includeEmojiTrend: boolean
+    includeEmojiTrend: boolean,
 ): string[] {
     const baseStats = metrics.baseStats;
     const targetStats = metrics.targetStats;
@@ -57,22 +65,32 @@ function generateRow(
     const relativeTrend = targetStats.median - baseStats.median;
     const sign = Math.sign(relativeTrend) === 1 ? '+' : '';
 
-    const comparisonEmoji = (samplesComparison === 0 ? '👌' : samplesComparison === 1 ? '👎' : '👍');
+    const comparisonEmoji = samplesComparison === 0 ? '👌' : samplesComparison === 1 ? '👎' : '👍';
 
     return [
         name,
         `${baseStats.median.toFixed(2)} (± ${baseStats.medianAbsoluteDeviation.toFixed(2)}ms)`,
         `${targetStats.median.toFixed(2)} (± ${targetStats.medianAbsoluteDeviation.toFixed(2)}ms)`,
-        sign + relativeTrend.toFixed(1) + 'ms (' + percentage.toFixed(1) + '%)' + (includeEmojiTrend ? ` ${comparisonEmoji}` : '')
-    ]
+        sign +
+            relativeTrend.toFixed(1) +
+            'ms (' +
+            percentage.toFixed(1) +
+            '%)' +
+            (includeEmojiTrend ? ` ${comparisonEmoji}` : ''),
+    ];
 }
 
-function generateRowsFromComparison<RowType>(stats: ResultComparison, handler: (node: ResultComparisonBenchmark, parentName: string) => RowType[], name: string = '', initialRows: RowType[] = []) {
-    if (stats.type === "project" || stats.type === "group") {
+function generateRowsFromComparison<RowType>(
+    stats: ResultComparison,
+    handler: (node: ResultComparisonBenchmark, parentName: string) => RowType[],
+    name: string = '',
+    initialRows: RowType[] = [],
+) {
+    if (stats.type === 'project' || stats.type === 'group') {
         return stats.comparisons.reduce((rows, node): RowType[] => {
-            if (node.type === "project" || node.type === "group") {
+            if (node.type === 'project' || node.type === 'group') {
                 return generateRowsFromComparison(node, handler, node.name, rows);
-            } else if (node.type === "benchmark") {
+            } else if (node.type === 'benchmark') {
                 rows.push(...handler(node, name));
             }
 
@@ -83,30 +101,38 @@ function generateRowsFromComparison<RowType>(stats: ResultComparison, handler: (
     }
 }
 
-function significantlyChangedRows(stats: ResultComparison, threshold: number, name: string = '', initialRows: SignificantlyChangedSummary = { improved: [], regressed: [] }) {
+function significantlyChangedRows(
+    stats: ResultComparison,
+    threshold: number,
+    name: string = '',
+    initialRows: SignificantlyChangedSummary = { improved: [], regressed: [] },
+) {
     const highThreshold = Math.abs(threshold); // handle whether the threshold is positive or negative
     const lowThreshold = -1 * highThreshold;
 
-    if (stats.type === "project" || stats.type === "group") {
+    if (stats.type === 'project' || stats.type === 'group') {
         return stats.comparisons.reduce((rows, node): SignificantlyChangedSummary => {
-            if (node.type === "project" || node.type === "group") {
+            if (node.type === 'project' || node.type === 'group') {
                 return significantlyChangedRows(node, threshold, node.name, rows);
-            } else if (node.type === "benchmark") {
+            } else if (node.type === 'benchmark') {
                 // for the significantly changed summary, we only check for aggregate
                 const metrics = node.metrics.aggregate;
 
                 if (metrics) {
                     const { baseStats, targetStats, samplesComparison } = metrics;
-                    
-                    if (samplesComparison !== 0 && baseStats.median > 1 && targetStats.median > 1) { // ensures passes Mann-Whiteney U test and results are more than 1ms
+
+                    if (samplesComparison !== 0 && baseStats.median > 1 && targetStats.median > 1) {
+                        // ensures passes Mann-Whiteney U test and results are more than 1ms
                         const percentage = (Math.abs(baseStats.median - targetStats.median) / baseStats.median) * 100;
                         const relativeTrend = targetStats.median - baseStats.median;
                         const relativePercentage = Math.sign(relativeTrend) * percentage;
                         const row = generateRow(`${name}/${node.name}`, metrics, false);
 
-                        if (relativePercentage < lowThreshold) { // less than a negative is GOOD (things got faster)
+                        if (relativePercentage < lowThreshold) {
+                            // less than a negative is GOOD (things got faster)
                             rows.improved.push(row);
-                        } else if (relativePercentage > highThreshold) { // more than a positive is WORSE (things got slower)
+                        } else if (relativePercentage > highThreshold) {
+                            // more than a positive is WORSE (things got slower)
                             rows.regressed.push(row);
                         }
                     }
@@ -114,7 +140,7 @@ function significantlyChangedRows(stats: ResultComparison, threshold: number, na
             }
 
             return rows;
-        }, initialRows)
+        }, initialRows);
     } else {
         return initialRows;
     }
@@ -126,30 +152,37 @@ function generateAllRows(stats: ResultComparison) {
         const emptyFields = Array.apply(null, Array(3)).map(() => '-');
         rows.push([`${parentName}/${node.name}`, ...emptyFields]);
 
-        Object.keys(node.metrics).forEach(metric => {
+        Object.keys(node.metrics).forEach((metric) => {
             const metrics = node.metrics[metric as BenchmarkMetricNames];
 
             if (metrics) {
                 rows.push(generateRow(padding(1) + metric, metrics, true));
             }
-        })
+        });
 
         return rows;
-    })
+    });
 }
 
-function generateCommentWithTables(result: BenchmarkComparison, handler: (node: ResultComparisonProject | ResultComparisonGroup, baseCommit: string, targetCommit: string) => MarkdownTable[]) {
+function generateCommentWithTables(
+    result: BenchmarkComparison,
+    handler: (
+        node: ResultComparisonProject | ResultComparisonGroup,
+        baseCommit: string,
+        targetCommit: string,
+    ) => MarkdownTable[],
+) {
     const { baseCommit, targetCommit, comparisons } = result;
 
     const grouped: GroupedTables = comparisons.reduce((tables, node): GroupedTables => {
-        if (node.type === "project" || node.type === "group") {
+        if (node.type === 'project' || node.type === 'group') {
             const markdownTables = handler(node, baseCommit, targetCommit);
 
             if (markdownTables.length) {
                 return {
                     ...tables,
-                    [node.name]: markdownTables
-                }
+                    [node.name]: markdownTables,
+                };
             }
 
             return tables;
@@ -166,27 +199,27 @@ export function generateComparisonSummary(result: BenchmarkComparison, threshold
         const changes = significantlyChangedRows(node, threshold);
 
         const tables: MarkdownTable[] = [];
-        
+
         if (changes.improved.length) {
             tables.push({
                 table: {
                     headers: [`✅ Improvements`, `base (\`${base}\`)`, `target (\`${target}\`)`, 'trend'],
-                    rows: changes.improved
-                }
-            })
+                    rows: changes.improved,
+                },
+            });
         }
 
         if (changes.regressed.length) {
             tables.push({
                 table: {
                     headers: [`❌ Regressions`, `base (\`${base}\`)`, `target (\`${target}\`)`, 'trend'],
-                    rows: changes.regressed
-                }
+                    rows: changes.regressed,
+                },
             });
         }
 
         return tables;
-    })
+    });
 }
 
 function generateAllRowsTable(baseCommit: string, targetCommit: string, stats: ResultComparison): MarkdownTable {
@@ -196,16 +229,16 @@ function generateAllRowsTable(baseCommit: string, targetCommit: string, stats: R
     return {
         table: {
             headers: [`${mdName}`, `base (\`${baseCommit}\`)`, `target (\`${targetCommit}\`)`, 'trend'],
-            rows: generateAllRows(stats)
-        }
-    }
+            rows: generateAllRows(stats),
+        },
+    };
 }
 
 export function generateComparisonComment(result: BenchmarkComparison) {
     const tablesMarkdown = generateCommentWithTables(result, (node, base, target) => {
-        const tables = node.comparisons.map(child => {
+        const tables = node.comparisons.map((child) => {
             return generateAllRowsTable(base, target, child);
-        })
+        });
 
         return tables;
     });
@@ -218,15 +251,15 @@ export function generatePercentages(stats: ResultComparison): number[] {
     return generateRowsFromComparison(stats, (node, parentName) => {
         const rows: number[] = [];
 
-        Object.keys(node.metrics).map(metricName => {
+        Object.keys(node.metrics).map((metricName) => {
             const metrics = node.metrics[metricName as BenchmarkMetricNames];
 
             if (metrics) {
                 const { baseStats, targetStats, samplesComparison } = metrics;
                 const baseMed = baseStats.median;
                 const targetMed = targetStats.median;
-    
-                const percentage = Math.abs((baseMed - targetMed) / baseMed * 100);
+
+                const percentage = Math.abs(((baseMed - targetMed) / baseMed) * 100);
                 const relativeTrend = targetMed - baseMed;
 
                 // ensures passes Mann-Whiteney U test and results are more than 1ms
@@ -236,8 +269,8 @@ export function generatePercentages(stats: ResultComparison): number[] {
                     rows.push(0); // otherwise we count it as zero
                 }
             }
-        })
+        });
 
         return rows;
-    })
+    });
 }

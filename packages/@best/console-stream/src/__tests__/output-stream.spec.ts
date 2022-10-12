@@ -3,10 +3,10 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import { PassThrough } from 'stream';
-import { EOL } from "os";
+import { EOL } from 'os';
 
 const MSG = 'I am a message';
 const MSG_EOL = 'I am a message with eol char' + EOL;

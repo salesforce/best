@@ -80,7 +80,7 @@ export function SocketIOFile(socket, options) {
     var self = this;
     var uploadingFiles = {};
 
-    socket.on('socket.io-file::createFile', fileInfo => {
+    socket.on('socket.io-file::createFile', (fileInfo) => {
         var id = fileInfo.id;
         var uploadDir = null;
         var uploadTo = fileInfo.uploadTo || '';
@@ -111,7 +111,9 @@ export function SocketIOFile(socket, options) {
          */
 
         if (filename.indexOf('..') !== -1) {
-            return sendError(new Error(`For security reasons, '${filename}' is not allowed as it tries to navigate up the path.`));
+            return sendError(
+                new Error(`For security reasons, '${filename}' is not allowed as it tries to navigate up the path.`),
+            );
         }
 
         if (this.rename) {
@@ -194,7 +196,7 @@ export function SocketIOFile(socket, options) {
 
                 // if mime is invalid, remove files and emit error
                 if (!found) {
-                    fs.unlink(uploadDir, err => {
+                    fs.unlink(uploadDir, (err) => {
                         console.log(err);
                     }); // Node 10 onwards requires callback to be specified
 
@@ -276,7 +278,7 @@ export function SocketIOFile(socket, options) {
 
         socket.emit(`socket.io-file::request::${id}`);
 
-        socket.on(`socket.io-file::stream::${id}`, chunk => {
+        socket.on(`socket.io-file::stream::${id}`, (chunk) => {
             if (uploadingFiles[id].abort) {
                 socket.removeAllListeners(`socket.io-file::stream::${id}`);
                 socket.removeAllListeners(`socket.io-file::done::${id}`);
@@ -352,7 +354,7 @@ export function SocketIOFile(socket, options) {
     });
 }
 
-SocketIOFile.prototype.destroy = function() {
+SocketIOFile.prototype.destroy = function () {
     this.emit('destroy');
     this.socket.emit('socket.io-file::disconnectByServer');
 

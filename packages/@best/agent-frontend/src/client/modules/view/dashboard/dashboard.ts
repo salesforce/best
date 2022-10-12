@@ -1,6 +1,6 @@
 import { LightningElement, track } from 'lwc';
 import { connect } from 'store/socket';
-import { BEST_RPC } from "@best/shared";
+import { BEST_RPC } from '@best/shared';
 import { BrowserSpec, BestAgentState, BenchmarkUpdateState, BenchmarkRuntimeConfig } from '@best/types';
 
 // eslint-disable-next-line no-undef
@@ -47,10 +47,9 @@ interface RunningBenchmark {
 }
 
 export default class ViewDashboard extends LightningElement {
-
     @track agents: DashboardAgent[] = [];
     @track clients: DashboardClient[] = [];
-    @track activeClients: { agentId: [], clientId: [] }[] = [];
+    @track activeClients: { agentId: []; clientId: [] }[] = [];
     @track jobs: RunningBenchmark[] = [];
 
     connectedCallback() {
@@ -77,7 +76,7 @@ export default class ViewDashboard extends LightningElement {
         });
     }
 
-    onConnectedAgent(newAgent: DashboardAgent ) {
+    onConnectedAgent(newAgent: DashboardAgent) {
         const { agentId } = newAgent;
         console.log(BEST_RPC.HUB_CONNECTED_AGENT, newAgent);
         if (!this.agents.find((agent) => agent.agentId === agentId)) {
@@ -93,7 +92,7 @@ export default class ViewDashboard extends LightningElement {
             this.agents.splice(index, 1);
         }
 
-        const jobIndex = this.jobs.findIndex(j => j.agentId === agentId);
+        const jobIndex = this.jobs.findIndex((j) => j.agentId === agentId);
         if (jobIndex > -1) {
             this.jobs.splice(jobIndex, 1);
         }
@@ -111,11 +110,10 @@ export default class ViewDashboard extends LightningElement {
         const pos = this.clients.findIndex((c: any) => c.id === clientId);
         this.clients.splice(pos, 1);
 
-        const jobIndex = this.jobs.findIndex(j => j.clientId === clientId);
+        const jobIndex = this.jobs.findIndex((j) => j.clientId === clientId);
         if (jobIndex > -1) {
             this.jobs.splice(jobIndex, 1);
         }
-
     }
     onQueuedClient(...args: any) {
         console.log(BEST_RPC.AGENT_QUEUED_CLIENT, args);
@@ -123,8 +121,8 @@ export default class ViewDashboard extends LightningElement {
 
     onBenchmarkStart(bStart: BenchmarkStartEnd) {
         console.log(BEST_RPC.BENCHMARK_START, bStart);
-        const agent = this.agents.find(a => a.agentId === bStart.agentId);
-        const client = this.clients.find(c => c.clientId === bStart.clientId);
+        const agent = this.agents.find((a) => a.agentId === bStart.agentId);
+        const client = this.clients.find((c) => c.clientId === bStart.clientId);
         if (agent && client) {
             this.setClientState('BUSY', client.clientId);
             this.setAgentState('BUSY', agent.agentId);
@@ -133,9 +131,9 @@ export default class ViewDashboard extends LightningElement {
 
     onBenchmarkEnd(bEnd: BenchmarkStartEnd) {
         console.log(BEST_RPC.BENCHMARK_END, bEnd);
-        const jobIndex = this.jobs.findIndex(j => j.benchmarkId === bEnd.benchmarkId);
-        const agent = this.agents.find(a => a.agentId === bEnd.agentId);
-        const client = this.clients.find(c => c.clientId === bEnd.clientId);
+        const jobIndex = this.jobs.findIndex((j) => j.benchmarkId === bEnd.benchmarkId);
+        const agent = this.agents.find((a) => a.agentId === bEnd.agentId);
+        const client = this.clients.find((c) => c.clientId === bEnd.clientId);
 
         if (agent && client) {
             this.setClientState('IDLE', client.clientId);
@@ -149,7 +147,7 @@ export default class ViewDashboard extends LightningElement {
 
     onBenchmarkUpdate(update: BenchmarkRemoteUpdate) {
         console.log(BEST_RPC.BENCHMARK_UPDATE, update);
-        const job = this.jobs.find(j => j.benchmarkId === update.benchmarkId);
+        const job = this.jobs.find((j) => j.benchmarkId === update.benchmarkId);
         if (!job) {
             this.jobs.push({
                 benchmarkId: update.benchmarkId,
@@ -159,9 +157,8 @@ export default class ViewDashboard extends LightningElement {
                 executedIterations: update.state.executedIterations,
                 iterations: update.opts.iterations,
                 maxDuration: update.opts.maxDuration,
-                minSampleCount: update.opts.minSampleCount
+                minSampleCount: update.opts.minSampleCount,
             });
-
         } else {
             job.executedTime = update.state.executedTime;
             job.executedIterations = update.state.executedIterations;
@@ -171,14 +168,14 @@ export default class ViewDashboard extends LightningElement {
     // STATE CHANGES
 
     setClientState(state: string, clientId: string) {
-        const client = this.clients.find(c => c.clientId === clientId);
+        const client = this.clients.find((c) => c.clientId === clientId);
         if (client) {
             client.state = state;
         }
     }
 
     setAgentState(state: string, agentId: string) {
-        const agent = this.agents.find(c => c.agentId === agentId);
+        const agent = this.agents.find((c) => c.agentId === agentId);
         if (agent) {
             agent.state = state;
         }

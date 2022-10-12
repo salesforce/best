@@ -12,7 +12,7 @@ import {
     FrozenGlobalConfig,
     RunnerStream,
     Interruption,
-    BenchmarkResultsSnapshot
+    BenchmarkResultsSnapshot,
 } from '@best/types';
 import AbstractRunner from '..';
 
@@ -45,23 +45,23 @@ jest.mock('express', () => {
 
         listen = jest.fn((callback: Function) => {
             Promise.resolve().then(callback as any);
-            return testCache.server = (testCache.server || new MockServer());
+            return (testCache.server = testCache.server || new MockServer());
         });
     }
 
     const testCache: {
-        server?: Server,
-        app?: Express,
+        server?: Server;
+        app?: Express;
         reset: () => void;
     } = {
         reset: () => {
             testCache.server = undefined;
             testCache.app = undefined;
-        }
+        },
     };
 
-    const express = () => testCache.app = (testCache.app || new MockExpress());
-    express.static = jest.fn(path => path);
+    const express = () => (testCache.app = testCache.app || new MockExpress());
+    express.static = jest.fn((path) => path);
     express.__test__ = testCache;
     return express;
 });
@@ -70,7 +70,7 @@ jest.mock('fs', () => {
     const fs = jest.requireActual('fs');
     return {
         ...fs,
-        existsSync: jest.fn(fs.existsSync)
+        existsSync: jest.fn(fs.existsSync),
     };
 });
 
@@ -81,7 +81,7 @@ class TestRunner extends AbstractRunner {
             projectConfig: FrozenProjectConfig,
             globalConfig: FrozenGlobalConfig,
             runnerLogStream: RunnerStream,
-            interruption?: Interruption
+            interruption?: Interruption,
         ): Promise<BenchmarkResultsSnapshot[]> => {
             for (const benchmarkInfo of benchmarkBuilds) {
                 const { benchmarkEntry, benchmarkRemoteEntry } = benchmarkInfo;
@@ -89,11 +89,11 @@ class TestRunner extends AbstractRunner {
             }
 
             return [];
-        }
+        },
     );
 }
 
-const { __test__ }: { __test__: TestCache } = (express as any);
+const { __test__ }: { __test__: TestCache } = express as any;
 
 beforeEach(() => __test__.reset());
 
@@ -110,30 +110,30 @@ describe('AbstractRunner', () => {
         });
 
         it('returns a file: URI if not using http', async () => {
-            const projectConfig: FrozenProjectConfig = <FrozenProjectConfig><Partial<FrozenProjectConfig>>{
+            const projectConfig: FrozenProjectConfig = <FrozenProjectConfig>(<Partial<FrozenProjectConfig>>{
                 projectName: 'test',
-                useHttp: false
-            };
+                useHttp: false,
+            });
             const result = await runner.initializeServer(benchmarkEntry, projectConfig);
             expect(result).toStrictEqual({ terminate: expect.any(Function), url: `file://${benchmarkEntry}` });
         });
 
         it('returns a http: URI when using http', async () => {
-            const projectConfig: FrozenProjectConfig = <FrozenProjectConfig><Partial<FrozenProjectConfig>>{
+            const projectConfig: FrozenProjectConfig = <FrozenProjectConfig>(<Partial<FrozenProjectConfig>>{
                 projectName: 'test',
-                useHttp: true
-            };
+                useHttp: true,
+            });
 
             const result = await runner.initializeServer(benchmarkEntry, projectConfig);
             expect(result).toStrictEqual({ terminate: expect.any(Function), url: `http://127.0.0.1:28080/testEntry` });
         });
 
         it('serves assets', async () => {
-            const projectConfig: FrozenProjectConfig = <FrozenProjectConfig><Partial<FrozenProjectConfig>>{
+            const projectConfig: FrozenProjectConfig = <FrozenProjectConfig>(<Partial<FrozenProjectConfig>>{
                 projectName: 'test',
                 useHttp: true,
-                assets: [{ path: assetPath }]
-            };
+                assets: [{ path: assetPath }],
+            });
 
             (existsSync as jest.Mock).mockReturnValue(true);
             const result = await runner.initializeServer(benchmarkEntry, projectConfig);
@@ -143,11 +143,11 @@ describe('AbstractRunner', () => {
         });
 
         it('serves aliased assets', async () => {
-            const projectConfig: FrozenProjectConfig = <FrozenProjectConfig><Partial<FrozenProjectConfig>>{
+            const projectConfig: FrozenProjectConfig = <FrozenProjectConfig>(<Partial<FrozenProjectConfig>>{
                 projectName: 'test',
                 useHttp: true,
-                assets: [{ alias: 'testAlias', path: assetPath }]
-            };
+                assets: [{ alias: 'testAlias', path: assetPath }],
+            });
 
             (existsSync as jest.Mock).mockReturnValue(true);
             const result = await runner.initializeServer(benchmarkEntry, projectConfig);
@@ -157,28 +157,28 @@ describe('AbstractRunner', () => {
         });
 
         it('throws an error for invalid asset paths', async () => {
-            const projectConfig: FrozenProjectConfig = <FrozenProjectConfig><Partial<FrozenProjectConfig>>{
+            const projectConfig: FrozenProjectConfig = <FrozenProjectConfig>(<Partial<FrozenProjectConfig>>{
                 projectName: 'test',
                 useHttp: true,
-                assets: [{}]
-            };
+                assets: [{}],
+            });
 
-            expect(
-                () => runner.initializeServer(benchmarkEntry, projectConfig)
-            ).rejects.toThrowError(`Invalid asset path: '${undefined}'`);
+            expect(() => runner.initializeServer(benchmarkEntry, projectConfig)).rejects.toThrowError(
+                `Invalid asset path: '${undefined}'`,
+            );
         });
 
         it('throws an error for missing asset paths', async () => {
             const path = '/path/does/not/exist';
-            const projectConfig: FrozenProjectConfig = <FrozenProjectConfig><Partial<FrozenProjectConfig>>{
+            const projectConfig: FrozenProjectConfig = <FrozenProjectConfig>(<Partial<FrozenProjectConfig>>{
                 projectName: 'test',
                 useHttp: true,
-                assets: [{ path }]
-            };
+                assets: [{ path }],
+            });
 
-            expect(
-                () => runner.initializeServer(benchmarkEntry, projectConfig)
-            ).rejects.toThrowError(`Invalid asset path: '${path}'`);
+            expect(() => runner.initializeServer(benchmarkEntry, projectConfig)).rejects.toThrowError(
+                `Invalid asset path: '${path}'`,
+            );
         });
     });
 });

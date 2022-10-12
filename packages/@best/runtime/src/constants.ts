@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 const BEFORE_ALL = 'beforeAll';
 const BEFORE = 'before';
@@ -22,8 +22,8 @@ export const HOOKS = {
 };
 export const RUN_BENCHMARK = 'run_benchmark';
 
-export const PRIMITIVE_NODE_TYPES: { [key:string]: NodeTypes } = {
-    GROUP: "group",
-    BENCHMARK: "benchmark",
-    RUN: "run"
+export const PRIMITIVE_NODE_TYPES: { [key: string]: NodeTypes } = {
+    GROUP: 'group',
+    BENCHMARK: 'benchmark',
+    RUN: 'run',
 };

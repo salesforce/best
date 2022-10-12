@@ -25,11 +25,11 @@
     margin: 0 10px;
 }
 
-.container[data-first="true"] .graph-wrapper {
+.container[data-first='true'] .graph-wrapper {
     height: 460px;
 }
 
-.container[data-first="false"] .graph-wrapper {
+.container[data-first='false'] .graph-wrapper {
     height: 400px;
 }
 
@@ -38,164 +38,167 @@
  * restricts this css from applying to our graphs.
 */
 
-.js-plotly-plot .plotly, .js-plotly-plot .plotly div {
-    margin:0;
-    padding:0;
+.js-plotly-plot .plotly,
+.js-plotly-plot .plotly div {
+    margin: 0;
+    padding: 0;
 }
 
 .js-plotly-plot .plotly .crisp {
-    shape-rendering:crispEdges;
+    shape-rendering: crispEdges;
 }
 
 .js-plotly-plot .plotly .user-select-none {
-    -webkit-user-select:none;
-    -moz-user-select:none;
-    -ms-user-select:none;
-    -o-user-select:none;
-    user-select:none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 .js-plotly-plot .plotly svg {
-    overflow:hidden;
+    overflow: hidden;
 }
 
 .js-plotly-plot .plotly svg a {
-    fill:#447adb;
+    fill: #447adb;
 }
 
 .js-plotly-plot .plotly svg a:hover {
-    fill:#3c6dc5;
+    fill: #3c6dc5;
 }
 
 .js-plotly-plot .plotly .main-svg {
-    position:absolute;
-    top:0;
-    left:0;
-    pointer-events:none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
 }
 
 .js-plotly-plot .plotly .main-svg .draglayer {
-    pointer-events:all;
+    pointer-events: all;
 }
 
 .js-plotly-plot .plotly .cursor-default {
-    cursor:default;
+    cursor: default;
 }
 
 .js-plotly-plot .plotly .cursor-pointer {
-    cursor:pointer;
+    cursor: pointer;
 }
 
 .js-plotly-plot .plotly .cursor-crosshair {
-    cursor:crosshair;
+    cursor: crosshair;
 }
 
 .js-plotly-plot .plotly .cursor-move {
-    cursor:move;
+    cursor: move;
 }
 
 .js-plotly-plot .plotly .cursor-col-resize {
-    cursor:col-resize;
+    cursor: col-resize;
 }
 
 .js-plotly-plot .plotly .cursor-row-resize {
-    cursor:row-resize;
+    cursor: row-resize;
 }
 
 .js-plotly-plot .plotly .cursor-ns-resize {
-    cursor:ns-resize;
+    cursor: ns-resize;
 }
 
 .js-plotly-plot .plotly .cursor-ew-resize {
-    cursor:ew-resize;
+    cursor: ew-resize;
 }
 
 .js-plotly-plot .plotly .cursor-sw-resize {
-    cursor:sw-resize;
+    cursor: sw-resize;
 }
 
 .js-plotly-plot .plotly .cursor-s-resize {
-    cursor:s-resize;
+    cursor: s-resize;
 }
 
 .js-plotly-plot .plotly .cursor-se-resize {
-    cursor:se-resize;
+    cursor: se-resize;
 }
 
 .js-plotly-plot .plotly .cursor-w-resize {
-    cursor:w-resize;
+    cursor: w-resize;
 }
 
 .js-plotly-plot .plotly .cursor-e-resize {
-    cursor:e-resize;
+    cursor: e-resize;
 }
 
 .js-plotly-plot .plotly .cursor-nw-resize {
-    cursor:nw-resize;
+    cursor: nw-resize;
 }
 
 .js-plotly-plot .plotly .cursor-n-resize {
-    cursor:n-resize;
+    cursor: n-resize;
 }
 
 .js-plotly-plot .plotly .cursor-ne-resize {
-    cursor:ne-resize;
+    cursor: ne-resize;
 }
 
-.js-plotly-plot .plotly [data-title]:before,.js-plotly-plot .plotly [data-title]:after {
-    position:absolute;
-    -webkit-transform:translate3d(0, 0, 0);
-    -moz-transform:translate3d(0, 0, 0);
-    -ms-transform:translate3d(0, 0, 0);
-    -o-transform:translate3d(0, 0, 0);
-    transform:translate3d(0, 0, 0);
-    display:none;
-    opacity:0;
-    z-index:1001;
-    pointer-events:none;
-    top:110%;
-    right:50%;
+.js-plotly-plot .plotly [data-title]:before,
+.js-plotly-plot .plotly [data-title]:after {
+    position: absolute;
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    -ms-transform: translate3d(0, 0, 0);
+    -o-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    display: none;
+    opacity: 0;
+    z-index: 1001;
+    pointer-events: none;
+    top: 110%;
+    right: 50%;
 }
 
-.js-plotly-plot .plotly [data-title]:hover:before,.js-plotly-plot .plotly [data-title]:hover:after {
-    display:block;
-    opacity:1;
+.js-plotly-plot .plotly [data-title]:hover:before,
+.js-plotly-plot .plotly [data-title]:hover:after {
+    display: block;
+    opacity: 1;
 }
 
 .js-plotly-plot .plotly [data-title]:before {
-    content:'';
-    position:absolute;
-    background:transparent;
-    border:6px solid transparent;
-    z-index:1002;
-    margin-top:-12px;
-    border-bottom-color:#69738a;
-    margin-right:-6px;
+    content: '';
+    position: absolute;
+    background: transparent;
+    border: 6px solid transparent;
+    z-index: 1002;
+    margin-top: -12px;
+    border-bottom-color: #69738a;
+    margin-right: -6px;
 }
 
 .js-plotly-plot .plotly [data-title]:after {
-    content:attr(data-title);
-    background:#69738a;
-    color:white;
-    padding:8px 10px;
-    font-size:12px;
-    line-height:12px;
-    white-space:nowrap;
-    margin-right:-18px;
-    border-radius:2px;
+    content: attr(data-title);
+    background: #69738a;
+    color: white;
+    padding: 8px 10px;
+    font-size: 12px;
+    line-height: 12px;
+    white-space: nowrap;
+    margin-right: -18px;
+    border-radius: 2px;
 }
 
 .js-plotly-plot .plotly .select-outline {
-    fill:none;
-    stroke-width:1;
-    shape-rendering:crispEdges;
+    fill: none;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
 }
 
 .js-plotly-plot .plotly .select-outline-1 {
-    stroke:white;
+    stroke: white;
 }
 
 .js-plotly-plot .plotly .select-outline-2 {
-    stroke:black;
-    stroke-dasharray:2px 2px;
+    stroke: black;
+    stroke-dasharray: 2px 2px;
 }

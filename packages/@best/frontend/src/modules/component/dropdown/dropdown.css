@@ -26,19 +26,20 @@
     z-index: 5;
     width: calc(100% - 2px);
     position: absolute;
-    
+
     margin-top: -1px;
 
     border-radius: 0 0 3px 3px;
-    
+
     border: 1px solid #8c8c8c;
     background: #fff;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    
+
     overflow: scroll;
 }
 
-.selected-item, .item {
+.selected-item,
+.item {
     cursor: pointer;
 }
 

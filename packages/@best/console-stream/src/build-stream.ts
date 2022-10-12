@@ -3,18 +3,18 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
-import path from "path";
-import { isInteractive as globaIsInteractive } from "@best/utils";
-import chalk from "chalk";
-import trimPath from "./utils/trim-path";
-import countEOL from "./utils/count-eod";
-import { ProxiedStream, proxyStream } from "./utils/proxy-stream";
+import path from 'path';
+import { isInteractive as globaIsInteractive } from '@best/utils';
+import chalk from 'chalk';
+import trimPath from './utils/trim-path';
+import countEOL from './utils/count-eod';
+import { ProxiedStream, proxyStream } from './utils/proxy-stream';
 
 interface ProjectBenchmarkTests {
-    config: { projectName: string; rootDir: string },
-    matches: string[]
+    config: { projectName: string; rootDir: string };
+    matches: string[];
 }
 type ListProjectBenchmarkTests = ProjectBenchmarkTests[];
 
@@ -24,13 +24,17 @@ enum State {
     DONE = 'DONE',
 }
 
-interface BenchmarkState { state: State; displayPath: string; projectName: string }
-type AllBencharkState = Map<string, BenchmarkState>
+interface BenchmarkState {
+    state: State;
+    displayPath: string;
+    projectName: string;
+}
+type AllBencharkState = Map<string, BenchmarkState>;
 
 const STATE_ANSI = {
     BUILDING: chalk.reset.inverse.yellow.bold(` ${State.BUILDING} `),
     QUEUED: chalk.reset.inverse.gray.bold(`  ${State.QUEUED}  `),
-    DONE: chalk.reset.inverse.green.bold(`   ${State.DONE}   `)
+    DONE: chalk.reset.inverse.green.bold(`   ${State.DONE}   `),
 };
 
 const INIT_MSG = '\n Building benchmarks... \n\n';
@@ -68,16 +72,19 @@ export default class BuildOutputStream {
     }
 
     initState(buildConfig: ListProjectBenchmarkTests) {
-        return buildConfig.reduce((state: AllBencharkState, { matches,  config: { rootDir, projectName } }: ProjectBenchmarkTests) => {
-            matches.forEach((benchmarkAbsPath) => {
-                state.set(benchmarkAbsPath, {
-                    projectName,
-                    state: State.QUEUED,
-                    displayPath: path.relative(rootDir, benchmarkAbsPath),
+        return buildConfig.reduce(
+            (state: AllBencharkState, { matches, config: { rootDir, projectName } }: ProjectBenchmarkTests) => {
+                matches.forEach((benchmarkAbsPath) => {
+                    state.set(benchmarkAbsPath, {
+                        projectName,
+                        state: State.QUEUED,
+                        displayPath: path.relative(rootDir, benchmarkAbsPath),
+                    });
                 });
-            });
-            return state;
-        }, new Map());
+                return state;
+            },
+            new Map(),
+        );
     }
 
     clearBufferStream() {
@@ -131,14 +138,17 @@ export default class BuildOutputStream {
         }
     }
 
-    printBenchmark({ state, projectName, displayPath }:{ state: State, projectName: string, displayPath: string }, streamProxyBuffer?: string) {
+    printBenchmark(
+        { state, projectName, displayPath }: { state: State; projectName: string; displayPath: string },
+        streamProxyBuffer?: string,
+    ) {
         const columns = this.stdoutColumns;
         const overflow = columns - (state.length + projectName.length + displayPath.length + /* for padding */ 14);
         const hasOverflow = overflow < 0;
 
         const ansiState = printState(state);
         const ansiProjectName = printProjectName(projectName);
-        const ansiDisplayname = printDisplayName(displayPath, hasOverflow ? Math.abs(overflow): 0);
+        const ansiDisplayname = printDisplayName(displayPath, hasOverflow ? Math.abs(overflow) : 0);
         const proxiedBuffer = streamProxyBuffer ? `Buffered console logs:\n ${streamProxyBuffer}` : '';
         return `${ansiState} ${ansiProjectName} ${ansiDisplayname}\n${proxiedBuffer}`;
     }

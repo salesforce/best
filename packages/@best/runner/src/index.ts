@@ -3,24 +3,35 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
-import { BuildConfig, BenchmarkResultsSnapshot, RunnerStream, BrowserSpec, BenchmarksBundle, Interruption } from "@best/types";
-import AbstractRunner from "@best/runner-abstract";
-import { matchSpecs } from "@best/utils";
+import {
+    BuildConfig,
+    BenchmarkResultsSnapshot,
+    RunnerStream,
+    BrowserSpec,
+    BenchmarksBundle,
+    Interruption,
+} from '@best/types';
+import AbstractRunner from '@best/runner-abstract';
+import { matchSpecs } from '@best/utils';
 
 interface ConcreteRunner extends AbstractRunner {
-    new(config?: any): ConcreteRunner;
-    getBrowserSpecs(): Promise<BrowserSpec[]>
+    new (config?: any): ConcreteRunner;
+    getBrowserSpecs(): Promise<BrowserSpec[]>;
     isRemote: boolean;
 }
 
-async function runBenchmarksBundle(benchmarkBuild: BenchmarksBundle, runnerLogStream: RunnerStream, interruption?: Interruption): Promise<BenchmarkResultsSnapshot[]> {
+async function runBenchmarksBundle(
+    benchmarkBuild: BenchmarksBundle,
+    runnerLogStream: RunnerStream,
+    interruption?: Interruption,
+): Promise<BenchmarkResultsSnapshot[]> {
     const { projectConfig, globalConfig, benchmarkBuilds } = benchmarkBuild;
     const { benchmarkRunner, benchmarkRunnerConfig } = projectConfig;
 
     if (!benchmarkRunnerConfig.specs) {
-        throw new Error('You must provide specifications for the runner in your best config.')
+        throw new Error('You must provide specifications for the runner in your best config.');
     }
 
     const RunnerCtor = loadRunnerModule(benchmarkRunner);
@@ -30,7 +41,9 @@ async function runBenchmarksBundle(benchmarkBuild: BenchmarksBundle, runnerLogSt
     if (!RunnerCtor.isRemote) {
         const runnerSpecs = await RunnerCtor.getBrowserSpecs();
         if (!matchSpecs(benchmarkRunnerConfig.specs, runnerSpecs)) {
-            throw new Error(`Specs: ${JSON.stringify(benchmarkRunnerConfig.specs)} do not match any avaible on the runner`);
+            throw new Error(
+                `Specs: ${JSON.stringify(benchmarkRunnerConfig.specs)} do not match any avaible on the runner`,
+            );
         }
     }
 
@@ -47,7 +60,11 @@ function loadRunnerModule(benchmarkRunner: string): ConcreteRunner {
     }
 }
 
-export async function runBenchmarks(benchmarksBuilds: BenchmarksBundle[], messager: RunnerStream, interruption?: Interruption): Promise<BenchmarkResultsSnapshot[]> {
+export async function runBenchmarks(
+    benchmarksBuilds: BenchmarksBundle[],
+    messager: RunnerStream,
+    interruption?: Interruption,
+): Promise<BenchmarkResultsSnapshot[]> {
     const results = [];
 
     for (const benchmarkBundle of benchmarksBuilds) {
@@ -59,7 +76,7 @@ export async function runBenchmarks(benchmarksBuilds: BenchmarksBundle[], messag
 }
 
 export async function getBrowserSpecs(runner: string | BuildConfig): Promise<BrowserSpec[]> {
-    const benchmarkRunner = typeof runner === 'string' ? runner: runner.projectConfig.benchmarkRunner;
+    const benchmarkRunner = typeof runner === 'string' ? runner : runner.projectConfig.benchmarkRunner;
     const RunnerModule: ConcreteRunner = loadRunnerModule(benchmarkRunner);
     return RunnerModule.getBrowserSpecs();
 }

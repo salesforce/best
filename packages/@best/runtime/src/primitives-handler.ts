@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import { makeDescribe, makeBenchmark, makeBenchmarkRun } from './utils/primitives-nodes';
 
@@ -34,11 +34,9 @@ const handler = (event: PrimitiveNode, state: BenchmarkState) => {
                 throw new Error(`"currentDescribeBlock" has to be there since we're finishing its definition.`);
             }
 
-            if (currentDescribeBlock.type === "benchmark" && !currentDescribeBlock.run) {
+            if (currentDescribeBlock.type === 'benchmark' && !currentDescribeBlock.run) {
                 throw new Error(
-                    `Benchmark "${
-                        currentDescribeBlock.name
-                    }" must have a 'run()' function or contain benchmarks inside.`,
+                    `Benchmark "${currentDescribeBlock.name}" must have a 'run()' function or contain benchmarks inside.`,
                 );
             }
 

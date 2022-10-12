@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import path from 'path';
 import micromatch from 'micromatch';
@@ -11,15 +11,15 @@ import fg from 'fast-glob';
 
 import { buildBenchmarks } from '@best/builder';
 import { runBenchmarks } from '@best/runner';
-import { BuildOutputStream, RunnerOutputStream } from "@best/console-stream";
+import { BuildOutputStream, RunnerOutputStream } from '@best/console-stream';
 import { storeBenchmarkResults } from '@best/store';
 import { saveBenchmarkSummaryInDB } from '@best/api-db';
 import { analyzeBenchmarks } from '@best/analyzer';
-import { FrozenGlobalConfig, FrozenProjectConfig, BenchmarksBundle } from "@best/types";
+import { FrozenGlobalConfig, FrozenProjectConfig, BenchmarksBundle } from '@best/types';
 
 async function getBenchmarkPaths(config: FrozenProjectConfig): Promise<string[]> {
     const { testMatch, testPathIgnorePatterns, rootDir: cwd } = config;
-    const ignore = [ ...testPathIgnorePatterns];
+    const ignore = [...testPathIgnorePatterns];
     const results = await fg(testMatch, { onlyFiles: true, ignore, cwd });
     return results.map((benchPath: string) => path.resolve(cwd, benchPath));
 }
@@ -55,16 +55,25 @@ function validateBenchmarkNames(matches: string[]) {
     }, new Set());
 }
 
-async function getBenchmarkTests(projectConfigs: FrozenProjectConfig[], globalConfig: FrozenGlobalConfig): Promise<{ config: FrozenProjectConfig, matches: string[] }[]> {
-    return Promise.all(projectConfigs.map(async (projectConfig: FrozenProjectConfig) => {
-        const allBenchmarks = await getBenchmarkPaths(projectConfig);
-        const filteredBenchmarks = filterBenchmarks(allBenchmarks, globalConfig.nonFlagArgs);
-        validateBenchmarkNames(filteredBenchmarks);
-        return { config: projectConfig, matches: filteredBenchmarks };
-    }));
+async function getBenchmarkTests(
+    projectConfigs: FrozenProjectConfig[],
+    globalConfig: FrozenGlobalConfig,
+): Promise<{ config: FrozenProjectConfig; matches: string[] }[]> {
+    return Promise.all(
+        projectConfigs.map(async (projectConfig: FrozenProjectConfig) => {
+            const allBenchmarks = await getBenchmarkPaths(projectConfig);
+            const filteredBenchmarks = filterBenchmarks(allBenchmarks, globalConfig.nonFlagArgs);
+            validateBenchmarkNames(filteredBenchmarks);
+            return { config: projectConfig, matches: filteredBenchmarks };
+        }),
+    );
 }
 
-async function buildBundleBenchmarks(benchmarksTests: { config: FrozenProjectConfig; matches: string[] }[], globalConfig: FrozenGlobalConfig, messager: BuildOutputStream): Promise<BenchmarksBundle[]> {
+async function buildBundleBenchmarks(
+    benchmarksTests: { config: FrozenProjectConfig; matches: string[] }[],
+    globalConfig: FrozenGlobalConfig,
+    messager: BuildOutputStream,
+): Promise<BenchmarksBundle[]> {
     const benchmarkBuilds: BenchmarksBundle[] = [];
     // We wait for each project to run before starting the next batch
     for (const benchmarkTest of benchmarksTests) {
@@ -75,18 +84,22 @@ async function buildBundleBenchmarks(benchmarksTests: { config: FrozenProjectCon
             projectName: config.projectName,
             projectConfig: config,
             globalConfig,
-            benchmarkBuilds: result
+            benchmarkBuilds: result,
         });
     }
 
     return benchmarkBuilds;
 }
 
-function hasMatches(benchmarksTests: { config: FrozenProjectConfig, matches: string[] }[]) {
+function hasMatches(benchmarksTests: { config: FrozenProjectConfig; matches: string[] }[]) {
     return benchmarksTests.some(({ matches }) => matches.length);
 }
 
-export async function runBest(globalConfig: FrozenGlobalConfig, configs: FrozenProjectConfig[], outputStream: NodeJS.WriteStream) {
+export async function runBest(
+    globalConfig: FrozenGlobalConfig,
+    configs: FrozenProjectConfig[],
+    outputStream: NodeJS.WriteStream,
+) {
     const benchmarksTests = await getBenchmarkTests(configs, globalConfig);
 
     if (!hasMatches(benchmarksTests)) {

@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import AWS from 'aws-sdk';
 import path from 'path';
@@ -23,7 +23,7 @@ export class S3 {
     bucket: string;
     host: string;
     version: string;
-    constructor({ bucket, version }: { bucket?: string, version?: string } = {}) {
+    constructor({ bucket, version }: { bucket?: string; version?: string } = {}) {
         const bucketName = bucket || process.env.AWS_BUCKET_NAME;
 
         if (bucketName === undefined) {
@@ -39,7 +39,7 @@ export class S3 {
     async getBenchmarkUrlsForCommit(projectName: string, searchCommit: string) {
         console.log(AWS_TEXT, `Resolving objects for commit ${searchCommit}...`);
         const benchmarks = await this.getObjectsInFolder(projectName, BENCHMARKS, searchCommit);
-        return benchmarks.map(bm => this.getBenchmarkStatsUrl(projectName, searchCommit, bm));
+        return benchmarks.map((bm) => this.getBenchmarkStatsUrl(projectName, searchCommit, bm));
     }
 
     getBenchmarkStatsUrl(projectName: string, searchCommit: string, benchmark: string) {
@@ -58,7 +58,7 @@ export class S3 {
         return this.getObjectsInFolder(projectName, BRANCHES, branchName);
     }
 
-    listBenchmarks(projectName:string, commit: string) {
+    listBenchmarks(projectName: string, commit: string) {
         return this.getObjectsInFolder(projectName, BENCHMARKS, commit);
     }
 
@@ -75,7 +75,7 @@ export class S3 {
                     return reject(err);
                 }
 
-                const branches = data.CommonPrefixes!.map(p => {
+                const branches = data.CommonPrefixes!.map((p) => {
                     const parts = p.Prefix!.split('/');
                     return parts[parts.length - 2];
                 });
@@ -126,7 +126,11 @@ export class S3 {
         });
     }
 
-    storeBenchmarkFile(relativePath: string, body: string | Buffer, { projectName, commit, benchmarkName }: { projectName: string, commit: string, benchmarkName: string }) {
+    storeBenchmarkFile(
+        relativePath: string,
+        body: string | Buffer,
+        { projectName, commit, benchmarkName }: { projectName: string; commit: string; benchmarkName: string },
+    ) {
         const url = path.join(PREFIX, projectName, BENCHMARKS, commit, benchmarkName, relativePath);
         const s3 = this.s3;
         const bucket = this.bucket;

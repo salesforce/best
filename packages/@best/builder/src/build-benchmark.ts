@@ -3,13 +3,13 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import fs from 'fs';
 import { rollup, OutputOptions } from 'rollup';
 import path from 'path';
 import crypto from 'crypto';
-import mkdirp from "mkdirp";
+import mkdirp from 'mkdirp';
 import benchmarkRollup from './rollup-plugin-benchmark-import';
 import generateHtml from './html-templating';
 import { FrozenGlobalConfig, FrozenProjectConfig, ProjectConfigPlugin, BuildConfig } from '@best/types';
@@ -44,10 +44,20 @@ interface BuildOutputMessager {
     log(message: string): void;
 }
 
-export async function buildBenchmark(entry: string, projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig, buildLogStream: BuildOutputMessager): Promise<BuildConfig> {
+export async function buildBenchmark(
+    entry: string,
+    projectConfig: FrozenProjectConfig,
+    globalConfig: FrozenGlobalConfig,
+    buildLogStream: BuildOutputMessager,
+): Promise<BuildConfig> {
     buildLogStream.onBenchmarkBuildStart(entry);
 
-    const { gitInfo: { lastCommit: { hash: gitHash }, localChanges } } = globalConfig;
+    const {
+        gitInfo: {
+            lastCommit: { hash: gitHash },
+            localChanges,
+        },
+    } = globalConfig;
     const { projectName, benchmarkOutput } = projectConfig;
     const ext = path.extname(entry);
     const benchmarkName = path.basename(entry, ext);
@@ -59,7 +69,9 @@ export async function buildBenchmark(entry: string, projectConfig: FrozenProject
         input: entry,
         plugins: [benchmarkRollup(), ...addResolverPlugins(projectConfig.plugins)],
         cache: ROLLUP_CACHE.get(projectName),
-        manualChunks: function () { /* guarantee one chunk */ return 'main_chunk'; },
+        manualChunks: function () {
+            /* guarantee one chunk */ return 'main_chunk';
+        },
         onwarn(warning, warn) {
             // Make compilation fail, if any bare module can't be resolved.
             if (typeof warning === 'object' && warning.code === 'UNRESOLVED_IMPORT') {
@@ -67,7 +79,7 @@ export async function buildBenchmark(entry: string, projectConfig: FrozenProject
             }
 
             warn(warning);
-        }
+        },
     });
     ROLLUP_CACHE.set(projectName, bundle.cache);
 
@@ -77,7 +89,9 @@ export async function buildBenchmark(entry: string, projectConfig: FrozenProject
 
     // Benchmark artifacts vars
     const benchmarkSignature = md5(benchmarkSource);
-    const benchmarkSnapshotName = localChanges ? `${benchmarkName}_local_${benchmarkSignature.slice(0, 10)}` : `${benchmarkName}_${gitHash}`;
+    const benchmarkSnapshotName = localChanges
+        ? `${benchmarkName}_local_${benchmarkSignature.slice(0, 10)}`
+        : `${benchmarkName}_${gitHash}`;
     const benchmarkFolder = path.join(benchmarkProjectFolder, benchmarkSnapshotName);
     const benchmarkArtifactsFolder = path.join(benchmarkFolder, 'artifacts');
     const benchmarkEntry = path.join(benchmarkArtifactsFolder, `${benchmarkName}.html`);

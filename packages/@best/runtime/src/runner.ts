@@ -3,16 +3,22 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import { getBenchmarkRootNode } from './state';
 import { runBenchmarkIteration } from './run_iteration';
 import { normalizeResults } from './results';
-import { validateState } from "./utils/validate";
-import { BenchmarkResultNode, ResultNodeTypes, BenchmarkResults, BenchmarkResultBenchmarkNode, BenchmarkResultGroupNode } from "@best/types";
+import { validateState } from './utils/validate';
+import {
+    BenchmarkResultNode,
+    ResultNodeTypes,
+    BenchmarkResults,
+    BenchmarkResultBenchmarkNode,
+    BenchmarkResultGroupNode,
+} from '@best/types';
 
 function collectNodeResults(node: RuntimeNode): BenchmarkResultNode {
-    const { name, aggregate, startedAt, run, children  } = node;
+    const { name, aggregate, startedAt, run, children } = node;
     const type = node.type as ResultNodeTypes;
     const resultNode = { type, name, aggregate, startedAt };
 
@@ -23,7 +29,7 @@ function collectNodeResults(node: RuntimeNode): BenchmarkResultNode {
         (resultNode as BenchmarkResultGroupNode).nodes = children.map((c: RuntimeNode) => collectNodeResults(c));
     }
 
-    return (resultNode as BenchmarkResultNode);
+    return resultNode as BenchmarkResultNode;
 }
 
 async function runIterations(config: BenchmarkState): Promise<BenchmarkState> {

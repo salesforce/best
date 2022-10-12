@@ -3,10 +3,10 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import { loadDbFromConfig, Project, Snapshot, ApiDBAdapter } from '@best/api-db';
-import { MockerOptions } from './mocker'
+import { MockerOptions } from './mocker';
 
 interface MockedSnapshotProject {
     [timing: string]: Snapshot[];
@@ -28,18 +28,24 @@ const timeFromQuery = (project: { lastReleaseDate: string }, timing: string): Da
     }
 
     return undefined;
-}
+};
 
-const buildProject = async (options: MockerOptions, db: ApiDBAdapter, proj: Project): Promise<MockedSnapshotProject> => {
+const buildProject = async (
+    options: MockerOptions,
+    db: ApiDBAdapter,
+    proj: Project,
+): Promise<MockedSnapshotProject> => {
     return options.timingOptions.reduce(async (acc, timing): Promise<MockedSnapshotProject> => {
         return {
-            ...await acc,
-            [timing]: await db.fetchSnapshots(proj.id, timeFromQuery(proj, timing))
-        }
-    }, {})
-}
+            ...(await acc),
+            [timing]: await db.fetchSnapshots(proj.id, timeFromQuery(proj, timing)),
+        };
+    }, {});
+};
 
-export const buildMockedDataFromApi = async (options: MockerOptions): Promise<{
+export const buildMockedDataFromApi = async (
+    options: MockerOptions,
+): Promise<{
     projects: Project[];
     snapshots: MockedSnapshots;
 } | null> => {
@@ -52,10 +58,10 @@ export const buildMockedDataFromApi = async (options: MockerOptions): Promise<{
 
     const snapshots: MockedSnapshots = await projects.reduce(async (acc, proj): Promise<MockedSnapshots> => {
         return {
-            ...await acc,
-            [proj.id]: await buildProject(options, db, proj)
-        }
-    }, {})
+            ...(await acc),
+            [proj.id]: await buildProject(options, db, proj),
+        };
+    }, {});
 
-    return { projects, snapshots }
-}
+    return { projects, snapshots };
+};

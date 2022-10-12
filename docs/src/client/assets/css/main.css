@@ -11,7 +11,7 @@
     --primary-color-blue: #02a0e0;
     --primary-color-darkblue: #16325c;
     --primary-color-blue-highlight: #def1fa;
-    --hero-background-gradient: linear-gradient(#5100B9, #0032B1);
+    --hero-background-gradient: linear-gradient(#5100b9, #0032b1);
     --spotlight-bg: #ffffff;
     --sidebar-width: 250px;
     --sidebar-width-full: 300px;
@@ -24,7 +24,7 @@
 
     /* button colors */
     --button-color: rgb(42, 48, 73);
-    --button-color-bg: #C2CAE8;
+    --button-color-bg: #c2cae8;
 
     /* alert colors */
     --important-border: #e0002e;
@@ -53,8 +53,8 @@ body {
 }
 
 html {
-    font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial,
-        'Lucida Grande', sans-serif;
+    font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande',
+        sans-serif;
     font-weight: 300;
     font-size: 16px;
     line-height: 1.6;
@@ -614,7 +614,8 @@ section.hero {
     flex-wrap: nowrap;
 }
 
-.hero .title, .hero .subtitle {
+.hero .title,
+.hero .subtitle {
     color: #ffffff;
 }
 
@@ -759,7 +760,7 @@ h3.benefitsHeading {
         display: flex;
         justify-content: space-between;
     }
-    
+
     .home .learn {
         max-width: 600px;
     }
@@ -777,7 +778,7 @@ h3.benefitsHeading {
     .home .feature:nth-child(even) .info {
         margin-left: 2rem;
     }
-    
+
     .home .feature:nth-child(odd) .info {
         margin-right: 2rem;
     }

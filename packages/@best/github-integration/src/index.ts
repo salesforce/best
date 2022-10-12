@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import { Octokit } from '@octokit/rest';
 import { isCI } from '@best/utils';
@@ -16,12 +16,14 @@ const PULL_REQUEST_URL = process.env.PULL_REQUEST;
 
 function calculateAverageChange(result: BenchmarkComparison) {
     const flattenedValues = result.comparisons.reduce((all, node): number[] => {
-        return [...all, ...generatePercentages(node)]
-    }, <number[]>[])
+        return [...all, ...generatePercentages(node)];
+    }, <number[]>[]);
 
-    if (flattenedValues.length === 0) { return 0; }
+    if (flattenedValues.length === 0) {
+        return 0;
+    }
 
-    const sum = flattenedValues.reduce((previous, current) => current += previous);
+    const sum = flattenedValues.reduce((previous, current) => (current += previous));
     const avg = sum / flattenedValues.length;
 
     return avg;
@@ -29,8 +31,12 @@ function calculateAverageChange(result: BenchmarkComparison) {
 
 export async function updateLatestRelease(projectNames: string[], globalConfig: FrozenGlobalConfig): Promise<boolean> {
     try {
-        const { gitInfo: { repo: { repo, owner } } } = globalConfig;
-        
+        const {
+            gitInfo: {
+                repo: { repo, owner },
+            },
+        } = globalConfig;
+
         const db = loadDbFromConfig(globalConfig);
 
         await db.migrate();
@@ -41,9 +47,11 @@ export async function updateLatestRelease(projectNames: string[], globalConfig: 
         const results = await gitHubInstallation.repos.listReleases({ repo, owner });
         if (results.data.length > 0) {
             const latestRelease = results.data[0];
-            await Promise.all(projectNames.map(async (name) => {
-                return db.updateLastRelease(name, latestRelease.created_at);
-            }))
+            await Promise.all(
+                projectNames.map(async (name) => {
+                    return db.updateLastRelease(name, latestRelease.created_at);
+                }),
+            );
         }
     } catch (err) {
         return false;
@@ -52,13 +60,18 @@ export async function updateLatestRelease(projectNames: string[], globalConfig: 
     return true;
 }
 
-export async function beginBenchmarkComparisonCheck(targetCommit: string, { gitInfo }: FrozenGlobalConfig): Promise<{ check?: Octokit.ChecksCreateResponse, gitHubInstallation?: Octokit }> {
+export async function beginBenchmarkComparisonCheck(
+    targetCommit: string,
+    { gitInfo }: FrozenGlobalConfig,
+): Promise<{ check?: Octokit.ChecksCreateResponse; gitHubInstallation?: Octokit }> {
     if (!isCI) {
         console.log('[NOT A CI] - The output will not be pushed.\n');
         return {};
     }
 
-    const { repo: { repo, owner } } = gitInfo;
+    const {
+        repo: { repo, owner },
+    } = gitInfo;
     const app = GithubApplicationFactory();
     const gitHubInstallation = await app.authenticateAsAppAndInstallation({ repo, owner });
 
@@ -67,17 +80,24 @@ export async function beginBenchmarkComparisonCheck(targetCommit: string, { gitI
         repo,
         name: 'best',
         head_sha: targetCommit,
-        status: 'in_progress'
-    })
+        status: 'in_progress',
+    });
 
-    const check = result.data
+    const check = result.data;
 
-    return { check, gitHubInstallation }
+    return { check, gitHubInstallation };
 }
 
-export async function failedBenchmarkComparisonCheck(gitHubInstallation: Octokit, check: Octokit.ChecksCreateResponse, error: string, globalConfig: FrozenGlobalConfig) {
-    const { repo: { repo, owner }  } = globalConfig.gitInfo;
-    const now = (new Date()).toISOString();
+export async function failedBenchmarkComparisonCheck(
+    gitHubInstallation: Octokit,
+    check: Octokit.ChecksCreateResponse,
+    error: string,
+    globalConfig: FrozenGlobalConfig,
+) {
+    const {
+        repo: { repo, owner },
+    } = globalConfig.gitInfo;
+    const now = new Date().toISOString();
     const failureComment = 'Best failed with the following error:\n\n```' + error + '```';
 
     await gitHubInstallation.checks.update({
@@ -88,16 +108,23 @@ export async function failedBenchmarkComparisonCheck(gitHubInstallation: Octokit
         conclusion: 'failure',
         output: {
             title: 'Best Performance',
-            summary: failureComment
-        }
-    })
+            summary: failureComment,
+        },
+    });
 }
 
-export async function completeBenchmarkComparisonCheck(gitHubInstallation: Octokit, check: Octokit.ChecksCreateResponse, comparison: BenchmarkComparison, globalConfig: FrozenGlobalConfig) {
-    const { repo: { repo, owner }  } = globalConfig.gitInfo;
+export async function completeBenchmarkComparisonCheck(
+    gitHubInstallation: Octokit,
+    check: Octokit.ChecksCreateResponse,
+    comparison: BenchmarkComparison,
+    globalConfig: FrozenGlobalConfig,
+) {
+    const {
+        repo: { repo, owner },
+    } = globalConfig.gitInfo;
     const comparisonComment = generateComparisonComment(comparison);
     const comparisonSummary = generateComparisonSummary(comparison, globalConfig.commentThreshold);
-    const now = (new Date()).toISOString();
+    const now = new Date().toISOString();
     const { baseCommit, targetCommit } = comparison;
 
     const summary = `Base commit: \`${baseCommit}\` | Target commit: \`${targetCommit}\`\n\n${comparisonSummary}`;
@@ -111,9 +138,9 @@ export async function completeBenchmarkComparisonCheck(gitHubInstallation: Octok
         output: {
             title: 'Best Summary',
             summary,
-            text: comparisonComment
-        }
-    })
+            text: comparisonComment,
+        },
+    });
 
     const averageChange = calculateAverageChange(comparison);
     const highThreshold = Math.abs(globalConfig.commentThreshold); // handle whether the threshold is positive or negative
@@ -127,9 +154,17 @@ export async function completeBenchmarkComparisonCheck(gitHubInstallation: Octok
 
         let comment: string;
         if (significantlyRegressed) {
-            comment = `# ⚠ Performance Regression\n\nBest has detected that there is a \`${Math.abs(averageChange).toFixed(1)}%\` performance regression across your benchmarks.\n\nPlease [click here](${check.html_url}) to see more details.`
+            comment = `# ⚠ Performance Regression\n\nBest has detected that there is a \`${Math.abs(
+                averageChange,
+            ).toFixed(1)}%\` performance regression across your benchmarks.\n\nPlease [click here](${
+                check.html_url
+            }) to see more details.`;
         } else {
-            comment = `# 🥳 Performance Improvement\n\nBest has detected that there is a \`${Math.abs(averageChange).toFixed(1)}%\` performance improvement across your benchmarks.\n\nPlease [click here](${check.html_url}) to see more details.`
+            comment = `# 🥳 Performance Improvement\n\nBest has detected that there is a \`${Math.abs(
+                averageChange,
+            ).toFixed(1)}%\` performance improvement across your benchmarks.\n\nPlease [click here](${
+                check.html_url
+            }) to see more details.`;
         }
 
         if (comparisonSummary.length) {
@@ -140,7 +175,7 @@ export async function completeBenchmarkComparisonCheck(gitHubInstallation: Octok
             owner,
             repo,
             issue_number: pullRequestId,
-            body: comment
+            body: comment,
         });
     }
 }

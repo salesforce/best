@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 export function sort(arr: number[]) {
     return [...arr].sort((a, b) => a - b);
@@ -22,7 +22,7 @@ export function mean(arr: number[]) {
 
 export function variance(arr: number[]) {
     const avg = mean(arr);
-    return mean(arr.map(v => (v - avg) ** 2));
+    return mean(arr.map((v) => (v - avg) ** 2));
 }
 
 export function median(arr: number[]) {
@@ -39,7 +39,7 @@ export function median(arr: number[]) {
 export function medianAbsoluteDeviation(arr: number[]) {
     const med = median(arr);
     if (med) {
-        return median(arr.map(x => Math.abs(x - med)));
+        return median(arr.map((x) => Math.abs(x - med)));
     } else {
         return 0;
     }
@@ -74,7 +74,7 @@ export function compare(sample1: number[], sample2: number[]) {
     }
 
     function getZ(n: number) {
-        return (n - (size1 * size2 / 2)) / Math.sqrt(size1 * size2 * (size1 + size2 + 1) / 12);
+        return (n - (size1 * size2) / 2) / Math.sqrt((size1 * size2 * (size1 + size2 + 1)) / 12);
     }
 
     if (size1 + size2 < 30) {

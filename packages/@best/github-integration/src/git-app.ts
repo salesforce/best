@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 // -- Modules & libs --------------------------------------------------------------------
 import fs from 'fs';
@@ -11,7 +11,7 @@ import https from 'https';
 import expandTilde from 'expand-tilde';
 import jwt from 'jsonwebtoken';
 import base64 from 'base-64';
-import {Octokit} from '@octokit/rest';
+import { Octokit } from '@octokit/rest';
 
 // -- Env & config ----------------------------------------------------------------------
 const GITHUB_USER_TOKEN = process.env.GIT_USER_TOKEN;
@@ -72,9 +72,12 @@ class GithubFactory {
     token?: string;
     gitOpts: Octokit.Options;
 
-    constructor({ applicationId, certificate, userToken }: Partial<GithubFactoryConfig>, gitClientOpts: Octokit.Options = {}) {
+    constructor(
+        { applicationId, certificate, userToken }: Partial<GithubFactoryConfig>,
+        gitClientOpts: Octokit.Options = {},
+    ) {
         if (!applicationId) {
-            throw new Error ('APP_ID is required');
+            throw new Error('APP_ID is required');
         }
 
         this.id = applicationId;
@@ -93,7 +96,7 @@ class GithubFactory {
         const token = generateJwt(id, cert);
         const github = new Octokit({
             ...gitOpts,
-            auth: `Bearer ${token}`
+            auth: `Bearer ${token}`,
         });
 
         return github;
@@ -101,13 +104,13 @@ class GithubFactory {
 
     async authenticateAsInstallation(installationId?: number, gitOpts = this.gitOpts) {
         if (!installationId) {
-            throw new Error ('installationId is required to authenticate as user');
+            throw new Error('installationId is required to authenticate as user');
         }
 
         const token = await this.createInstallationToken(installationId, gitOpts);
         const github = new Octokit({
             ...gitOpts,
-            auth: `token ${token}`
+            auth: `token ${token}`,
         });
 
         return github;
@@ -115,29 +118,33 @@ class GithubFactory {
 
     async createInstallationToken(installation_id: number, gitOpts = this.gitOpts) {
         if (!installation_id) {
-            throw new Error ('installation_id is required to authenticate as user');
+            throw new Error('installation_id is required to authenticate as user');
         }
 
         const github = await this.authenticateAsApplication(gitOpts);
         const response = await github.apps.createInstallationToken({
             installation_id,
         });
-        
+
         return response.data.token;
     }
 
-    async authenticateAsAppAndInstallation(git: { repo: string, owner: string }, gitOpts = this.gitOpts) {
+    async authenticateAsAppAndInstallation(git: { repo: string; owner: string }, gitOpts = this.gitOpts) {
         const gitAppAuth = await this.authenticateAsApplication();
-        
+
         const repoInstallation = await gitAppAuth.apps.getRepoInstallation(git);
         const installationId = repoInstallation.data.id;
-        
+
         return this.authenticateAsInstallation(installationId);
     }
 }
 
 export default function GithubApplicationFactory(
-    { applicationId , certificate, userToken }: Partial<GithubFactoryConfig> = { applicationId: GITHUB_APP_ID, certificate: GITHUB_APP_CERTIFICATE, userToken: GITHUB_USER_TOKEN },
+    { applicationId, certificate, userToken }: Partial<GithubFactoryConfig> = {
+        applicationId: GITHUB_APP_ID,
+        certificate: GITHUB_APP_CERTIFICATE,
+        userToken: GITHUB_USER_TOKEN,
+    },
     githubClientOptions: Octokit.Options = {},
 ) {
     const { baseUrl } = githubClientOptions;

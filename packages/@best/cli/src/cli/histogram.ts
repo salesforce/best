@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import chart from 'asciichart';
 import { min, max, quantile, sampleSkewness, sampleKurtosis } from 'simple-statistics';
@@ -32,7 +32,7 @@ export default class Histogram {
         const hi = quantile(samples, histogramQuantileRange[1]);
         const range = hi - lo;
         const increment = range / (histogramMaxWidth - 1);
-        const buckets: any = this.buckets = [];
+        const buckets: any = (this.buckets = []);
 
         // Calculate the histogram bucket index of a sample value.
         const getIndex = (value: number) => Math.floor((value - lo) / increment);
@@ -64,13 +64,17 @@ export default class Histogram {
         const plot = chart.plot(buckets, { height: Math.min(height, 12) });
         if (plot) {
             plot.split('\n')
-            .map((line: any) => {
-                const [n, rest] = line.split('.');
-                return gray(n.substr(4)) + rest.substr(2, 2) + blue(rest.substr(4));
-            })
-            .join('\n');
+                .map((line: any) => {
+                    const [n, rest] = line.split('.');
+                    return gray(n.substr(4)) + rest.substr(2, 2) + blue(rest.substr(4));
+                })
+                .join('\n');
 
-            return gray(`normalized: ${this.normalize}  skewness: ${this.skewness.toFixed(2)}  kurtosis: ${this.kurtosis.toFixed(2)}\n${plot}`);
+            return gray(
+                `normalized: ${this.normalize}  skewness: ${this.skewness.toFixed(
+                    2,
+                )}  kurtosis: ${this.kurtosis.toFixed(2)}\n${plot}`,
+            );
         }
     }
 }

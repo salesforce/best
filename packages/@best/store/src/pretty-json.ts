@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 // Taken from:
 // https://github.com/lydell/json-stringify-pretty-compact
@@ -16,7 +16,7 @@ const stringOrChar = /("(?:[^\\"]|\\.)*")|[:,]/g;
 const prettify = (string: string) => string.replace(stringOrChar, (match, str: string) => (str ? match : match + ' '));
 const comma = (array: any[], index: number) => (index === array.length - 1 ? 0 : 1);
 
-export function stringify(o:any = {}, { indent = 2, maxLength = 80, inlineArray = true } = {}) {
+export function stringify(o: any = {}, { indent = 2, maxLength = 80, inlineArray = true } = {}) {
     const indentString = JSON.stringify([1], null, indent).slice(2, -3);
     maxLength = indentString === '' ? Infinity : maxLength;
 

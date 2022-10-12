@@ -1,11 +1,12 @@
 :host {
-    position: -webkit-sticky; /* Safari */  
+    position: -webkit-sticky; /* Safari */
     position: sticky;
     top: 0;
     height: 100vh;
 }
 
-.brand h1, section {
+.brand h1,
+section {
     color: #ffffff;
 }
 

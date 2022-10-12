@@ -1,13 +1,13 @@
 button {
     position: relative;
     font: inherit;
-    
+
     border-radius: 3px;
 
     border: none;
     cursor: pointer;
     text-transform: uppercase;
-    transition: all .1s ease;
+    transition: all 0.1s ease;
     outline: none;
 }
 

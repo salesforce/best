@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 export default `<!DOCTYPE html>
 <html lang="en">
@@ -27,4 +27,4 @@ export default `<!DOCTYPE html>
     <body>
         <view-app></view-app>
     </body>
-</html>`
+</html>`;

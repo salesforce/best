@@ -3,14 +3,25 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import { resolveConfigPath, readConfigAndSetRootDir, ensureNoDuplicateConfigs } from './utils/resolve-config';
 import { getGitInfo } from './utils/git';
 import { normalizeConfig, normalizeRootDirPattern } from './utils/normalize';
-import { GitConfig, CliConfig, NormalizedConfig, FrozenProjectConfig, FrozenGlobalConfig, ProjectConfigs } from '@best/types';
+import {
+    GitConfig,
+    CliConfig,
+    NormalizedConfig,
+    FrozenProjectConfig,
+    FrozenGlobalConfig,
+    ProjectConfigs,
+} from '@best/types';
 
-function generateProjectConfigs(options: NormalizedConfig, isRoot: boolean, gitInfo?: GitConfig): { projectConfig: FrozenProjectConfig, globalConfig: FrozenGlobalConfig | undefined } {
+function generateProjectConfigs(
+    options: NormalizedConfig,
+    isRoot: boolean,
+    gitInfo?: GitConfig,
+): { projectConfig: FrozenProjectConfig; globalConfig: FrozenGlobalConfig | undefined } {
     let globalConfig: FrozenGlobalConfig | undefined;
 
     if (isRoot) {
@@ -60,13 +71,17 @@ function generateProjectConfigs(options: NormalizedConfig, isRoot: boolean, gitI
         benchmarkCustomAssets: normalizeRootDirPattern(options.benchmarkCustomAssets, options.rootDir),
         testMatch: options.testMatch,
         testPathIgnorePatterns: options.testPathIgnorePatterns,
-        samplesQuantileThreshold: options.samplesQuantileThreshold
+        samplesQuantileThreshold: options.samplesQuantileThreshold,
     });
 
     return { globalConfig, projectConfig };
 }
 
-export async function readConfig(cliOptions: CliConfig, packageRoot: string, parentConfigPath?: string): Promise<{ configPath: string, globalConfig?: FrozenGlobalConfig, projectConfig: FrozenProjectConfig }> {
+export async function readConfig(
+    cliOptions: CliConfig,
+    packageRoot: string,
+    parentConfigPath?: string,
+): Promise<{ configPath: string; globalConfig?: FrozenGlobalConfig; projectConfig: FrozenProjectConfig }> {
     const configPath = resolveConfigPath(packageRoot, process.cwd());
     const userConfig = readConfigAndSetRootDir(configPath);
     const options = normalizeConfig(userConfig, cliOptions);
@@ -119,7 +134,7 @@ export async function getConfigs(projectsFromCLIArgs: string[], cliOptions: CliC
     }
 
     if (projects.length > 1) {
-        const parsedConfigs = await Promise.all(projects.map(root => readConfig(cliOptions, root, configPath)));
+        const parsedConfigs = await Promise.all(projects.map((root) => readConfig(cliOptions, root, configPath)));
         ensureNoDuplicateConfigs(parsedConfigs, projects);
         configs = parsedConfigs.map(({ projectConfig }) => projectConfig);
     }

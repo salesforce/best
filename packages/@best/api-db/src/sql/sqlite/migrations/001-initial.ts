@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 export const up = `
 CREATE TABLE projects (
@@ -33,9 +33,9 @@ CREATE TABLE snapshots (
 CREATE UNIQUE INDEX snapshots_pkey ON snapshots(id);
 CREATE INDEX snapshots_project_id_index ON snapshots(project_id);
 CREATE UNIQUE INDEX best_snapshot_unqiue_index ON snapshots(project_id,"commit",name) WHERE temporary = false;
-`
+`;
 
 export const down = `
 DROP TABLE projects;
 DROP TABLE snapshots;
-`
+`;

@@ -3,9 +3,9 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
-import { ApiDBAdapter, TemporarySnapshot } from '../../types'
+import { ApiDBAdapter, TemporarySnapshot } from '../../types';
 import { ApiDatabaseConfig } from '@best/types';
 import https from 'https';
 import HttpsProxyAgent from 'https-proxy-agent';
@@ -15,7 +15,7 @@ import HttpsProxyAgent from 'https-proxy-agent';
  * It provides a way to save snapshots using a REST API provided by the frontend.
  */
 export default class FrontendRestDbAdapter extends ApiDBAdapter {
-    config: ApiDatabaseConfig
+    config: ApiDatabaseConfig;
 
     constructor(config: ApiDatabaseConfig) {
         super(config);
@@ -49,7 +49,7 @@ export default class FrontendRestDbAdapter extends ApiDBAdapter {
                 reject({ ok: false, error });
             });
 
-            req.write(payload)
+            req.write(payload);
             req.end();
         });
     }
@@ -61,9 +61,9 @@ export default class FrontendRestDbAdapter extends ApiDBAdapter {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.config.token}`
-            }
-        }
+                Authorization: `Bearer ${this.config.token}`,
+            },
+        };
 
         const response = await this.request(requestUrl, options, payload);
 

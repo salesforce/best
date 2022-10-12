@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 export const BEST_RPC = {
     CONNECT: 'connect',
@@ -36,5 +36,5 @@ export const BEST_RPC = {
     BENCHMARK_RESULTS: 'benchmark_results',
 
     REMOTE_CLIENT_UPLOAD_COMPLETED: 'remote_client_job_completed',
-    REMOTE_CLIENT_EMPTY_QUEUE: 'remote_client_empty_queue'
-}
+    REMOTE_CLIENT_EMPTY_QUEUE: 'remote_client_empty_queue',
+};

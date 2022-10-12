@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import { S3, AWS_TEXT } from './aws-wrapper';
 import fs from 'fs';
@@ -27,10 +27,16 @@ export function initialize(/* config */) {
 
 export async function storeBenchmarkResults(
     fileMap: { [key: string]: string },
-    { benchmarkInfo: { benchmarkName, benchmarkSignature }, projectConfig } : BenchmarkResultsSnapshot,
+    { benchmarkInfo: { benchmarkName, benchmarkSignature }, projectConfig }: BenchmarkResultsSnapshot,
     globalConfig: FrozenGlobalConfig,
 ) {
-    const { gitInfo: { localChanges: gitLocalChanges, branch: gitBranch, lastCommit: { hash: gitCommit } } } = globalConfig;
+    const {
+        gitInfo: {
+            localChanges: gitLocalChanges,
+            branch: gitBranch,
+            lastCommit: { hash: gitCommit },
+        },
+    } = globalConfig;
     const { projectName } = projectConfig;
 
     // Replace slashes with underscores so we prevent ambiguous URLs
@@ -42,7 +48,7 @@ export async function storeBenchmarkResults(
     console.log('Bucket:', `https://${s3.bucket}.s3.amazonaws.com/`, '\n');
 
     await Promise.all(
-        Object.keys(fileMap).map(file => {
+        Object.keys(fileMap).map((file) => {
             const buffer = fs.readFileSync(fileMap[file]);
             return s3.storeBenchmarkFile(file, buffer, {
                 projectName,
@@ -62,7 +68,7 @@ export async function getAllBenchmarkStatsPerCommit(projectName: string, commit:
     if (benchmarks && benchmarks.length) {
         console.log(AWS_TEXT + ` Fetching benchmarks for commit ${commit}...`);
         return Promise.all(
-            benchmarks.map(async url => {
+            benchmarks.map(async (url) => {
                 const fullUrl = url + '/stats.json';
                 console.log(AWS_TEXT + ` Fetching benchmark ${fullUrl}`);
                 const response = await fetch(fullUrl);

@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 // The '<!-- saved from ... -->' syntax is required to let IE know that this content is safe to execute.
 // Full details are here: https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/compatibility/ms537628(v=vs.85)
@@ -31,7 +31,5 @@ export interface HtmlOptions {
 }
 
 export default function generateHTML({ benchmarkName, benchmarkJs, htmlTemplate = DEFAULT_HTML }: HtmlOptions) {
-    return htmlTemplate
-        .replace(/{{benchmarkName}}/g, benchmarkName)
-        .replace('{{benchmarkJs}}', benchmarkJs);
+    return htmlTemplate.replace(/{{benchmarkName}}/g, benchmarkName).replace('{{benchmarkJs}}', benchmarkJs);
 }

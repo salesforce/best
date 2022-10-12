@@ -3,10 +3,10 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
-import { Options } from "yargs";
-import { CliConfig } from "@best/types";
+import { Options } from 'yargs';
+import { CliConfig } from '@best/types';
 
 export const check = () => {
     // TODO: Implement checks
@@ -65,8 +65,8 @@ export const options: { [key: string]: Options } = {
     },
     runInBand: {
         default: undefined,
-        description: "Run in the main thread in one core (no paralellism)",
-        type: 'boolean'
+        description: 'Run in the main thread in one core (no paralellism)',
+        type: 'boolean',
     },
     externalStorage: {
         default: undefined,
@@ -96,7 +96,8 @@ export const options: { [key: string]: Options } = {
     },
     dbAdapter: {
         default: undefined,
-        description: 'Override which database adapter is used. By default Best comes with `sql/sqlite` and `sql/postgres`',
+        description:
+            'Override which database adapter is used. By default Best comes with `sql/sqlite` and `sql/postgres`',
         type: 'string',
     },
     dbURI: {
@@ -106,7 +107,8 @@ export const options: { [key: string]: Options } = {
     },
     dbToken: {
         default: undefined,
-        description: 'Some database providers (e.g. rest/frontend) communicate over HTTP(S) and this token is used for authorization.',
+        description:
+            'Some database providers (e.g. rest/frontend) communicate over HTTP(S) and this token is used for authorization.',
         type: 'string',
     },
     runner: {
@@ -126,11 +128,33 @@ export const options: { [key: string]: Options } = {
         default: true,
         description: 'Runs benchmarks against a temporary HTTP server (instead of using the "file:" protocol).',
         type: 'boolean',
-    }
+    },
 };
 
 export function normalize(args: { [x: string]: any; _: string[]; $0: string }): CliConfig {
-    const { _, help, clearCache, clearResults, showConfigs, disableInteractive, gitIntegration, generateHTML, useHttp, externalStorage, runner, runnerConfig, config, projects, iterations, compareStats, dbAdapter, dbURI, dbToken, runInBatch, runInBand } = args;
+    const {
+        _,
+        help,
+        clearCache,
+        clearResults,
+        showConfigs,
+        disableInteractive,
+        gitIntegration,
+        generateHTML,
+        useHttp,
+        externalStorage,
+        runner,
+        runnerConfig,
+        config,
+        projects,
+        iterations,
+        compareStats,
+        dbAdapter,
+        dbURI,
+        dbToken,
+        runInBatch,
+        runInBand,
+    } = args;
 
     return {
         _,
@@ -146,13 +170,13 @@ export function normalize(args: { [x: string]: any; _: string[]; $0: string }): 
         generateHTML,
         externalStorage,
         runner,
-        runnerConfig: runnerConfig ? JSON.parse(runnerConfig): {},
+        runnerConfig: runnerConfig ? JSON.parse(runnerConfig) : {},
         config,
         projects: projects || [],
-        iterations: iterations ? parseInt(iterations, 10): undefined,
+        iterations: iterations ? parseInt(iterations, 10) : undefined,
         compareStats,
         dbAdapter,
         dbURI,
-        dbToken
+        dbToken,
     };
 }

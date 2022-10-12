@@ -1,7 +1,6 @@
-🏆 Best Performance Benchmarks 🏆
-================================
+# 🏆 Best Performance Benchmarks 🏆
 
- [![Build Status][build icon]][build url]
+[![Build Status][build icon]][build url]
 
 Best allows you to write benchmarks in the same way you write unit
 tests. This allows you to integrate Best into your CI workflow to

@@ -3,19 +3,11 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
-import {InputOption, RollupOptions} from "rollup";
+import { InputOption, RollupOptions } from 'rollup';
 
-const PRIMITIVES = [
-    'beforeAll',
-    'before',
-    'afterAll',
-    'after',
-    'benchmark',
-    'describe',
-    'run',
-];
+const PRIMITIVES = ['beforeAll', 'before', 'afterAll', 'after', 'benchmark', 'describe', 'run'];
 
 function resolveModuleEntryFromPackage(module: string) {
     let modulePath;

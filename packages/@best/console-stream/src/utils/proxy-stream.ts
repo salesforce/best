@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 export interface ProxiedStream {
     unproxyStream(): void;
@@ -18,7 +18,7 @@ export function proxyStream(stream: any, isInteractive: boolean): ProxiedStream 
     if (isInteractive) {
         stream.write = (msg: string) => {
             proxyBuffer += msg;
-        }
+        };
     }
 
     return {
@@ -36,7 +36,6 @@ export function proxyStream(stream: any, isInteractive: boolean): ProxiedStream 
             if (msg) {
                 proxyBuffer += msg;
             }
-        }
+        },
     };
-
 }

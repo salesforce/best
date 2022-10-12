@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 // This is a rewrite to support NodeJS
 // The browser version is in:
@@ -171,7 +171,7 @@ export default class SocketIOFileClient extends EventEmitter {
             throw new Error('SocketIOFileClient is closed.');
         }
 
-        Object.keys(this.uploadingFiles).forEach(k => this.abort(k));
+        Object.keys(this.uploadingFiles).forEach((k) => this.abort(k));
         this.socket = null;
         this.uploadingFiles = null;
         this.ev = null;

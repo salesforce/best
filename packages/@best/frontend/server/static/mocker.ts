@@ -3,12 +3,12 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import fs from 'fs';
 import { promisify } from 'util';
 import { ApiDatabaseConfig } from '@best/types';
-import { buildMockedDataFromApi } from './builder'
+import { buildMockedDataFromApi } from './builder';
 import * as rollup from 'rollup';
 
 const asyncRead = promisify(fs.readFile);
@@ -38,5 +38,5 @@ export const bestMocker = (options: MockerOptions): rollup.Plugin => ({
             }
         }
         return null;
-    }
-})
+    },
+});

@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import { cacheDirectory } from '@best/utils';
 import { BenchmarkMetricNames } from '@best/types';
@@ -17,9 +17,19 @@ const defaultOptions = {
     generateHTML: false,
     apiDatabase: {
         adapter: 'sql/sqlite',
-        uri: '<rootDir>/__benchmarks_results__/best.sqlite'
+        uri: '<rootDir>/__benchmarks_results__/best.sqlite',
     },
-    metrics: ['aggregate', 'script', 'recalculatestyles', 'layout', 'updatelayertree', 'paint', 'compositelayers', 'system', 'idle'] as BenchmarkMetricNames[],
+    metrics: [
+        'aggregate',
+        'script',
+        'recalculatestyles',
+        'layout',
+        'updatelayertree',
+        'paint',
+        'compositelayers',
+        'system',
+        'idle',
+    ] as BenchmarkMetricNames[],
     cacheDirectory: cacheDirectory(),
     useHttp: false,
     assets: [],
@@ -28,11 +38,13 @@ const defaultOptions = {
     moduleFileExtensions: ['js'],
     moduleNameMapper: {},
     modulePathIgnorePatterns: [],
-    runner: "default",
-    runners: [{
-        alias: "default",
-        runner: '@best/runner-headless'
-    }],
+    runner: 'default',
+    runners: [
+        {
+            alias: 'default',
+            runner: '@best/runner-headless',
+        },
+    ],
     plugins: [],
     projects: [],
     runInBand: false,
@@ -46,11 +58,7 @@ const defaultOptions = {
     benchmarkEnvironmentOptions: {},
     benchmarkCustomAssets: '<rootDir>/__benchmarks__/assets',
     testMatch: ['**/__benchmarks__/**/*.benchmark.js'],
-    testPathIgnorePatterns: [
-        '**/__benchmarks_results__/**',
-        '**/node_modules/**',
-        '**/__tests__/**'
-    ],
+    testPathIgnorePatterns: ['**/__benchmarks_results__/**', '**/node_modules/**', '**/__tests__/**'],
 
     // Calculate statistics on entire distributions (including possible outliers).
     samplesQuantileThreshold: 0.8,

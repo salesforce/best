@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import Table from 'cli-table3';
 import chalk from 'chalk';
@@ -12,10 +12,12 @@ import Histogram from './histogram';
 import {
     BenchmarkMetricNames,
     BenchmarkResultsSnapshot,
-    EnvironmentConfig, StatsNode,
-    BenchmarkComparison, ResultComparison,
-    StatsResults
-} from "@best/types";
+    EnvironmentConfig,
+    StatsNode,
+    BenchmarkComparison,
+    ResultComparison,
+    StatsResults,
+} from '@best/types';
 import { OutputStream } from '@best/console-stream';
 
 interface OutputConfig {
@@ -38,7 +40,11 @@ export default class Output {
      */
     report(results: BenchmarkResultsSnapshot[]) {
         results.forEach((result: BenchmarkResultsSnapshot) => {
-            const { benchmarkInfo: { benchmarkName }, stats, projectConfig: { benchmarkOutput: benchmarkFolder } } = result;
+            const {
+                benchmarkInfo: { benchmarkName },
+                stats,
+                projectConfig: { benchmarkOutput: benchmarkFolder },
+            } = result;
 
             // Stats table.
             this.writeStats(benchmarkName, benchmarkFolder, stats!);
@@ -106,7 +112,7 @@ export default class Output {
                 // if (!histogramPattern.test(path)) {
                 //     return;
                 // }
-                Object.keys(benchmark).forEach(metric => {
+                Object.keys(benchmark).forEach((metric) => {
                     // if (!metricPattern.test(metric)) {
                     //     return;
                     // }
@@ -130,7 +136,7 @@ export default class Output {
         benchmarks.forEach((benchmarkNode: StatsNode) => {
             const name = benchmarkNode.name;
             // Root benchmark
-            if (benchmarkNode.type === "benchmark") {
+            if (benchmarkNode.type === 'benchmark') {
                 Object.keys(benchmarkNode.metrics).forEach((metric: string) => {
                     const metricsStats = benchmarkNode.metrics[metric as BenchmarkMetricNames];
                     const metricValues = metricsStats && metricsStats.stats;
@@ -140,13 +146,14 @@ export default class Output {
                             padding(level) + name,
                             chalk.bold(metric),
                             sampleSize,
-                            `${mean.toFixed(3)}` + chalk.gray(` ± ${(Math.sqrt(variance) / mean * 100).toFixed(1)}%`),
-                            `${median.toFixed(3)}` + chalk.gray(` ± ${(medianAbsoluteDeviation / median * 100).toFixed(1)}%`),
+                            `${mean.toFixed(3)}` + chalk.gray(` ± ${((Math.sqrt(variance) / mean) * 100).toFixed(1)}%`),
+                            `${median.toFixed(3)}` +
+                                chalk.gray(` ± ${((medianAbsoluteDeviation / median) * 100).toFixed(1)}%`),
                         ]);
                     }
                 });
                 // Group
-            } else if (benchmarkNode.type === "group") {
+            } else if (benchmarkNode.type === 'group') {
                 const emptyFields = Array.apply(null, Array(4)).map(() => '-');
                 table.push([padding(level) + name, ...emptyFields]);
                 this.generateRows(table, benchmarkNode.nodes, level + 1);
@@ -161,30 +168,30 @@ export default class Output {
         const { baseCommit, targetCommit } = result;
 
         type GroupedTables = {
-            [projectName: string]: Table[]
-        }
+            [projectName: string]: Table[];
+        };
 
         const tables: GroupedTables = result.comparisons.reduce((tables, node): GroupedTables => {
-            if (node.type === "project" || node.type === "group") {
-                const group = node.comparisons.map(child => {
+            if (node.type === 'project' || node.type === 'group') {
+                const group = node.comparisons.map((child) => {
                     return this.generateComparisonTable(baseCommit, targetCommit, child);
-                })
+                });
 
                 return {
                     ...tables,
-                    [node.name]: group
-                }
+                    [node.name]: group,
+                };
             }
             return tables;
-        }, <GroupedTables>{})
+        }, <GroupedTables>{});
 
         const flattenedTables = Object.keys(tables).reduce((groups, projectName): string[] => {
-            const stringifiedTables = tables[projectName].map(t => t.toString() + '\n');
+            const stringifiedTables = tables[projectName].map((t) => t.toString() + '\n');
             const colorProjectName = chalk.bold.dim(projectName);
             groups.push(`\nProject: ${colorProjectName}\n`);
             groups.push(...stringifiedTables);
             return groups;
-        }, <string[]>[])
+        }, <string[]>[]);
 
         this.stream.write(flattenedTables.join(''));
     }
@@ -196,7 +203,7 @@ export default class Output {
         const benchmark = stats.name.replace('.benchmark', '');
         const table = new Table({
             head: [`Benchmark: ${benchmark}`, `base (${baseCommit})`, `target (${targetCommit})`, 'trend'],
-            style: {head: ['bgBlue', 'white']}
+            style: { head: ['bgBlue', 'white'] },
         });
 
         this.generateComparisonRows(table, stats);
@@ -207,12 +214,12 @@ export default class Output {
      * Recursively populate rows into a table for a tree of comparisons.
      */
     generateComparisonRows(table: Table, stats: ResultComparison, groupName = '') {
-        if (stats.type === "project" || stats.type === "group") {
-            stats.comparisons.forEach(node => {
-                if (node.type === "project" || node.type === "group") {
+        if (stats.type === 'project' || stats.type === 'group') {
+            stats.comparisons.forEach((node) => {
+                if (node.type === 'project' || node.type === 'group') {
                     const name = node.name;
                     this.generateComparisonRows(table, node, name);
-                } else if (node.type === "benchmark") {
+                } else if (node.type === 'benchmark') {
                     // // row with benchmark name
                     const emptyFields = Array.apply(null, Array(3)).map(() => '-');
                     table.push([chalk.dim(groupName + '/') + chalk.bold(node.name), ...emptyFields]);
@@ -228,14 +235,22 @@ export default class Output {
 
                             table.push([
                                 padding(1) + metric,
-                                `${baseStats.median.toFixed(2)}` + chalk.gray(` (± ${baseStats.medianAbsoluteDeviation.toFixed(2)}ms)`),
-                                `${targetStats.median.toFixed(2)}` + chalk.gray(` (± ${targetStats.medianAbsoluteDeviation.toFixed(2)}ms)`),
-                                chalk.bold(samplesComparison === 0 ? 'SAME' : samplesComparison === 1 ? chalk.red('SLOWER') : chalk.green('FASTER'))
+                                `${baseStats.median.toFixed(2)}` +
+                                    chalk.gray(` (± ${baseStats.medianAbsoluteDeviation.toFixed(2)}ms)`),
+                                `${targetStats.median.toFixed(2)}` +
+                                    chalk.gray(` (± ${targetStats.medianAbsoluteDeviation.toFixed(2)}ms)`),
+                                chalk.bold(
+                                    samplesComparison === 0
+                                        ? 'SAME'
+                                        : samplesComparison === 1
+                                        ? chalk.red('SLOWER')
+                                        : chalk.green('FASTER'),
+                                ),
                             ]);
                         }
                     });
                 }
-            })
+            });
         }
     }
 }
@@ -243,7 +258,7 @@ export default class Output {
 function padding(n: number) {
     return n > 0
         ? Array.apply(null, Array((n - 1) * 3))
-            .map(() => ' ')
-            .join('') + '└─ '
+              .map(() => ' ')
+              .join('') + '└─ '
         : '';
 }

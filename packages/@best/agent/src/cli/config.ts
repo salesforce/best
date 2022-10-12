@@ -7,12 +7,12 @@
 import { AgentConfig, RemoteHubConfig } from '@best/types';
 import { coalesce } from '@best/utils';
 
-const AGENT_CONFIG = process.env.AGENT_CONFIG ? JSON.parse(process.env.AGENT_CONFIG): {};
+const AGENT_CONFIG = process.env.AGENT_CONFIG ? JSON.parse(process.env.AGENT_CONFIG) : {};
 const AGENT_URI = process.env.AGENT_URI;
 const AGENT_RUNNER = process.env.AGENT_RUNNER;
 const AGENT_AUTH_TOKEN = process.env.AGENT_AUTH_TOKEN;
 
-const REMOTE_HUB_CONFIG = process.env.REMOTE_HUB_CONFIG ? JSON.parse(process.env.REMOTE_HUB_CONFIG): {};
+const REMOTE_HUB_CONFIG = process.env.REMOTE_HUB_CONFIG ? JSON.parse(process.env.REMOTE_HUB_CONFIG) : {};
 const REMOTE_HUB_URI = process.env.REMOTE_HUB_URI;
 const REMOTE_HUB_AUTH_TOKEN = process.env.REMOTE_HUB_AUTH_TOKEN;
 const REMOTE_HUB_ACCEPT_SELFSIGNED_CERT = process.env.REMOTE_HUB_ACCEPT_SELFSIGNED_CERT;
@@ -20,7 +20,7 @@ const REMOTE_HUB_ACCEPT_SELFSIGNED_CERT = process.env.REMOTE_HUB_ACCEPT_SELFSIGN
 function normalizeArgOptions(argv: string[]): any {
     let arg;
     const normalizedArgs: any = {};
-    while((arg = argv.shift()) !== undefined) {
+    while ((arg = argv.shift()) !== undefined) {
         if (arg.startsWith('--')) {
             if (arg.includes('=')) {
                 const [key, value] = arg.split('=');
@@ -41,7 +41,7 @@ export function getAgentConfig(): AgentConfig {
         ...AGENT_CONFIG,
         uri: argv.uri || AGENT_URI || AGENT_CONFIG.uri,
         runner: argv.runner || AGENT_RUNNER || AGENT_CONFIG.runner,
-        authToken: argv.authToken || AGENT_AUTH_TOKEN || AGENT_CONFIG.authToken
+        authToken: argv.authToken || AGENT_AUTH_TOKEN || AGENT_CONFIG.authToken,
     };
 }
 
@@ -84,7 +84,7 @@ export function getRemoteHubConfig(): RemoteHubConfig {
         acceptSelfSignedCert: coalesce(
             tryConvertToBoolean(argv.acceptSelfSignedCert),
             tryConvertToBoolean(REMOTE_HUB_ACCEPT_SELFSIGNED_CERT),
-            tryConvertToBoolean(REMOTE_HUB_CONFIG.acceptSelfSignedCert)
-        )
+            tryConvertToBoolean(REMOTE_HUB_CONFIG.acceptSelfSignedCert),
+        ),
     };
 }

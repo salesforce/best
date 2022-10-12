@@ -3,21 +3,21 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import { FrozenProjectConfig } from '@best/types';
 import { remote } from 'webdriverio';
-import merge  from 'deepmerge';
+import merge from 'deepmerge';
 
 const DEFAULT_WEBDRIVERIO_OPTIONS = {
     capabilities: {
-        timeouts: { "implicit": 0, "pageLoad": 300000, "script": 120000 },
-        browserName: "chrome",
+        timeouts: { implicit: 0, pageLoad: 300000, script: 120000 },
+        browserName: 'chrome',
     },
-    hostname: "localhost",
+    hostname: 'localhost',
     port: 4444,
-    logLevel: "silent",
-}
+    logLevel: 'silent',
+};
 
 export default class WebdriverBrowser {
     pageUrl: string;
@@ -32,8 +32,10 @@ export default class WebdriverBrowser {
 
         // restricting what client config can override
         if (this.projectConfig.benchmarkRunnerConfig.webdriverOptions) {
-            this.wdioOpts.capabilities = merge(this.wdioOpts.capabilities,
-                this.projectConfig.benchmarkRunnerConfig.webdriverOptions.capabilities || {})
+            this.wdioOpts.capabilities = merge(
+                this.wdioOpts.capabilities,
+                this.projectConfig.benchmarkRunnerConfig.webdriverOptions.capabilities || {},
+            );
         }
     }
 
@@ -44,7 +46,6 @@ export default class WebdriverBrowser {
         this.browser = await remote(this.wdioOpts);
         await this.browser.url(this.pageUrl);
     }
-
 
     async close() {
         if (this.browser) {
@@ -61,13 +62,13 @@ export default class WebdriverBrowser {
     }
 
     async evaluate(fn: (o: any, done: any) => any, payload: any) {
-        if(this.browser) {
+        if (this.browser) {
             return await this.browser.executeAsync(fn, payload);
         }
         return null;
     }
 
     version() {
-        return this.wdioOpts.capabilities ? this.wdioOpts.capabilities.browserVersion : "unknown";
+        return this.wdioOpts.capabilities ? this.wdioOpts.capabilities.browserVersion : 'unknown';
     }
 }

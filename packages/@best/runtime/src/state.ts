@@ -3,15 +3,15 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import primitivesHandler from './primitives-handler';
 import { makeDescribe } from './utils/primitives-nodes';
 import DEFAULT_STATE from './utils/default-state';
-import cloneState from "./utils/clone-state";
+import cloneState from './utils/clone-state';
 
 declare var BEST_CONFIG: any;
-const eventHandlers = [ primitivesHandler];
+const eventHandlers = [primitivesHandler];
 const ROOT_DESCRIBE_BLOCK_NAME = typeof BEST_CONFIG !== 'undefined' ? BEST_CONFIG.benchmarkName : 'ROOT_DESCRIBE_BLOCK';
 const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
 

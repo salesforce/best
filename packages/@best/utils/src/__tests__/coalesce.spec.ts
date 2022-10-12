@@ -3,7 +3,7 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import { coalesce } from '../coalesce';
 
@@ -32,7 +32,7 @@ describe('coalesce', () => {
         const booleanTrueValue = coalesce(null, undefined, null, true, undefined, false, null);
         expect(booleanTrueValue).toBe(true);
 
-        const obj = { x: 'abc' }
+        const obj = { x: 'abc' };
         const objectValue = coalesce(null, undefined, obj);
         expect(objectValue).toEqual(obj);
     });

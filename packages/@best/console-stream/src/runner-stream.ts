@@ -3,20 +3,15 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
-import path from "path";
-import { isInteractive as globaIsInteractive } from "@best/utils";
-import chalk from "chalk";
-import trimPath from "./utils/trim-path";
-import countEOL from "./utils/count-eod";
-import { ProxiedStream, proxyStream } from "./utils/proxy-stream";
-import {
-    BenchmarkRuntimeConfig,
-    RunnerStream,
-    BenchmarksBundle,
-    BenchmarkUpdateState,
-} from "@best/types";
+import path from 'path';
+import { isInteractive as globaIsInteractive } from '@best/utils';
+import chalk from 'chalk';
+import trimPath from './utils/trim-path';
+import countEOL from './utils/count-eod';
+import { ProxiedStream, proxyStream } from './utils/proxy-stream';
+import { BenchmarkRuntimeConfig, RunnerStream, BenchmarksBundle, BenchmarkUpdateState } from '@best/types';
 
 enum State {
     QUEUED = 'QUEUED',
@@ -25,14 +20,19 @@ enum State {
     ERROR = 'ERROR',
 }
 
-interface BenchmarkStatus { state: State; displayPath: string; projectName: string, progress?: BenchmarkProgress }
-type AllBencharkRunnerState = Map<string, BenchmarkStatus>
+interface BenchmarkStatus {
+    state: State;
+    displayPath: string;
+    projectName: string;
+    progress?: BenchmarkProgress;
+}
+type AllBencharkRunnerState = Map<string, BenchmarkStatus>;
 
 interface BenchmarkProgress {
-    executedIterations: number,
-    estimated: number,
-    runtime: number,
-    avgIteration: number,
+    executedIterations: number;
+    estimated: number;
+    runtime: number;
+    avgIteration: number;
 }
 
 const STATE_ANSI = {
@@ -61,16 +61,19 @@ function printProjectName(projectName: string) {
     return ' ' + chalk.reset.cyan.dim(`(${projectName})`);
 }
 
-function calculateBenchmarkProgress(progress: BenchmarkUpdateState, { iterations, maxDuration, minSampleCount }: BenchmarkRuntimeConfig): BenchmarkProgress {
+function calculateBenchmarkProgress(
+    progress: BenchmarkUpdateState,
+    { iterations, maxDuration, minSampleCount }: BenchmarkRuntimeConfig,
+): BenchmarkProgress {
     const { executedIterations, executedTime } = progress;
     const avgIteration = executedTime / executedIterations;
-    const runtime = parseInt((executedTime / 1000) + '', 10);
+    const runtime = parseInt(executedTime / 1000 + '', 10);
 
     let estimated: number;
     if (iterations) {
-        estimated = Math.round(iterations * avgIteration / 1000) + 1;
+        estimated = Math.round((iterations * avgIteration) / 1000) + 1;
     } else if (avgIteration * minSampleCount > maxDuration) {
-        estimated = Math.round(minSampleCount * avgIteration / 1000) + 1;
+        estimated = Math.round((minSampleCount * avgIteration) / 1000) + 1;
     } else {
         estimated = maxDuration / 1000;
     }
@@ -85,7 +88,8 @@ function calculateBenchmarkProgress(progress: BenchmarkUpdateState, { iterations
 
 function printProgressBar(runTime: number, estimatedTime: number, width: number) {
     // If we are more than one second over the estimated time, highlight it.
-    const renderedTime = estimatedTime && runTime >= estimatedTime + 1 ? chalk.bold.yellow(runTime + 's') : runTime + 's';
+    const renderedTime =
+        estimatedTime && runTime >= estimatedTime + 1 ? chalk.bold.yellow(runTime + 's') : runTime + 's';
     let time = chalk.bold(`Time:`) + `        ${renderedTime}`;
     if (runTime < estimatedTime) {
         time += `, estimated ${estimatedTime}s`;
@@ -94,7 +98,7 @@ function printProgressBar(runTime: number, estimatedTime: number, width: number)
     // Only show a progress bar if the test run is actually going to take some time
     if (estimatedTime > 2 && runTime < estimatedTime && width) {
         const availableWidth = Math.min(PROGRESS_BAR_WIDTH, width);
-        const length = Math.min(Math.floor(runTime / estimatedTime * availableWidth), availableWidth);
+        const length = Math.min(Math.floor((runTime / estimatedTime) * availableWidth), availableWidth);
         if (availableWidth >= 2) {
             time += '\n' + chalk.green('█').repeat(length) + chalk.white('█').repeat(availableWidth - length);
         }
@@ -121,16 +125,21 @@ export default class RunnerOutputStream implements RunnerStream {
     }
 
     initState(buildConfigs: BenchmarksBundle[]): AllBencharkRunnerState {
-        return buildConfigs.reduce((state: AllBencharkRunnerState, benchmarkBundle: BenchmarksBundle): AllBencharkRunnerState => {
-            benchmarkBundle.benchmarkBuilds.forEach(({ benchmarkEntry, benchmarkSignature, projectConfig: { projectName }}) => {
-                state.set(benchmarkSignature, {
-                    projectName,
-                    state: State.QUEUED,
-                    displayPath: benchmarkEntry,
-                });
-            });
-            return state;
-        }, new Map());
+        return buildConfigs.reduce(
+            (state: AllBencharkRunnerState, benchmarkBundle: BenchmarksBundle): AllBencharkRunnerState => {
+                benchmarkBundle.benchmarkBuilds.forEach(
+                    ({ benchmarkEntry, benchmarkSignature, projectConfig: { projectName } }) => {
+                        state.set(benchmarkSignature, {
+                            projectName,
+                            state: State.QUEUED,
+                            displayPath: benchmarkEntry,
+                        });
+                    },
+                );
+                return state;
+            },
+            new Map(),
+        );
     }
 
     clearBufferStream() {
@@ -175,26 +184,36 @@ export default class RunnerOutputStream implements RunnerStream {
         }
     }
 
-    printBenchmarkState({ state, projectName, displayPath }: { state: State, projectName: string, displayPath: string }) {
+    printBenchmarkState({
+        state,
+        projectName,
+        displayPath,
+    }: {
+        state: State;
+        projectName: string;
+        displayPath: string;
+    }) {
         const columns = this.stdoutColumns;
         const overflow = columns - (state.length + projectName.length + displayPath.length + /* for padding */ 14);
         const hasOverflow = overflow < 0;
 
         const ansiState = printState(state);
         const ansiProjectName = printProjectName(projectName);
-        const ansiDisplayname = printDisplayName(displayPath, hasOverflow ? Math.abs(overflow): 0);
+        const ansiDisplayname = printDisplayName(displayPath, hasOverflow ? Math.abs(overflow) : 0);
 
         return `${ansiState} ${ansiProjectName} ${ansiDisplayname}\n`;
     }
 
     printProgress(progress: BenchmarkProgress, { displayPath }: BenchmarkStatus): string {
         const benchmarkName = chalk.bold.black(path.basename(displayPath));
-        return [
-            `\n${PROGRESS_TEXT} ${benchmarkName}`,
-            chalk.bold.black('Avg iteration:        ') + progress.avgIteration.toFixed(2) + 'ms',
-            chalk.bold.black('Completed iterations: ') + progress.executedIterations,
-            printProgressBar(progress.runtime, progress.estimated, 40)
-        ].join('\n') + '\n\n';
+        return (
+            [
+                `\n${PROGRESS_TEXT} ${benchmarkName}`,
+                chalk.bold.black('Avg iteration:        ') + progress.avgIteration.toFixed(2) + 'ms',
+                chalk.bold.black('Completed iterations: ') + progress.executedIterations,
+                printProgressBar(progress.runtime, progress.estimated, 40),
+            ].join('\n') + '\n\n'
+        );
     }
 
     updateStream() {
@@ -268,13 +287,17 @@ export default class RunnerOutputStream implements RunnerStream {
         this.updateRunnerState(benchmarkSignature, State.ERROR);
     }
 
-    updateBenchmarkProgress(benchmarkSignature: string, updatedBenchmarkState: BenchmarkUpdateState, runtimeOpts: BenchmarkRuntimeConfig) {
+    updateBenchmarkProgress(
+        benchmarkSignature: string,
+        updatedBenchmarkState: BenchmarkUpdateState,
+        runtimeOpts: BenchmarkRuntimeConfig,
+    ) {
         const progress = calculateBenchmarkProgress(updatedBenchmarkState, runtimeOpts);
         const benchmarkState = this._state.get(benchmarkSignature);
         benchmarkState!.progress = progress;
         const { executedIterations, avgIteration, estimated, runtime } = progress;
-        const runIter = executedIterations.toString().padEnd(5, " ");
-        const avgIter = `${avgIteration.toFixed(2)}ms`.padEnd(10, " ");
+        const runIter = executedIterations.toString().padEnd(5, ' ');
+        const avgIter = `${avgIteration.toFixed(2)}ms`.padEnd(10, ' ');
         const remaining = estimated - runtime;
 
         if (this.isInteractive) {
@@ -282,7 +305,9 @@ export default class RunnerOutputStream implements RunnerStream {
         } else {
             this.scheduleUpdate(2500, () => {
                 this.stdoutWrite(
-                    ` :: ${benchmarkState!.displayPath} > ran: ${runIter} | avg: ${avgIter} | remainingTime: ${remaining}s \n`
+                    ` :: ${
+                        benchmarkState!.displayPath
+                    } > ran: ${runIter} | avg: ${avgIter} | remainingTime: ${remaining}s \n`,
                 );
             });
         }

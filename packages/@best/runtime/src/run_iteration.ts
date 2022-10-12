@@ -3,15 +3,15 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import { raf, time, nextTick, withMacroTask, formatTime } from './utils/timers';
 import { HOOKS } from './constants';
 
 export enum BenchmarkMeasureType {
-    Execute = "BEST/execute",
-    Before = "BEST/before",
-    After = "BEST/after"
+    Execute = 'BEST/execute',
+    Before = 'BEST/before',
+    After = 'BEST/after',
 }
 
 declare var window: any;
@@ -35,13 +35,17 @@ function startMeasure(markName: string, type: BenchmarkMeasureType) {
 }
 
 function endMeasure(markName: string, type: BenchmarkMeasureType) {
-    const eventName = `${type}/${markName}`
+    const eventName = `${type}/${markName}`;
     performance.measure(eventName, eventName);
     performance.clearMarks(eventName);
     performance.clearMeasures(eventName);
 }
 
-const executeBenchmark = async (benchmarkNode: RuntimeNodeRunner, markName: string, { useMacroTaskAfterBenchmark }: { useMacroTaskAfterBenchmark: boolean } ) => {
+const executeBenchmark = async (
+    benchmarkNode: RuntimeNodeRunner,
+    markName: string,
+    { useMacroTaskAfterBenchmark }: { useMacroTaskAfterBenchmark: boolean },
+) => {
     // Force garbage collection before executing an iteration (--js-flags=--expose-gc)
     _forceGC();
     return new Promise((resolve, reject) => {
@@ -75,7 +79,10 @@ const executeBenchmark = async (benchmarkNode: RuntimeNodeRunner, markName: stri
     });
 };
 
-export const runBenchmarkIteration = async (node: RuntimeNode, opts: { useMacroTaskAfterBenchmark: boolean }): Promise<RuntimeNode> => {
+export const runBenchmarkIteration = async (
+    node: RuntimeNode,
+    opts: { useMacroTaskAfterBenchmark: boolean },
+): Promise<RuntimeNode> => {
     const { hooks, children, run } = node;
     const hookHandlers = _initHooks(hooks);
 

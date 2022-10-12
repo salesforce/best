@@ -3,14 +3,14 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
 import fs from 'fs';
 import path from 'path';
 import { PACKAGE_JSON, BEST_CONFIG } from './constants';
 import { UserConfig } from '@best/types';
 
-function isFile(filePath:string) {
+function isFile(filePath: string) {
     return fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
 }
 

@@ -3,9 +3,9 @@
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-*/
+ */
 
-import { buildBenchmark } from "./build-benchmark";
+import { buildBenchmark } from './build-benchmark';
 
 const send = process.send && process.send.bind(process);
 
@@ -17,7 +17,7 @@ const messagerAdapter = {
     onBenchmarkBuildStart(benchmarkPath: string) {
         send({
             type: 'messager.onBenchmarkBuildStart',
-            benchmarkPath
+            benchmarkPath,
         });
     },
     log(message: string) {
@@ -29,18 +29,13 @@ const messagerAdapter = {
     onBenchmarkBuildEnd(benchmarkPath: string) {
         send({
             type: 'messager.onBenchmarkBuildEnd',
-            benchmarkPath
+            benchmarkPath,
         });
-    }
+    },
 };
 
 module.exports = async function (input: any, callback: Function) {
-    const result = await buildBenchmark(
-        input.benchmark,
-        input.projectConfig,
-        input.globalConfig,
-        messagerAdapter
-    );
+    const result = await buildBenchmark(input.benchmark, input.projectConfig, input.globalConfig, messagerAdapter);
 
     callback(null, result);
 };

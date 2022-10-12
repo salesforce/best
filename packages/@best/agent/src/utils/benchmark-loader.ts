@@ -10,7 +10,7 @@ import { cacheDirectory, randomAlphanumeric } from '@best/utils';
 import { x as extractTar } from 'tar';
 import { Socket } from 'socket.io';
 import SocketFile from './socket.io-file';
-import type SocketIOFile from 'socket.io-file'
+import type SocketIOFile from 'socket.io-file';
 
 // This is all part of the initialization
 const LOADER_CONFIG_DEFAULTS = {
@@ -33,7 +33,7 @@ export function getUploaderInstance(socket: Socket): SocketIOFile {
 
     const uploader: any = new (SocketFile as any)(socket, config);
 
-    uploader.load = function() {
+    uploader.load = function () {
         return new Promise((resolve, reject) => {
             uploader.on('complete', (info: any) => {
                 uploader.removeAllListeners('complete');
