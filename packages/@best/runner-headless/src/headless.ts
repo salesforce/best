@@ -122,7 +122,7 @@ export default class HeadlessBrowser {
         // TODO: Create pupeteer test so we fail when upgrading
         return [
             { name: 'chrome.headless', version: '108' },
-            { name: 'chrome', version: '108' }
+            { name: 'chrome', version: '108' },
         ];
     }
 }
