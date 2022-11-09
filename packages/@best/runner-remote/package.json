@@ -4,8 +4,8 @@
     "@best/runner-abstract": "7.0.1",
     "@best/shared": "7.0.1",
     "debug": "^4.1.1",
-    "socket.io-client": "4.5.2",
-    "tar": "6.1.11"
+    "socket.io-client": "4.5.3",
+    "tar": "6.1.12"
   },
   "description": "Best Runner (Headless)",
   "files": [

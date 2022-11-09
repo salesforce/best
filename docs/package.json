@@ -17,10 +17,10 @@
   },
   "dependencies": {
     "compression": "~1.7.3",
-    "express": "4.18.1",
+    "express": "4.18.2",
     "express-winston": "~3.0.1",
     "serve-static": "~1.14.1",
-    "winston": "~3.1.0"
+    "winston": "~3.8.2"
   },
   "devDependencies": {
     "@lwc/compiler": "2.5.13",
@@ -43,7 +43,7 @@
     "markdown-it-chain": "~1.3.0",
     "markdown-it-container": "2.0.0",
     "markdown-it-emoji": "~1.4.0",
-    "markdown-link-check": "3.10.0",
+    "markdown-link-check": "3.10.3",
     "mkdirp": "~0.5.1",
     "prismjs": "1.28.0",
     "reload": "~3.0.1",
