@@ -33,9 +33,9 @@ generally follows the same pattern each time:
 
 ### Create a feature branch
 
-```bash
-git checkout master
-git pull origin master
+```sh
+git checkout main
+git pull origin main
 git checkout -b <name-of-the-feature>
 ```
 
@@ -43,7 +43,7 @@ git checkout -b <name-of-the-feature>
 
 Modify the files, build, test, lint and eventually commit your code using the following command:
 
-```bash
+```sh
 git add <path/to/file/to/commit>
 git commit
 git push origin <name-of-the-feature>
@@ -55,23 +55,23 @@ request.
 
 ### Rebase
 
-Sometimes your feature branch will get stale with respect to the master branch,
+Sometimes your feature branch will get stale with respect to the main branch,
 and it will require a rebase. The following steps can help:
 
-```bash
-git checkout master
-git pull origin master
+```sh
+git checkout main
+git pull origin main
 git checkout <name-of-the-feature>
-git rebase master <name-of-the-feature>
+git rebase main <name-of-the-feature>
 ```
 
-_note: If no conflicts arise, these commands will ensure that your changes are applied on top of the master branch. Any conflicts will have to be manually resolved._
+_note: If no conflicts arise, these commands will ensure that your changes are applied on top of the main branch. Any conflicts will have to be manually resolved._
 
 ### Check your submission
 
 #### Lint your changes
 
-```bash
+```sh
 yarn run lint
 ```
 

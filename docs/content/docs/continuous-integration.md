@@ -4,7 +4,7 @@ title: Continuous Integration
 
 # Continuous Integration
 
-Continuous integration is the best place to invoke Best. It is recommended to run your CI and Best on all commits into `master` and on all pull requests (PR) so you have visibility into the performance profile of your code whenever it changes.
+Continuous integration is the best place to invoke Best. It is recommended to run your CI and Best on all commits into `main` and on all pull requests (PR) so you have visibility into the performance profile of your code whenever it changes.
 
 ## Pull Requests
 
@@ -17,15 +17,15 @@ Running Best a second time in comparison mode generates a comparison table, whic
 
 When you run Best in comparison mode you ensure the same environment is used for the two executions. This reduces inconsistencies caused by extraneous variables.
 
-## Commits to `master`
+## Commits to `main`
 
-When you run your CI after a new commit to `master`, we recommend running Best again so the results are stored and visible on [the front end](/guide/frontend). This allows you to see a graph of your code's performance over time with each change in `master`.
+When you run your CI after a new commit to `main`, we recommend running Best again so the results are stored and visible on [the front end](/guide/frontend). This allows you to see a graph of your code's performance over time with each change in `main`.
 
 There is no need to run Best in comparison mode because you aren't comparing against a separate branch.
 
 ## Example in CircleCI
 
-To see an example, look at Best's own CircleCI [`config.yml`](https://github.com/salesforce/best/blob/master/.circleci/config.yml). Look at the `perf_and_compare` job to see how Best is used to benchmark Best. The relevant commands are copied below.
+To see an example, look at Best's own CircleCI [`config.yml`](https://github.com/salesforce/best/blob/main/.circleci/config.yml). Look at the `perf_and_compare` job to see how Best is used to benchmark Best. The relevant commands are copied below.
 
 ```yml
 - run:
@@ -36,7 +36,7 @@ To see an example, look at Best's own CircleCI [`config.yml`](https://github.com
       command: yarn perf --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --gitIntegration
 ```
 
-The Yarn command `perf` is essentially an alias to the Best CLI. Best is first run to benchmark the code of the new Pull Request. Then `best --compareStats` is run with a base commit from `master` and a target commit from the PR. The `--gitIntegration` flag causes Best to post the results on the pull request on GitHub.
+The Yarn command `perf` is essentially an alias to the Best CLI. Best is first run to benchmark the code of the new Pull Request. Then `best --compareStats` is run with a base commit from `main` and a target commit from the PR. The `--gitIntegration` flag causes Best to post the results on the pull request on GitHub.
 
 ::: tip
 To guarantee reproducible results, we **highly** recommend using a remote runner for your benchmarks. Check out the guide on [running remotely](/guide/running-remotely).

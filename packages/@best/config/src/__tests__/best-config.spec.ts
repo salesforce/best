@@ -54,7 +54,7 @@ describe('config normalization', () => {
     describe('mainBranch', () => {
         test('has the expected fallback', async () => {
             const config = await readConfig({}, CONFIG_FIXTURE);
-            expect(config.globalConfig.mainBranch).toBe('master');
+            expect(config.globalConfig.mainBranch).toBe('main');
         });
 
         test('can be configured', async () => {

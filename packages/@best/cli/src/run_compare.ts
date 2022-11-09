@@ -48,7 +48,7 @@ export async function runCompare(
     const status = await gitCLI.status();
     const initialBranch = status.current;
 
-    let baseCommit = compareStats[0] || 'master';
+    let baseCommit = compareStats[0] || 'main';
     let compareCommit = compareStats[1] || (localChanges ? 'local' : 'current');
     let stashedLocalChanges = false;
 

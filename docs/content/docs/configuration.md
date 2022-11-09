@@ -104,7 +104,7 @@ The Best configuration file (`best.config.js`) supports the following options.
 
 ### `mainBranch`
 
-`string` Specifies the name of the main branch, defaults to `master`.
+`string` Specifies the name of the main branch, defaults to `main`.
 
 When best is not run on the main branch the snapshot is marked as temporary.
 
