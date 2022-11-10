@@ -1,4 +1,26 @@
-# [7.0.1](https://github.com/salesforce/best/compare/v7.0.0...v7.0.1) (2022-08-11)
+# [8.0.0](https://github.com/salesforce/best/compare/v7.0.1...v8.0.0) (2022-11-10)
+
+
+### Bug Fixes
+
+* use `@rollup/plugin-replace` instead of `rollup-plugin-replace` ([444af23](https://github.com/salesforce/best/commit/444af23544ed77135f40a8720d2e408f1ed25ae8))
+* feat!: upgrade `puppeteer` to `v19.2.2` ([a423cd9](https://github.com/salesforce/best/commit/a423cd996463fc6bb6c08809e71c3173a72abafa))
+* fix!: make `mainBranch` default to `main` ([2118a59](https://github.com/salesforce/best/commit/2118a596e13b842b07512c0e22c2a56fc7b07b98))
+* chore!: update `socket.io` to `v4.5.2` ([b5f8b8a](https://github.com/salesforce/best/commit/b5f8b8a673d7f7788815e028c31d992495657452))
+
+
+### BREAKING CHANGES
+
+* Upgrade the Chrome version to `v108.0.5351.0`.
+* `mainBranch` defaults to `main` instead of `master`.
+* The `socket.io` dependency has been updated to `v4.5.2`. With this
+update unfortunately Best will no longer be interoperable with previous
+versions of Best. So, if Best is updated, it needs to be updated
+everywhere.
+
+
+
+## [7.0.1](https://github.com/salesforce/best/compare/v7.0.0...v7.0.1) (2022-08-11)
 
 
 ### Bug Fixes
