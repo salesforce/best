@@ -82,6 +82,20 @@ export default abstract class AbstractRunner {
         const { benchmarkIterations, benchmarkOnClient, benchmarkMaxDuration, benchmarkMinIterations } = projectConfig;
         const definedIterations = Number.isInteger(benchmarkIterations);
 
+        let useMacroTaskAfterBenchmark = true;
+
+        /*
+         * If users only want to measure the 'script' performance
+         * (i.e they specified `metrics: ['script']` in their
+         * `best.config.js` file), speed up the tests by making
+         * Best avoid adding the extra macrotask (intended for
+         * measuring style/layout) to the benchmark iterations.
+         */
+
+        if (projectConfig.metrics.length === 1 && projectConfig.metrics.includes('script')) {
+            useMacroTaskAfterBenchmark = false;
+        }
+
         // For benchmarking on the client or a defined number of iterations duration is irrelevant
         const maxDuration = definedIterations ? 1 : benchmarkMaxDuration;
         const minSampleCount = definedIterations ? benchmarkIterations : benchmarkMinIterations;
@@ -91,6 +105,7 @@ export default abstract class AbstractRunner {
             minSampleCount,
             iterations: benchmarkIterations,
             iterateOnClient: benchmarkOnClient,
+            useMacroTaskAfterBenchmark,
         };
     }
 

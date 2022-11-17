@@ -17,6 +17,7 @@ export interface BenchmarkRuntimeConfig {
     minSampleCount: number;
     iterations: number;
     iterateOnClient: boolean;
+    useMacroTaskAfterBenchmark: boolean;
 }
 
 export enum BenchmarkMeasureType {
