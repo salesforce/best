@@ -6,7 +6,9 @@
  */
 
 import path from 'path';
-import { cacheDirectory, randomAlphanumeric } from '@best/utils';
+import { randomBytes } from 'crypto';
+
+import { cacheDirectory } from '@best/utils';
 import { x as extractTar } from 'tar';
 import { Socket } from 'socket.io';
 import SocketFile from './socket.io-file';
@@ -28,7 +30,7 @@ export function getUploaderInstance(socket: Socket): SocketIOFile {
     // same-named benchmark to the agent. When this happens, the agent may get a partial file or the hub may fail
     // because there is a lock on the same-named file.
     const config = Object.assign({}, LOADER_CONFIG_DEFAULTS, {
-        uploadDir: path.join(cacheDirectory('best_agent'), 'uploads', randomAlphanumeric(16)),
+        uploadDir: path.join(cacheDirectory('best_agent'), 'uploads', randomBytes(16).toString('hex')),
     });
 
     const uploader: any = new (SocketFile as any)(socket, config);
