@@ -158,8 +158,13 @@ export function SocketIOFile(socket, options) {
         const uploadComplete = () => {
             const ws = uploadingFiles[id].writeStream;
 
-            if (ws) {
+            // Only signal completion when the stream is actually closed.
+
+            if (ws && ws.closed === false) {
+                ws.on('close', uploadComplete);
                 ws.end();
+
+                return;
             }
 
             const endTime = new Date();
