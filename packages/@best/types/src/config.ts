@@ -198,14 +198,15 @@ export interface ProjectConfigs {
 }
 
 export interface BuildConfig {
-    benchmarkName: string;
-    benchmarkFolder: string;
-    benchmarkSignature: string;
     benchmarkEntry: string;
+    benchmarkFolder: string;
+    benchmarkName: string;
     benchmarkRemoteEntry?: string;
     benchmarkRemoteFolder?: string;
-    projectConfig: FrozenProjectConfig;
+    benchmarkSignature: string;
     globalConfig: FrozenGlobalConfig;
+    isHub?: boolean;
+    projectConfig: FrozenProjectConfig;
 }
 
 export interface BenchmarksBundle {

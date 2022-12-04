@@ -102,7 +102,22 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
         try {
             // Retrieve an uncompress the benchmark bundle
             const tarFile = await uploader.load(benchmarkEntry);
-            await extractBenchmarkTarFile(tarFile);
+
+            /*
+             * Unfortunately, because of the way Best was designed, the hub
+             * does a lot of unnecessary extracting and compressing of files,
+             * when it already has the `tar` it needs to send to the agent.
+             *
+             * Because of that, the more tests Best has to run, the slower things
+             * will be, and sometimes Best will even crash.
+             *
+             * The following is a band-aid fix until a more major refactoring \
+             * rearchitecting of Best is done.
+             */
+
+            if (benchmarkConfig.isHub) {
+                await extractBenchmarkTarFile(tarFile);
+            }
 
             // Modify the benchmark bundle to point to the new files
             const uploadDir = path.dirname(tarFile);

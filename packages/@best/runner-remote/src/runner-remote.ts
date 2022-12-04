@@ -54,6 +54,7 @@ export class RunnerRemote {
     private running: boolean = false;
     private uploader?: SocketIOFile;
     private pendingBenchmarks: number;
+    private isHub: boolean;
     private socket: ClientSocket;
     private benchmarkBuilds: BuildConfig[];
     private runnerLogStream: RunnerStream;
@@ -63,7 +64,7 @@ export class RunnerRemote {
     private _onBenchmarksRunSuccess: Function = THROW_FUNCTION;
 
     constructor(benchmarksBuilds: BuildConfig[], runnerLogStream: RunnerStream, config: any) {
-        const { uri, options, specs, token } = config;
+        const { isHub, options, specs, token, uri } = config;
 
         const socketOptions = {
             path: '/best',
@@ -82,6 +83,7 @@ export class RunnerRemote {
         }
 
         this.uri = uri;
+        this.isHub = isHub;
         this.socket = Client(uri, proxifiedSocketOptions(socketOptions));
         this.benchmarkBuilds = benchmarksBuilds;
         this.pendingBenchmarks = benchmarksBuilds.length;
@@ -134,6 +136,8 @@ export class RunnerRemote {
             return this._triggerBenchmarkError('Already uploading a benchmark');
         }
 
+        benchmarkConfig.isHub = this.isHub;
+
         log_rpc(`${BENCHMARK_UPLOAD_REQUEST} - Sending: ${benchmarkConfig.benchmarkSignature}`);
 
         this.socket.emit(BEST_RPC.BENCHMARK_UPLOAD_RESPONSE, benchmarkConfig, async (benchmarkSignature: string) => {
@@ -142,7 +146,22 @@ export class RunnerRemote {
             const tarBundle = path.resolve(bundleDirname, `${benchmarkName}.tgz`);
 
             try {
-                await createTarBundle(bundleDirname, benchmarkName);
+                /*
+                 * Unfortunately, because of the way Best was designed, the hub
+                 * does a lot of unnecessary extracting and compressing of files,
+                 * when it already has the `tar` it needs to send to the agent.
+                 *
+                 * Because of that, the more tests Best has to run, the slower things
+                 * will be, and sometimes Best will even crash.
+                 *
+                 * The following is a band-aid fix until a more major refactoring \
+                 * rearchitecting of Best is done.
+                 */
+
+                if (!this.isHub) {
+                    await createTarBundle(bundleDirname, benchmarkName);
+                }
+
                 const uploader = await this._getUploaderInstance();
                 uploader.upload(tarBundle);
             } catch (err) {

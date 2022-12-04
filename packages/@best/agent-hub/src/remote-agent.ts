@@ -114,7 +114,13 @@ export default class RemoteAgent extends EventEmitter {
         if (this.isIdle() && remoteClient.getPendingBenchmarks() > 0) {
             this.state = AgentState.BUSY;
             const iterator = Array.from(Array(jobsToRun), (x, index) => index + 1);
-            const runnerConfig: any = { uri: this.uri, specs: remoteClient.getSpecs(), jobs: 1, options: {} };
+            const runnerConfig: any = {
+                isHub: true,
+                jobs: 1,
+                options: {},
+                specs: remoteClient.getSpecs(),
+                uri: this.uri,
+            };
             if (this.token) {
                 runnerConfig.options.authToken = this.token;
             }
