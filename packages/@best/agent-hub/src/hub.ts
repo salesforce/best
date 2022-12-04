@@ -232,7 +232,7 @@ export class Hub extends EventEmitter {
                     await remoteAgent.runBenchmarks(remoteClient);
                 } catch (err) {
                     console.log(`[HUB] Error running benchmark for remote client ${remoteClient.getId()}`);
-                    remoteClient.disconnectClient(`Error running benchmark ${err}`); // make sure we disconnect the agent
+                    remoteClient.disconnectClient(`Error running benchmark: ${(err as Error).message}`); // make sure we disconnect the agent
                 } finally {
                     this.activeClients.delete(remoteClient);
                     queueMicrotask(() => this.runQueuedBenchmarks());

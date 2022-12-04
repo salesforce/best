@@ -146,7 +146,7 @@ export class RunnerRemote {
                 const uploader = await this._getUploaderInstance();
                 uploader.upload(tarBundle);
             } catch (err) {
-                return this._triggerBenchmarkError(err);
+                return this._triggerBenchmarkError((err as Error).message);
             }
         });
     }

@@ -120,7 +120,7 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
             // Notify upload updates
             this.emit(BEST_RPC.REMOTE_CLIENT_UPLOAD_COMPLETED);
         } catch (err) {
-            this.disconnectClient(err as any);
+            this.disconnectClient((err as Error).message);
             this._requestJobError(err);
         } finally {
             this.state = RemoteClientState.IDLE;

@@ -121,7 +121,7 @@ export class Agent extends EventEmitter {
             } catch (err) {
                 console.log(`[AGENT] Error running benchmark for remote client ${remoteClient.getId()}`);
                 console.log(err);
-                remoteClient.disconnectClient(`Error running benchmark ${err}`); // make sure we disconnect the agent
+                remoteClient.disconnectClient(`Error running benchmark: ${(err as Error).message}`); // make sure we disconnect the agent
             } finally {
                 this.state = AgentState.IDLE;
                 this.interruption = undefined;
