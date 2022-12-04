@@ -113,6 +113,8 @@ export default class RemoteClient extends EventEmitter implements RunnerStream {
              *
              * The following is a band-aid fix until a more major refactoring \
              * rearchitecting of Best is done.
+             *
+             * Ref: https://github.com/salesforce/best/commit/889191e84607afd93b206d64c68649b5c0905952
              */
 
             if (benchmarkConfig.isHub) {
