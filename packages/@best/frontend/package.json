@@ -1,10 +1,10 @@
 {
   "dependencies": {
-    "@best/api-db": "8.1.0",
-    "@best/config": "8.1.0",
-    "@best/console-stream": "8.1.0",
-    "@best/github-integration": "8.1.0",
-    "@best/types": "8.1.0",
+    "@best/api-db": "8.1.1",
+    "@best/config": "8.1.1",
+    "@best/console-stream": "8.1.1",
+    "@best/github-integration": "8.1.1",
+    "@best/types": "8.1.1",
     "@lwc/compiler": "2.5.13",
     "@lwc/engine": "^1.17.6",
     "@lwc/rollup-plugin": "2.22.0",
@@ -56,5 +56,5 @@
     "watch": "concurrently 'yarn lwc:watch' 'yarn api:watch'"
   },
   "types": "build/index.d.ts",
-  "version": "8.1.0"
+  "version": "8.1.1"
 }

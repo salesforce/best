@@ -1,3 +1,13 @@
+# [8.1.1](https://github.com/salesforce/best/compare/v8.1.0...v8.1.1) (2022-12-04)
+
+
+### Bug Fixes
+
+* ensure files are fully written to disk before they are used ([5e4f3eb](https://github.com/salesforce/best/commit/5e4f3eb4b5d369cb135713818d8ae1550b976148))
+* improve efficiency by not doing unneeded extracting/compressing ([889191e](https://github.com/salesforce/best/commit/889191e84607afd93b206d64c68649b5c0905952))
+
+
+
 # [8.1.0](https://github.com/salesforce/best/compare/v8.0.1...v8.1.0) (2022-12-04)
 
 
