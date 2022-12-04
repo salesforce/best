@@ -1,9 +1,18 @@
-# [8.0.1](https://github.com/salesforce/best/compare/v8.0.0...v8.0.1) (2022-11-17)
+# [8.1.0](https://github.com/salesforce/best/compare/v8.0.1...v8.1.0) (2022-12-04)
+
+
+### Features
+
+* expose error messages to the client ([c030be4](https://github.com/salesforce/best/commit/c030be473f841bf1506ef00cdaa5872186a0de2e))
+
+
+
+## [8.0.1](https://github.com/salesforce/best/compare/v8.0.0...v8.0.1) (2022-11-17)
 
 
 ### Bug Fixes
 
-* measure only `script` performance if `metrics: ['script']` ([7089f52](https://github.com/salesforce/best/commit/7089f52dec2056904f38610e288e66eefe4b7875))
+* measure only `script` performance if `metrics: ['script']` ([6190687](https://github.com/salesforce/best/commit/6190687cce0559f1ed7678d70763c911a0f96610))
 
 
 
