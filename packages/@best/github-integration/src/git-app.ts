@@ -149,7 +149,7 @@ export default function GithubApplicationFactory(
 ) {
     const { baseUrl } = githubClientOptions;
     if (baseUrl) {
-        const agent = new https.Agent({ rejectUnauthorized: false });
+        const agent = new https.Agent();
         githubClientOptions = { agent, baseUrl };
     }
 
