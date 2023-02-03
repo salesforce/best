@@ -1,4 +1,13 @@
-# [8.1.1](https://github.com/salesforce/best/compare/v8.1.0...v8.1.1) (2022-12-04)
+# [](https://github.com/salesforce/best/compare/v8.1.1...v) (2023-02-03)
+
+
+### Bug Fixes
+
+* remove unnecessary engine restriction ([cfd987b](https://github.com/salesforce/best/commit/cfd987b1ce7f15daff598977889f09932ec23396))
+
+
+
+## [8.1.1](https://github.com/salesforce/best/compare/v8.1.0...v8.1.1) (2022-12-04)
 
 
 ### Bug Fixes
