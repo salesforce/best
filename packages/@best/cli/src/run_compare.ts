@@ -13,15 +13,15 @@ import {
     updateLatestRelease,
 } from '@best/github-integration';
 import { runBest } from './run_best';
-import git from 'simple-git/promise';
+import { simpleGit, SimpleGit } from 'simple-git';
 import { FrozenProjectConfig, FrozenGlobalConfig, BenchmarkComparison } from '@best/types';
 
 const STORAGE_FS = '@best/store-fs';
 const isHex = (x: string) => /^[0-9a-fA-F]+$/.test(x);
-const normalizeCommit = async (commit: string, gitCLI: any) => {
+const normalizeCommit = async (commit: string, gitCLI: SimpleGit) => {
     if (commit === 'current') {
         const result = await gitCLI.log();
-        commit = result.latest.hash;
+        commit = result.latest!.hash;
     }
 
     if (!isHex(commit)) {
@@ -44,9 +44,9 @@ export async function runCompare(
         externalStorage,
         compareStats = [],
     } = globalConfig;
-    const gitCLI = git(rootDir);
+    const gitCLI = simpleGit(rootDir);
     const status = await gitCLI.status();
-    const initialBranch = status.current;
+    const initialBranch: string = status.current as string;
 
     let baseCommit = compareStats[0] || 'main';
     let compareCommit = compareStats[1] || (localChanges ? 'local' : 'current');
@@ -84,7 +84,7 @@ export async function runCompare(
             storageProvider = require(STORAGE_FS);
             storageProvider.initialize({ rootDir });
             if (localChanges) {
-                await gitCLI.stash({ '--include-untracked': true });
+                await gitCLI.stash(['--include-untracked']);
                 stashedLocalChanges = true;
             }
 
@@ -104,7 +104,7 @@ export async function runCompare(
 
             // Run local changes or compare commit.
             if (compareCommit === 'local') {
-                await gitCLI.checkout(initialBranch);
+                await gitCLI.checkout(initialBranch)
                 if (stashedLocalChanges) {
                     await gitCLI.stash(['pop']);
                 }

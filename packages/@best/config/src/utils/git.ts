@@ -5,33 +5,26 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
  */
 
-import SimpleGit from 'simple-git/promise';
+import { simpleGit, SimpleGit } from 'simple-git';
 import { GitConfig } from '@best/types';
 
-// TODO: Remove this once the library fixes its types
-declare module 'simple-git/promise' {
-    interface SimpleGit {
-        listRemote(options: string[]): Promise<string>;
-    }
-}
-
-async function getCurrentHashAndDate(git: SimpleGit.SimpleGit): Promise<{ hash: string; date: string }> {
+async function getCurrentHashAndDate(git: SimpleGit): Promise<{ hash: string; date: string }> {
     const { latest } = await git.log();
-    const date = latest.date;
-    const hash = latest.hash.slice(0, 7);
+    const date = latest!.date;
+    const hash = latest!.hash.slice(0, 7);
     return { hash, date };
 }
 
-async function hasLocalChanges(git: SimpleGit.SimpleGit): Promise<boolean> {
+async function hasLocalChanges(git: SimpleGit): Promise<boolean> {
     const diff = await git.diffSummary();
     return diff.files && diff.files.length > 0;
 }
 
-function getBranch(git: SimpleGit.SimpleGit): Promise<string> {
+function getBranch(git: SimpleGit): Promise<string> {
     return git.revparse(['--abbrev-ref', 'HEAD']);
 }
 
-async function getRepository(git: SimpleGit.SimpleGit): Promise<{ owner: string; repo: string }> {
+async function getRepository(git: SimpleGit): Promise<{ owner: string; repo: string }> {
     const url = await git.listRemote(['--get-url']);
     const matches = url.trim().match(/^.+[:/](.+)\/(.+)/);
     if (!matches) {
@@ -43,7 +36,7 @@ async function getRepository(git: SimpleGit.SimpleGit): Promise<{ owner: string;
 }
 
 export async function getGitInfo(baseDir?: string): Promise<GitConfig | undefined> {
-    const git = SimpleGit(baseDir);
+    const git = simpleGit(baseDir);
     const isRepo = await git.checkIsRepo();
 
     if (isRepo) {
