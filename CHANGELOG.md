@@ -1,4 +1,16 @@
-# [](https://github.com/salesforce/best/compare/v8.1.1...v) (2023-02-03)
+# [](https://github.com/salesforce/best/compare/v8.1.2...v) (2023-02-17)
+
+
+### Bug Fixes
+
+* remove unused `rollup-plugin-compat` dependency ([24c8c9a](https://github.com/salesforce/best/commit/24c8c9a3b0e8faf4a1398c08d3129bae2b4923d0))
+* update `jsonwebtoken` to `v9.0.0` ([6279ac3](https://github.com/salesforce/best/commit/6279ac3941b09a3d217e61f57f4e30f506cc7a36))
+* update `micromatch` to `v4` ([6d1c8b4](https://github.com/salesforce/best/commit/6d1c8b465340e6547cfc119cdc8818b8cf9ea16b))
+* update `simple-git` to `v3` ([78d372f](https://github.com/salesforce/best/commit/78d372f093197d4d0b0de8d32b521bae2e1ac2ed))
+
+
+
+## [8.1.2](https://github.com/salesforce/best/compare/v8.1.1...v8.1.2) (2023-02-03)
 
 
 ### Bug Fixes

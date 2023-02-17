@@ -1,7 +1,7 @@
 {
   "name": "@best/docs",
   "license": "MIT",
-  "version": "8.1.2",
+  "version": "8.1.3",
   "private": true,
   "scripts": {
     "test:links": "node scripts/verify-doc-links",

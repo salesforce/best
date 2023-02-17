@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "best": "8.1.2"
+    "best": "8.1.3"
   },
   "name": "perf-benchmarks",
   "private": true,
@@ -8,5 +8,5 @@
     "remote": "best",
     "start": "best"
   },
-  "version": "8.1.2"
+  "version": "8.1.3"
 }
