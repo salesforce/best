@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "husky": "^2.3",
-    "lint-staged": "^8.1.5"
+    "lint-staged": "13.1.2"
   },
   "files": [
     "build/**/*.js",

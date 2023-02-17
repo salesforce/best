@@ -36,7 +36,7 @@
     "escape-html": "1.0.3",
     "gray-matter": "4.0.3",
     "hash-sum": "^1.0.2",
-    "lint-staged": "~8.1.0",
+    "lint-staged": "13.1.2",
     "lru-cache": "^5.1.1",
     "markdown-it": "~8.4.1",
     "markdown-it-anchor": "~5.0.2",
