@@ -1,7 +1,6 @@
 import * as urlstorage from '../urlstorage';
 
 const setLocation = (pathname, hash) => {
-    global.window = Object.create(window);
     Object.defineProperty(window, 'location', {
         writable: true,
         value: {

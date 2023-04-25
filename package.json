@@ -69,7 +69,7 @@
     "watch:docs": "cd docs && yarn watch"
   },
   "volta": {
-    "node": "18.14.0"
+    "node": "18.16.0"
   },
   "workspaces": [
     "docs",
