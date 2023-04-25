@@ -14372,6 +14372,11 @@ please-upgrade-node@^3.1.1:
   dependencies:
     semver-compare "^1.0.0"
 
+plotly.js-basic-dist-min@2.21.0:
+  version "2.21.0"
+  resolved "https://registry.yarnpkg.com/plotly.js-basic-dist-min/-/plotly.js-basic-dist-min-2.21.0.tgz#eb4f4519fe912522df2c010e61be3cf2092a53ce"
+  integrity sha512-+Bwe1aOEZh14OYi37SSWtLAI3umuJO61HVLyMZcT748vkjhTX0tqzAF5y1v0q/AZd7rHMMzO+VinqIDqvqpxcQ==
+
 portfinder@^1.0.26:
   version "1.0.28"
   resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.28.tgz#67c4622852bd5374dd1dd900f779f53462fac778"
