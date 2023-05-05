@@ -4,7 +4,7 @@
     "https-proxy-agent": "5.0.1",
     "is-ci": "^3.0.1",
     "picocolors": "^1.0.0",
-    "systeminformation": "5.12.13",
+    "systeminformation": "5.17.12",
     "winston": "3.8.2"
   },
   "description": "Best Utils",

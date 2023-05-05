@@ -1,9 +1,9 @@
 {
   "dependencies": {
     "https-proxy-agent": "5.0.1",
-    "pg": "^8.4.1",
-    "sqlite": "4.1.2",
-    "sqlite3": "5.1.2"
+    "pg": "8.10.0",
+    "sqlite": "4.2.0",
+    "sqlite3": "5.1.6"
   },
   "description": "Best Api Database",
   "devDependencies": {

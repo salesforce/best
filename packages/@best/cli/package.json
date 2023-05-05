@@ -20,7 +20,7 @@
     "fast-glob": "3.2.12",
     "micromatch": "4.0.5",
     "rimraf": "3.0.2",
-    "simple-git": "3.16.1",
+    "simple-git": "3.18.0",
     "simple-statistics": "^6.0.1",
     "yargs": "^16.1.0"
   },
