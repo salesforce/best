@@ -22,7 +22,8 @@ that allows you to monitor your benchmarks over the time with each commit.
 
 ## Getting Started
 
-Ready to jump in? We recommend starting with [The "Best" Manifesto][best introduction] first, and then once you have a solid understanding of how
+Ready to jump in? We recommend starting with [The "Best" Manifesto][best
+introduction] first, and then once you have a solid understanding of how
 Best works, checking out the [Developer Guide][getting started] to read
 about how to get started!
 
@@ -39,7 +40,7 @@ that](.github/CONTRIBUTING.md) too.
 
 This project is licensed under the [MIT license](LICENSE).
 
-[best introduction]: https://bestjs.dev/guide/introduction
+[best introduction]: docs/content/docs/introduction.md
 [build icon]: https://github.com/salesforce/best/actions/workflows/tests.yml/badge.svg
 [build url]: https://github.com/salesforce/best/actions/workflows/tests.yml
-[getting started]: https://bestjs.dev/guide/getting-started
+[getting started]: docs/content/docs/getting-started.md
