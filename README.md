@@ -40,7 +40,7 @@ that](.github/CONTRIBUTING.md) too.
 
 This project is licensed under the [MIT license](LICENSE).
 
-[best introduction]: docs/content/docs/introduction.md
+[best introduction]: https://opensource.salesforce.com/best/#/introduction/
 [build icon]: https://github.com/salesforce/best/actions/workflows/tests.yml/badge.svg
 [build url]: https://github.com/salesforce/best/actions/workflows/tests.yml
-[getting started]: docs/content/docs/getting-started.md
+[getting started]: https://opensource.salesforce.com/best/#/getting-started/

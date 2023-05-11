@@ -105,20 +105,19 @@ const GENERIC_IGNORED_PATTERNS = [
 
 const CUSTOM_IGNORED_PATTERNS = [
     // add anything repo specific here
-    'babel.config.js',
-    'webpack.config.js',
-    'jest.config.js',
-    '/fixtures/',
     '/__mocks__/',
     '/bin/',
-    'scripts/jest/',
-    'docs/config.js',
-    'docs/src/client/',
+    '/fixtures/',
+    '/integration-karma/test/.*$',
+    '/integration-tests/src/(.(?!.*.spec.js$))*$',
+    'babel.config.js',
+    'docs',
+    'jest.config.js',
     'packages/@best/agent-frontend/src/client/modules/',
     'packages/@best/agent/src/utils/socket.io-file.ts',
     'packages/@best/frontend/src/modules',
-    '/integration-tests/src/(.(?!.*.spec.js$))*$',
-    '/integration-karma/test/.*$',
+    'scripts/jest/',
+    'webpack.config.js'
 ].map(createRegExp);
 
 const IGNORED_PATTERNS = [...IGNORED_EXTENSIONS, ...GENERIC_IGNORED_PATTERNS, ...CUSTOM_IGNORED_PATTERNS];

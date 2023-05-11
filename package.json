@@ -10,6 +10,7 @@
     "@babel/preset-typescript": "~7.3.3",
     "@commitlint/cli": "17.6.3",
     "@commitlint/config-conventional": "17.6.3",
+    "@lwc/jest-preset": "11.2.1",
     "@types/debug": "0.0.30",
     "@types/express": "4.17.14",
     "@types/jest": "27.5.1",
@@ -28,11 +29,10 @@
     "conventional-changelog-cli": "2.2.2",
     "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
-    "husky": "2.3.0",
     "husky": "2.4.0",
     "isbinaryfile": "^4.0.2",
-    "jest": "27.5.1",
     "jest-environment-jsdom": "27.5.1",
+    "jest": "27.5.1",
     "jsonwebtoken": "9.0.0",
     "lerna": "^3.18.3",
     "prettier": "2.8.8",
@@ -53,12 +53,11 @@
     "js-yaml": "^3.13.1"
   },
   "scripts": {
-    "build": "tsc -b",
     "build:docs": "cd docs && yarn build",
     "build:frontends": "NODE_OPTIONS=--openssl-legacy-provider lerna exec --scope **/agent-frontend --scope **/frontend -- yarn build",
+    "build": "tsc -b",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "clean": "lerna run clean && lerna clean --yes && rimraf -g packages/**/build && rimraf packages/**/tsconfig.tsbuildinfo && rimraf -g packages/**/dist && rimraf -g packages/**/node_modules",
-    "deploy:docs": "git subtree push --prefix docs heroku-docs main",
     "lint": "eslint packages/ --ext=js,ts",
     "perf": "cd packages/best-benchmarks/ && yarn start",
     "prepare": "yarn build && yarn build:frontends",
@@ -67,7 +66,7 @@
     "release": "lerna version -m 'chore(release): publish %s' --exact --force-publish=* --no-git-tag-version --no-push --no-commit-hooks",
     "start": "node ./scripts/start.js",
     "test": "jest --config ./scripts/jest/root.config.js",
-    "watch:docs": "cd docs && yarn watch"
+    "watch:docs": "cd docs && yarn start"
   },
   "volta": {
     "node": "18.16.0"

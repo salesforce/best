@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Best - Docs</title>
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="_assets/styles.css">
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22><text y=%2230%22 font-size=%2230%22>📚</text></svg>">
+        <style>
+
+            /* Overwrite styles */
+
+            #main h1 {
+                font-size: 3em
+            }
+
+            .content {
+                align-items: center;
+            }
+
+            .content {
+                bottom: auto;
+            }
+
+            .markdown-section {
+                flex: 1 1 0;
+                max-width: 800px;
+                padding: 0 15px 100px;
+            }
+
+            .nav {
+                width: var(--toc-width, 250px);
+                align-self: flex-start;
+                flex: 0 0 auto;
+            }
+
+            .page_toc {
+                overflow-y: auto;
+                height: 90%;
+                padding: 0 15px 0 5px;
+            }
+
+            .page_toc ul a:hover {
+                border-bottom: none !important;
+                text-decoration: none !important;
+            }
+
+            .page_toc li {
+                padding-left: 5px;
+            }
+
+            .sidebar {
+                background: #fafafa;
+                overflow-y: scroll;
+            }
+
+            .sidebar .sidebar-nav {
+                padding: 0 0 40px 15px;
+            }
+
+            .sidebar-nav li {
+                cursor: pointer;
+            }
+
+            .app-name-link img {
+                margin: 20px 5px 20px;
+                width: 30%;
+            }
+
+            .app-sub-sidebar li:before {
+                content: "•";
+            }
+
+
+            /* Styles for the custom `Edit this page` button */
+
+            .edit-page-button {
+                display: inline-block;
+                float: right;
+                margin: 10px 0;
+            }
+
+            @media only screen and (max-width: 1300px) {
+                .edit-page-button {
+                    float: none;
+                }
+            }
+
+        </style>
+    </head>
+    <body>
+        <div id="app"></div>
+        <script>
+(() => {
+
+const GITHUB_REPO_URL = 'https://github.com/salesforce/best';
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+const getGithubEditElement = (vm) => `
+<div class="edit-page-button">
+    📝 <a href="${GITHUB_REPO_URL}/edit/main/docs/${vm.route.file} "target="_blank" rel="noopener">Edit this page</a>
+</div>`;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+window.$docsify = {
+
+    /*
+     * Fix `.../sidebar.md` not found errors.
+     *
+     * e.g.: GET http://localhost:3000/performance-team/_sidebar.md 404 (Not Found)
+     *
+     * https://docsify.js.org/#/more-pages?id=nested-sidebars
+     */
+
+    alias: {
+        '/.*/_sidebar.md': '/_sidebar.md'
+    },
+
+    /*
+     * Automatically scroll to the top when the route is changed.
+     * https://docsify.js.org/#/configuration?id=auto2top
+     */
+
+    auto2top: true,
+
+    /*
+     * Enable the sidebar and use the custom template from
+     * the `_sidebar.md` file.
+     *
+     * https://docsify.js.org/#/configuration?id=loadsidebar
+     */
+
+    loadSidebar: true,
+
+    /*
+     * Use the following image as the website's logo
+     * https://docsify.js.org/#/configuration?id=logo
+     */
+
+    logo: '_assets/logo.svg',
+
+    /*
+     * Use the following name for the website name
+     * (this value will be used in the sidebar).
+     *
+     * https://docsify.js.org/#/configuration?id=name
+     */
+
+    name: 'Best - Documentation',
+
+    /*
+     * Make links relative to the current context.
+     * https://docsify.js.org/#/configuration?id=relativepath
+     */
+
+    relativePath: true,
+
+    /*
+     * Add the GitHub Corner widget in the top right corner
+     * of the site that links to the GitHub repository.
+     */
+
+    repo: GITHUB_REPO_URL,
+
+    /*
+     * Enable full text search.
+     * https://docsify.js.org/#/plugins?id=full-text-search
+     */
+
+    search: {
+        hideOtherSidebarContent: true,
+        noData: 'No Results. :(',
+        placeholder: 'Search documentation'
+    },
+
+    /*
+     * Generate a custom table of contents (TOC) in the
+     * custom sidebar up to the following specified level.
+     *
+     * https://docsify.js.org/#/configuration?id=submaxlevel
+     */
+
+    subMaxLevel: 1,
+
+    /*
+     * Automatically generate the 'Table of Contents'
+     * https://github.com/mrpotatoes/docsify-toc
+     */
+
+    toc: {
+        headings: 'h2, h3',
+        scope: '.markdown-section',
+        title: 'Table of Contents'
+    },
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    plugins: [
+        (hook, vm) => {
+            hook.beforeEach((markdown) => {
+
+               /*
+                * Add a `edit` link to pages that points
+                * to the page's GitHub edit view.
+                *
+                * https://docsify.js.org/#/write-a-plugin
+                */
+
+                return `${getGithubEditElement(vm)}\n\n${markdown}`;
+            });
+
+            hook.afterEach(function(html, next) {
+                /*
+                 * Make browsers lazy-load images and iframes.
+                 *
+                 * https://web.dev/native-lazy-loading/
+                 * https://web.dev/iframe-lazy-loading/
+                 */
+
+                 next(
+                    html.replace(/<img/ig, '<img loading="lazy" decoding="async"')
+                        .replace(/<iframe/ig, '<iframe loading="lazy"')
+                 );
+            });
+        }
+    ]
+};
+
+})();
+        </script>
+        <script src="_assets/scripts.js"></script>
+    </body>
+</html>

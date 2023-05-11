@@ -14,7 +14,7 @@ export const check = () => {
 };
 
 export const usage = 'Usage: $0 [--config=<pathToConfigFile>] [BenchmarkPathPattern]';
-export const docs = 'Documentation: https://github.com/salesforce/best/tree/main/docs/content/docs';
+export const docs = 'Documentation: https://opensource.salesforce.com/best';
 
 export const options: { [key: string]: Options } = {
     config: {

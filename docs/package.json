@@ -1,52 +1,29 @@
 {
-  "name": "@best/docs",
-  "license": "MIT",
-  "version": "8.1.3",
-  "private": true,
-  "scripts": {
-    "test:links": "node scripts/verify-doc-links",
-    "clean": "rm -rf dist/",
-    "build:assets": "node scripts/generate-assets",
-    "build:home": "node scripts/generate-homepage.js",
-    "build:notfound": "node scripts/generate-notfound.js",
-    "build:docs": "node scripts/generate-documentation.js",
-    "build:blog": "node scripts/generate-blog.js",
-    "build": "npm run build:assets && npm run build:home && npm run build:blog && npm run build:docs && npm run build:notfound",
-    "watch": "cross-env WATCH=1 yarn start",
-    "start": "node ./src/server/index.js"
-  },
-  "dependencies": {
-    "compression": "1.7.3",
-    "express": "4.18.2",
-    "express-winston": "~3.0.1",
-    "serve-static": "1.15.0",
-    "winston": "~3.8.2"
-  },
-  "devDependencies": {
-    "@lwc/compiler": "2.5.13",
-    "@lwc/engine": "1.17.6",
-    "@lwc/jest-preset": "11.2.1",
-    "@lwc/rollup-plugin": "2.22.0",
-    "@lwc/synthetic-shadow": "2.22.0",
-    "@lwc/wire-service": "2.22.0",
-    "cpy": "~7.0.1",
-    "cross-env": "^5.2.0",
-    "dateformat": "^3.0.3",
-    "decamelize": "^3.2.0",
-    "escape-html": "1.0.3",
-    "gray-matter": "4.0.3",
-    "hash-sum": "^1.0.2",
-    "lint-staged": "13.2.2",
-    "lru-cache": "^5.1.1",
-    "markdown-it": "~8.4.1",
-    "markdown-it-anchor": "5.0.2",
-    "markdown-it-chain": "1.3.0",
-    "markdown-it-container": "2.0.0",
-    "markdown-it-emoji": "1.4.0",
-    "markdown-link-check": "3.11.2",
-    "mkdirp": "0.5.1",
-    "prismjs": "1.29.0",
-    "reload": "3.2.1",
-    "watch": "1.0.2"
-  }
+    "devDependencies": {
+        "csso-cli": "4.0.2",
+        "docsify-cli": "4.4.4",
+        "docsify-copy-code": "2.1.1",
+        "docsify-sidebar-collapse": "1.3.5",
+        "docsify-toc": "1.1.0",
+        "docsify": "4.13.0",
+        "html-minifier-terser": "7.2.0",
+        "prismjs": "1.29.0",
+        "terser": "5.17.1"
+    },
+    "name": "@best/docs",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/salesforce/best"
+    },
+    "scripts": {
+        "build": "./_scripts/build.sh",
+        "start": "docsify serve ."
+    },
+    "version": "8.1.3",
+    "workspaces": {
+        "nohoist": [
+            "**"
+        ]
+    }
 }

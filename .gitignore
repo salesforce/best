@@ -16,4 +16,3 @@ __benchmarks_results__
 # Builds
 packages/**/build/
 packages/**/dist/
-docs/dist/
