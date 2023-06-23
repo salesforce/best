@@ -172,8 +172,18 @@ window.$docsify = {
 
     search: {
         hideOtherSidebarContent: true,
-        noData: 'No Results. :(',
-        placeholder: 'Search documentation'
+        placeholder: 'Search documentation',
+
+        // Expiration time: 1 day.
+        maxAge: 86400000,
+
+        /**
+         * Avoid search index collision between multiple websites
+         * under the same domain.
+         */
+
+        namespace: 'best',
+        noData: 'No Results. :('
     },
 
     /*
