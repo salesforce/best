@@ -23,7 +23,7 @@ import {
 import { crossOriginIsolation } from './cross-origin-isolation';
 
 export default abstract class AbstractRunner {
-    abstract async run(
+    abstract run(
         benchmarkBuilds: BuildConfig[],
         projectConfig: FrozenProjectConfig,
         globalConfig: FrozenGlobalConfig,

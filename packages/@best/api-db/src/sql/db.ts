@@ -50,7 +50,7 @@ export abstract class SQLDatabase {
     async createProject(name: string, swallowNonUniqueErrors: boolean = false): Promise<SQLQueryResult> {
         try {
             return await this.query('INSERT INTO projects("name") VALUES ($1)', [name]);
-        } catch (err) {
+        } catch (err: any) {
             if (
                 swallowNonUniqueErrors &&
                 (err.constraint === 'projects_unique_name' || err.code === 'SQLITE_CONSTRAINT')
@@ -86,7 +86,7 @@ export abstract class SQLDatabase {
     async createOrUpdateSnapshot(snapshot: TemporarySnapshot, projectId: number): Promise<SQLQueryResult> {
         try {
             return await this.createSnapshot(snapshot, projectId);
-        } catch (err) {
+        } catch (err: any) {
             if (err.constraint === 'best_snapshot_unqiue_index' || err.code === 'SQLITE_CONSTRAINT') {
                 const updatedAt = new Date();
                 const values = [

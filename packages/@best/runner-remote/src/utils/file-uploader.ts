@@ -25,7 +25,7 @@ export default class SocketIOFileClient extends EventEmitter {
     uploadingFiles: any;
     isDestroyed: boolean | undefined;
     chunkSize: any;
-    ev: null;
+
     constructor(socket: any) {
         super();
 
@@ -174,7 +174,6 @@ export default class SocketIOFileClient extends EventEmitter {
         Object.keys(this.uploadingFiles).forEach((k) => this.abort(k));
         this.socket = null;
         this.uploadingFiles = null;
-        this.ev = null;
         this.isDestroyed = true;
     }
 

@@ -63,12 +63,12 @@ const executeBenchmark = async (
                         await nextTick();
                         benchmarkNode.aggregate = formatTime(time() - benchmarkNode.startedAt);
                         endMeasure(markName, BenchmarkMeasureType.Execute);
-                        resolve();
+                        resolve(null);
                     })();
                 } else {
                     benchmarkNode.aggregate = formatTime(time() - benchmarkNode.startedAt);
                     endMeasure(markName, BenchmarkMeasureType.Execute);
-                    resolve();
+                    resolve(null);
                 }
             } catch (e) {
                 benchmarkNode.aggregate = -1;

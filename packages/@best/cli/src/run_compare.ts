@@ -148,7 +148,7 @@ export async function runCompare(
         }
 
         return compareResults;
-    } catch (err) {
+    } catch (err: any) {
         if (gitIntegration && gitHubInstallation && check) {
             await failedBenchmarkComparisonCheck(gitHubInstallation, check, err.toString(), globalConfig);
         }

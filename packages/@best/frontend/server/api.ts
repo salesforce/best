@@ -70,7 +70,7 @@ export default (config: FrontendConfig): Router => {
     });
 
     router.get('/:project/snapshots', async (req, res): Promise<void> => {
-        const { project }: { project?: number } = req.params;
+        const { project } = req.params;
         const { since }: { since?: string } = req.query;
 
         try {
@@ -85,7 +85,7 @@ export default (config: FrontendConfig): Router => {
                 throw new Error('Please provide a project id.');
             }
 
-            const snapshots = await db.fetchSnapshots(project, parsedSince);
+            const snapshots = await db.fetchSnapshots(Number(project), parsedSince);
 
             res.send({
                 snapshots,
@@ -104,7 +104,7 @@ export default (config: FrontendConfig): Router => {
             await db.saveSnapshots(snapshots, projectName);
 
             res.status(200).end();
-        } catch (err) {
+        } catch (err: any) {
             res.status(500).json({ error: err.message });
         }
     });
