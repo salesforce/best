@@ -2,7 +2,7 @@
   "dependencies": {
     "@best/runner-abstract": "8.1.3",
     "@best/types": "8.1.3",
-    "puppeteer": "19.2.2"
+    "puppeteer": "20.9.0"
   },
   "description": "Best Runner (Headless)",
   "files": [

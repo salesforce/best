@@ -9,6 +9,7 @@ import path from 'path';
 import fs from 'fs';
 import os from 'os';
 import puppeteer from 'puppeteer';
+import type * as Puppeteer from 'puppeteer';
 import { parseTrace, removeTrace, mergeTracedMetrics } from './trace';
 import { FrozenProjectConfig, BrowserSpec } from '@best/types';
 
@@ -24,7 +25,7 @@ const BROWSER_ARGS = [
     '--enable-precise-memory-info',
 ];
 
-const PUPPETEER_OPTIONS: puppeteer.BrowserLaunchArgumentOptions = { args: BROWSER_ARGS };
+const PUPPETEER_OPTIONS: Puppeteer.BrowserLaunchArgumentOptions = { args: BROWSER_ARGS };
 
 function tempDir() {
     const TEMP_DIR_PREFIX = 'runner-headless-temp';
@@ -32,7 +33,7 @@ function tempDir() {
 }
 
 interface HeadlessRunnerConfig {
-    readonly launchOptions?: Readonly<puppeteer.LaunchOptions>;
+    readonly launchOptions?: Readonly<Puppeteer.LaunchOptions>;
 }
 
 export default class HeadlessBrowser {
@@ -40,8 +41,8 @@ export default class HeadlessBrowser {
     projectConfig: FrozenProjectConfig;
     tracePath: string;
     tracingEnabled: boolean;
-    browser?: puppeteer.Browser;
-    page?: puppeteer.Page;
+    browser?: Puppeteer.Browser;
+    page?: Puppeteer.Page;
     pageError?: Error;
 
     constructor(url: string, projectConfig: FrozenProjectConfig) {
@@ -121,8 +122,8 @@ export default class HeadlessBrowser {
     static async getSpecs(): Promise<BrowserSpec[]> {
         // TODO: Create pupeteer test so we fail when upgrading
         return [
-            { name: 'chrome.headless', version: '108' },
-            { name: 'chrome', version: '108' },
+            { name: 'chrome.headless', version: '115' },
+            { name: 'chrome', version: '115' },
         ];
     }
 }
