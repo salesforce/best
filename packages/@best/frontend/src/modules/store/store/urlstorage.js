@@ -5,6 +5,7 @@ const DEBOUNCE_DURATION = 500;
 function debounce(fn, duration) {
     let timer;
     return function (...args) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const thisValue = this;
 
         if (timer) {
@@ -30,9 +31,9 @@ function updateProjectsPathIfNeeded(projectId) {
 }
 
 function friendlyZoom(zoom) {
-    if (zoom.hasOwnProperty('xaxis.range')) {
+    if (Object.prototype.hasOwnProperty.call(zoom, 'xaxis.range')) {
         return zoom['xaxis.range'];
-    } else if (zoom.hasOwnProperty('xaxis.range[0]')) {
+    } else if (Object.prototype.hasOwnProperty.call(zoom, 'xaxis.range[0]')) {
         return [zoom['xaxis.range[0]'], zoom['xaxis.range[1]']];
     }
 

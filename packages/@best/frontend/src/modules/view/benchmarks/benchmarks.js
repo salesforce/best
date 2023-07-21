@@ -54,9 +54,9 @@ export default class ViewBenchmarks extends LightningElement {
     }
 
     get zoom() {
-        if (this.viewZoom.hasOwnProperty('xaxis.range')) {
+        if (Object.prototype.hasOwnProperty.call(this.viewZoom, 'xaxis.range')) {
             return this.viewZoom['xaxis.range'];
-        } else if (this.viewZoom.hasOwnProperty('xaxis.range[0]')) {
+        } else if (Object.prototype.hasOwnProperty.call(this.viewZoom, 'xaxis.range[0]')) {
             return [this.viewZoom['xaxis.range[0]'], this.viewZoom['xaxis.range[1]']];
         }
 

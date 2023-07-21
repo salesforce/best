@@ -41,6 +41,7 @@ interface RuntimeNodeRunner extends RuntimeNode {
     metrics: { [key: string]: number };
 }
 
+// eslint-disable-next-line no-redeclare
 type RuntimeNode = RuntimeNodeDescribe | RuntimeNodeBenchmark | RuntimeNodeRunner;
 
 interface BenchmarkState {

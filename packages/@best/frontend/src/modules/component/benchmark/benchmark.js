@@ -46,7 +46,7 @@ export default class ComponentBenchmark extends LightningElement {
         if (this.element) {
             relayout(this.element, this.currentLayout);
 
-            // eslint-disable-next-line lwc/no-raf, @lwc/lwc/no-async-operation
+            // eslint-disable-next-line @lwc/lwc/no-async-operation
             window.requestAnimationFrame(() => {
                 this.updateGraphZoom();
             });

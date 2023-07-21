@@ -24,45 +24,57 @@
         "no-lone-blocks": "error",
         "no-proto": "error",
         "no-new-require": "error",
-        "no-restricted-properties": ["error", {
-            "object": "arguments",
-            "property": "callee",
-            "message": "arguments.callee is deprecated"
-        }, {
-            "object": "global",
-            "property": "isFinite",
-            "message": "Please use Number.isFinite instead"
-        }, {
-            "object": "self",
-            "property": "isFinite",
-            "message": "Please use Number.isFinite instead"
-        }, {
-            "object": "window",
-            "property": "isFinite",
-            "message": "Please use Number.isFinite instead"
-        }, {
-            "object": "global",
-            "property": "isNaN",
-            "message": "Please use Number.isNaN instead"
-        }, {
-            "object": "self",
-            "property": "isNaN",
-            "message": "Please use Number.isNaN instead"
-        }, {
-            "object": "window",
-            "property": "isNaN",
-            "message": "Please use Number.isNaN instead"
-        }, {
-            "property": "__defineGetter__",
-            "message": "Please use Object.defineProperty instead."
-        }, {
-            "property": "__defineSetter__",
-            "message": "Please use Object.defineProperty instead."
-        }, {
-            "object": "Math",
-            "property": "pow",
-            "message": "Use the exponentiation operator (**) instead."
-        }],
+        "no-restricted-properties": [
+            "error",
+            {
+                "object": "arguments",
+                "property": "callee",
+                "message": "arguments.callee is deprecated"
+            },
+            {
+                "object": "global",
+                "property": "isFinite",
+                "message": "Please use Number.isFinite instead"
+            },
+            {
+                "object": "self",
+                "property": "isFinite",
+                "message": "Please use Number.isFinite instead"
+            },
+            {
+                "object": "window",
+                "property": "isFinite",
+                "message": "Please use Number.isFinite instead"
+            },
+            {
+                "object": "global",
+                "property": "isNaN",
+                "message": "Please use Number.isNaN instead"
+            },
+            {
+                "object": "self",
+                "property": "isNaN",
+                "message": "Please use Number.isNaN instead"
+            },
+            {
+                "object": "window",
+                "property": "isNaN",
+                "message": "Please use Number.isNaN instead"
+            },
+            {
+                "property": "__defineGetter__",
+                "message": "Please use Object.defineProperty instead."
+            },
+            {
+                "property": "__defineSetter__",
+                "message": "Please use Object.defineProperty instead."
+            },
+            {
+                "object": "Math",
+                "property": "pow",
+                "message": "Use the exponentiation operator (**) instead."
+            }
+        ],
         "no-self-compare": "error",
         "no-undef-init": "error",
         "no-unused-vars": "off",
@@ -70,17 +82,19 @@
         "no-useless-computed-key": "error",
         "no-useless-return": "error",
         "no-with": "error",
-        "prefer-const": ["error", {
-            "destructuring": "any",
-            "ignoreReadBeforeAssign": true
-            }],
-        "template-curly-spacing": "error"
+        "prefer-const": [
+            "error",
+            {
+                "destructuring": "any",
+                "ignoreReadBeforeAssign": true
+            }
+        ],
+        "template-curly-spacing": "error",
+        "no-prototype-builtins": "off"
     },
     "overrides": [
         {
-            "files": [
-                "**/__benchmarks__/**"
-            ],
+            "files": ["**/__benchmarks__/**"],
 
             "env": {
                 "jest": true
@@ -91,30 +105,28 @@
             }
         },
         {
-            "files": [
-                "**/__tests__/**",
-                "**/__mocks__/**"
-            ],
-
+            "files": ["**/__tests__/**", "**/__mocks__/**"],
             "env": {
                 "jest": true
             }
         },
         {
-            "files": [
-                "**/@best/runtime/**"
-            ],
-
+            "files": ["**/@best/runtime/**"],
             "env": {
                 "browser": true
             }
         },
         {
-            "files": [
-                "**/@best/api-db/**/migrations/**"
-            ],
+            "files": ["**/@best/api-db/**/migrations/**"],
             "rules": {
                 "@typescript-eslint/camelcase": "off"
+            }
+        },
+        {
+            "files": ["*.ts"],
+            "rules": {
+                "no-undef": "off",
+                "no-explicit-any": "off"
             }
         }
     ]

@@ -23,6 +23,7 @@ export const Frontend = (config: FrontendConfig): express.Application => {
 
     const app: express.Application = express();
 
+    // @ts-expect-error: The type definitions are wrong.
     app.use(compression());
     app.use(express.json());
 

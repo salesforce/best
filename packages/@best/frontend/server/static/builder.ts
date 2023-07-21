@@ -22,7 +22,7 @@ const timeFromQuery = (project: { lastReleaseDate: string }, timing: string): Da
         const date = new Date(project.lastReleaseDate);
         return date;
     } else if (timing === '2-months') {
-        let date = new Date();
+        const date = new Date();
         date.setMonth(date.getMonth() - 2);
         return date;
     }

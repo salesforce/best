@@ -104,7 +104,6 @@ export default class Runner extends AbstractRunner {
         const estimatedIterationTime = testResult.aggregate;
 
         const start = Date.now();
-        // eslint-disable-next-line lwc/no-set-interval
         const intervalId = setInterval(() => {
             const executing = Date.now() - start;
             state.executedTime = executing;

@@ -104,8 +104,8 @@ export default (config: FrontendConfig): Router => {
             await db.saveSnapshots(snapshots, projectName);
 
             res.status(200).end();
-        } catch (err: any) {
-            res.status(500).json({ error: err.message });
+        } catch (err) {
+            res.status(500).json({ error: (err as Error).message });
         }
     });
 

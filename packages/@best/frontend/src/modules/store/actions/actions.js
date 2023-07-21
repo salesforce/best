@@ -133,7 +133,7 @@ export function selectProject(project, shouldResetView) {
  */
 
 function shouldFetchCommitInfo(state, commit) {
-    return !state.commitInfo.hasOwnProperty(normalizeCommit(commit));
+    return !Object.prototype.hasOwnProperty.call(state.commitInfo, normalizeCommit(commit));
 }
 
 function commitInfoReceived(commit, commitInfo) {

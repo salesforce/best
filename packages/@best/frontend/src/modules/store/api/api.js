@@ -10,7 +10,7 @@ function timeQuery(project, timing) {
         const date = new Date(project.lastReleaseDate);
         return `since=${date.getTime()}`;
     } else if (timing === '2-months') {
-        let date = new Date();
+        const date = new Date();
         date.setMonth(date.getMonth() - 2);
         return `since=${date.getTime()}`;
     }
