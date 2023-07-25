@@ -50,11 +50,12 @@
     "url": "https://github.com/salesforce/best.git"
   },
   "resolutions": {
-    "js-yaml": "^3.13.1"
+    "js-yaml": "^3.13.1",
+    "webpack": "5.88.2"
   },
   "scripts": {
     "build:docs": "yarn workspace @best/docs build",
-    "build:frontends": "NODE_OPTIONS=--openssl-legacy-provider lerna exec --scope **/agent-frontend --scope **/frontend -- yarn build",
+    "build:frontends": "lerna exec --scope @best/agent-frontend --scope @best/frontend -- yarn build",
     "build": "tsc -b",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "clean": "lerna run clean && lerna clean --yes && rimraf -g packages/**/build && rimraf packages/**/tsconfig.tsbuildinfo && rimraf -g packages/**/dist && rimraf -g packages/**/node_modules",
