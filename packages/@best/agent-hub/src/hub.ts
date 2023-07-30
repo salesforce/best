@@ -272,10 +272,32 @@ export class Hub extends EventEmitter {
         return this.findAgentMatchingSpecs(remoteClient, { ignoreBusy: true }).length > 0;
     }
 
+    findLatestAvailableBrowserVersion(browserName: string = ''): string {
+        let latestVersion: number = -1;
+
+        for (const agent of this.connectedAgents) {
+            const agentSpecs = agent.getSpecs();
+            agentSpecs.forEach((agentSpec) => {
+                if (agentSpec.name === browserName) {
+                    const version = Number(agentSpec.version);
+                    if (version > latestVersion) {
+                        latestVersion = version;
+                    }
+                }
+            });
+        }
+
+        return latestVersion.toString();
+    }
+
     findAgentMatchingSpecs(remoteClient: RemoteClient, { ignoreBusy }: { ignoreBusy?: boolean } = {}): RemoteAgent[] {
         const specs = remoteClient.getSpecs();
         const agents: RemoteAgent[] = [];
         if (specs) {
+            if (specs.version === 'latest') {
+                specs.version = this.findLatestAvailableBrowserVersion(specs.name);
+            }
+
             for (const agent of this.connectedAgents) {
                 const matchesSpecs = matchSpecs(specs, agent.getSpecs() || []);
                 const matchesFilterCriteria = ignoreBusy ? !agent.isBusy() : true;
