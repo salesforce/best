@@ -1,4 +1,26 @@
-# [](https://github.com/salesforce/best/compare/v8.1.2...v) (2023-02-17)
+# [v9.0.0](https://github.com/salesforce/best/compare/v8.1.3...v9.0.0) (2023-07-31)
+
+
+### Bug Fixes
+
+* add documentation search namespace and expiration time ([ccd284a](https://github.com/salesforce/best/commit/ccd284a22d57901e49fa115142758b98e0e45f38))
+* fetch `plotly` from own server instead of CDN ([e983da2](https://github.com/salesforce/best/commit/e983da2896ff3f9bfe0a3e2ec341cfd5eb3169ff))
+
+
+### Features
+
+* add support for `latest` browser version ([c47786a](https://github.com/salesforce/best/commit/c47786ae81776bf1580876dea82aebd75c13c693))
+* move to using GitHub pages for the documentation ([2a7d0a2](https://github.com/salesforce/best/commit/2a7d0a2f31122d3f9c36b55d6a7bd59dda3f1db2))
+* upgrade `puppeteer` to `v20.9.0` ([7d77564](https://github.com/salesforce/best/commit/7d775641dde21b3387f8b27f4e9bb385789e9628))
+
+
+### BREAKING CHANGES
+
+* Upgrade the Chrome version to `v115.0.5790.98`.
+
+
+
+## [8.1.3](https://github.com/salesforce/best/compare/v8.1.2...v8.1.3) (2023-02-17)
 
 
 ### Bug Fixes
@@ -29,21 +51,17 @@
 
 
 
-# [8.1.0](https://github.com/salesforce/best/compare/v8.0.1...v8.1.0) (2022-12-04)
-
-
-### Features
-
-* expose error messages to the client ([c030be4](https://github.com/salesforce/best/commit/c030be473f841bf1506ef00cdaa5872186a0de2e))
-
-
-
-## [8.0.1](https://github.com/salesforce/best/compare/v8.0.0...v8.0.1) (2022-11-17)
+# [8.1.0](https://github.com/salesforce/best/compare/v8.0.0...v8.1.0) (2022-12-04)
 
 
 ### Bug Fixes
 
 * measure only `script` performance if `metrics: ['script']` ([6190687](https://github.com/salesforce/best/commit/6190687cce0559f1ed7678d70763c911a0f96610))
+
+
+### Features
+
+* expose error messages to the client ([c030be4](https://github.com/salesforce/best/commit/c030be473f841bf1506ef00cdaa5872186a0de2e))
 
 
 
