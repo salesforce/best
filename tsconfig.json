@@ -17,7 +17,6 @@
     { "path": "./packages/@best/runner-abstract" },
     { "path": "./packages/@best/runner-headless" },
     { "path": "./packages/@best/runner-remote" },
-    { "path": "./packages/@best/runner-webdriverio" },
     { "path": "./packages/@best/runtime" },
     { "path": "./packages/@best/shared" },
     { "path": "./packages/@best/store" },
