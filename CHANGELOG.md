@@ -1,4 +1,13 @@
-# [v9.0.0](https://github.com/salesforce/best/compare/v8.1.3...v9.0.0) (2023-07-31)
+# [](https://github.com/salesforce/best/compare/v9.0.0...v) (2023-10-25)
+
+
+### Bug Fixes
+
+* update `globby` to `v13` ([eff74d4](https://github.com/salesforce/best/commit/eff74d4ee44cc0acbd5d013810b07fd9027bbf2a))
+
+
+
+# [9.0.0](https://github.com/salesforce/best/compare/v8.1.3...v9.0.0) (2023-07-31)
 
 
 ### Bug Fixes

@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "@best/agent": "9.0.0",
-    "@best/agent-frontend": "9.0.0",
-    "@best/runner-remote": "9.0.0",
-    "@best/utils": "9.0.0",
+    "@best/agent": "9.0.1",
+    "@best/agent-frontend": "9.0.1",
+    "@best/runner-remote": "9.0.1",
+    "@best/utils": "9.0.1",
     "express": "4.18.2",
     "socket.io": "4.6.1",
     "socket.io-file": "2.0.31",
@@ -25,5 +25,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "9.0.0"
+  "version": "9.0.1"
 }

@@ -20,7 +20,7 @@
         "build": "./_scripts/build.sh",
         "watch": "docsify serve ."
     },
-    "version": "9.0.0",
+    "version": "9.0.1",
     "workspaces": {
         "nohoist": [
             "**"
