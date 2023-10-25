@@ -6,7 +6,7 @@
  */
 
 import fs from 'fs';
-import globby from 'globby';
+import { globby } from 'globby';
 import { StatsResults } from '@best/types';
 
 let ROOT_DIR = process.cwd();
@@ -25,7 +25,10 @@ export async function storeBenchmarkResults() {
 
 export async function getAllBenchmarkStatsPerCommit(projectName: string, commit: string): Promise<StatsResults[]> {
     const pattern = `**/${projectName}/*.benchmark_${commit}/stats.json`;
-    const results = await globby([pattern], { cwd: ROOT_DIR, ignore: IGNORE_PATHS });
+    const results = await globby([pattern], {
+        cwd: ROOT_DIR,
+        ignore: IGNORE_PATHS,
+    });
     const statsResults = results.map((statsPath) => {
         return JSON.parse(fs.readFileSync(statsPath, 'utf8'));
     });
