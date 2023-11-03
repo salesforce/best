@@ -15,7 +15,12 @@ import generateHtml from './html-templating';
 import { FrozenGlobalConfig, FrozenProjectConfig, ProjectConfigPlugin, BuildConfig } from '@best/types';
 import { req } from '@best/utils';
 
-const BASE_ROLLUP_OUTPUT: OutputOptions = { format: 'iife' };
+const BASE_ROLLUP_OUTPUT: OutputOptions = {
+    format: 'iife',
+    manualChunks: function () {
+        /* guarantee one chunk */ return 'main_chunk';
+    },
+};
 const ROLLUP_CACHE = new Map();
 
 function md5(data: string) {
@@ -65,13 +70,11 @@ export async function buildBenchmark(
     const benchmarkProjectFolder = path.join(benchmarkOutput, projectName);
 
     buildLogStream.log('Bundling benchmark files...');
+
     const bundle = await rollup({
         input: entry,
         plugins: [benchmarkRollup(), ...addResolverPlugins(projectConfig.plugins)],
         cache: ROLLUP_CACHE.get(projectName),
-        manualChunks: function () {
-            /* guarantee one chunk */ return 'main_chunk';
-        },
         onwarn(warning, warn) {
             // Make compilation fail, if any bare module can't be resolved.
             if (typeof warning === 'object' && warning.code === 'UNRESOLVED_IMPORT') {
@@ -81,6 +84,7 @@ export async function buildBenchmark(
             warn(warning);
         },
     });
+
     ROLLUP_CACHE.set(projectName, bundle.cache);
 
     buildLogStream.log('Generating benchmark artifacts...');

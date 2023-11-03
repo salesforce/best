@@ -8,10 +8,10 @@
 import path from 'path';
 
 import lwc from '@lwc/rollup-plugin';
-import commonjs from 'rollup-plugin-commonjs';
-import resolve from 'rollup-plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
-import { terser } from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 import { bestMocker, MockerOptions } from './mocker';
 import * as rollup from 'rollup';
 import { FrozenProjectConfig } from '@best/types';

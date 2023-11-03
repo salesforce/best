@@ -197,7 +197,7 @@ describe('buildBenchmark', () => {
         ).rejects.toHaveProperty(
             'message',
             expect.stringMatching(
-                /'x\/missing' is imported by .*, but could not be resolved – treating it as an external dependency/,
+                /"x\/missing" is imported by .*, but could not be resolved – treating it as an external dependency./,
             ),
         );
     });
