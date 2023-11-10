@@ -68,7 +68,7 @@ storing the artifacts on AWS.
 To use an external storage provider, pass the `--externalStorage` flag:
 
 ```sh
-best --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} --externalStorage=@best/store-aws
+best --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} 
 ```
 
 You must also set the `AWS_BUCKET_NAME` environment variable so Best

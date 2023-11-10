@@ -56,12 +56,6 @@ config files or a local repo with Best configured.
 
 `boolean` Displays calculated `globalConfig` and project configs.
 
-### `--externalStorage`
-
-`string` Enables saving the results in an arbitrary storage system.
-Provide the external storage adapter to use. Best supports AWS with
-the `@best/store-aws` adapter.
-
 ### `--compareStats`
 
 `array` Compares the benchmarks of two commits against each other.
@@ -124,12 +118,6 @@ options.
 `string` Specifies the name of the main branch, defaults to `main`.
 
 When best is not run on the main branch the snapshot is marked as temporary.
-
-### `externalStorage`
-
-`string` Allows saving the results in an arbitrary storage system.
-Specify the external storage adapter to use. Currently Best supports
-AWS with the `@best/store-aws` adapter.
 
 ### `metrics`
 
@@ -319,8 +307,3 @@ a value for `TARGET_COMMIT` as well.
 
 `string` The target commit to be used with `--compareStats`. Set
 a value for `BASE_COMMIT` as well.
-
-### `AWS_BUCKET_NAME`
-
-`string` Name of the AWS bucket to use when `--externalStorage=@best/store-aws`
-is provided.
