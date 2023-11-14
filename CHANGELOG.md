@@ -1,4 +1,20 @@
-# [](https://github.com/salesforce/best/compare/v9.0.0...v) (2023-10-25)
+# [](https://github.com/salesforce/best/compare/v9.0.1...v) (2023-11-14)
+
+
+* fix!: update `rollup` to `v4` ([0ef98b7](https://github.com/salesforce/best/commit/0ef98b726c1150b28bcdcc4b932801e6b23100cc))
+* fix!: deprecate and remove `store-aws` related code ([0d63443](https://github.com/salesforce/best/commit/0d63443bf8404b100f5a8bf616c4bec030aa7465))
+* fix!: deprecate and remove `runner-webdriverio` related code ([8debc71](https://github.com/salesforce/best/commit/8debc71d028a1e800cafcc3a1cc4824861f4f80e))
+
+
+### BREAKING CHANGES
+
+* Update `rollup` to `v4`.
+* Deprecate and remove `store-aws` related code.
+* Deprecate and remove `runner-webdriverio` related code.
+
+
+
+## [9.0.1](https://github.com/salesforce/best/compare/v9.0.0...v9.0.1) (2023-10-25)
 
 
 ### Bug Fixes

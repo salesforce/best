@@ -1,15 +1,18 @@
 {
   "dependencies": {
-    "@best/api-db": "9.0.1",
-    "@best/config": "9.0.1",
-    "@best/console-stream": "9.0.1",
-    "@best/github-integration": "9.0.1",
-    "@best/types": "9.0.1",
+    "@best/api-db": "10.0.0",
+    "@best/config": "10.0.0",
+    "@best/console-stream": "10.0.0",
+    "@best/github-integration": "10.0.0",
+    "@best/types": "10.0.0",
     "@lwc/compiler": "2.5.13",
     "@lwc/engine": "^1.17.6",
     "@lwc/rollup-plugin": "2.22.0",
     "@lwc/wire-service": "2.22.0",
+    "@rollup/plugin-commonjs": "25.0.7",
+    "@rollup/plugin-node-resolve": "15.2.3",
     "@rollup/plugin-replace": "4.0.0",
+    "@rollup/plugin-terser": "0.4.4",
     "compression": "1.7.4",
     "express": "4.18.2",
     "jsonwebtoken": "9.0.0",
@@ -18,10 +21,7 @@
     "query-string": "^7.1.1",
     "redux": "4.2.1",
     "redux-thunk": "2.4.2",
-    "rollup": "4.3.0",
-    "@rollup/plugin-commonjs": "25.0.7",
-    "@rollup/plugin-node-resolve": "15.2.3",
-    "@rollup/plugin-terser": "0.4.4"
+    "rollup": "4.3.0"
   },
   "devDependencies": {
     "@lwc/eslint-plugin-lwc": "1.5.0",
@@ -58,5 +58,5 @@
     "watch": "concurrently 'yarn lwc:watch' 'yarn api:watch'"
   },
   "types": "build/index.d.ts",
-  "version": "9.0.1"
+  "version": "10.0.0"
 }
