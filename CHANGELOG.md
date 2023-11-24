@@ -1,4 +1,16 @@
-# [](https://github.com/salesforce/best/compare/v9.0.1...v) (2023-11-14)
+# [](https://github.com/salesforce/best/compare/v10.0.0...v) (2023-11-24)
+
+
+* feat!: upgrade `puppeteer` to `v21.5.2` ([f7a0215](https://github.com/salesforce/best/commit/f7a02159ef4ecabb889410e3f6e4619b11119e23))
+
+
+### BREAKING CHANGES
+
+* Upgrade the Chrome version to `v119.0.6045.105`.
+
+
+
+# [10.0.0](https://github.com/salesforce/best/compare/v9.0.1...v10.0.0) (2023-11-14)
 
 
 * fix!: update `rollup` to `v4` ([0ef98b7](https://github.com/salesforce/best/commit/0ef98b726c1150b28bcdcc4b932801e6b23100cc))
