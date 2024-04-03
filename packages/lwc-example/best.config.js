@@ -16,7 +16,7 @@ module.exports = {
         ],
         ['@rollup/plugin-replace', { 'process.env.NODE_ENV': JSON.stringify('production') }],
     ],
-    specs: { name: 'chrome.headless', version: 119 },
+    specs: { name: 'chrome.headless', version: 123 },
     runners: [
         {
             runner: '@best/runner-headless',
