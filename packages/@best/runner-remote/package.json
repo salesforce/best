@@ -5,7 +5,7 @@
     "@best/shared": "12.0.1",
     "debug": "4.3.4",
     "socket.io-client": "4.7.5",
-    "tar": "6.1.14"
+    "tar": "6.2.1"
   },
   "description": "Best Runner (Headless)",
   "files": [
