@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "@best/agent-frontend": "12.0.1",
-    "@best/runner": "12.0.1",
-    "@best/shared": "12.0.1",
-    "@best/utils": "12.0.1",
+    "@best/agent-frontend": "12.0.2",
+    "@best/runner": "12.0.2",
+    "@best/shared": "12.0.2",
+    "@best/utils": "12.0.2",
     "express": "4.19.2",
     "mime": "3.0.0",
     "socket.io": "4.7.5",
@@ -25,5 +25,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "12.0.1"
+  "version": "12.0.2"
 }

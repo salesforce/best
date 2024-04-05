@@ -1,4 +1,13 @@
-# [](https://github.com/salesforce/best/compare/v12.0.0...v) (2024-04-05)
+# [](https://github.com/salesforce/best/compare/v12.0.1...v) (2024-04-05)
+
+
+### Bug Fixes
+
+* update dependencies ([f0a9262](https://github.com/salesforce/best/commit/f0a926270a88246904a7a58519f2af828e47f561))
+
+
+
+## [12.0.1](https://github.com/salesforce/best/compare/v12.0.0...v12.0.1) (2024-04-05)
 
 
 ### Bug Fixes
