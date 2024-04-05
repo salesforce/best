@@ -4,8 +4,8 @@
     "@best/agent-frontend": "12.0.0",
     "@best/runner-remote": "12.0.0",
     "@best/utils": "12.0.0",
-    "express": "4.18.2",
-    "socket.io": "4.6.1",
+    "express": "4.19.2",
+    "socket.io": "4.7.5",
     "socket.io-file": "2.0.31",
     "yargs": "16.1.0"
   },

@@ -3,7 +3,7 @@
     "https-proxy-agent": "5.0.1",
     "pg": "8.10.0",
     "sqlite": "4.2.0",
-    "sqlite3": "5.1.6"
+    "sqlite3": "5.1.7"
   },
   "description": "Best Api Database",
   "devDependencies": {

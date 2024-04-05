@@ -16,7 +16,7 @@
     "@best/regex-util": "12.0.0",
     "@best/utils": "12.0.0",
     "chalk": "~2.4.2",
-    "simple-git": "3.18.0"
+    "simple-git": "3.24.0"
   },
   "files": [
     "build/**/*.js"
