@@ -1,4 +1,13 @@
-# [](https://github.com/salesforce/best/compare/v11.0.0...v) (2024-04-04)
+# [](https://github.com/salesforce/best/compare/v12.0.0...v) (2024-04-05)
+
+
+### Bug Fixes
+
+* update dependencies ([e962f82](https://github.com/salesforce/best/commit/e962f821290d5b9b08d5ad3d5ea02925cca9f3eb))
+
+
+
+# [12.0.0](https://github.com/salesforce/best/compare/v11.0.0...v12.0.0) (2024-04-04)
 
 
 * feat!: upgrade `puppeteer` to `v22.6.2` ([64d3099](https://github.com/salesforce/best/commit/64d3099ab504882eb9325becfe40c15cd4d99966))
