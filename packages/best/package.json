@@ -5,9 +5,9 @@
     "best-agent-hub": "./bin/best-agent-hub.js"
   },
   "dependencies": {
-    "@best/agent": "12.0.2",
-    "@best/agent-hub": "12.0.2",
-    "@best/cli": "12.0.2"
+    "@best/agent": "13.0.0",
+    "@best/agent-hub": "13.0.0",
+    "@best/cli": "13.0.0"
   },
   "description": "Best",
   "keywords": [
@@ -19,5 +19,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "12.0.2"
+  "version": "13.0.0"
 }

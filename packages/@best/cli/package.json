@@ -3,17 +3,17 @@
     "best": "./bin/best.js"
   },
   "dependencies": {
-    "@best/analyzer": "12.0.2",
-    "@best/api-db": "12.0.2",
-    "@best/builder": "12.0.2",
-    "@best/compare": "12.0.2",
-    "@best/config": "12.0.2",
-    "@best/console-stream": "12.0.2",
-    "@best/github-integration": "12.0.2",
-    "@best/runner": "12.0.2",
-    "@best/store": "12.0.2",
-    "@best/store-fs": "12.0.2",
-    "@best/utils": "12.0.2",
+    "@best/analyzer": "13.0.0",
+    "@best/api-db": "13.0.0",
+    "@best/builder": "13.0.0",
+    "@best/compare": "13.0.0",
+    "@best/config": "13.0.0",
+    "@best/console-stream": "13.0.0",
+    "@best/github-integration": "13.0.0",
+    "@best/runner": "13.0.0",
+    "@best/store": "13.0.0",
+    "@best/store-fs": "13.0.0",
+    "@best/utils": "13.0.0",
     "asciichart": "1.5.25",
     "chalk": "~2.4.2",
     "cli-table3": "0.6.4",
@@ -42,5 +42,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "12.0.2"
+  "version": "13.0.0"
 }
