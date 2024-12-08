@@ -117,7 +117,7 @@ const CUSTOM_IGNORED_PATTERNS = [
     'packages/@best/agent/src/utils/socket.io-file.ts',
     'packages/@best/frontend/src/modules',
     'scripts/jest/',
-    'webpack.config.js'
+    'webpack.config.js',
 ].map(createRegExp);
 
 const IGNORED_PATTERNS = [...IGNORED_EXTENSIONS, ...GENERIC_IGNORED_PATTERNS, ...CUSTOM_IGNORED_PATTERNS];

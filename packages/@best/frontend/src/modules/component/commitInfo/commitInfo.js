@@ -19,7 +19,7 @@ export default class ComponentCommitInfo extends LightningElement {
     }
 
     get hasError() {
-        return Object.prototype.hasOwnProperty.call(this.commitInfo, "error");
+        return Object.prototype.hasOwnProperty.call(this.commitInfo, 'error');
     }
 
     get hasCommitInfo() {

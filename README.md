@@ -22,8 +22,7 @@ that allows you to monitor your benchmarks over the time with each commit.
 
 ## Getting Started
 
-Ready to jump in? We recommend starting with [The "Best" Manifesto][best
-introduction] first, and then once you have a solid understanding of how
+Ready to jump in? We recommend starting with [The "Best" Manifesto][best introduction] first, and then once you have a solid understanding of how
 Best works, checking out the [Developer Guide][getting started] to read
 about how to get started!
 

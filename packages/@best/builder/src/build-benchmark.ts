@@ -9,7 +9,7 @@ import fs from 'fs';
 import { rollup, OutputOptions } from 'rollup';
 import path from 'path';
 import crypto from 'crypto';
-import mkdirp from 'mkdirp';
+import { mkdirp } from 'mkdirp';
 import benchmarkRollup from './rollup-plugin-benchmark-import';
 import generateHtml from './html-templating';
 import { FrozenGlobalConfig, FrozenProjectConfig, ProjectConfigPlugin, BuildConfig } from '@best/types';

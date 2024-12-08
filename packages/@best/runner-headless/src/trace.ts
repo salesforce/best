@@ -84,22 +84,28 @@ export const parseTrace = async (tracePath: string): Promise<TracedMetrics> => {
         }
     }
 
-    const tracedMetrics = Object.keys(groupedEvents).reduce((allMetrics, key): TracedMetrics => {
-        const runName = key.replace(`${BenchmarkMeasureType.Execute}/`, '');
-        const metrics = Object.keys(groupedEvents[key]).reduce((acc, eventName): BenchmarkMetrics => {
-            const aliasEventName = TRACED_EVENT_NAME_ALIAS[eventName] || eventName;
-            const name = aliasEventName.toLowerCase();
-            return {
-                ...acc,
-                [name]: sumEventDurations(groupedEvents[key][eventName]) / 1000,
-            };
-        }, <BenchmarkMetrics>{});
+    const tracedMetrics = Object.keys(groupedEvents).reduce(
+        (allMetrics, key): TracedMetrics => {
+            const runName = key.replace(`${BenchmarkMeasureType.Execute}/`, '');
+            const metrics = Object.keys(groupedEvents[key]).reduce(
+                (acc, eventName): BenchmarkMetrics => {
+                    const aliasEventName = TRACED_EVENT_NAME_ALIAS[eventName] || eventName;
+                    const name = aliasEventName.toLowerCase();
+                    return {
+                        ...acc,
+                        [name]: sumEventDurations(groupedEvents[key][eventName]) / 1000,
+                    };
+                },
+                <BenchmarkMetrics>{},
+            );
 
-        return {
-            ...allMetrics,
-            [runName]: metrics,
-        };
-    }, <TracedMetrics>{});
+            return {
+                ...allMetrics,
+                [runName]: metrics,
+            };
+        },
+        <TracedMetrics>{},
+    );
 
     return tracedMetrics;
 };

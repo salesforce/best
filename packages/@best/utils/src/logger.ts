@@ -14,7 +14,7 @@ type LoggerConfigs = {
 };
 export class Logger {
     private static customFormat: Format = format.printf((logData) => {
-        const msg = `${logData.timestamp} | ${logData.level.toUpperCase()} | ${logData.label.toUpperCase()} | ${
+        const msg = `${logData.timestamp} | ${logData.level.toUpperCase()} | ${(logData as any).label.toUpperCase()} | ${
             logData.stack || logData.message
         }`;
 

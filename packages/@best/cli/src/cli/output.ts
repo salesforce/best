@@ -171,27 +171,33 @@ export default class Output {
             [projectName: string]: Table[];
         };
 
-        const tables: GroupedTables = result.comparisons.reduce((tables, node): GroupedTables => {
-            if (node.type === 'project' || node.type === 'group') {
-                const group = node.comparisons.map((child) => {
-                    return this.generateComparisonTable(baseCommit, targetCommit, child);
-                });
+        const tables: GroupedTables = result.comparisons.reduce(
+            (tables, node): GroupedTables => {
+                if (node.type === 'project' || node.type === 'group') {
+                    const group = node.comparisons.map((child) => {
+                        return this.generateComparisonTable(baseCommit, targetCommit, child);
+                    });
 
-                return {
-                    ...tables,
-                    [node.name]: group,
-                };
-            }
-            return tables;
-        }, <GroupedTables>{});
+                    return {
+                        ...tables,
+                        [node.name]: group,
+                    };
+                }
+                return tables;
+            },
+            <GroupedTables>{},
+        );
 
-        const flattenedTables = Object.keys(tables).reduce((groups, projectName): string[] => {
-            const stringifiedTables = tables[projectName].map((t) => t.toString() + '\n');
-            const colorProjectName = chalk.bold.dim(projectName);
-            groups.push(`\nProject: ${colorProjectName}\n`);
-            groups.push(...stringifiedTables);
-            return groups;
-        }, <string[]>[]);
+        const flattenedTables = Object.keys(tables).reduce(
+            (groups, projectName): string[] => {
+                const stringifiedTables = tables[projectName].map((t) => t.toString() + '\n');
+                const colorProjectName = chalk.bold.dim(projectName);
+                groups.push(`\nProject: ${colorProjectName}\n`);
+                groups.push(...stringifiedTables);
+                return groups;
+            },
+            <string[]>[],
+        );
 
         this.stream.write(flattenedTables.join(''));
     }
@@ -243,8 +249,8 @@ export default class Output {
                                     samplesComparison === 0
                                         ? 'SAME'
                                         : samplesComparison === 1
-                                        ? chalk.red('SLOWER')
-                                        : chalk.green('FASTER'),
+                                          ? chalk.red('SLOWER')
+                                          : chalk.green('FASTER'),
                                 ),
                             ]);
                         }

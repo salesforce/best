@@ -10,8 +10,9 @@ import fs from 'fs';
 import path from 'path';
 
 import { buildBenchmark } from '../build-benchmark';
+import { FrozenProjectConfig } from '@best/types';
 
-const GLOBAL_CONFIG = {
+const GLOBAL_CONFIG: any = {
     gitInfo: {
         lastCommit: { hash: 'commit-hash-asdf' },
         localChanges: false,
@@ -48,7 +49,7 @@ describe('buildBenchmark', () => {
                 benchmarkOutput,
                 projectName,
                 rootDir,
-            },
+            } as FrozenProjectConfig,
             GLOBAL_CONFIG,
             MOCK_MESSAGER,
         );
@@ -70,7 +71,7 @@ describe('buildBenchmark', () => {
                 benchmarkOutput: tempDir(),
                 projectName,
                 rootDir,
-            },
+            } as FrozenProjectConfig,
             GLOBAL_CONFIG,
             MOCK_MESSAGER,
         );
@@ -96,7 +97,7 @@ describe('buildBenchmark', () => {
                 benchmarkOutput: tempDir(),
                 projectName,
                 rootDir,
-            },
+            } as FrozenProjectConfig,
             GLOBAL_CONFIG,
             messager,
         );
@@ -115,7 +116,7 @@ describe('buildBenchmark', () => {
         jest.doMock(
             'build-plugin-opts',
             () => {
-                return (options) => {
+                return (options: any) => {
                     expect(options).toBe(PLUGIN_OPTIONS);
                     return {};
                 };
@@ -132,7 +133,7 @@ describe('buildBenchmark', () => {
                 projectName,
                 plugins: [['build-plugin-opts', PLUGIN_OPTIONS]],
                 rootDir,
-            },
+            } as any,
             GLOBAL_CONFIG,
             MOCK_MESSAGER,
         );
@@ -140,21 +141,21 @@ describe('buildBenchmark', () => {
 
     test('plugin hooks into rollup lifecycle hooks', async () => {
         const entry = path.resolve(__dirname, 'fixtures', 'single-file', 'single-file.js');
-        const loaded = [];
-        const transformed = [];
+        const loaded: any = [];
+        const transformed: any = [];
 
         jest.doMock(
             'build-plugin-hooks',
             () => {
                 return () => {
                     return {
-                        load(id) {
+                        load(id: any) {
                             if (id.endsWith('single-file.js')) {
                                 loaded.push(id);
                                 return '/* empty */';
                             }
                         },
-                        transform(src, id) {
+                        transform(src: any, id: any) {
                             transformed.push(id);
                             return src;
                         },
@@ -173,13 +174,13 @@ describe('buildBenchmark', () => {
                 projectName,
                 plugins: ['build-plugin-hooks'],
                 rootDir,
-            },
+            } as FrozenProjectConfig,
             GLOBAL_CONFIG,
             MOCK_MESSAGER,
         );
 
-        expect(loaded.some((file) => file === entry)).toBe(true);
-        expect(transformed.some((file) => file === entry)).toBe(true);
+        expect(loaded.some((file: any) => file === entry)).toBe(true);
+        expect(transformed.some((file: any) => file === entry)).toBe(true);
     });
 
     test(`throw if bare module specifiers can't be resolved`, async () => {
@@ -190,7 +191,7 @@ describe('buildBenchmark', () => {
                     benchmarkOutput: tempDir(),
                     projectName,
                     rootDir,
-                },
+                } as FrozenProjectConfig,
                 GLOBAL_CONFIG,
                 MOCK_MESSAGER,
             ),

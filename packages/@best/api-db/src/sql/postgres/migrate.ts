@@ -33,15 +33,18 @@ const buildMigrations = async (location: string): Promise<Migration[]> => {
     // we look for .js files since these will be pre-compiled by js
     const partialMigrations: PartialMigration[] = files
         .map((f) => f.match(/^((\d+).(.*?))\.js$/))
-        .reduce((migrations, match): PartialMigration[] => {
-            if (!match) {
-                return migrations;
-            }
+        .reduce(
+            (migrations, match): PartialMigration[] => {
+                if (!match) {
+                    return migrations;
+                }
 
-            const migration = { id: Number(match[2]), name: match[3], filename: match[1] };
+                const migration = { id: Number(match[2]), name: match[3], filename: match[1] };
 
-            return [...migrations, migration];
-        }, <PartialMigration[]>[])
+                return [...migrations, migration];
+            },
+            <PartialMigration[]>[],
+        )
         .sort((a, b) => Math.sign(a.id - b.id));
 
     const migrations: Migration[] = await Promise.all(

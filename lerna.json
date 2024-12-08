@@ -2,7 +2,6 @@
   "version": "13.0.0",
   "exact": true,
   "npmClient": "yarn",
-  "useWorkspaces": true,
   "packages": [
     "packages/@best/*",
     "packages/best"

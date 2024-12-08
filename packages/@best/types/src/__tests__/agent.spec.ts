@@ -5,21 +5,21 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
  */
 
-import * as agent from './../agent';
+import { AgentState } from './../agent';
 
 describe('AgentSpec', () => {
     it('Should be defined', () => {
-        expect(agent.AgentState).not.toBeUndefined();
+        expect(AgentState).not.toBeUndefined();
     });
 
     it('Should have the expected number of values', () => {
-        expect(Object.keys(agent.AgentState).length).toBe(2);
+        expect(Object.keys(AgentState).length).toBe(2);
     });
 
     describe('Should have the expected values', () => {
-        ['BUSY', 'IDLE'].forEach((value) => {
+        Object.values(AgentState).forEach((value) => {
             it(`${value}`, () => {
-                expect(agent.AgentState[value]).toBe(value);
+                expect(AgentState[value]).toBe(value);
             });
         });
     });

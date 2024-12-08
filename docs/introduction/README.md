@@ -7,8 +7,8 @@ learn how Best can help you create performant code and, most important,
 keep it performant over time.
 
 ?> The name of the project _Best_ was inspired by _Jest_ - changing
-   the _"J"_ to a _"B"_ for _"benchmarks."_ The idea was that running
-   benchmarks and doing perf testing should be as easy as unit testing.
+the _"J"_ to a _"B"_ for _"benchmarks."_ The idea was that running
+benchmarks and doing perf testing should be as easy as unit testing.
 
 ## The Best Manifesto
 
@@ -68,8 +68,8 @@ Agents, of the same and different environments, to deliver results
 as quickly as possible.
 
 !> Multiple teams and users may use a single Best Hub. This avoids
-   teams running their own performance infrastructure. Scale the Hub
-   up by adding as many Agents as you need.
+teams running their own performance infrastructure. Scale the Hub
+up by adding as many Agents as you need.
 
 Once you have a Best Hub running, you get to take full advantage of
 everything Best has to offer. Read more about this in [Running
@@ -90,23 +90,23 @@ consistent snapshots of your code's performance overtime.
 
 Best helps you understand your code's performance with its many metrics.
 
-* `aggregate` The total time your benchmark took to run. If you look at
+- `aggregate` The total time your benchmark took to run. If you look at
   one metric it should be this one.
 
-* `script` The time it took to evaluate your benchmark code. This is
+- `script` The time it took to evaluate your benchmark code. This is
   useful to confirm your benchmark code is running as quickly as you
   expect.
 
-* `paint` If your benchmark involves the DOM, Best measures how much
+- `paint` If your benchmark involves the DOM, Best measures how much
   time the browser spends on painting. This is useful to make your UI
   code paths more efficient.
 
-* `layout` If your benchmark involves the DOM, Best measures how much
+- `layout` If your benchmark involves the DOM, Best measures how much
   time the browser spends on layouts. This gives you a picture of how
   complex of DOM structure you are using.
 
 !> The `paint` and `layout` metrics are only available when using
-   `runner-headless` because Best gets these directly from Chrome
-   Dev Tools tracing.
+`runner-headless` because Best gets these directly from Chrome
+Dev Tools tracing.
 
 [Rollup]: https://rollupjs.org/

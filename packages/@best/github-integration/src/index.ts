@@ -15,9 +15,12 @@ import { FrozenGlobalConfig, BenchmarkComparison } from '@best/types';
 const PULL_REQUEST_URL = process.env.PULL_REQUEST;
 
 function calculateAverageChange(result: BenchmarkComparison) {
-    const flattenedValues = result.comparisons.reduce((all, node): number[] => {
-        return [...all, ...generatePercentages(node)];
-    }, <number[]>[]);
+    const flattenedValues = result.comparisons.reduce(
+        (all, node): number[] => {
+            return [...all, ...generatePercentages(node)];
+        },
+        <number[]>[],
+    );
 
     if (flattenedValues.length === 0) {
         return 0;

@@ -13,9 +13,9 @@ We recommend naming the App `Best - [organization name]`.
 
 The GitHub App requires these permissions:
 
-* **Checks**: Read/Write
-* **Issues**: Read/Write
-* **Pull Requests**: Read/Write
+- **Checks**: Read/Write
+- **Issues**: Read/Write
+- **Pull Requests**: Read/Write
 
 Set these environment variables so Best can authenticate and interact
 with your GitHub App. We recommended setting these environment variables
@@ -30,7 +30,7 @@ GIT_APP_CERT_BASE64=base64_encoded_version_of_private_key
 Set either `GIT_APP_CERT_PATH` or `GIT_APP_CERT_BASE64`.
 
 ?> To enable GitHub integration for the front end, set these environment
-   variables on your front end instance as well.
+variables on your front end instance as well.
 
 To enable comments on pull requests from your CI workflow, set the
 environment variable `PULL_REQUEST` with the URL of the pull request.
@@ -42,7 +42,7 @@ flag. This flag tells Best to create a GitHub Check and comment if there
 is a significant performance change.
 
 ?> You must specify the `--compareStats` flag to use `--gitIntegration`
-   because Best reports meaningful differences _across commits_.
+because Best reports meaningful differences _across commits_.
 
 ## Configuration
 

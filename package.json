@@ -1,43 +1,42 @@
 {
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
+    "@babel/core": "^7.26.0",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-    "@babel/preset-typescript": "~7.3.3",
-    "@commitlint/cli": "19.2.1",
-    "@commitlint/config-conventional": "19.1.0",
+    "@babel/preset-typescript": "^7.26.0",
+    "@commitlint/cli": "^19.6.0",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@lwc/eslint-plugin-lwc": "^1.9.0",
     "@lwc/jest-preset": "11.2.1",
+    "@salesforce/eslint-config-lwc": "^3.6.0",
+    "@salesforce/eslint-plugin-lightning": "^1.0.0",
     "@types/debug": "0.0.30",
-    "@types/express": "4.17.21",
+    "@types/express": "^5.0.0",
     "@types/jest": "27.5.1",
-    "@types/jsonwebtoken": "9.0.6",
-    "@types/micromatch": "4.0.2",
-    "@types/mime-types": "2.1.1",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/micromatch": "^4.0.9",
+    "@types/mime-types": "^2.1.4",
     "@types/mkdirp": "^0.5.2",
-    "@types/ncp": "^2.0.5",
-    "@types/node": "20.12.4",
-    "@types/rimraf": "2.0.2",
-    "@types/tar": "^4.0.0",
-    "@types/yargs": "^15.0.9",
+    "@types/ncp": "^2.0.8",
+    "@types/node": "^22.10.1",
+    "@types/tar": "^6.1.13",
+    "@types/yargs": "^17.0.33",
     "@typescript-eslint/eslint-plugin": "6.1.0",
     "@typescript-eslint/parser": "6.1.0",
-    "commitizen": "^3.1.1",
-    "conventional-changelog-cli": "2.2.2",
-    "cross-env": "^5.2.0",
+    "babel-jest": "^29.7.0",
+    "conventional-changelog-cli": "^5.0.0",
     "eslint": "8.57.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jest": "^28.9.0",
     "husky": "2.4.0",
-    "isbinaryfile": "^4.0.2",
-    "jest": "27.5.1",
-    "jest-environment-jsdom": "27.5.1",
-    "jsonwebtoken": "9.0.2",
-    "lerna": "^3.18.3",
-    "prettier": "2.8.8",
-    "rimraf": "3.0.2",
-    "typescript": "5.4.4"
+    "isbinaryfile": "^5.0.4",
+    "jest": "^27.5.1",
+    "jest-environment-jsdom": "^27.5.1",
+    "jsonwebtoken": "^9.0.2",
+    "lerna": "^8.1.9",
+    "prettier": "^3.4.1",
+    "rimraf": "^6.0.1",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.7.2"
   },
   "husky": {
     "hooks": {
@@ -50,8 +49,7 @@
     "url": "https://github.com/salesforce/best.git"
   },
   "resolutions": {
-    "js-yaml": "^3.13.1",
-    "webpack": "5.88.2"
+    "webpack": "^5.96.1"
   },
   "scripts": {
     "build:docs": "yarn workspace @best/docs build",
@@ -70,7 +68,8 @@
     "watch:docs": "yarn workspace @best/docs watch"
   },
   "volta": {
-    "node": "18.16.0"
+    "node": "22.11.0",
+    "yarn": "1.22.22"
   },
   "workspaces": [
     "docs",

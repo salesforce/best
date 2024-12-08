@@ -10,10 +10,10 @@ Agents run performance benchmarks. Deploy them to dedicated
 hardware with stable environments so the results are consistent.
 
 !> While dedicated hardware can be expensive or hard to manage,
-   we **strongly** recommend running Best Agents on dedicated
-   hardware. Dedicated hardware means that there won't be any
-   other processes on the machine influencing your benchmarks.
-   This is key to a reproducible and reliable measurement.
+we **strongly** recommend running Best Agents on dedicated
+hardware. Dedicated hardware means that there won't be any
+other processes on the machine influencing your benchmarks.
+This is key to a reproducible and reliable measurement.
 
 ### Provisioning an Agent
 
@@ -25,7 +25,7 @@ The easiest way to set up an Agent is to click the button below.
 It creates a Heroku app with everything you need.
 
 ?> To use a Best Hub, provision the Hub first and then come back
-   and press the button to configure your Agent to work with your Hub.
+and press the button to configure your Agent to work with your Hub.
 
 [![Deploy Best Agent](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/salesforce/best-heroku-deploy/tree/agent)
 

@@ -1,12 +1,12 @@
 {
   "dependencies": {
     "json2md": "~1.5.11",
-    "mkdirp": "^0.5.1",
+    "mkdirp": "3.0.1",
     "ncp": "^2.0.0",
-    "rimraf": "3.0.2"
+    "rimraf": "6.0.1"
   },
   "devDependencies": {
-    "@types/json2md": "1.5.1"
+    "@types/json2md": "1.5.4"
   },
   "description": "Best Store",
   "files": [

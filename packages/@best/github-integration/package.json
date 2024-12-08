@@ -4,13 +4,13 @@
     "@best/types": "13.0.0",
     "@best/utils": "13.0.0",
     "@octokit/rest": "^16.28.2",
-    "base-64": "^0.1.0",
+    "base-64": "1.0.0",
     "expand-tilde": "~2.0.2",
     "json2md": "~1.5.11",
     "jsonwebtoken": "9.0.2"
   },
   "devDependencies": {
-    "@types/json2md": "1.5.1"
+    "@types/json2md": "1.5.4"
   },
   "description": "Best Github Integration",
   "files": [

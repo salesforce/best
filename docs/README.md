@@ -5,20 +5,20 @@
 [Learn the fundamentals of Best](introduction/) and begin accurately
 measuring your code's performance.
 
-* Easy to Write
+- Easy to Write
 
-  Benchmarks are easy to write with a simple set of familiar primitives
-  so you don't have to learn a whole new framework.
+    Benchmarks are easy to write with a simple set of familiar primitives
+    so you don't have to learn a whole new framework.
 
-* Anywhere and Anytime
+- Anywhere and Anytime
 
-  You can run, compare, and diff any change locally and on dedicated
-  hardware. This lets you compare any version in any browser you desire.
+    You can run, compare, and diff any change locally and on dedicated
+    hardware. This lets you compare any version in any browser you desire.
 
-* Simple Automation
+- Simple Automation
 
-  Best allows you to set up one set of shared hardware so individual
-  teams don't have to maintain their own infrastructure.
+    Best allows you to set up one set of shared hardware so individual
+    teams don't have to maintain their own infrastructure.
 
 ## Getting Started with Best
 
@@ -32,18 +32,18 @@ started!
 import fib from '../fib';
 
 describe('js-execution', () => {
- benchmark('fibonacci 15', () => {
-  run(() => {
-   return fib(15);
-  })
- })
+    benchmark('fibonacci 15', () => {
+        run(() => {
+            return fib(15);
+        });
+    });
 
- benchmark('fibonacci 38', () => {
-  run(() => {
-   return fib(38);
-  })
- })
-})
+    benchmark('fibonacci 38', () => {
+        run(() => {
+            return fib(38);
+        });
+    });
+});
 ```
 
 ## Why Use Best?
@@ -64,11 +64,11 @@ Learn more in [Setting Up a Best Hub](running-remotely/).
 Best comes with the ability to measure all the metrics you might want
 to know. Learn more in [Expressive Metrics](introduction/#expressive-metrics).
 
-* `aggregate` - The total time your benchmark took to run.
-* `script` - The time it took to evaluate your benchmark code.
-* `paint` - If your benchmark involves the DOM, Best measures how much
+- `aggregate` - The total time your benchmark took to run.
+- `script` - The time it took to evaluate your benchmark code.
+- `paint` - If your benchmark involves the DOM, Best measures how much
   time the browser spends on painting.
-* `layout` - If your benchmark involves the DOM, Best measures how much
+- `layout` - If your benchmark involves the DOM, Best measures how much
   time the browser spends on layouts.
 
 ![Best Example Run](_assets/lwc_example_terminal.png)

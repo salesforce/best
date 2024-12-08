@@ -3,9 +3,9 @@
 Best is highly configurable through command-line arguments,
 the Best configuration file, and environment variables.
 
-* [Command Line Arguments](#command-line-arguments)
-* [Best Configuration File](#best-configuration-file)
-* [Environment Variables](#environment-variables)
+- [Command Line Arguments](#command-line-arguments)
+- [Best Configuration File](#best-configuration-file)
+- [Environment Variables](#environment-variables)
 
 ## Command Line Arguments
 

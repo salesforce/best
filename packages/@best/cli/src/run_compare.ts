@@ -104,7 +104,7 @@ export async function runCompare(
 
             // Run local changes or compare commit.
             if (compareCommit === 'local') {
-                await gitCLI.checkout(initialBranch)
+                await gitCLI.checkout(initialBranch);
                 if (stashedLocalChanges) {
                     await gitCLI.stash(['pop']);
                 }

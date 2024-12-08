@@ -10,8 +10,8 @@ Check out the live demo to see a front end showing Best's own
 examples.
 
 ?> To use the front end, [configure](#configuring-apidatabase) your
-   `best.config.js` to use a hosted API database to store the result
-   summaries.
+`best.config.js` to use a hosted API database to store the result
+summaries.
 
 ## Manual Installation
 

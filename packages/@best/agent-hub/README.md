@@ -18,8 +18,8 @@ node bin/best-agent-hub.js
 
 This command will start the hub server using the following configuration:
 
--   Running port: `6000`. It can be overridden by setting `env.PORT` to the desired port.
--   Tokens secret: `secret`. It's recommended to override it by setting `env.TOKEN_SECRET` to the desired secret used authenticate clients.
+- Running port: `6000`. It can be overridden by setting `env.PORT` to the desired port.
+- Tokens secret: `secret`. It's recommended to override it by setting `env.TOKEN_SECRET` to the desired secret used authenticate clients.
 
 ### Configuring hub in startup.
 

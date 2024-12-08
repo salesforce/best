@@ -27,38 +27,44 @@ const generateSnapshots = (
     benchmarks: StatsNode[],
     groupName?: string,
 ): TemporarySnapshot[] => {
-    return benchmarks.reduce((results, benchmark): TemporarySnapshot[] => {
-        if (benchmark.type === 'benchmark') {
-            const metrics = Object.keys(benchmark.metrics).reduce((results, metricName: string): Metric[] => {
-                const values = benchmark.metrics[metricName as BenchmarkMetricNames];
+    return benchmarks.reduce(
+        (results, benchmark): TemporarySnapshot[] => {
+            if (benchmark.type === 'benchmark') {
+                const metrics = Object.keys(benchmark.metrics).reduce(
+                    (results, metricName: string): Metric[] => {
+                        const values = benchmark.metrics[metricName as BenchmarkMetricNames];
 
-                if (values) {
-                    return [
-                        ...results,
-                        {
-                            name: metricName,
-                            duration: values.stats.median,
-                            stdDeviation: Math.sqrt(values.stats.variance),
-                        },
-                    ];
-                }
+                        if (values) {
+                            return [
+                                ...results,
+                                {
+                                    name: metricName,
+                                    duration: values.stats.median,
+                                    stdDeviation: Math.sqrt(values.stats.variance),
+                                },
+                            ];
+                        }
 
-                return results;
-            }, <Metric[]>[]);
+                        return results;
+                    },
+                    <Metric[]>[],
+                );
 
-            const snapshot: TemporarySnapshot = {
-                ...runSettings,
-                name: `${groupName ? groupName + '/' : ''}${benchmark.name}`,
-                metrics: metrics,
-            };
+                const snapshot: TemporarySnapshot = {
+                    ...runSettings,
+                    name: `${groupName ? groupName + '/' : ''}${benchmark.name}`,
+                    metrics: metrics,
+                };
 
-            return [...results, snapshot];
-        } else if (benchmark.type === 'group') {
-            return [...results, ...generateSnapshots(runSettings, benchmark.nodes, benchmark.name)];
-        }
+                return [...results, snapshot];
+            } else if (benchmark.type === 'group') {
+                return [...results, ...generateSnapshots(runSettings, benchmark.nodes, benchmark.name)];
+            }
 
-        return results;
-    }, <TemporarySnapshot[]>[]);
+            return results;
+        },
+        <TemporarySnapshot[]>[],
+    );
 };
 
 export const saveBenchmarkSummaryInDB = async (

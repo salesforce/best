@@ -2,7 +2,7 @@
   "dependencies": {
     "@lwc/engine": "~1.17.6",
     "@lwc/rollup-plugin": "2.22.0",
-    "@rollup/plugin-replace": "4.0.0",
+    "@rollup/plugin-replace": "^6.0.1",
     "best": "13.0.0"
   },
   "name": "lwc-examples",

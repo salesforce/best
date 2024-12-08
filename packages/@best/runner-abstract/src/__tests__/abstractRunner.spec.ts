@@ -27,7 +27,7 @@ interface Express {
 }
 
 interface TestCache {
-    app?: Express;
+    app: Express;
     server?: Server;
 
     reset: () => void;

@@ -19,9 +19,9 @@ import { FrozenProjectConfig } from '@best/types';
 export const buildRollupConfig = (
     projectConfig: FrozenProjectConfig,
 ): {
-        inputOptions: (options: MockerOptions) => rollup.InputOptions;
-        outputOptions: () => rollup.OutputOptions;
-    } => {
+    inputOptions: (options: MockerOptions) => rollup.InputOptions;
+    outputOptions: () => rollup.OutputOptions;
+} => {
     return {
         inputOptions: (options): rollup.InputOptions => ({
             input: path.resolve(__dirname, '../../src/index.js'),

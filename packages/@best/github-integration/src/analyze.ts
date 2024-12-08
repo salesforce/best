@@ -39,11 +39,14 @@ function padding(n: number) {
 }
 
 function generateMarkdownFromGroupedTables(tables: GroupedTables) {
-    const flattenedTables = Object.keys(tables).reduce((groups, projectName): json2md.DataObject[] => {
-        groups.push({ h2: `*${projectName}*` });
-        groups.push(...tables[projectName]);
-        return groups;
-    }, <json2md.DataObject[]>[]);
+    const flattenedTables = Object.keys(tables).reduce(
+        (groups, projectName): json2md.DataObject[] => {
+            groups.push({ h2: `*${projectName}*` });
+            groups.push(...tables[projectName]);
+            return groups;
+        },
+        <json2md.DataObject[]>[],
+    );
 
     return json2md(flattenedTables);
 }
@@ -174,22 +177,25 @@ function generateCommentWithTables(
 ) {
     const { baseCommit, targetCommit, comparisons } = result;
 
-    const grouped: GroupedTables = comparisons.reduce((tables, node): GroupedTables => {
-        if (node.type === 'project' || node.type === 'group') {
-            const markdownTables = handler(node, baseCommit, targetCommit);
+    const grouped: GroupedTables = comparisons.reduce(
+        (tables, node): GroupedTables => {
+            if (node.type === 'project' || node.type === 'group') {
+                const markdownTables = handler(node, baseCommit, targetCommit);
 
-            if (markdownTables.length) {
-                return {
-                    ...tables,
-                    [node.name]: markdownTables,
-                };
+                if (markdownTables.length) {
+                    return {
+                        ...tables,
+                        [node.name]: markdownTables,
+                    };
+                }
+
+                return tables;
             }
 
             return tables;
-        }
-
-        return tables;
-    }, <GroupedTables>{});
+        },
+        <GroupedTables>{},
+    );
 
     return generateMarkdownFromGroupedTables(grouped);
 }

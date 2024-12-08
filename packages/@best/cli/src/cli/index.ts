@@ -25,7 +25,7 @@ export function buildArgs(maybeArgv?: string[]): CliConfig {
         .check(check)
         .version(false).argv;
 
-    return normalize(parsedArgs);
+    return normalize(parsedArgs as any);
 }
 
 function getProjectListFromCLIArgs(argsCLI: CliConfig, project?: string): string[] {

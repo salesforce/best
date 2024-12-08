@@ -55,8 +55,8 @@ commit from the PR. The `--gitIntegration` flag causes Best to post the
 results on the pull request on GitHub.
 
 ?> To guarantee reproducible results, we **highly** recommend using
-   a remote runner for your benchmarks. Check out the guide on [running
-   remotely](../running-remotely/).
+a remote runner for your benchmarks. Check out the guide on [running
+remotely](../running-remotely/).
 
 ## External Storage
 
@@ -68,7 +68,7 @@ storing the artifacts on AWS.
 To use an external storage provider, pass the `--externalStorage` flag:
 
 ```sh
-best --compareStats ${BASE_COMMIT} ${TARGET_COMMIT} 
+best --compareStats ${BASE_COMMIT} ${TARGET_COMMIT}
 ```
 
 You must also set the `AWS_BUCKET_NAME` environment variable so Best
@@ -76,4 +76,4 @@ knows where to find your artifacts. The bucket must be publicly
 accessible so that Best can read and write into it.
 
 !> To use a [remote runner](../running-remotely) to run your benchmarks
-   you must use external storage.
+you must use external storage.
