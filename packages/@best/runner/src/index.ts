@@ -55,7 +55,7 @@ function loadRunnerModule(benchmarkRunner: string): ConcreteRunner {
     try {
         const RunnerModule: any = require(benchmarkRunner);
         return RunnerModule.Runner || RunnerModule.default || RunnerModule;
-    } catch (e) {
+    } catch (_e) {
         throw new Error(`Runner "${benchmarkRunner}" not found.`);
     }
 }

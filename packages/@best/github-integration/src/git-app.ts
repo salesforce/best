@@ -129,7 +129,7 @@ class GithubFactory {
         return response.data.token;
     }
 
-    async authenticateAsAppAndInstallation(git: { repo: string; owner: string }, gitOpts = this.gitOpts) {
+    async authenticateAsAppAndInstallation(git: { repo: string; owner: string }, _gitOpts = this.gitOpts) {
         const gitAppAuth = await this.authenticateAsApplication();
 
         const repoInstallation = await gitAppAuth.apps.getRepoInstallation(git);

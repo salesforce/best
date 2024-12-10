@@ -14,14 +14,13 @@
     "jsonwebtoken": "9.0.2",
     "plotly.js-basic-dist-min": "2.35.2",
     "query-string": "^7.1.1",
-    "redux": "4.2.1",
-    "redux-thunk": "2.4.2",
+    "redux": "^5.0.1",
+    "redux-thunk": "^3.1.0",
     "rollup": "^4.28.0"
   },
   "devDependencies": {
     "@lwc/compiler": "^8.12.0",
     "@lwc/engine-dom": "^8.12.0",
-    "@lwc/engine": "^1.17.6",
     "@lwc/eslint-plugin-lwc": "1.9.0",
     "@lwc/jest-preset": "^16.1.0",
     "@lwc/module-resolver": "^8.12.0",

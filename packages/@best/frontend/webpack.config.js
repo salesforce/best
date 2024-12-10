@@ -1,17 +1,10 @@
-// module.exports = {
-//     devServer: {
-//         proxy: {
-//             '/api': 'http://localhost:3000',
-//         },
-//         historyApiFallback: true,
-//     },
-// };
-
+/* eslint-disable */
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const LwcWebpackPlugin = require('lwc-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
+/* eslint-enable */
 
 const mode = process.env.NODE_ENV || 'production';
 

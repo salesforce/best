@@ -91,7 +91,7 @@ export async function readConfig(
     if (!parentConfigPath) {
         try {
             gitConfig = await getGitInfo(options.rootDir);
-        } catch (e) {
+        } catch (_e) {
             console.log('[WARN] - Unable to get git information');
             /* Unable to get git info */
         }

@@ -70,7 +70,7 @@ const executeBenchmark = async (
                     endMeasure(markName, BenchmarkMeasureType.Execute);
                     resolve(null);
                 }
-            } catch (e) {
+            } catch (_e) {
                 benchmarkNode.aggregate = -1;
                 endMeasure(markName, BenchmarkMeasureType.Execute);
                 reject();

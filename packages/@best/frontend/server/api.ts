@@ -39,7 +39,7 @@ export default (config: FrontendConfig): Router => {
                         profileImage: response.data.author.avatar_url,
                     },
                 });
-            } catch (err) {
+            } catch (_err) {
                 res.send({
                     error: {
                         reason: 'GitHub integration failed.',

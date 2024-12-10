@@ -7,7 +7,7 @@
     "express": "^4.21.1",
     "mime": "3.0.0",
     "socket.io": "4.7.5",
-    "socket.io-client": "4.7.5",
+    "socket.io-client": "4.7.5" ,
     "tar": "^7.4.3"
   },
   "description": "Best Agent",

@@ -79,9 +79,9 @@ class TestRunner extends AbstractRunner {
         async (
             benchmarkBuilds: BuildConfig[],
             projectConfig: FrozenProjectConfig,
-            globalConfig: FrozenGlobalConfig,
-            runnerLogStream: RunnerStream,
-            interruption?: Interruption,
+            _globalConfig: FrozenGlobalConfig,
+            _runnerLogStream: RunnerStream,
+            _interruption?: Interruption,
         ): Promise<BenchmarkResultsSnapshot[]> => {
             for (const benchmarkInfo of benchmarkBuilds) {
                 const { benchmarkEntry, benchmarkRemoteEntry } = benchmarkInfo;

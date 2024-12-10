@@ -13,7 +13,7 @@ function resolveModuleEntryFromPackage(module: string) {
     let modulePath;
     try {
         modulePath = require.resolve(`${module}/dist/index.js`);
-    } catch (e) {
+    } catch (_e) {
         // intentional noop
     }
 

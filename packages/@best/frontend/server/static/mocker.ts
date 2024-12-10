@@ -33,7 +33,7 @@ export const bestMocker = (options: MockerOptions): rollup.Plugin => ({
                 if (mockTemplate && mockedData) {
                     return mockTemplate.replace('INSERT_MOCKED_DATA', JSON.stringify(mockedData));
                 }
-            } catch (err) {
+            } catch (_err) {
                 return null;
             }
         }

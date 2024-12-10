@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line
 const COMMON = require('../../../scripts/jest/common.config');
 
 module.exports = {

@@ -254,7 +254,7 @@ export function generateComparisonComment(result: BenchmarkComparison) {
 // this takes all the results and recursively goes through them
 // then it creates a flat list of all of the percentages of change
 export function generatePercentages(stats: ResultComparison): number[] {
-    return generateRowsFromComparison(stats, (node, parentName) => {
+    return generateRowsFromComparison(stats, (node, _parentName) => {
         const rows: number[] = [];
 
         Object.keys(node.metrics).map((metricName) => {

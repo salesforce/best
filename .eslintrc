@@ -12,6 +12,16 @@
         "ecmaVersion": 9
     },
     "rules": {
+        "@typescript-eslint/no-unused-vars": [
+            "error",
+            {
+                "argsIgnorePattern": "^_",
+                "caughtErrorsIgnorePattern": "^_",
+                "destructuredArrayIgnorePattern": "^_",
+                "varsIgnorePattern": "^_",
+                "ignoreRestSiblings": true
+            }
+        ],
         "block-scoped-var": "error",
         "no-alert": "warn",
         "no-buffer-constructor": "error",

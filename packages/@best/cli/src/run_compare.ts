@@ -132,7 +132,7 @@ export async function runCompare(
             try {
                 storageProvider = require(externalStorage);
                 storageProvider.initialize({});
-            } catch (err) {
+            } catch (_err) {
                 throw new Error(`Can't resolve the externalStorage ${externalStorage}`);
             }
         }

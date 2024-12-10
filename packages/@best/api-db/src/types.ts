@@ -38,21 +38,21 @@ export interface Snapshot extends TemporarySnapshot {
 }
 
 export class ApiDBAdapter {
-    constructor(config: ApiDatabaseConfig) {}
+    constructor(_config: ApiDatabaseConfig) {}
 
     fetchProjects(): Promise<Project[]> {
         throw new Error('ApiDB.fetchProjects() not implemented');
     }
 
-    fetchSnapshots(projectId: number, since: Date | undefined): Promise<Snapshot[]> {
+    fetchSnapshots(_projectId: number, _since: Date | undefined): Promise<Snapshot[]> {
         throw new Error('ApiDB.fetchSnapshots() not implemented');
     }
 
-    saveSnapshots(snapshots: TemporarySnapshot[], projectName: string): Promise<boolean> {
+    saveSnapshots(_snapshots: TemporarySnapshot[], _projectName: string): Promise<boolean> {
         throw new Error('ApiDB.saveSnapshots() not implemented');
     }
 
-    updateLastRelease(projectName: string, release: string | Date): Promise<boolean> {
+    updateLastRelease(_projectName: string, _release: string | Date): Promise<boolean> {
         throw new Error('ApiDB.updateLastRelease() not implemented');
     }
 

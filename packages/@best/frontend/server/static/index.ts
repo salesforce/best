@@ -52,7 +52,7 @@ export const buildStaticFrontend = async (
         await asyncWrite(indexPath, html);
 
         outputStream.writeln(`Done generating static, URL: ${indexPath}`);
-    } catch (err) {
+    } catch (_err) {
         outputStream.writeln('Error while trying to generate static HTML.');
         return false;
     }

@@ -56,7 +56,7 @@ export async function updateLatestRelease(projectNames: string[], globalConfig: 
                 }),
             );
         }
-    } catch (err) {
+    } catch (_err) {
         return false;
     }
 

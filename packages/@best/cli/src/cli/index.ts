@@ -112,7 +112,7 @@ export async function runCLI(argsCLI: CliConfig, projects: string[]) {
                 const { buildStaticFrontend } = await import('@best/frontend');
                 const projectConfig = configs[0];
                 await buildStaticFrontend(results, globalConfig, projectConfig, process.stdout);
-            } catch (err) {
+            } catch (_err) {
                 throw new Error(
                     'You passed the `--generateHTML` flag, but `@best/frontend` is not a dependency. Make sure you include it as a dependency.',
                 );

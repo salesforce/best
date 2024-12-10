@@ -17,7 +17,7 @@ const mime = require('mime');
 
 function mkdirSyncRecursively(dir, mode) {
     try {
-        var result = fs.mkdirSync(dir, mode);
+        fs.mkdirSync(dir, mode);
     } catch (e) {
         if (e.code === 'ENOENT') {
             mkdirSyncRecursively(path.dirname(dir), mode); // if does not exists, create all parents recursively
@@ -29,7 +29,7 @@ function mkdirSyncRecursively(dir, mode) {
 function createDirectoryIfNotExists(dir) {
     try {
         fs.accessSync(dir, fs.F_OK);
-    } catch (e) {
+    } catch (_e) {
         // create directory if not exists
         mkdirSyncRecursively(dir, '0755');
     }
@@ -270,7 +270,7 @@ export function SocketIOFile(socket, options) {
             try {
                 fs.accessSync(uploadDir, fs.F_OK);
                 isFileExists = true;
-            } catch (e) {
+            } catch (_e) {
                 // console.log('File is not exists, so create new one.');
             }
 
@@ -299,7 +299,7 @@ export function SocketIOFile(socket, options) {
             var writeStream = uploadingFiles[id].writeStream;
 
             function write() {
-                const result = uploadingFiles[id].wrote + chunk.length > self.maxFileSize;
+                uploadingFiles[id].wrote + chunk.length > self.maxFileSize;
 
                 if (uploadingFiles[id].wrote + chunk.length > self.maxFileSize) {
                     return sendError(
