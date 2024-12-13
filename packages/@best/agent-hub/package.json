@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "@best/agent": "13.0.0",
-    "@best/agent-frontend": "13.0.0",
-    "@best/runner-remote": "13.0.0",
-    "@best/utils": "13.0.0",
+    "@best/agent": "14.0.0",
+    "@best/agent-frontend": "14.0.0",
+    "@best/runner-remote": "14.0.0",
+    "@best/utils": "14.0.0",
     "express": "^4.21.1",
     "socket.io": "4.7.5",
     "socket.io-file": "2.0.31",
@@ -25,5 +25,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "13.0.0"
+  "version": "14.0.0"
 }

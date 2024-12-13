@@ -1,4 +1,22 @@
-# [](https://github.com/salesforce/best/compare/v12.0.2...v) (2024-08-13)
+# [](https://github.com/salesforce/best/compare/v13.0.0...v) (2024-12-13)
+
+
+* feat!: upgrade `puppeteer` to `v23.0.4` ([9278909](https://github.com/salesforce/best/commit/9278909ca31154547623be497fe5b9f2467f4b21))
+
+
+### Bug Fixes
+
+* update dependencies ([2ea90a6](https://github.com/salesforce/best/commit/2ea90a68bfaa2ccfbb54a2ecc950d833510bc662))
+* update dependencies ([143324a](https://github.com/salesforce/best/commit/143324aceda7d328e70aa8c691b20d6e8d7c4be2))
+
+
+### BREAKING CHANGES
+
+* Upgrade the Chrome version to `v131.0.6778.108`.
+
+
+
+# [13.0.0](https://github.com/salesforce/best/compare/v12.0.2...v13.0.0) (2024-08-13)
 
 
 * feat!: upgrade `puppeteer` to `v23.0.2` ([43659d8](https://github.com/salesforce/best/commit/43659d8ae07e9c3e036168e78908ec15d156a7ab))
@@ -147,14 +165,14 @@
 # [8.0.0](https://github.com/salesforce/best/compare/v7.0.1...v8.0.0) (2022-11-10)
 
 
-### Bug Fixes
-
-* use `@rollup/plugin-replace` instead of `rollup-plugin-replace` ([444af23](https://github.com/salesforce/best/commit/444af23544ed77135f40a8720d2e408f1ed25ae8))
-
-
 * feat!: upgrade `puppeteer` to `v19.2.2` ([a423cd9](https://github.com/salesforce/best/commit/a423cd996463fc6bb6c08809e71c3173a72abafa))
 * fix!: make `mainBranch` default to `main` ([2118a59](https://github.com/salesforce/best/commit/2118a596e13b842b07512c0e22c2a56fc7b07b98))
 * chore!: update `socket.io` to `v4.5.2` ([b5f8b8a](https://github.com/salesforce/best/commit/b5f8b8a673d7f7788815e028c31d992495657452))
+
+
+### Bug Fixes
+
+* use `@rollup/plugin-replace` instead of `rollup-plugin-replace` ([444af23](https://github.com/salesforce/best/commit/444af23544ed77135f40a8720d2e408f1ed25ae8))
 
 
 ### BREAKING CHANGES

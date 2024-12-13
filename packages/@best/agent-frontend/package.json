@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@best/shared": "13.0.0",
+    "@best/shared": "14.0.0",
     "express": "^4.21.1",
     "lwc": "^8.12.0",
     "socket.io": "4.7.5",
@@ -9,8 +9,8 @@
   "devDependencies": {
     "@babel/helper-create-class-features-plugin": "^7.25.9",
     "@lwc/compiler": "^8.12.0",
-    "@lwc/engine-dom": "^8.12.0",
     "@lwc/engine": "^1.17.6",
+    "@lwc/engine-dom": "^8.12.0",
     "@lwc/module-resolver": "^8.12.0",
     "@lwc/rollup-plugin": "8.12.0",
     "@lwc/synthetic-shadow": "^8.12.0",
@@ -19,9 +19,9 @@
     "cross-env": "^7.0.3",
     "html-webpack-plugin": "^5.0.0",
     "lwc-webpack-plugin": "^2.0.0",
+    "webpack": "^5.64.2",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.1.0",
-    "webpack": "^5.64.2"
+    "webpack-dev-server": "^5.1.0"
   },
   "files": [
     "build/**/*.js",
@@ -38,5 +38,5 @@
     "build:development": "cross-env NODE_ENV=development webpack",
     "watch": "cross-env NODE_ENV=development webpack-dev-server"
   },
-  "version": "13.0.0"
+  "version": "14.0.0"
 }

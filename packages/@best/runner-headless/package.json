@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "@best/runner-abstract": "13.0.0",
-    "@best/types": "13.0.0",
+    "@best/runner-abstract": "14.0.0",
+    "@best/types": "14.0.0",
     "puppeteer": "23.10.4"
   },
   "description": "Best Runner (Headless)",
@@ -19,5 +19,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "13.0.0"
+  "version": "14.0.0"
 }
