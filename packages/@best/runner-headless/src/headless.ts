@@ -25,7 +25,7 @@ const BROWSER_ARGS = [
     '--enable-precise-memory-info',
 ];
 
-const PUPPETEER_OPTIONS: Puppeteer.BrowserLaunchArgumentOptions = { args: BROWSER_ARGS };
+const PUPPETEER_OPTIONS: Puppeteer.LaunchOptions = { args: BROWSER_ARGS };
 
 function tempDir() {
     const TEMP_DIR_PREFIX = 'runner-headless-temp';
@@ -122,8 +122,8 @@ export default class HeadlessBrowser {
     static async getSpecs(): Promise<BrowserSpec[]> {
         // TODO: Create pupeteer test so we fail when upgrading
         return [
-            { name: 'chrome.headless', version: '131' },
-            { name: 'chrome', version: '131' },
+            { name: 'chrome.headless', version: '137' },
+            { name: 'chrome', version: '137' },
         ];
     }
 }
