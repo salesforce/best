@@ -1,4 +1,16 @@
-# [](https://github.com/salesforce/best/compare/v13.0.0...v) (2024-12-13)
+# [](https://github.com/salesforce/best/compare/v14.0.0...v) (2025-06-03)
+
+
+* feat!: upgrade `puppeteer` to `v24.10.0` ([f521127](https://github.com/salesforce/best/commit/f52112757e01957e6cb25807029bd21ed201ae87))
+
+
+### BREAKING CHANGES
+
+* Upgrade the Chrome version to `v137.0.7151.55`.
+
+
+
+# [14.0.0](https://github.com/salesforce/best/compare/v13.0.0...v14.0.0) (2024-12-13)
 
 
 * feat!: upgrade `puppeteer` to `v23.0.4` ([9278909](https://github.com/salesforce/best/commit/9278909ca31154547623be497fe5b9f2467f4b21))
