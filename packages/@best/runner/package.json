@@ -1,8 +1,8 @@
 {
   "dependencies": {
-    "@best/console-stream": "15.0.0",
-    "@best/runner-abstract": "15.0.0",
-    "@best/utils": "15.0.0",
+    "@best/console-stream": "16.0.0",
+    "@best/runner-abstract": "16.0.0",
+    "@best/utils": "16.0.0",
     "chalk": "~2.4.2"
   },
   "description": "Best Runner",
@@ -20,5 +20,5 @@
     "access": "public"
   },
   "types": "build/index.d.ts",
-  "version": "15.0.0"
+  "version": "16.0.0"
 }

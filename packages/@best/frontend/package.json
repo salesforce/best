@@ -1,10 +1,10 @@
 {
   "dependencies": {
-    "@best/api-db": "15.0.0",
-    "@best/config": "15.0.0",
-    "@best/console-stream": "15.0.0",
-    "@best/github-integration": "15.0.0",
-    "@best/types": "15.0.0",
+    "@best/api-db": "16.0.0",
+    "@best/config": "16.0.0",
+    "@best/console-stream": "16.0.0",
+    "@best/github-integration": "16.0.0",
+    "@best/types": "16.0.0",
     "@rollup/plugin-commonjs": "28.0.1",
     "@rollup/plugin-node-resolve": "15.3.0",
     "@rollup/plugin-replace": "^6.0.1",
@@ -68,5 +68,5 @@
     "watch": "concurrently 'yarn lwc:watch' 'yarn api:watch'"
   },
   "types": "build/index.d.ts",
-  "version": "15.0.0"
+  "version": "16.0.0"
 }
