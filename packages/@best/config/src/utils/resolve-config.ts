@@ -7,7 +7,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { PACKAGE_JSON, BEST_CONFIG } from './constants';
+import { PACKAGE_JSON, BEST_CONFIG, FILE_EXTENSIONS } from './constants';
 import { UserConfig } from '@best/types';
 
 function isFile(filePath: string) {
@@ -15,9 +15,11 @@ function isFile(filePath: string) {
 }
 
 export function resolveConfigPathByTraversing(pathToResolve: string, initialPath: string, cwd: string): string {
-    const bestConfig = path.resolve(pathToResolve, BEST_CONFIG);
-    if (isFile(bestConfig)) {
-        return bestConfig;
+    for (const ext of FILE_EXTENSIONS) {
+        const bestConfig = path.resolve(pathToResolve, `${BEST_CONFIG}${ext}`);
+        if (isFile(bestConfig)) {
+            return bestConfig;
+        }
     }
 
     const packageJson = path.resolve(pathToResolve, PACKAGE_JSON);
@@ -47,6 +49,10 @@ export function readConfigAndSetRootDir(configPath: string): UserConfig {
     let configObject;
     try {
         configObject = require(configPath);
+        // ESM interop
+        if (configObject.default) {
+            configObject = configObject.default;
+        }
     } catch (error) {
         if (isJSON) {
             throw new Error(`Best: Failed to parse config file ${configPath}\n`);

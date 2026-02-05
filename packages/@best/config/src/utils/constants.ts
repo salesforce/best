@@ -6,4 +6,5 @@
  */
 
 export const PACKAGE_JSON = 'package.json';
-export const BEST_CONFIG = 'best.config.js';
+export const BEST_CONFIG = 'best.config';
+export const FILE_EXTENSIONS = ['.js', '.mjs', '.cjs'];
