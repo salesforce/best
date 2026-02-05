@@ -1,4 +1,13 @@
-# [](https://github.com/salesforce/best/compare/v15.0.0...v) (2025-09-12)
+# [](https://github.com/salesforce/best/compare/v16.0.0...v) (2026-02-05)
+
+
+### Features
+
+* **esm:** add support for ESM and .cjs/.mjs file extensions ([#312](https://github.com/salesforce/best/issues/312)) ([3d28582](https://github.com/salesforce/best/commit/3d2858241cbb6f3eb11e4dc6879353c9b5916e9a))
+
+
+
+# [16.0.0](https://github.com/salesforce/best/compare/v15.0.0...v16.0.0) (2025-09-12)
 
 
 * feat!: upgrade `puppeteer` to `v24.19.0` ([5ba25a7](https://github.com/salesforce/best/commit/5ba25a78ae1ffca92f88b9d6840034f3c8398942))

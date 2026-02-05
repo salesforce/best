@@ -1,8 +1,8 @@
 {
   "dependencies": {
-    "@best/api-db": "16.0.0",
-    "@best/types": "16.0.0",
-    "@best/utils": "16.0.0",
+    "@best/api-db": "16.1.0",
+    "@best/types": "16.1.0",
+    "@best/utils": "16.1.0",
     "@octokit/rest": "^16.28.2",
     "base-64": "1.0.0",
     "expand-tilde": "~2.0.2",
@@ -26,5 +26,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "16.0.0"
+  "version": "16.1.0"
 }

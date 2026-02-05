@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@best/types": "16.0.0",
+    "@best/types": "16.1.0",
     "chalk": "~2.4.2",
     "globby": "14.0.2"
   },
@@ -18,5 +18,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "16.0.0"
+  "version": "16.1.0"
 }
