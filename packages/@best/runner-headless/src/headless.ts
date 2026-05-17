@@ -57,7 +57,7 @@ export default class HeadlessBrowser {
         const { launchOptions = {} } = runnerConfig;
         this.browser = await puppeteer.launch({ ...PUPPETEER_OPTIONS, ...launchOptions });
         this.page = await this.browser.newPage();
-        this.page.on('pageerror', (error: Error) => (this.pageError = error));
+        this.page.on('pageerror', (error) => (this.pageError = error as Error));
         await this.page.goto(this.pageUrl);
         this.checkForErrors();
     }
@@ -122,8 +122,8 @@ export default class HeadlessBrowser {
     static async getSpecs(): Promise<BrowserSpec[]> {
         // TODO: Create pupeteer test so we fail when upgrading
         return [
-            { name: 'chrome.headless', version: '140' },
-            { name: 'chrome', version: '140' },
+            { name: 'chrome.headless', version: '148' },
+            { name: 'chrome', version: '148' },
         ];
     }
 }
