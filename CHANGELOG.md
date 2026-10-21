@@ -1,4 +1,18 @@
-# [](https://github.com/salesforce/best/compare/v16.1.0...v) (2026-05-19)
+# [](https://github.com/salesforce/best/compare/v17.0.0...v) (2026-10-21)
+
+
+* feat!: upgrade `puppeteer` to `v25.15.0` ([34a0e13](https://github.com/salesforce/best/commit/34a0e13f61bc54a1257bf797c8a14988e7852246))
+* feat(api-db)!: switch to using native `node:sqlite` ([9b20bc5](https://github.com/salesforce/best/commit/9b20bc568cb9e8367af51a0892742af5712b5191))
+
+
+### BREAKING CHANGES
+
+* Upgrade the Chrome version to `v155.0.8059.84`.
+* Switch to using native `node:sqlite`
+
+
+
+# [17.0.0](https://github.com/salesforce/best/compare/v16.1.0...v17.0.0) (2026-05-19)
 
 
 * feat!: upgrade `puppeteer` to `v25.0.2` ([0faad37](https://github.com/salesforce/best/commit/0faad37742210613670cfad2f272184fca6af345))
