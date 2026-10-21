@@ -8,7 +8,7 @@
 import path from 'path';
 import fs from 'fs';
 import { promisify } from 'util';
-import { Database } from 'sqlite';
+import { DatabaseSync } from 'node:sqlite';
 
 const asyncReadDir = promisify(fs.readdir);
 
@@ -64,55 +64,54 @@ const buildMigrations = async (location: string): Promise<Migration[]> => {
 
 // modified from https://github.com/kriasoft/node-sqlite/blob/master/src/Database.js#L148
 export const migrate = async (
-    db: Database,
+    db: DatabaseSync,
     redoLast: boolean = false,
     location: string = 'migrations/',
     table = 'migrations',
 ): Promise<boolean> => {
     const migrations = await buildMigrations(location);
 
-    await db.run(
+    db.exec(
         `CREATE TABLE IF NOT EXISTS "${table}" (id INTEGER PRIMARY KEY, name TEXT NOT NULL, up TEXT NOT NULL, down TEXT NOT NULL)`,
     );
 
-    const previous = await db.all(`SELECT * FROM ${table} ORDER BY id ASC`);
-    let lastMigration = previous[previous.length - 1];
+    const previous = db.prepare(`SELECT * FROM ${table} ORDER BY id ASC`).all() as unknown as Migration[];
+    let lastMigration: Migration | null = previous[previous.length - 1] ?? null;
 
-    if (redoLast && previous.length > 0) {
-        await db.run('BEGIN');
+    if (redoLast && lastMigration) {
+        db.exec('BEGIN');
         try {
-            await db.exec(lastMigration.down);
-            await db.run(`DELETE FROM "${table}" WHERE id = ?`, lastMigration.id);
-            await db.run('COMMIT');
+            db.exec(lastMigration.down);
+            db.prepare(`DELETE FROM "${table}" WHERE id = ?`).run(lastMigration.id);
+            db.exec('COMMIT');
             lastMigration = null;
         } catch (err) {
-            await db.run('ROLLBACK');
+            db.exec('ROLLBACK');
             throw err;
         }
     }
 
     const lastMigrationId = lastMigration ? lastMigration.id : 0;
-    await Promise.all(
-        migrations.map(async (migration) => {
-            if (migration.id > lastMigrationId) {
-                await db.run('BEGIN');
-                try {
-                    await db.exec(migration.up);
-                    await db.run(
-                        `INSERT INTO "${table}" (id, name, up, down) VALUES (?, ?, ?, ?)`,
-                        migration.id,
-                        migration.name,
-                        migration.up,
-                        migration.down,
-                    );
-                    await db.run('COMMIT');
-                } catch (err) {
-                    await db.run('ROLLBACK');
-                    throw err;
-                }
+
+    // the driver is synchronous and a connection supports a single transaction, so apply migrations in order
+    for (const migration of migrations) {
+        if (migration.id > lastMigrationId) {
+            db.exec('BEGIN');
+            try {
+                db.exec(migration.up);
+                db.prepare(`INSERT INTO "${table}" (id, name, up, down) VALUES (?, ?, ?, ?)`).run(
+                    migration.id,
+                    migration.name,
+                    migration.up,
+                    migration.down,
+                );
+                db.exec('COMMIT');
+            } catch (err) {
+                db.exec('ROLLBACK');
+                throw err;
             }
-        }),
-    );
+        }
+    }
 
     return true;
 };

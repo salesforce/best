@@ -51,7 +51,6 @@
     "url": "https://github.com/salesforce/best.git"
   },
   "resolutions": {
-    "node-gyp": "^13.1.0",
     "@babel/traverse": "^7.25.9"
   },
   "scripts": {
@@ -59,7 +58,7 @@
     "build:frontends": "lerna exec --scope @best/agent-frontend --scope @best/frontend -- yarn build",
     "build": "tsc -b",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-    "clean": "lerna run clean && lerna clean --yes && rimraf -g packages/**/build && rimraf packages/**/tsconfig.tsbuildinfo && rimraf -g packages/**/dist && rimraf -g packages/**/node_modules",
+    "clean": "lerna run clean && lerna clean --yes && rimraf -g packages/**/build && rimraf -g 'packages/**/tsconfig.tsbuildinfo' && rimraf -g packages/**/dist && rimraf -g packages/**/node_modules",
     "lint": "eslint packages/ --ext=js,ts",
     "perf": "cd packages/best-benchmarks/ && yarn start",
     "prepare": "yarn build && yarn build:frontends",

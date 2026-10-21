@@ -5,21 +5,36 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
  */
 
-import { open, Database } from 'sqlite';
-import sqlite3 from 'sqlite3';
+import { DatabaseSync } from 'node:sqlite';
 import { SQLDatabase, SQLQueryResult } from '../db';
 import { migrate } from './migrate';
 import { ApiDatabaseConfig } from '@best/types';
 
-sqlite3.verbose(); // enable verbose mode
+// Primary result code for constraint violations, see https://www.sqlite.org/rescode.html
+const SQLITE_CONSTRAINT = 19;
+
+type SQLValue = null | number | bigint | string | Uint8Array;
+
+// node:sqlite only binds null, numbers, bigints, strings and buffers, so mirror what `sqlite3` did for the rest
+const normalizeParam = (param: unknown): SQLValue => {
+    if (param instanceof Date) {
+        return param.getTime();
+    }
+
+    if (typeof param === 'boolean') {
+        return param ? 1 : 0;
+    }
+
+    return (param === undefined ? null : param) as SQLValue;
+};
 
 export default class SQLiteDatabase extends SQLDatabase {
-    dbPromise: Promise<Database>;
+    database: DatabaseSync;
     migrated = false;
 
     constructor(config: ApiDatabaseConfig) {
         super();
-        this.dbPromise = open({ filename: config.uri, driver: sqlite3.Database });
+        this.database = new DatabaseSync(config.uri);
     }
 
     async query(text: string, params: any[]): Promise<SQLQueryResult> {
@@ -27,12 +42,19 @@ export default class SQLiteDatabase extends SQLDatabase {
             throw new Error('Database migrations have not been ensured.');
         }
 
-        const database = await this.dbPromise;
         const query = this.transformQuery(text);
 
-        return {
-            rows: await database.all(query, ...params),
-        };
+        try {
+            const rows = this.database.prepare(query).all(...params.map(normalizeParam)) as Record<string, unknown>[];
+
+            return { rows: rows.map((row) => ({ ...row })) };
+        } catch (err: any) {
+            if (err.errcode !== undefined && (err.errcode & 0xff) === SQLITE_CONSTRAINT) {
+                err.code = 'SQLITE_CONSTRAINT';
+            }
+
+            throw err;
+        }
     }
 
     transformQuery(original: string): string {
@@ -40,8 +62,7 @@ export default class SQLiteDatabase extends SQLDatabase {
     }
 
     async performMigrations() {
-        const database = await this.dbPromise;
-        await migrate(database);
+        await migrate(this.database);
         this.migrated = true;
     }
 }

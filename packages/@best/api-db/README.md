@@ -23,6 +23,8 @@ Inside your `best.config.js` you need to have the following:
 
 You do not need to create your own sqlite file, the adapter will handle that for you.
 
+The adapter uses Node's built-in [`node:sqlite`](https://nodejs.org/api/sqlite.html) module, so it requires Node.js 22.13 or newer and has no native dependencies to compile.
+
 ## Postgres
 
 ### Config
