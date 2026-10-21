@@ -3,9 +3,9 @@
     "@best/console-stream": "17.0.0",
     "@best/runner-abstract": "17.0.0",
     "@best/shared": "17.0.0",
-    "debug": "^4.4.0",
-    "socket.io-client": "^4.8.1",
-    "tar": "^7.4.3"
+    "debug": "^4.4.3",
+    "socket.io-client": "^4.8.4",
+    "tar": "^7.5.22"
   },
   "description": "Best Runner (Headless)",
   "files": [

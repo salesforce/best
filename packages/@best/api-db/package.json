@@ -1,13 +1,13 @@
 {
   "dependencies": {
     "https-proxy-agent": "5.0.1",
-    "pg": "^8.13.1",
+    "pg": "^8.23.1",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"
   },
   "description": "Best Api Database",
   "devDependencies": {
-    "@types/pg": "^8.11.10"
+    "@types/pg": "^8.23.1"
   },
   "files": [
     "build/**/*.js"

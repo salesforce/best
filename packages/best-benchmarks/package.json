@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "best": "13.0.0"
+    "best": "17.0.0"
   },
   "name": "perf-benchmarks",
   "private": true,

@@ -5,7 +5,7 @@
     "@best/runner-remote": "17.0.0",
     "@best/utils": "17.0.0",
     "express": "^4.21.1",
-    "socket.io": "4.7.5",
+    "socket.io": "4.8.4",
     "socket.io-file": "2.0.31",
     "yargs": "^17.7.2"
   },
