@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@best/shared": "18.0.0",
+    "@best/shared": "18.0.1",
     "express": "^4.21.1",
     "lwc": "^8.12.0",
     "socket.io": "4.8.4",
@@ -38,5 +38,5 @@
     "build:development": "cross-env NODE_ENV=development webpack",
     "watch": "cross-env NODE_ENV=development webpack-dev-server"
   },
-  "version": "18.0.0"
+  "version": "18.0.1"
 }

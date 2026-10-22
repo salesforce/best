@@ -3,7 +3,7 @@
     "@lwc/engine": "~1.17.6",
     "@lwc/rollup-plugin": "8.12.0",
     "@rollup/plugin-replace": "^6.0.3",
-    "best": "18.0.0"
+    "best": "18.0.1"
   },
   "name": "lwc-examples",
   "private": true,
